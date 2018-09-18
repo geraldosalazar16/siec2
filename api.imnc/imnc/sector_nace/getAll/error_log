@@ -1,0 +1,1 @@
+[13-Jul-2017 19:55:07 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/sector_nace/getAll/index.php on line 30

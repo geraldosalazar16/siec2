@@ -1,0 +1,14 @@
+[24-May-2018 22:08:31 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemainterno/public_html/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemainterno/public_html/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemainterno/public_html/api.imnc/imnc/usuariosc/insert/index.php(22): MailError->send('USUARIOS', '/home/sistemain...', 'Column 'ID_PERF...', 'INSERT INTO "PE...', 'polo@codeart.mx')
+#2 /home/sistemainterno/public_html/api.imnc/imnc/usuariosc/insert/index.php(78): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemainterno/public_html/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[24-May-2018 22:15:15 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemainterno/public_html/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemainterno/public_html/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemainterno/public_html/api.imnc/imnc/usuariosc/insert/index.php(22): MailError->send('USUARIOS', '/home/sistemain...', 'Column 'ID_PERF...', 'INSERT INTO "PE...', 'polo@codeart.mx')
+#2 /home/sistemainterno/public_html/api.imnc/imnc/usuariosc/insert/index.php(78): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemainterno/public_html/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120

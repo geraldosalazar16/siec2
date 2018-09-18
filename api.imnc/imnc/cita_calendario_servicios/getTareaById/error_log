@@ -1,0 +1,1 @@
+[29-Jan-2018 22:00:43 UTC] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/cita_calendario_servicios/getTareaById/index.php on line 26

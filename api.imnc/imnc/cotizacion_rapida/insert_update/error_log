@@ -1,0 +1,8 @@
+[22-Feb-2018 21:53:53 UTC] PHP Warning:  Illegal string offset 'ID' in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/cotizacion_rapida/insert_update/index.php on line 51
+[22-Feb-2018 22:28:12 UTC] PHP Warning:  Illegal string offset 'ID' in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/cotizacion_rapida/insert_update/index.php on line 50
+[25-Feb-2018 16:52:29 UTC] PHP Warning:  Illegal string offset 'ID' in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/insert_update/index.php on line 61
+[25-Feb-2018 16:53:07 UTC] PHP Warning:  Illegal string offset 'ID' in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/insert_update/index.php on line 61
+[25-Feb-2018 16:54:21 UTC] PHP Warning:  Illegal string offset 'ID' in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/insert_update/index.php on line 61
+[25-Feb-2018 16:55:27 UTC] PHP Warning:  Illegal string offset 'ID' in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/insert_update/index.php on line 61
+[25-Feb-2018 16:55:55 UTC] PHP Warning:  Illegal string offset 'ID' in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/insert_update/index.php on line 61
+[28-Feb-2018 21:19:57 UTC] PHP Warning:  Illegal string offset 'ID' in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/insert_update/index.php on line 68

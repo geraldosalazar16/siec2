@@ -1,0 +1,4 @@
+[07-Feb-2018 17:08:30 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto/getByIdTipoServicioUsuario/index.php on line 11
+[07-Feb-2018 17:09:27 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto/getByIdTipoServicioUsuario/index.php on line 11
+[07-Feb-2018 17:15:31 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto/getByIdTipoServicioUsuario/index.php on line 12
+[07-Feb-2018 17:16:32 UTC] PHP Parse error:  syntax error, unexpected ';', expecting ']' in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto/getByIdTipoServicioUsuario/index.php on line 13

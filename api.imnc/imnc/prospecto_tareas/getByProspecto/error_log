@@ -1,0 +1,16 @@
+[14-Feb-2018 19:42:20 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[26-Feb-2018 15:55:41 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[07-Mar-2018 16:28:17 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 19:35:22 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 21:16:24 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 21:22:02 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 21:25:02 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 21:38:13 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 21:41:41 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 21:42:28 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 23:16:46 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 23:16:59 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 23:17:04 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[08-Mar-2018 23:17:39 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[09-Mar-2018 19:49:37 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40
+[09-Mar-2018 19:51:59 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto_tareas/getByProspecto/index.php on line 40

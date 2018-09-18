@@ -1,0 +1,14 @@
+frontend/common/apiserver.js
+frontend/common/apiserver.php
+frontend/diff/selector.php
+backend/common/conn.php
+backend/common/apiserver.php
+backend/personal_tecnico/.DS_Store
+backend/personal_tecnico_roles/getAll/.htaccess
+bitbucket_webhook/install.sh
+backend/000-install/conn-medoo.php
+backend/common/conn-apiserver.php
+backend/common/conn-medoo.php
+backend/common/conn-sendgrid.php
+backend/000-install/conn-sendgrid.php
+backend/000-install/conn-apiserver.php

@@ -1,0 +1,1 @@
+[15-Mar-2018 16:57:03 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/prospecto/getByIdUsuario/index.php on line 72

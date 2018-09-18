@@ -1,0 +1,6 @@
+[29-Jan-2018 18:14:28 UTC] PHP Parse error:  syntax error, unexpected '$FECHA' (T_VARIABLE) in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/cita_calendario_servicios/insert/index.php on line 70
+[29-Jan-2018 18:18:47 UTC] PHP Parse error:  syntax error, unexpected '$FECHA' (T_VARIABLE) in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/cita_calendario_servicios/insert/index.php on line 70
+[29-Jan-2018 18:21:04 UTC] PHP Parse error:  syntax error, unexpected 'print_r' (T_STRING) in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/cita_calendario_servicios/insert/index.php on line 85
+[29-Jan-2018 19:22:31 UTC] PHP Fatal error:  Call to undefined method medoo::id() in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/cita_calendario_servicios/insert/index.php on line 63
+[01-Mar-2018 17:29:13 UTC] PHP Fatal error:  Call to undefined method medoo::id() in /home/sistemainterno/public_html/api.imnc/imnc/cita_calendario_servicios/insert/index.php on line 66
+[01-Mar-2018 17:29:21 UTC] PHP Fatal error:  Call to undefined method medoo::id() in /home/sistemainterno/public_html/api.imnc/imnc/cita_calendario_servicios/insert/index.php on line 66

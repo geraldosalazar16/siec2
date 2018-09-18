@@ -1,0 +1,6 @@
+[15-Mar-2018 19:54:12 UTC] PHP Fatal error:  Call to undefined function and_die() in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/getByIdProspecto/index.php on line 28
+[15-Mar-2018 19:55:24 UTC] PHP Fatal error:  Call to undefined function valida_error_and_die() in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/getByIdProspecto/index.php on line 28
+[15-Mar-2018 19:56:00 UTC] PHP Fatal error:  Call to undefined function valida_error_and_die() in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/getByIdProspecto/index.php on line 28
+[15-Mar-2018 20:45:17 UTC] PHP Fatal error:  Call to undefined method PDOStatement::fectAll() in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/getByIdProspecto/index.php on line 39
+[15-Mar-2018 20:45:25 UTC] PHP Fatal error:  Call to undefined method PDOStatement::fectAll() in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/getByIdProspecto/index.php on line 39
+[15-Mar-2018 20:56:14 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/cotizacion_rapida/getByIdProspecto/index.php on line 39

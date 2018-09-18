@@ -1,0 +1,11 @@
+[24-Jul-2017 21:32:46 UTC] PHP Notice:  Undefined index: id_sg_tipo_servicio in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 33
+[24-Jul-2017 21:32:46 UTC] PHP Notice:  Undefined index: id_sg_auditoria in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 34
+[24-Jul-2017 21:38:08 UTC] PHP Notice:  Undefined variable: otras_califs in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 56
+[24-Jul-2017 21:46:14 UTC] PHP Notice:  Undefined variable: id_sg_auditoria in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 41
+[24-Jul-2017 21:46:14 UTC] PHP Notice:  Undefined variable: id_sg_tipo_servicio in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 43
+[24-Jul-2017 21:51:35 UTC] PHP Parse error:  syntax error, unexpected '$etapa' (T_VARIABLE) in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 44
+[24-Jul-2017 21:51:37 UTC] PHP Parse error:  syntax error, unexpected '$etapa' (T_VARIABLE) in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 44
+[24-Jul-2017 21:52:18 UTC] PHP Parse error:  syntax error, unexpected '$etapa' (T_VARIABLE) in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 44
+[24-Jul-2017 21:52:20 UTC] PHP Parse error:  syntax error, unexpected '$etapa' (T_VARIABLE) in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 44
+[24-Jul-2017 21:54:17 UTC] PHP Parse error:  syntax error, unexpected '$etapa' (T_VARIABLE) in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 45
+[24-Jul-2017 21:54:19 UTC] PHP Parse error:  syntax error, unexpected '$etapa' (T_VARIABLE) in /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getAllWithSectorCalif/index.php on line 45

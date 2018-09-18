@@ -1,0 +1,3 @@
+[13-Jul-2017 19:54:33 UTC] PHP Warning:  session_regenerate_id(): Cannot regenerate session id - headers already sent in /home/sistemainterno/public_html/imnc/index.php on line 30
+[01-Mar-2018 15:55:42 UTC] PHP Warning:  include(./contents/calendario_servicios.php): failed to open stream: No such file or directory in /home/sistemainterno/public_html/imnc/index.php on line 157
+[01-Mar-2018 15:55:42 UTC] PHP Warning:  include(): Failed opening './contents/calendario_servicios.php' for inclusion (include_path='.:/opt/cpanel/ea-php55/root/usr/share/pear') in /home/sistemainterno/public_html/imnc/index.php on line 157

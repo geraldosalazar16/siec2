@@ -1,0 +1,8 @@
+[15-Aug-2017 11:55:10 America/Mexico_City] PHP Warning:  PDO::quote() expects parameter 1 to be string, array given in /home/sistemainterno/public_html/api.imnc/imnc/common/medoolib/medoo.php on line 233
+[15-Aug-2017 11:57:00 America/Mexico_City] PHP Warning:  PDO::quote() expects parameter 1 to be string, array given in /home/sistemainterno/public_html/api.imnc/imnc/common/medoolib/medoo.php on line 233
+[28-Aug-2017 10:36:40 America/Mexico_City] PHP Warning:  PDO::quote() expects parameter 1 to be string, array given in /home/sistemainterno/public_html/api.imnc/imnc/common/medoolib/medoo.php on line 233
+[25-Jan-2018 12:13:07 America/Mexico_City] PHP Warning:  PDO::quote() expects parameter 1 to be string, array given in /home/sistemainterno/public_html/api.imnc/imnc/common/medoolib/medoo.php on line 233
+[25-Jan-2018 12:27:13 America/Mexico_City] PHP Warning:  PDO::quote() expects parameter 1 to be string, array given in /home/sistemainterno/public_html/api.imnc/imnc/common/medoolib/medoo.php on line 233
+[07-Feb-2018 15:21:53 America/Mexico_City] PHP Warning:  PDO::quote() expects parameter 1 to be string, array given in /home/sistemainterno/public_html/api.imnc/imnc/common/medoolib/medoo.php on line 233
+[24-Feb-2018 20:16:47 America/Mexico_City] PHP Warning:  PDO::quote() expects parameter 1 to be string, array given in /home/sistemainterno/public_html/api.imnc/imnc/common/medoolib/medoo.php on line 233
+[24-Feb-2018 21:05:31 America/Mexico_City] PHP Warning:  PDO::quote() expects parameter 1 to be string, array given in /home/sistemainterno/public_html/api.imnc/imnc/common/medoolib/medoo.php on line 233

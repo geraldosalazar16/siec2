@@ -1,0 +1,7 @@
+[12-Feb-2018 14:11:07 America/Mexico_City] PHP Fatal error:  Call to undefined function query() in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto/getContactos/index.php on line 10
+[12-Feb-2018 14:12:37 America/Mexico_City] PHP Fatal error:  Cannot redeclare class medoo in /home/sistemainterno/public_html/api.imnc/imnc/common/medoolib/medoo.php on line 11
+[12-Feb-2018 20:13:39 UTC] PHP Fatal error:  Call to undefined function query() in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto/getContactos/index.php on line 13
+[12-Feb-2018 14:14:19 America/Mexico_City] PHP Fatal error:  Call to undefined function query() in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto/getContactos/index.php on line 11
+[12-Feb-2018 14:16:35 America/Mexico_City] PHP Fatal error:  Call to undefined function fetchAll() in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto/getContactos/index.php on line 11
+[12-Feb-2018 14:17:07 America/Mexico_City] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto/getContactos/index.php on line 11
+[14-Feb-2018 13:42:20 America/Mexico_City] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/pruebas/api.imnc/imnc/prospecto/getContactos/index.php on line 12

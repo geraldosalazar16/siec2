@@ -1,0 +1,1 @@
+En esta carpeta se subirán los PDFs asociados al flujo de trabajo de los servicios agendados
