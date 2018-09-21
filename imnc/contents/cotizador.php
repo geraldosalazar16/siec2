@@ -42,7 +42,7 @@
                 </td>
                 <td>{{cotizacion.FOLIO}}</td>
                 <td>{{cotizacion.ESTADO.ESTATUS_SEGUIMIENTO}}</td>
-                <td>{{cotizacion.TARIFA | currency}}</td>
+                <td>{{cotizacion.VALOR_TARIFA | currency}}</td>
                 <td>{{cotizacion.SG_INTEGRAL}}</td>
                 <td>
                   <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="modal_cotizacion_editar(cotizacion.ID)"
@@ -147,9 +147,10 @@
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Servicio <span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select id="selectServicio" ng-model="cotizacion_insertar_editar.ID_SERVICIO" ng-change ="fill_select_tramites('')" class="form-control">
+                  <select id="selectServicio" ng-model="cotizacion_insertar_editar.ID_SERVICIO" 
+                  ng-options="servicio as servicio.NOMBRE for servicio in Servicios"
+                  ng-change ="cambio_servicio()" class="form-control">
                      <option value="" selected disabled>-- selecciona un servicio --</option>
-                     <option value="CSG">Certificación de Sistemas de Gestión</option>
                   </select>
                 </div>
               </div>
@@ -157,12 +158,21 @@
                 <label class="control-label col-md-12">Tipo de servicio <span class="required">*</span></label>
                 <div class="col-md-12">
                   <select id="selectTipoServicio" ng-model="cotizacion_insertar_editar.ID_TIPO_SERVICIO" class="form-control"
-                  ng-options="item_servicio.ID as item_servicio.NOMBRE for item_servicio in Tipos_Servicio">
+                  ng-options="item_servicio as item_servicio.NOMBRE for item_servicio in Tipos_Servicio"
+                  ng-change="cambio_tipo_servicio()">
                      <option value="" selected disabled>-- selecciona un tipo de servicio --</option>
                   </select>
                 </div>
               </div>
-
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Norma <span class="required">*</span></label>
+                <div class="col-md-12">
+                  <select id="selectNorma" ng-model="cotizacion_insertar_editar.ID_NORMA" class="form-control"
+                  ng-options="norma as norma.ID_NORMA for norma in Normas">
+                     <option value="" selected disabled>-- selecciona un tipo de servicio --</option>
+                  </select>
+                </div>
+              </div>
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Complejidad <span class="required">*</span></label>
                 <div class="col-md-12">
@@ -176,19 +186,19 @@
                 </div>
               </div>
 
-
+              <!--
               <div class="form-group" ng-if="opcion_guardar_cotizacion == 'editar'">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa Actual</label>
                 <div class="col-md-12">
                   <input type="text" ng-model="cotizacion_insertar_editar.TARIFA"  required="required" class="form-control col-md-7 col-xs-12" readonly>
                 </div>
               </div>
-
+              -->
               <div class="form-group">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa por Día Auditor<span class="required">*</span></label>
                 <div class="col-md-12">
                   <select ng-model="cotizacion_insertar_editar.TARIFA" required="required" class="form-control" 
-                  ng-options="item_tarifa.tarifa as item_tarifa.descripcion for item_tarifa in Tarifa_Cotizacion">
+                  ng-options="item_tarifa.id as item_tarifa.descripcion for item_tarifa in Tarifa_Cotizacion">
                     <option value="" selected disabled>---Seleccione una tarifa---</option>
                   </select>
                 </div>

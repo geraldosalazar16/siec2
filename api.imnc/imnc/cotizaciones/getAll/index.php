@@ -20,7 +20,6 @@ function valida_error_medoo_and_die(){
 		$respuesta["resultado"]="error"; 
 		$respuesta["mensaje"]="Error al ejecutar script:" . $database->error()[2]; 
 		print_r(json_encode($respuesta)); 
-		$mailerror->send("COTIZACIONES", getcwd(), $database->error()[2], $database->last_query(), "leovardo.quintero@dhttecno.com"); 
 		die(); 
 	} 
 } 
@@ -38,12 +37,15 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	valida_error_medoo_and_die(); 
 	$norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
 	valida_error_medoo_and_die(); 
+	$desc_tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizaciones[$i]["TARIFA"]]);
+	valida_error_medoo_and_die();
 	$estado = $database->get("PROSPECTO_ESTATUS_SEGUIMIENTO", "*", ["ID"=>$cotizaciones[$i]["ESTADO_COTIZACION"]]);
 	valida_error_medoo_and_die(); 
 	$cotizaciones[$i]["SERVICIO"] = $servicio;
 	$cotizaciones[$i]["TIPOS_SERVICIO"] = $tipos_servicio;
 	$cotizaciones[$i]["NORMA"] = $norma;
 	$cotizaciones[$i]["ESTADO"] = $estado;
+	$cotizaciones[$i]["VALOR_TARIFA"] = $desc_tarifa['TARIFA'];
 
 	$CONSECUTIVO = str_pad("".$cotizaciones[$i]["FOLIO_CONSECUTIVO"], 5, "0", STR_PAD_LEFT);
 	$FOLIO = $cotizaciones[$i]["FOLIO_INICIALES"].$cotizaciones[$i]["FOLIO_SERVICIO"].$CONSECUTIVO

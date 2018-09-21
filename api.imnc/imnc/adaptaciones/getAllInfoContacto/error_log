@@ -1,0 +1,2 @@
+[18-Jan-2018 20:41:38 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/clientes/getAllInfoContacto/index.php on line 44
+[18-Jan-2018 20:50:41 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/clientes/getAllInfoContacto/index.php on line 44

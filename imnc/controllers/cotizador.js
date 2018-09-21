@@ -6,12 +6,13 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   $scope.arr_tramites = [];
   $scope.cotizacion_insertar_editar = {};
   $scope.bandera = 0;
+  $scope.Normas = [];
 
-  function fill_select_tipo_servicio(){
+  function fill_select_servicio () {
     //recibe la url del php que se ejecutará
-    $http.get(  global_apiserver + "/tipos_servicio/getAll/?filtro=vigentes")
+    $http.get(  global_apiserver + "/servicios/getAll")
         .then(function( response ) {//se ejecuta cuando la petición fue correcta
-          $scope.Tipos_Servicio = response.data.map(function(item){
+          $scope.Servicios = response.data.map(function(item){
             return{
               ID : item.ID,
               NOMBRE : item.NOMBRE
@@ -20,7 +21,37 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       },
       function (response){});
   }
-
+  $scope.cambio_servicio = function () {
+    const servicio = $scope.cotizacion_insertar_editar.ID_SERVICIO;
+    const tipos_servicio = $scope.Tipos_Servicio_Total;
+    $scope.Tipos_Servicio = [];
+    tipos_servicio.forEach(tipo_servicio => {
+      if (tipo_servicio.ID_SERVICIO === servicio.ID) {
+        $scope.Tipos_Servicio.push(tipo_servicio);
+      }
+    });
+  }
+  function fill_select_tipo_servicio(){
+    //recibe la url del php que se ejecutará
+    $http.get(  global_apiserver + "/tipos_servicio/getList")
+        .then(function( response ) {//se ejecuta cuando la petición fue correcta
+          $scope.Tipos_Servicio_Total = response.data.map(function(item){
+            return{
+              ID : item.ID,
+              NOMBRE : item.NOMBRE,
+              ID_SERVICIO: item.ID_SERVICIO,
+              NORMAS: item.NORMAS
+            }
+          });
+      },
+      function (response){});
+  }
+  $scope.cambio_tipo_servicio = function() {
+    $scope.Normas = $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.NORMAS;
+    if ($scope.Normas.length == 1) {
+      $scope.cotizacion_insertar_editar.ID_NORMA = $scope.Normas[0];
+    }
+  }
   $scope.fill_select_estatus = function(seleccionado){
     //recibe la url del php que se ejecutará
     $http.get(  global_apiserver + "/prospecto_estatus_seguimiento/getAll/")
@@ -45,6 +76,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         .then(function( response ) {//se ejecuta cuando la petición fue correcta
           $scope.Tarifa_Cotizacion = response.data.map(function(item){
             return{
+              id: item.ID,
               tarifa : item.TARIFA,
               descripcion : item.DESCRIPCION + " - $" + item.TARIFA 
             }
@@ -101,6 +133,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $scope.fill_select_clientes("");
     $scope.fill_select_estatus("");
     $scope.fill_select_tarifa();
+    fill_select_servicio();
     fill_select_tipo_servicio()
     var http_request = {
       method: 'GET',
@@ -121,6 +154,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
   // Abrir modal para insertar
   $scope.modal_cotizacion_insertar = function(){
+    $scope.Normas = [];
     $('#modalTituloCotizacion').html("Agregar cotización");
     //$('#btnGuardarUsuario').attr("opcion", "insertar");
     $scope.opcion_guardar_cotizacion = "insertar";
@@ -147,6 +181,25 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $http(http_request).success(function(data) {
       if(data) { 
         $scope.cotizacion_insertar_editar = data[0];
+        //SERVICIO, TIPO DE SERVICIO Y NORMA
+        $scope.Servicios.forEach(servicio => {
+          if(servicio.ID === data[0].ID_SERVICIO) {
+            $scope.cotizacion_insertar_editar.ID_SERVICIO = servicio;
+            $scope.cambio_servicio();
+          }
+        });
+        $scope.Tipos_Servicio_Total.forEach(tipo_servicio => {
+          if(tipo_servicio.ID === data[0].ID_TIPO_SERVICIO) {
+            $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO = tipo_servicio;
+            $scope.cambio_tipo_servicio();
+          }
+        });
+        $scope.Normas.forEach(norma => {
+          if(norma.ID_NORMA === data[0].ID_NORMA) {
+            $scope.cotizacion_insertar_editar.ID_NORMA = norma;
+          }
+        });
+
         $scope.bandera = data[0].BANDERA;
         $scope.fill_select_estatus(data[0].ESTADO_COTIZACION);
       } 
@@ -180,8 +233,9 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     var cotizacion = {
 		ID : $scope.cotizacion_insertar_editar.ID,
 		ID_PROSPECTO : id_entidad, 
-		ID_SERVICIO : $scope.cotizacion_insertar_editar.ID_SERVICIO,
-		ID_TIPO_SERVICIO : $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO,
+		ID_SERVICIO : $scope.cotizacion_insertar_editar.ID_SERVICIO.ID,
+    ID_TIPO_SERVICIO : $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID,
+    ID_NORMA: $scope.cotizacion_insertar_editar.ID_NORMA.ID_NORMA,
     FOLIO_INICIALES : $scope.cotizacion_insertar_editar.FOLIO_INICIALES,
     FOLIO_SERVICIO : $scope.cotizacion_insertar_editar.FOLIO_SERVICIO,
     ESTADO_COTIZACION : $scope.cotizacion_insertar_editar.ESTADO_SEG.ID,

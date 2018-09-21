@@ -379,7 +379,15 @@
                   </select>
                 </div>
               </div>
-
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Norma <span class="required">*</span></label>
+                <div class="col-md-12">
+                  <select id="selectNorma" ng-model="cotizacion_insertar_editar.ID_NORMA" class="form-control"
+                  ng-options="norma.ID_NORMA as norma.ID_NORMA for norma in item_servicio.NORMAS">
+                     <option value="" selected disabled>-- selecciona un tipo de servicio --</option>
+                  </select>
+                </div>
+              </div>
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Complejidad <span class="required">*</span></label>
                 <div class="col-md-12">

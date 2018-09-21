@@ -19,8 +19,7 @@ function valida_error_medoo_and_die(){
 	if ($database->error()[2]) { 
 		$respuesta["resultado"]="error"; 
 		$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
-		print_r(json_encode($respuesta)); 
-		$mailerror->send("COTIZACIONES_TRAMITES", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
+		print_r(json_encode($respuesta));  
 		die(); 
 	} 
 }
@@ -148,20 +147,39 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 							"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$obj_cotizacion["COTIZACION_SITIOS"][$i]["TOTAL_EMPLEADOS"],
 						]
 			]);
-		$dias_reduccion = ceil($dias * (1 - ($obj_cotizacion["COTIZACION_SITIOS"][$i]["FACTOR_REDUCCION"]/100) 
+		$dias_reduccion = round($dias * (1 - ($obj_cotizacion["COTIZACION_SITIOS"][$i]["FACTOR_REDUCCION"]/100) 
 			+ ($obj_cotizacion["COTIZACION_SITIOS"][$i]["FACTOR_AMPLIACION"]/100)) );
-		$dias_subtotal = ceil($dias_reduccion * $const_dias);
+		$dias_subtotal = round($dias_reduccion * $const_dias);
 		$obj_cotizacion["COTIZACION_SITIOS"][$i]["DIAS_AUDITORIA"] = $dias;
 		$obj_cotizacion["COTIZACION_SITIOS"][$i]["DIAS_AUDITORIA_RED"] = $dias_reduccion;
 		$obj_cotizacion["COTIZACION_SITIOS"][$i]["DIAS_AUDITORIA_SUBTOTAL"] = $dias_subtotal;
-
+		//Saber si es etapa 1 para modificar la visa
+		$es_etapa_1 = strpos($etapa["ETAPA"], 'Etapa 1');
+		if($es_etapa_1 !== false){ 
+			$obj_cotizacion["COTIZACION_SITIOS"][$i]["ETAPA"] = 'E1';
+		} else {
+			$obj_cotizacion["COTIZACION_SITIOS"][$i]["ETAPA"] = 'NO_E1';
+		}
 		if ($obj_cotizacion["COTIZACION_SITIOS"][$i]["SELECCIONADO"] != 1) {
 			continue;
 		}
 		$total_dias_auditoria += $dias_subtotal;
 		$total_empleados += $obj_cotizacion["COTIZACION_SITIOS"][$i]["TOTAL_EMPLEADOS"];
 	}
-
+	$es_vigilancia = strpos($etapa["ETAPA"], 'Vigilancia');
+	$es_renovacion = strpos($etapa["ETAPA"], 'Renovacion');
+	$es_renovacion1 = strpos($etapa["ETAPA"], 'Renovación');
+	$es_etapa_2 = strpos($etapa["ETAPA"], 'Etapa 2');
+	//Cuando es diferente de vigilancia y renovación es 1 día
+	if($es_vigilancia === false && $es_renovacion === false && $es_renovacion1 === false && $es_etapa_2 === false){ 
+		$total_dias_auditoria = 1;
+	}
+	//Estapa 2 es la cantidad de días de etapa 1 menos 1
+	if($es_etapa_2 !== false){ 
+		if ($total_dias_auditoria > 0) {
+			$total_dias_auditoria--;
+		}
+	}
 	$obj_cotizacion["TOTAL_EMPLEADOS"] = $total_empleados;
 	$obj_cotizacion["TOTAL_DIAS_AUDITORIA"] = $total_dias_auditoria;
 	if($cotizacion[0]["SG_INTEGRAL"] == "si"){
@@ -178,6 +196,6 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 	$obj_cotizacion["COSTO_INICIAL"] = $costo_inicial;
 	$obj_cotizacion["COSTO_DESCUENTO"] = $costo_desc;
 	$obj_cotizacion["COSTO_TOTAL"] = $costo_desc + $cotizacio_tramite["VIATICOS"] + $total_tarifa_adicional;
-
+	
 print_r(json_encode($obj_cotizacion)); 
 ?> 

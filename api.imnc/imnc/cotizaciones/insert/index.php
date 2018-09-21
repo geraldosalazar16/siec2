@@ -1,15 +1,15 @@
 <?php  
-//include  '../../common/conn-apiserver.php';  
-//include  '../../common/conn-medoo.php';  
-//include  '../../common/conn-sendgrid.php'; 
+include  '../../common/conn-apiserver.php';  
+include  '../../common/conn-medoo.php';  
+include  '../../common/conn-sendgrid.php'; 
 
 
-
+/*
 include  '../../ex_common/query.php';
 include 'funciones.php';
 include '../../ex_common/archivos.php';
+*/
 
-/*
 function valida_parametro_and_die($parametro, $mensaje_error){ 
 	$parametro = "" . $parametro; 
 	if ($parametro == "") { 
@@ -30,7 +30,7 @@ function valida_error_medoo_and_die(){
 		die(); 
 	} 
 } 
-*/
+
 $respuesta=array(); 
 $json = file_get_contents("php://input"); 
 $objeto = json_decode($json); 
@@ -41,6 +41,8 @@ $ID_SERVICIO = $objeto->ID_SERVICIO;
 valida_parametro_and_die($ID_SERVICIO,"Falta ID de SERVICIO");
 $ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO; 
 valida_parametro_and_die($ID_TIPO_SERVICIO,"Falta ID de TIPO DE SERVICIO");
+$ID_NORMA = $objeto->ID_NORMA; 
+valida_parametro_and_die($ID_NORMA,"Falta ID de NORMA");
 $ESTADO_COTIZACION = $objeto->ESTADO_COTIZACION; 
 valida_parametro_and_die($ESTADO_COTIZACION,"Falta ESTADO COTIZACION");
 $FOLIO_SERVICIO = $objeto->FOLIO_SERVICIO; 
@@ -80,7 +82,8 @@ $HORA_CREACION = date("His");
 $id = $database->insert("COTIZACIONES", [ 
 	"ID_PROSPECTO" => $ID_PROSPECTO, 
 	"ID_SERVICIO" => $ID_SERVICIO, 
-	"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO, 
+	"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
+	"ID_NORMA" => $ID_NORMA, 
 	"ESTADO_COTIZACION" => $ESTADO_COTIZACION, 
 	"FOLIO_SERVICIO" => $FOLIO_SERVICIO, 
 	"FOLIO_INICIALES" => $FOLIO_INICIALES, 
@@ -100,10 +103,6 @@ $id = $database->insert("COTIZACIONES", [
 valida_error_medoo_and_die(); 
 $respuesta["resultado"]="ok"; 
 $respuesta["id"]=$id; 
-
-creacion_expediente_registro($id,4,$rutaExpediente, $database);
-crea_instancia_expedientes_registro($id,4,$database);
-
 
 print_r(json_encode($respuesta)); 
 ?> 

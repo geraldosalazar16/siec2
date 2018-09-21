@@ -49,7 +49,8 @@ $servicio = $database->get("SERVICIOS", "*", ["ID"=>$cotizacion[0]["ID_SERVICIO"
 valida_error_medoo_and_die(); 
 $tipos_servicio = $database->get("TIPOS_SERVICIO", "*", ["ID"=>$cotizacion[0]["ID_TIPO_SERVICIO"]]);
 valida_error_medoo_and_die(); 
-$norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
+$id_norma = $cotizacion[0]["ID_NORMA"];
+$norma = $database->get("NORMAS", "*", ["ID"=>$id_norma]);
 valida_error_medoo_and_die();
 $estado = $database->get("PROSPECTO_ESTATUS_SEGUIMIENTO", "*", ["ID"=>$cotizacion[0]["ESTADO_COTIZACION"]]);
 valida_error_medoo_and_die(); 
@@ -124,15 +125,28 @@ foreach ($tramites as $key => $tramite_item) {
 								"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
 							]
 				]);
-			$dias_reduccion = ceil($dias * (1 - ($cotizacion_sitios[$i]["FACTOR_REDUCCION"]/100) + ($cotizacion_sitios[$i]["FACTOR_AMPLIACION"]/100) ));
-			$dias_subtotal = ceil($dias_reduccion * $const_dias);
+			$dias_reduccion = round($dias * (1 - ($cotizacion_sitios[$i]["FACTOR_REDUCCION"]/100) + ($cotizacion_sitios[$i]["FACTOR_AMPLIACION"]/100) ));
+			$dias_subtotal = round($dias_reduccion * $const_dias);
 		
 			$total_dias_auditoria += $dias_subtotal;
 	}
 	if($cotizacion[0]["SG_INTEGRAL"] == "si"){
-		$total_dias_auditoria = ceil( $total_dias_auditoria * (1 - ($tramite_item["FACTOR_INTEGRACION"]/100)) );
+		$total_dias_auditoria = round( $total_dias_auditoria * (1 - ($tramite_item["FACTOR_INTEGRACION"]/100)) );
 	}
-	
+	$es_vigilancia = strpos($etapa["ETAPA"], 'Vigilancia');
+	$es_renovacion = strpos($etapa["ETAPA"], 'Renovacion');
+	$es_renovacion1 = strpos($etapa["ETAPA"], 'Renovación');
+	$es_etapa_2 = strpos($etapa["ETAPA"], 'Etapa 2');
+	//Cuando es diferente de vigilancia y renovación es 1 día
+	if($es_vigilancia === false && $es_renovacion === false && $es_renovacion1 === false && $es_etapa_2 === false){ 
+		$total_dias_auditoria = 1;
+	}
+	//Estapa 2 es la cantidad de días de etapa 1 menos 1
+	if($es_etapa_2 !== false){ 
+		if ($total_dias_auditoria > 0) {
+			$total_dias_auditoria--;
+		}
+	}
 	$costo_inicial = ($total_dias_auditoria * floatval($cotizacion[0]["TARIFA"]) );	
 	$costo_desc = ($costo_inicial * (1-($tramite_item["DESCUENTO"]/100)));
 	$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_AUDITORIA"] = $total_dias_auditoria;

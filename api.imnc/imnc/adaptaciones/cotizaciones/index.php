@@ -23,17 +23,13 @@ function valida_error_medoo_and_die(){
 		$respuesta['resultado']="error";
 		$respuesta['mensaje']="Error al ejecutar script: " . $database->error()[2];
 		print_r(json_encode($respuesta));
+		$mailerror->send("certificando", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx");
 		die();
 	}
 }
-
-$respuesta=array();
-
-
-$servicios = $database->select("SERVICIOS", "*");
-valida_error_medoo_and_die();
-
-print_r(json_encode($servicios));
+//UPDATE COTIZACIONES SET ID_SERVICIO = X WHERE ID_SERVICIO = Y
+//UPDATE COTIZACIONES SET ID_TIPO_SERVICIO = X WHERE ID_TIPO_SERVICIO = Y
+//UPDATE COTIZACIONES SER ID_NORMA = X WHERE ID_TIPO-SERVICIO = Y
 
 
 //-------- FIN --------------
