@@ -6,6 +6,7 @@ $scope.file_url = "ExpedienteArchivos.php";
 var allEvents = true;
 var id_user = sessionStorage.getItem("id_usuario");
 $scope.mostrar_guardar = true;
+//Prueba
 $scope.mostrar_cerrar = true;
 		
 
