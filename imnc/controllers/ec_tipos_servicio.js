@@ -1247,7 +1247,31 @@ $scope.agregar_editar_fechasAuditoriaGrupo = function(id_sce,id_ta,ciclo,id_pt){
             });
 		$scope.txtInsertarFechasGrupo={};			
 }
-
+// ==============================================================================
+// ***** 				Funcion para eliminar un auditor					*****
+// ==============================================================================
+$scope.eliminar_grupo_auditoria = function(id_sce,id_ta,ciclo,id_pt){
+	var auditor = {
+            ID_SERVICIO_CLIENTE_ETAPA:id_sce ,
+            TIPO_AUDITORIA:	id_ta ,
+			CICLO:	ciclo,
+            ID_PERSONAL_TECNICO_CALIF: id_pt,
+			ID_USUARIO:sessionStorage.getItem("id_usuario")
+          };
+	$http.post(global_apiserver + "/i_sg_auditoria_grupos/delete/",auditor).
+            then(function(response){
+			
+                if(response.data.resultado=="ok"){
+                    notify('&Eacutexito','Se ha eliminado un auditor','success');
+                    cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+                }
+                else{
+                    notify('Error',response.data.mensaje,'error');
+                }
+               
+            });	  
+	
+}
 // ==============================================================================
 // ***** 	Funcion para obtener ciclo a partir de referencia	*****
 // ==============================================================================
