@@ -252,13 +252,29 @@
 													</tr>	
 												</table>
 											</td>
-											<td>{{x.DURACION_DIAS}}</td>
+											<td>
+											<ul class="list-unstyled user_data">
+												<li>
+													{{x.DURACION_DIAS}}		
+												</li>
+												<li>
+													{{x.RESTRICCIONES_DIA_AUDITOR}}		
+												</li>
+											</ul>
+												
+											</td>
 											<td>Tipo: {{x.TIPO}} <br> Ciclo: {{x.CICLO}}<br>Status: {{x.STATUS}}</td>
 											<td>
 													<button class="btn btn-success btn-xs btnSitiosAuditoria" ng-click="btnSitiosAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)" >{{x.SITIOS_ASOCIADOS}} sitios</button>{{restricciones_sitios}}
 											</td>
 											<td> 
-													<button class="btn btn-success btn-xs btnGrupoAuditoria"  ng-click="btnGrupoAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)" >{{x.AUDITORES_ASOCIADOS}} auditores</button>{{restricciones_grupos}}
+													<button class="btn btn-success btn-xs btnGrupoAuditoria"  ng-click="btnGrupoAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)" >{{x.AUDITORES_ASOCIADOS}} auditores</button>
+													<ul class="list-unstyled user_data">
+														<li ng-repeat="m in x.RESTRICCIONES_GRUPOS">
+															{{m}}		
+														</li>
+														
+													</ul>
 											</td>
 											<td>
 												<p ng-if='modulo_permisos["registrar"] == 1'>
@@ -379,7 +395,7 @@
 															</td>
 															<td> 
 																<p ng-if='modulo_permisos["editar"] == 1'>
-																	<button class="btn btn-primary btn-xs btnEliminaGrupoAuditoria" ng-click="eliminar_grupo_auditoria(id_servicio_cliente_etapa,x.TIPO_AUDITORIA,y.ID_CLIENTE_DOMICILIO,x.CICLO)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+																	<button class="btn btn-primary btn-xs btnEliminaGrupoAuditoria" ng-click="eliminar_grupo_auditoria(id_servicio_cliente_etapa,x.TIPO_AUDITORIA,x.CICLO,w.ID_PERSONAL_TECNICO_CALIF)"><i class="fa fa-trash" aria-hidden="true"></i></button>
 																</p>
 															</td>
 														</tr>
