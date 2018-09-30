@@ -129,6 +129,13 @@
 													</button>
 												</p>
 											</td>
+											<td>
+												<p ng-if='modulo_permisos["editar"] == 1'>
+													<button type="button"  ng-click="eliminar_sector(x.ID_SERVICIO_CLIENTE_ETAPA,x.ID_SECTOR)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+														<i class="fa fa-trash" aria-hidden="true"></i> Eliminar sector 
+													</button>
+												</p>
+											</td>
 										</tr>
 									</tbody>
 								</table>
@@ -148,6 +155,7 @@
 										<tr class="headings">
 											<th class="column-title">Tipo de servicio y domicilio</th>
 											<th class="column-title">Informaci&oacuten del sitio</th>
+											<th class="column-title"></th>
 											<th class="column-title"></th>
 										</tr>
 									</thead>
@@ -170,6 +178,13 @@
 													</button>
 												</p>
 											</td>
+											<td>
+												<p ng-if='modulo_permisos["editar"] == 1'>
+													<button type="button"  ng-click="eliminar_sitio(x.ID_CLIENTE_DOMICILIO)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+														<i class="fa fa-trash" aria-hidden="true"></i> Eliminar sitio 
+													</button>
+												</p>
+											</td>
 										</tr>
 										<tr ng-repeat="x in SitiosServicioSG" class="ng-scope  even pointer" ng-if="DatosServicio.ID_SERVICIO == 1">
 											<td>{{x.ACRONIMO}}<br>{{x.NOMBRE_DOMICILIO}}</td>
@@ -187,6 +202,13 @@
 												<p ng-if='modulo_permisos["registrar"] == 1'>
 													<button type="button"  ng-click="agregar_editar_sitio('editar',x.ID_CLIENTE_DOMICILIO)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
 														<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar sitio 
+													</button>
+												</p>
+											</td>
+											<td>
+												<p ng-if='modulo_permisos["editar"] == 1'>
+													<button type="button"  ng-click="eliminar_sitio(x.ID_CLIENTE_DOMICILIO)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+														<i class="fa fa-trash" aria-hidden="true"></i> Eliminar sitio 
 													</button>
 												</p>
 											</td>
@@ -235,19 +257,16 @@
 														</td>
 													</tr>
 													<tr ng-repeat = "z in x.AUDITORIA_FECHAS">
-														<td>
-												
+														<td>												
 															<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-min-limit="{{FechaHoy}}"  >
 																<input type="text"  ng-model="txtFechasAuditoria[z.ID]"  data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria-{{z.ID}}" />
 															</datepicker>
 														</td>
 														<td>
-															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,'editar',x.CICLO,z.ID)" >Editar Fechas</button>
+															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,'editar',x.CICLO,z.ID)" >Guardar fecha</button>
 														</td>
 														<td>
-															<p ng-if='modulo_permisos["editar"] == 1'>
-																	<button class="btn btn-primary btn-xs" ng-click="eliminar_fechasAuditoria(z.ID)"><i class="fa fa-trash" aria-hidden="true"></i></button>
-															</p>
+															<button class="btn btn-primary btn-xs btn-imnc" ng-if='modulo_permisos["editar"] == 1' ng-click="eliminar_fechasAuditoria(z.ID)"><i class="fa fa-trash" aria-hidden="true"></i></button>
 														</td>		
 													</tr>	
 												</table>

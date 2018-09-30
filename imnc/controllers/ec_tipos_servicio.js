@@ -354,6 +354,39 @@ $scope.agregar_editar_sector	=	function(accion_sector,id_servicio_cliente_etapa,
 	}
 	$("#modalInsertarActualizarTServSector").modal("show");
 }
+$scope.eliminar_sector = function(id_servicio_cliente_etapa,id_sector){
+	$.confirm({
+        title: 'Eliminar registro',
+        content: 'Estas a punto de eliminar un sector, la operación es irreversible, estas seguro?',
+        buttons: {
+            cancel: {
+                text: 'Cancelar'
+            },
+            irAuditoria: {
+                text: 'Eliminar',
+                btnClass: 'btn-blue',
+                keys: ['enter', 'shift'],
+                action: function(){
+					var datos = {
+						id_servicio_cliente_etapa: id_servicio_cliente_etapa,
+						id_sector: id_sector
+					}
+                    $http.post(global_apiserver + "/i_sg_sectores/delete/",datos).
+					then(function(response){
+						if(response.data.resultado == 'ok'){
+							notify('&Eacutexito','El sector ha sido eliminado','success');	
+							cargarSectoresServicio($scope.id_servicio_cliente_etapa);					
+						}
+						else{
+							notify('Error','No se pudo eliminar el registro','error');
+						}
+						
+					});
+                }
+            }
+        }
+    });
+}
 // ===========================================================================
 // ***** 		Funcion para limpiar las variables del modal sector		 *****
 // ===========================================================================
@@ -486,7 +519,40 @@ $scope.agregar_editar_sitio	=	function(accion_sitio,id)	{
 		$("#modalInsertarActualizarSitiosEC").modal("show");
 	}	
 }
-
+$scope.eliminar_sitio = function(id_cliente_domicilio){
+	$.confirm({
+        title: 'Eliminar registro',
+        content: 'Estas a punto de eliminar un sitio del servicio, estas seguro?',
+        buttons: {
+            cancel: {
+                text: 'Cancelar'
+            },
+            irAuditoria: {
+                text: 'Eliminar',
+                btnClass: 'btn-blue',
+                keys: ['enter', 'shift'],
+                action: function(){
+					var datos = {
+						id_servicio_cliente_etapa: $scope.id_servicio_cliente_etapa,
+						id_cliente_domicilio: id_cliente_domicilio
+					}
+                    $http.post(global_apiserver + "/i_sg_sitios/delete/",datos).
+					then(function(response){
+						if(response.data.resultado == 'ok'){
+							notify('&Eacutexito','El sitio ha sido eliminado','success');	
+							cargarSitiosECServicio($scope.id_servicio_cliente_etapa);
+							cargarTodosSitiosECServicio($scope.id_servicio_cliente_etapa);					
+						}
+						else{
+							notify('Error','No se pudo eliminar el registro','error');
+						}
+						
+					});
+                }
+            }
+        }
+    });
+}
 // ===========================================================================
 // *****	Funcion para limpiar las variables del modal sitios ec		 *****
 // ===========================================================================
