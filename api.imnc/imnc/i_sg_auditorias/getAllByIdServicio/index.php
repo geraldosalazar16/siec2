@@ -47,30 +47,20 @@ for ($i=0; $i < count($valores) ; $i++) {
 	/*======================================================*/
 	//CODIGO PARA RESTRICCIONES
 	
-	//	REGLA DONDE DIA_AUDITOR=CANT_FECHAS*CANT_AUDITORES
-	//$valores[$i]["FECHAS_AUDITORES_ASOCIADOS"] = $database->count("I_SG_AUDITORIA_GRUPO_FECHAS", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$valores[$i]["ID_SERVICIO_CLIENTE_ETAPA"],"TIPO_AUDITORIA"=>$valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"]]]); 
-/*	if(count($valores[$i]["AUDITORIA_FECHAS"])*count($valores[$i]["AUDITORES"])!=$valores[$i]["DURACION_DIAS"]){
-		$valores[$i]["REGLA_DIA_AUDITOR"] = "- cantidad de fechas (".count($valores[$i]["AUDITORIA_FECHAS"]).") * cantidad de auditores (".count($valores[$i]["AUDITORES"]).") debe ser igual a dia auditor (".$valores[$i]["DURACION_DIAS"].")";
-	}
-	else{
-		$valores[$i]["REGLA_DIA_AUDITOR"]="";
-	}
-	*/
+	
 	// RESTRICCIONES PARA GRUPOS
 	$valores[$i]["RESTRICCIONES_GRUPOS"] = array();
 	//$valores[$i]["RESTRICCIONES_DIA_AUDITOR"] =  array();
-	$tiene_auditor_lider = $database->count("I_SG_AUDITORIA_GRUPOS", ["AND" => ["ID_SERVICIO_CLIENTE_ETAPA"=> $id,"TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"], "ID_ROL"=>"TECL"]]); 
+	$tiene_auditor_lider = $database->count("I_SG_AUDITORIA_GRUPOS", ["AND" => ["ID_SERVICIO_CLIENTE_ETAPA"=> $id,"TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"], "ID_ROL"=>"AL"]]); 
 	valida_error_medoo_and_die(); 
 
 	// Restricci�n de auditor l�der
 	if ($tiene_auditor_lider == 0) {
 		$mensaje_restriccion = "- Debe estar asignado un lider";
-		//$valores[$i]["RESTRICCIONES_GRUPOS"]= $mensaje_restriccion;
 		array_push($valores[$i]["RESTRICCIONES_GRUPOS"], $mensaje_restriccion);
 	}
 	
-	// Recupera los auditores asignados a la auditor�a menos a los expertos t�nicos (ExTec), los ExTec no cuentan en la restricci�n de d�as	
-	//$grupo_auditores = $database->select("I_SG_AUDITORIA_GRUPOS", "*", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=> $id,"TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"], "ID_ROL[!]"=>"ExTec"]]); 
+	// Recupera los auditores asignados a la auditor�a menos a los auditores que no descuentan dias	
 	$grupo_auditores = $database->select("I_SG_AUDITORIA_GRUPOS",["[><]PERSONAL_TECNICO_ROLES"=>["I_SG_AUDITORIA_GRUPOS.ID_ROL"=>"ID"]] ,["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA","I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA","I_SG_AUDITORIA_GRUPOS.CICLO","I_SG_AUDITORIA_GRUPOS.ID_PERSONAL_TECNICO_CALIF","I_SG_AUDITORIA_GRUPOS.ID_ROL"], ["AND"=>["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"],"PERSONAL_TECNICO_ROLES.DESC_DIAS"=>1]]); 
 	valida_error_medoo_and_die(); 
 	$valores[$i]["DIAS_ASIGNADOS"] = 0;
@@ -82,27 +72,105 @@ for ($i=0; $i < count($valores) ; $i++) {
 		$valores[$i]["DIAS_ASIGNADOS"] += count($grupo_auditores_fechas);
 	}
 	
-	// Restricci�n de d�as auditor
+	// Restriccion de dias auditor
 	if ($valores[$i]["DIAS_ASIGNADOS"] < $valores[$i]["DURACION_DIAS"]) {
 		$mensaje_restriccion = "Faltan dias por asignar (se han asignado ".$valores[$i]["DIAS_ASIGNADOS"].' de '. $valores[$i]["DURACION_DIAS"].')';
 		$valores[$i]["RESTRICCIONES_DIA_AUDITOR"] = $mensaje_restriccion;
-		//array_push($valores[$i]["RESTRICCIONES_DIA_AUDITOR"], $mensaje_restriccion);
+		
 	}
 
 	$sg_sectores = $database->select("I_SG_SECTORES", "ID_SECTOR", ["ID_SERVICIO_CLIENTE_ETAPA"=>$id]); 
 	$ids_pt_califs = $database->select("I_SG_AUDITORIA_GRUPOS", "ID_PERSONAL_TECNICO_CALIF", ["AND"=>["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
 	$sectores_calificados = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs]);
 
-	//print_r($sg_sectores);
-	//print_r($ids_pt_califs);
-	//print_r($sectores_calificados);
-	//print_r(count(array_diff($sg_sectores,$sectores_calificados)));
 	
-	// Restricci�n de calificacion del grupo aditor
-	if( $valores[$i]["TIPO_AUDITORIA"] != "E1" && ($sectores_calificados == NULL || count(array_diff($sg_sectores, $sectores_calificados)) > 0)){
+	// Restricci�n de calificacion del grupo auditor
+	if(( $valores[$i]["TIPO_AUDITORIA"] == "3"|| $valores[$i]["TIPO_AUDITORIA"] == "4" ) && ($sectores_calificados == NULL || count(array_diff($sg_sectores, $sectores_calificados)) > 0)){	
 		$mensaje_restriccion = "- El grupo no esta calificado en todos los sectores";
 		array_push($valores[$i]["RESTRICCIONES_GRUPOS"], $mensaje_restriccion);
 	}
+	//Aqui se chequean si los auditores estan capacitados en todos los sectores si tipo auditoria es vigilancia anual 2
+	if($valores[$i]["TIPO_AUDITORIA"] == "7"){
+		$ids_pt_califs1 = $database->select("I_SG_AUDITORIA_GRUPOS", "ID_PERSONAL_TECNICO_CALIF", ["AND"=>
+																										["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,
+																										"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> [6,7],
+																										"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
+		
+		$sectores_calificados1 = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs1]);
+		if($sectores_calificados1 == NULL || count(array_diff($sg_sectores, $sectores_calificados1)) > 0){
+			$mensaje_restriccion = "- El grupo no esta calificado en todos los sectores";
+			array_push($valores[$i]["RESTRICCIONES_GRUPOS"], $mensaje_restriccion);
+		}
+	}
+	//Aqui se chequean si los auditores estan capacitados en todos los sectores si tipo auditoria es vigilancia semestral 5+
+	if($valores[$i]["TIPO_AUDITORIA"] == "12"){
+		$ids_pt_califs1 = $database->select("I_SG_AUDITORIA_GRUPOS", "ID_PERSONAL_TECNICO_CALIF", ["AND"=>
+																										["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,
+																										"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> [8,9,10,11,12],
+																										"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
+		
+		$sectores_calificados1 = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs1]);
+		if($sectores_calificados1 == NULL || count(array_diff($sg_sectores, $sectores_calificados1)) > 0){
+			$mensaje_restriccion = "- El grupo no esta calificado en todos los sectores";
+			array_push($valores[$i]["RESTRICCIONES_GRUPOS"], $mensaje_restriccion);
+		}
+	}
+	//RESTRICCIONES PARA SITIOS (REGLAS DE MUESTREO
+	//Sitio Matriz
+	$mensaje_actividad_faltante = "";
+	$valores[$i]["RESTRICCIONES_SITIOS"] = array();
+	$const_sitio = 1;
+	if($valores[$i]["TIPO_AUDITORIA"] > "5" && $valores[$i]["TIPO_AUDITORIA"] < "13"){
+		$const_sitio = 0.6;
+	}
+	$SITIO_MATRIZ =  $database->query("SELECT COUNT(*) AS COUNT_MATRIZ FROM `I_SG_AUDITORIA_SITIOS` AS SAS INNER JOIN `I_SG_SITIOS` AS SGS ON SAS.`ID_SERVICIO_CLIENTE_ETAPA` = SGS.`ID_SERVICIO_CLIENTE_ETAPA` AND SAS.`ID_CLIENTE_DOMICILIO` = SGS.`ID_CLIENTE_DOMICILIO` WHERE SGS.`MATRIZ_PRINCIPAL` = 'si' AND SAS.`ID_SERVICIO_CLIENTE_ETAPA`=".$id. " AND SAS.`TIPO_AUDITORIA` = ".$valores[$i]["TIPO_AUDITORIA"]." AND SAS.`CICLO`=".$valores[$i]["CICLO"])->fetchAll(PDO::FETCH_ASSOC);
+	valida_error_medoo_and_die(); 
+	if($SITIO_MATRIZ[0]["COUNT_MATRIZ"] == 0){
+		$mensaje_actividad_faltante = "Falta sitio matriz. ";
+	}
+	if(($valores[$i]["TIPO_AUDITORIA"] > "5" && $valores[$i]["TIPO_AUDITORIA"] < "13") ||  $valores[$i]["TIPO_AUDITORIA"] == "3"|| $valores[$i]["TIPO_AUDITORIA"] == "4" ){
+		if($valores[$i]["NO_USA_METODO"] == 0){
+	
+			$SITIO_TOTAL_ACTIVIDAD = $database->query("SELECT COUNT(*) AS COUNT_ACTIVIDAD, SGS.`ID_ACTIVIDAD`, SAC.`ACTIVIDAD` AS ACTIVIDAD FROM `I_SG_SITIOS` AS SGS INNER JOIN `SG_ACTIVIDAD` AS SAC ON SGS.`ID_ACTIVIDAD` = SAC.`ID` WHERE SGS.`MATRIZ_PRINCIPAL` = 'no' AND SGS.`ID_SERVICIO_CLIENTE_ETAPA`=".$id." GROUP BY SGS.`ID_ACTIVIDAD`")->fetchAll(PDO::FETCH_ASSOC);	
+			$valores[$i]["TOTAL_SITIOS"] = 1; //el sitio matriz
+		
+			$SITIO_AUX_ACTIVIDAD = $database->query("SELECT COUNT(*) AS COUNT_ACTIVIDAD, SGS.`ID_ACTIVIDAD` FROM `I_SG_AUDITORIA_SITIOS` AS SAS INNER JOIN `I_SG_SITIOS` AS SGS ON  SAS.`ID_SERVICIO_CLIENTE_ETAPA` = SGS.`ID_SERVICIO_CLIENTE_ETAPA` AND SAS.`ID_CLIENTE_DOMICILIO` = SGS.`ID_CLIENTE_DOMICILIO` WHERE SGS.`MATRIZ_PRINCIPAL` = 'no' AND SAS.`ID_SERVICIO_CLIENTE_ETAPA`=".$id." AND SAS.`TIPO_AUDITORIA`=".$valores[$i]["TIPO_AUDITORIA"]." AND SAS.`CICLO`=".$valores[$i]["CICLO"]." GROUP BY SGS.`ID_ACTIVIDAD`")->fetchAll(PDO::FETCH_ASSOC);	
+			$SITIO_ASOCIADO_ACTIVIDAD = array();
+			foreach ($SITIO_AUX_ACTIVIDAD as $key => $actividad) {
+				$SITIO_ASOCIADO_ACTIVIDAD[$actividad["ID_ACTIVIDAD"]] = $actividad["COUNT_ACTIVIDAD"];
+			}
+			// Restricción de raiz cuadrada de total de sitios por actividad
+			foreach ($SITIO_TOTAL_ACTIVIDAD as $key => $actividad) {
+				$aux_actividad = ceil(sqrt($actividad["COUNT_ACTIVIDAD"]) * $const_sitio);
+				$valores[$i]["TOTAL_SITIOS"] += $aux_actividad;
+				if( !array_key_exists($actividad["ID_ACTIVIDAD"], $SITIO_ASOCIADO_ACTIVIDAD)){
+					$mensaje_actividad_faltante .= "\nFaltan ".$aux_actividad." sitios de la actividad ".$actividad["ACTIVIDAD"].". ";
+				}
+				else if( array_key_exists($actividad["ID_ACTIVIDAD"], $SITIO_ASOCIADO_ACTIVIDAD) && 
+					$SITIO_ASOCIADO_ACTIVIDAD[$actividad["ID_ACTIVIDAD"]] < $aux_actividad){
+					$actv_faltante = $aux_actividad - $SITIO_ASOCIADO_ACTIVIDAD[$actividad["ID_ACTIVIDAD"]];
+					$mensaje_actividad_faltante .= "\nFaltan ".$actv_faltante." sitios de la actividad ".$actividad["ACTIVIDAD"].". ";
+				}
+			}
+		}
+		else{
+			$valores[$i]["TOTAL_SITIOS"] = $valores[$i]["SITIOS_AUDITAR"]; 
+		}
+		// Restricciones de sitios
+		if ($valores[$i]["SITIOS_ASOCIADOS"] < $valores[$i]["TOTAL_SITIOS"]) {
+			$mensaje_restriccion = '- Se deben cubrir '.$valores[$i]["TOTAL_SITIOS"].' sitios en esta auditoria. '.$mensaje_actividad_faltante;
+			array_push($valores[$i]["RESTRICCIONES_SITIOS"], $mensaje_restriccion);
+		}
+	
+	}
+	else{
+		// Restricciones de sitios
+		if($SITIO_MATRIZ[0]["COUNT_MATRIZ"] == 0){
+			$mensaje_restriccion = '- '.$mensaje_actividad_faltante;
+			array_push($valores[$i]["RESTRICCIONES_SITIOS"], $mensaje_restriccion);
+		}
+	}
+	
 	/*======================================================*/
 	
 }

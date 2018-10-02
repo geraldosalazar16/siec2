@@ -708,7 +708,7 @@ cargarSitiosSGServicio($scope.id_servicio_cliente_etapa);
 			$http.post(global_apiserver + "/i_sg_sitios/insert/",datos).
             then(function(response){
 				
-                if(response.data.resultado=="OK"){
+                if(response.data.resultado=="ok"){
 					notify('&Eacutexito','Se han actualizado los datos','success');
 					cargarSitiosSGServicio($scope.id_servicio_cliente_etapa);
 					//cargarTodosSitiosECServicio($scope.id_servicio_cliente_etapa);
@@ -724,7 +724,7 @@ cargarSitiosSGServicio($scope.id_servicio_cliente_etapa);
 			
 			$http.post(global_apiserver + "/i_sg_sitios/update/",datos).
             then(function(response){
-                if(response.data.resultado=="OK"){
+                if(response.data.resultado=="ok"){
 					notify('&Eacutexito','Se han actualizado los datos','success');
                    
 					cargarSitiosSGServicio($scope.id_servicio_cliente_etapa);

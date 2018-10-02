@@ -45,7 +45,7 @@
 				</select>
 			</div>
 			<div class="form-group">
-				<label>Tipo de sitio<span class="required">*</span></label>
+				<label>¿Matriz o principal?<span class="required">*</span></label>
                 <select ng-model="formDataSitio.cmbMatrizPrincipal" class="form-control" id="cmbMatrizPrincipal" name="cmbMatrizPrincipal" ng-change='cambiocmbMatrizPrincipal()' required ng-class="{ error: exampleFormSitio.cmbMatrizPrincipal.$error.required && !exampleFormSitio.$pristine}"  >
 					<option value="si">Si</option>
 					<option value="no">No</option>

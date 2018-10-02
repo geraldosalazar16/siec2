@@ -265,7 +265,14 @@
 											</td>
 											<td>Tipo: {{x.TIPO}} <br> Ciclo: {{x.CICLO}}<br>Status: {{x.STATUS}}</td>
 											<td>
-													<button class="btn btn-success btn-xs btnSitiosAuditoria" ng-click="btnSitiosAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)" >{{x.SITIOS_ASOCIADOS}} sitios</button>{{restricciones_sitios}}
+													<button class="btn btn-success btn-xs btnSitiosAuditoria" ng-click="btnSitiosAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)" >{{x.SITIOS_ASOCIADOS}} sitios</button>
+													<ul class="list-unstyled user_data">
+														<li ng-repeat="n in x.RESTRICCIONES_SITIOS">
+															{{n}}		
+														</li>
+														
+													</ul>
+													
 											</td>
 											<td> 
 													<button class="btn btn-success btn-xs btnGrupoAuditoria"  ng-click="btnGrupoAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)" >{{x.AUDITORES_ASOCIADOS}} auditores</button>
@@ -354,7 +361,7 @@
 															<th>Nombre completo</th>
 															<th>Email</th>
 															<th>Registro</th>
-															<th>Rol en auditor&iacute </th>
+															<th>Rol en auditor&iacutea </th>
 															<th>Tipo de Servicio </th>
 															<th>Fechas asignadas </th>
 															<th></th>
