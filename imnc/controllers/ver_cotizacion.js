@@ -28,6 +28,7 @@ $scope.formDataGenCotizacion.tramites={};
 $scope.formDataGenCotizacion.descripcion=[[{}]];
 $scope.formDataGenCotizacion.tarifa={};
 $scope.tram_index = "";
+$scope.formData = {};
 /*===================================================*/
   $scope.get_factor_integracion = function(){
     if(!Boolean($scope.obj_integracion.X) || !Boolean($scope.obj_integracion.Y) ){
@@ -252,7 +253,7 @@ $scope.tram_index = "";
       console.log("Error al generar petición: " + response);
     });
   }
-
+  //Esta funcion ya no se usa
   $scope.modal_crear_servicio = function(tramite, addServ, obj_tramite_aux){
     $scope.addServicio = addServ;
     $scope.obj_tramite = obj_tramite_aux;
@@ -272,9 +273,101 @@ $scope.tram_index = "";
     if(addServ){
       fill_cmb_referencia(tramite, $scope.obj_servicio.ID_CLIENTE);
     }
+    $('#modalInsertarServicio').modal('show');
+  }
+  $scope.modal_insertar_servicio = function(tramite){
+    var nombre_cliente = '';
+    var id_cliente = 0;
+    //PROSPECTO
+    if($scope.obj_cotizacion.BANDERA != 0) {
+      nombre_cliente = $scope.obj_cotizacion.CLIENTE['NOMBRE'];
+      id_cliente = $scope.obj_cotizacion.CLIENTE['ID'];
+    } else {
+      nombre_cliente = $scope.obj_cotizacion.PROSPECTO['NOMBRE'];
+      id_cliente = $scope.obj_cotizacion.PROSPECTO['ID'];
+    }
+    
+    const nombre_servicio = $scope.obj_cotizacion.SERVICIO['NOMBRE'];
+    const id_servicio = $scope.obj_cotizacion.SERVICIO['ID'];
+    const nombre_tipo_servicio = $scope.obj_cotizacion.TIPOS_SERVICIO['NOMBRE'];
+    const id_tipo_servicio = $scope.obj_cotizacion.TIPOS_SERVICIO['ID'];
+    const nombre_norma = $scope.obj_cotizacion.NORMA['NOMBRE'];
+    const id_norma = $scope.obj_cotizacion.NORMA['ID'];
+
+    $scope.servicio_insertar = {
+      ID_CLIENTE: id_cliente,
+      NOMBRE_CLIENTE: nombre_cliente,
+      ID_SERVICIO: id_servicio,
+      NOMBRE_SERVICIO: nombre_servicio,
+      ID_TIPO_SERVICIO: id_tipo_servicio,
+      NOMBRE_TIPO_SERVICIO: nombre_tipo_servicio,
+      ID_ETAPA:	"",
+      NOMBRE_ETAPA: "",
+      ID_NORMA: id_norma,
+      NOMBRE_NORMA: nombre_norma,
+      REFERENCIA: "",
+      CAMBIO	: "N",
+      ID_USUARIO:	sessionStorage.getItem("id_usuario")
+    };
+
+    $scope.Etapas = [];
+    if (id_servicio == 1) { //SG
+      $scope.Etapas.push({ID:3,NOMBRE:"Asignación"});
+      $scope.Etapas.push({ID:12,NOMBRE:"Transferencia"});
+      $scope.servicio_insertar.ID_ETAPA = 3;
+    } else {
+      $scope.Etapas.push({ID:17,NOMBRE:"Asignación"});
+      $scope.Etapas = 17;
+    }
+
+    //Ciclo 1 etapa 3 asignación 
+    generar_referencia("C1",3,id_tipo_servicio);
+
     $('#modalAddServicio').modal('show');
   }
-
+  function generar_referencia(ref,etapa,tipo_servicio){
+    if(!tipo_servicio)
+    {
+      tipo_servicio = "XXX";
+    }
+    if(!etapa)
+    {
+      etapa = "XX";
+    }    
+    
+    $http.get(  global_apiserver + "/tipos_servicio/generarReferencia/?ref="+ref+"&etapa="+etapa+"&id="+tipo_servicio)
+      .then(function( response ){        
+        $scope.servicio_insertar.REFERENCIA	= response.data;        
+    }); 
+  }
+  $scope.cambioEtapa	=	function(){
+    var ref		=	"C1";
+    var id_etapa	=$scope.servicio_insertar.ID_ETAPA;
+    var	id_tipo_servicio	=	$scope.servicio_insertar.ID_TIPO_SERVICIO;
+    generar_referencia(ref,id_etapa,id_tipo_servicio);
+  }
+  $scope.crear_servicio = function () {
+    var datos = {
+      ID_CLIENTE: $scope.servicio_insertar.ID_CLIENTE,
+      ID_SERVICIO: $scope.servicio_insertar.ID_SERVICIO,
+      ID_TIPO_SERVICIO: $scope.servicio_insertar.ID_TIPO_SERVICIO,
+      ID_ETAPA_PROCESO:	$scope.servicio_insertar.ID_ETAPA,
+      ID_NORMA: $scope.servicio_insertar.ID_NORMA,
+      REFERENCIA: $scope.servicio_insertar.REFERENCIA,
+      CAMBIO	: "N",
+      ID_USUARIO:	sessionStorage.getItem("id_usuario")
+    };
+    
+    $http.post(global_apiserver + "/servicio_cliente_etapa/insert/",datos).
+    then(function(response){
+      if(response){
+        notify('Éxito','Se ha insertado un nuevo registro','success');        
+      } else {
+        notify('Error','No se pudo guardar el registro','error');
+      }
+      $("#modalAddServicio").modal("hide");
+    });
+  }
   // Abrir modal para editar
   $scope.modal_cotizacion_editar = function(){
     $scope.cotizacion_insertar_editar = $scope.obj_cotizacion;

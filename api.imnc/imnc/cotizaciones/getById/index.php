@@ -38,10 +38,13 @@ if (!in_array($complejidad, $complejidades_validas)) {
 }
 $complejidad = "_" . strtoupper($complejidad);
 
-if($cotizacion[0]["BANDERA"] == 0){
+if($cotizacion[0]["BANDERA"] != "0"){
 	$id_cliente = $database->get("PROSPECTO", "ID_CLIENTE", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
 	$cliente = $database->get("CLIENTES", "*", ["ID"=>$id_cliente]);
 	$cotizacion[0]["CLIENTE"] = $cliente;
+} else {
+	$prospecto = $database->get("PROSPECTO", "*", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
+	$cotizacion[0]["PROSPECTO"] = $prospecto;
 }
 
 
@@ -53,6 +56,8 @@ $id_norma = $cotizacion[0]["ID_NORMA"];
 $norma = $database->get("NORMAS", "*", ["ID"=>$id_norma]);
 valida_error_medoo_and_die();
 $estado = $database->get("PROSPECTO_ESTATUS_SEGUIMIENTO", "*", ["ID"=>$cotizacion[0]["ESTADO_COTIZACION"]]);
+valida_error_medoo_and_die(); 
+$tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizacion[0]["TARIFA"]]);
 valida_error_medoo_and_die(); 
 $campos_tramite = [
 	"COTIZACIONES_TRAMITES.ID",
@@ -76,6 +81,7 @@ $cotizacion[0]["TIPOS_SERVICIO"] = $tipos_servicio;
 $cotizacion[0]["NORMA"] = $norma;
 $cotizacion[0]["ESTADO"] = $estado;
 $cotizacion[0]["COTIZACION_TRAMITES"] = $tramites;
+$cotizacion[0]["TARIFA_COMPLETA"] = $tarifa;
 
 $CONSECUTIVO = str_pad("".$cotizacion[0]["FOLIO_CONSECUTIVO"], 5, "0", STR_PAD_LEFT);
 $FOLIO = $cotizacion[0]["FOLIO_INICIALES"].$cotizacion[0]["FOLIO_SERVICIO"].$CONSECUTIVO.$cotizacion[0]["FOLIO_MES"].$cotizacion[0]["FOLIO_YEAR"];
@@ -147,7 +153,7 @@ foreach ($tramites as $key => $tramite_item) {
 			$total_dias_auditoria--;
 		}
 	}
-	$costo_inicial = ($total_dias_auditoria * floatval($cotizacion[0]["TARIFA"]) );	
+	$costo_inicial = ($total_dias_auditoria * floatval($tarifa['TARIFA']) );	
 	$costo_desc = ($costo_inicial * (1-($tramite_item["DESCUENTO"]/100)));
 	$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_AUDITORIA"] = $total_dias_auditoria;
 	$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO"] = $costo_inicial;

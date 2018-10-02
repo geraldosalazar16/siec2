@@ -4,22 +4,33 @@
       <div class="x_panel">
         <div class="x_title">
         <p><h2>Detalle de cotización</h2></p>
+          <!--
           <p>
             <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_editar()' 
             ng-if='modulo_permisos["editar"] == 1 && !bl_firmado'> 
               <i class="fa fa-edit"> </i> Editar cotización 
             </button>
           </p>
+          -->
+          <!--
           <p>
             <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_actualizar()' 
             ng-if='modulo_permisos["editar"] == 1 && bl_cotizado'> 
               <i class="fa fa-edit"> </i> Actualizar cotización 
             </button>
           </p>
-		  <p>
+          -->
+		      <p>
             <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_generar()' 
-            ng-if='modulo_permisos["editar"] == 1'> 
-              <i class="fa fa-edit"> </i> Generar cotización 
+            ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'> 
+              <i class="fa fa-file"></i> Generar cotización 
+            </button>
+          </p>
+          <p>
+          <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
+            ng-click="modal_insertar_servicio(tramites_cotizacion)"
+            ng-if='modulo_permisos["editar"] == 1 && bl_firmado && !tramites_cotizacion.ID_SERVICIO_CLIENTE' style="float: right;">
+              Crear Servicio
             </button>
           </p>
           <div class="clearfix"></div>
@@ -119,12 +130,7 @@
                   style="float: right;">
                     Mostrar cotización
                   </button>
-
-                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
-                  ng-click="modal_crear_servicio(tramites_cotizacion.ID_ETAPA_PROCESO, false, tramites_cotizacion)"
-                  ng-if='modulo_permisos["editar"] == 1 && bl_firmado && !tramites_cotizacion.ID_SERVICIO_CLIENTE' style="float: right;">
-                    Crear Servicio
-                  </button>
+                  <!--
 
                   <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
                   ng-click="modal_crear_servicio(tramites_cotizacion.ID_ETAPA_PROCESO, true, tramites_cotizacion)"
@@ -137,11 +143,11 @@
                   ng-if='modulo_permisos["editar"] == 1 && bl_firmado && obj_cotizacion.FOLIO_UPDATE == "E" && tramites_cotizacion.ID_SERVICIO_CLIENTE != null' style="float: right;">
                     Actulizar Servicio
                   </button>
-
+                  -->
                   <a type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
                   href="./?pagina=sg_tipos_servicio&id_serv_cli_et={{tramites_cotizacion.ID_SERVICIO_CLIENTE}}"
                   ng-if='tramites_cotizacion.ID_SERVICIO_CLIENTE != null' style="float: right;">
-                    Ver Servicio
+                    Ver Auditoría
                   </a>
                 </td>
               </tr>
@@ -351,7 +357,7 @@
                   <div style="float: left;"><span style="font-size: 11px;">Iniciales del Servicio</span></div>
                 </div>
               </div>
-
+              <!--
               <div class="form-group form-vertical" 
               ng-if='cotizacion_insertar_editar.ESTADO_SEG.DESCRIPCION == "Cotizado" || cotizacion_insertar_editar.ESTADO_SEG.DESCRIPCION == "Firmado"'>
                 <label class="control-label col-md-12">Referencia</label>
@@ -360,13 +366,12 @@
                   ng-change="cotizacion_insertar_editar.REFERENCIA = cotizacion_insertar_editar.REFERENCIA.toUpperCase()">
                 </div>
               </div>
-
+              -->
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Servicio <span class="required">*</span></label>
                 <div class="col-md-12">
                   <select id="selectServicio" ng-model="cotizacion_insertar_editar.ID_SERVICIO" class="form-control">
-                     <option value="" selected disabled>-- selecciona un servicio --</option>
-                     <option value="CSG">Certificación de Sistemas de Gestión</option>
+                     <option value="1">Certificación de Sistemas de Gestión</option>
                   </select>
                 </div>
               </div>
@@ -375,7 +380,6 @@
                 <div class="col-md-12">
                   <select id="selectTipoServicio" ng-model="cotizacion_insertar_editar.ID_TIPO_SERVICIO" class="form-control"
                   ng-options="item_servicio.ID as item_servicio.NOMBRE for item_servicio in Tipos_Servicio">
-                     <option value="" selected disabled>-- selecciona un tipo de servicio --</option>
                   </select>
                 </div>
               </div>
@@ -384,7 +388,6 @@
                 <div class="col-md-12">
                   <select id="selectNorma" ng-model="cotizacion_insertar_editar.ID_NORMA" class="form-control"
                   ng-options="norma.ID_NORMA as norma.ID_NORMA for norma in item_servicio.NORMAS">
-                     <option value="" selected disabled>-- selecciona un tipo de servicio --</option>
                   </select>
                 </div>
               </div>
@@ -787,66 +790,52 @@
         <div class="modal-body">
             <form id="demo-form2" style="margin-top: -20px;">
 
-              <div class="form-group form-vertical" ng-if="!addServicio">
+              <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Referencia</label>
                 <div class="col-md-12">
-                  <input type="text" ng-model="obj_servicio.REFERENCIA"  required="required" class="form-control col-md-7 col-xs-12">
+                  <input type="text" ng-model="servicio_insertar.REFERENCIA"  required="required" class="form-control col-md-7 col-xs-12" readonly>
                 </div>
               </div>
 
               <div class="form-group form-vertical" ng-if="obj_cotizacion.BANDERA == 0">
-                <label class="control-label col-md-12">Cliente asociado al Prospecto</label>
+                <label class="control-label col-md-12">Cliente </label>
                 <div class="col-md-12">
-                  <input type="text" ng-model="obj_servicio.NOMBRE_CLIENTE"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_CLIENTE"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>  
+
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Servicio</label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_SERVICIO"  required="required" class="form-control col-md-7 col-xs-12" readonly>
                 </div>
               </div>
 
-              <div class="form-group form-vertical" id="campoReferencia" ng-if="addServicio">
-                <label class="control-label col-md-12" for="claveReferencia">Referencia<span class="required">*</span>
-                </label>
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Tipo de servicio</label>
                 <div class="col-md-12">
-                  <select class="form-control" ng-model="obj_servicio.ID_SERVICIO_CLIENTE" ng-options="servicio.ID as servicio.REFERENCIA for servicio in arr_servicios">
-                    <option value="" selected disabled>-- elige una opción --</option>
-                  </select>
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_TIPO_SERVICIO"  required="required" class="form-control col-md-7 col-xs-12" readonly>
                 </div>
-              </div>           
+              </div>         
               
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Norma</label>
                 <div class="col-md-12">
-                  <input type="text" ng-model="obj_servicio.ID_NORMA"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_NORMA"  required="required" class="form-control col-md-7 col-xs-12" readonly>
                 </div>
               </div>
 
-              <div class="form-group form-vertical">
-                <label class="control-label col-md-12">Multisitios  <span class="required">*</span>
+              <div class="form-group form-vertical" id="etapa">
+                <label class="control-label col-md-12" for="etapa">Etapa<span class="required">*</span>
                 </label>
                 <div class="col-md-12">
-                  <select class="form-control" ng-model="obj_servicio.MULTISITIOS">
-                    <option value="" selected disabled>-elige una opción-</option>
-                    <option value="S">Si</option>
-                    <option value="N">No</option>
+                  <select class="form-control" 
+                  ng-model="servicio_insertar.ID_ETAPA"
+                  ng-change="cambioEtapa()" 
+                  ng-options="etapa.ID as etapa.NOMBRE for etapa in Etapas">
                   </select>
                 </div>
-              </div>
-
-              <div class="form-group form-vertical">
-                <label class="control-label col-md-12">Condiciones de seguridad  <span class="required">*</span>
-                </label>
-                <div class="col-md-12">
-                  <textarea class="form-control col-md-7 col-xs-12" ng-model="obj_servicio.CONDICIONES_SEGURIDAD" rows="5"  required="required"> 
-                  </textarea>   
-                </div>
-              </div>
-
-              <div class="form-group form-vertical">
-                <label class="control-label col-md-12" style="margin-top: 25px;">Alcance <span class="required">*</span></label>
-                <div class="col-md-12">
-                  <textarea class="form-control col-md-7 col-xs-12" ng-model="obj_servicio.ALCANCE" rows="5"  required="required">
-                  </textarea>
-                </div>
-              </div>
-
+              </div> 
             </form>
         </div>
         <div class="modal-footer">
@@ -934,6 +923,57 @@
   </div>
 </div>
   <!--****************************************************************************************-->
+</div>
+
+<!-- Modal insertar/actualizar-->
+<div class="modal fade" id="modalInsertarServicio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+data-backdrop="static" data-keyboard="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalInsertarServicioTitulo">{{titulo}}</h4>
+      </div>
+    <div class="modal-body"> 
+      <!--<form name="exampleForm">-->
+        <span>{{$scope.ts}}</span>
+        <div class='form-group'>
+          <label for="txtReferencia">Referencia<span class="required">*</span></label>
+          <input type="text" class="form-control" name="txtReferencia" id="txtReferencia" ng-model="formData.txtReferencia" required
+          ng-class="{ error: exampleForm.txtReferencia.$error.required && !exampleForm.$pristine}" ng-disabled="true">
+        </div>
+        <div class='form-group'>
+          <label for="txtCliente">Cliente<span class="required">*</span></label>
+          <input type="text" class="form-control" name="txtCliente" id="txtCliente" ng-model="formData.txtCliente" required
+          ng-disabled="true">
+        </div>
+        <div class='form-group'>
+          <label for="txtServicio">Servicio<span class="required">*</span></label>
+          <input type="text" class="form-control" name="txtServicio" id="txtServicio" ng-model="formData.txtServicio" required
+          ng-class="{ error: exampleForm.txtServicio.$error.required && !exampleForm.$pristine}" ng-disabled="true">
+        </div>
+        <div class='form-group'>
+          <label for="txtTipoServicio">Tipo de Servicio<span class="required">*</span></label>
+          <input type="text" class="form-control" name="txtTipoServicio" id="txtTipoServicio" ng-model="ts" required
+          ng-class="{ error: exampleForm.txtTipoServicio.$error.required && !exampleForm.$pristine}" ng-disabled="true">
+        </div>
+				<div class='form-group'>
+          <label for="txtNorma">Norma<span class="required">*</span></label>
+          <input type="text" class="form-control" name="txtNorma" id="txtNorma" ng-model="formData.txtNorma" required
+          ng-class="{ error: exampleForm.txtNorma.$error.required && !exampleForm.$pristine}" ng-disabled="true">
+        </div>
+				<div class="form-group">
+          <label for="etapa">Etapa<span class="required">*</span></label>
+          <select ng-model="formData.etapa" ng-options="etapa.ID_ETAPA as etapa.ETAPA for etapa in Etapas" 
+          class="form-control" id="etapa" name="etapa" ng-change='cambioEtapa()' required
+          ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}" ></select>
+        </div>	
+        <input type="submit" class="btn btn-success pull-right mt-2" ng-click="submitForm(formData)" ng-disabled="!exampleForm.$valid" value="Guardar"/>
+      <!--</form>-->
+    </div>                                  
+    <div class="modal-footer">                        
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript">

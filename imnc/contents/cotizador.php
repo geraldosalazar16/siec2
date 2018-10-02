@@ -134,7 +134,7 @@
                   <div style="float: left;"><span style="font-size: 11px;">Iniciales del Servicio</span></div>
                 </div>
               </div>
-
+              <!--
               <div class="form-group form-vertical" 
                 ng-if='cotizacion_insertar_editar.ESTADO_SEG.DESCRIPCION == "Cotizado" || cotizacion_insertar_editar.ESTADO_SEG.DESCRIPCION == "Firmado"'>
                 <label class="control-label col-md-12">Referencia</label>
@@ -143,7 +143,7 @@
                   ng-change="cotizacion_insertar_editar.REFERENCIA = cotizacion_insertar_editar.REFERENCIA.toUpperCase()">
                 </div>
               </div>
-
+              -->
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Servicio <span class="required">*</span></label>
                 <div class="col-md-12">
