@@ -103,30 +103,7 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '  </ul>';
             echo '</li>';
           }
-                
-          if ($modulo_permisos["SERVICIOS"]["ver"] == 1) {
-            echo '<li><a><i class="fa fa-gear"></i> Programación </a>';
-            echo '   <ul class="nav child_menu" style="display: none">';
-            echo '      <li><a href="./?pagina=agenda_servicios">Agenda</a></li>';
-            echo '      <li><a href="./?pagina=servicio_cliente_etapa">Clientes</a></li>';
-            echo '      <li><a href="./?pagina=sg_tipos_auditoria">Tipos de ' . strtolower($str_auditoria) . '</a></li>';
-            echo '      <li><a href="./?pagina=sg_status_auditoria">Status de ' .  strtolower($str_auditoria) . '</a></li>';
-            echo '  </ul>';
-            echo '</li>';
-          }
-				
-          if ($modulo_permisos["EXPEDIENTES"]["ver"] == 1) {
-            echo '<li><a><i class="fa fa-folder-open"></i> Expediente </a>';
-            echo '         <ul class="nav child_menu" style="display: none">';
-            echo '            <li><a href="./?pagina=tipo_expediente">Tipo de Expediente</a></li>';
-            echo '            <li><a href="./?pagina=tipo_documento">Tipo de Documento</a></li>';
-            echo '            <li><a href="./?pagina=reporte_tareas_documentos">Reporte Tareas de Documentos</a></li>';
-            echo '            <li><a href="./?pagina=reporte_documentos">Reporte Documentos</a></li>';
-            //echo '  <li><a href="./?pagina=tabla_entidades">Tabla Entidades</a></li>';
-            echo '        </ul>';
-            echo '</li>';
-          }
-        
+
           if ($modulo_permisos["CRM"]["ver"] == 1) {
             echo '<li><a><i class="fa fa-industry"></i> Prospecto </a>';
             echo '  <ul class="nav child_menu" style="display: none">';
@@ -143,6 +120,29 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '  <a href="./?pagina=cotizador">';
             echo '    <i class="fa fa-usd" aria-hidden="true"></i> Cotizador ';
             echo '  </a>';
+            echo '</li>';
+          }
+          
+          if ($modulo_permisos["SERVICIOS"]["ver"] == 1) {
+            echo '<li><a><i class="fa fa-gear"></i> Programación </a>';
+            echo '   <ul class="nav child_menu" style="display: none">';
+            echo '      <li><a href="./?pagina=agenda_servicios">Agenda</a></li>';
+            echo '      <li><a href="./?pagina=servicio_cliente_etapa">Clientes</a></li>';
+            echo '      <li><a href="./?pagina=sg_tipos_auditoria">Tipos de ' . strtolower($str_auditoria) . '</a></li>';
+            echo '      <li><a href="./?pagina=sg_status_auditoria">Status de ' .  strtolower($str_auditoria) . '</a></li>';
+            echo '  </ul>';
+            echo '</li>';
+          }
+          
+          if ($modulo_permisos["EXPEDIENTES"]["ver"] == 1) {
+            echo '<li><a><i class="fa fa-folder-open"></i> Expediente </a>';
+            echo '         <ul class="nav child_menu" style="display: none">';
+            echo '            <li><a href="./?pagina=tipo_expediente">Tipo de Expediente</a></li>';
+            echo '            <li><a href="./?pagina=tipo_documento">Tipo de Documento</a></li>';
+            echo '            <li><a href="./?pagina=reporte_tareas_documentos">Reporte Tareas de Documentos</a></li>';
+            echo '            <li><a href="./?pagina=reporte_documentos">Reporte Documentos</a></li>';
+            //echo '  <li><a href="./?pagina=tabla_entidades">Tabla Entidades</a></li>';
+            echo '        </ul>';
             echo '</li>';
           }
 
