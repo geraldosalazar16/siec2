@@ -70,6 +70,10 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope
 	$scope.mostrar_viaticos_semestral = false;
 	$scope.mostrar_semestrales = true;
 
+	//Manejo de sectores del prospecto
+	$scope.PrincipalSectores	=	{0:{ID:"S",NOMBRE:"Si"},1:{ID:"N",NOMBRE:"No"}};
+	$scope.formDataSector = {};
+
 	$scope.changeInAutoComplete = function(){
 		$( "#autocompletePais" ).change(function() {
 			$scope.pais = $( "#autocompletePais" ).val();
@@ -609,14 +613,9 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope
 	}
 	$scope.guardarProductoProspecto = function(){
 		var area = $scope.areas;
-		if(!area)
-			area = 0;
 		var departamento = $scope.departamentos;
-		if(!departamento)
-			departamento = 0;
 		var producto = $scope.productos;
-		if(!producto)
-			producto = 0;
+		var alcance = $scope.alcance_producto;
 		
 		var boton = $("#btnGuardarProductoProspecto");
 		var accion = boton.attr("accion");
@@ -627,7 +626,8 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope
 				id_prospecto: $scope.id_prospecto,
 				area: area,
 				departamento: departamento,
-				producto: producto
+				producto: producto,
+				alcance: alcance
 			};
 			$.post(global_apiserver + "/prospecto_producto/insert/", JSON.stringify(info), function(respuesta){
 				respuesta = JSON.parse(respuesta);
@@ -643,13 +643,12 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope
 		}
 		else if (accion == "editar")
 		{
-			var id_producto = boton.attr('id_producto');
 			var info = {
-				id: id_producto,
 				id_prospecto: $scope.id_prospecto,
 				area: area,
 				departamento: departamento,
-				producto: producto
+				producto: producto,
+				alcance: alcance
 			};
 			$.post(global_apiserver + "/prospecto_producto/update/", JSON.stringify(info), function(respuesta){
 				respuesta = JSON.parse(respuesta);
@@ -702,103 +701,41 @@ $scope.eliminar = function(id){
     });
 }	
 ////////////////////////////////////////////////////////////////////////////////
-	$scope.editarProducto = function(id){
-		//recibe la url del php que se ejecutará
-		
-		$http.get(  global_apiserver + "/prospecto_producto/getById/?id="+id)
-	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta				
-				var id_area = response.data["ID_AREA"];	
-				var id_departamento = response.data["ID_DEPARTAMENTO"];	
-				var id_producto = response.data["ID_PRODUCTO"];	
-				
-				//Primero cargo todas las areas
-				$scope.AreasLista();
-				//Luego verificio que tenga area asignada
-				if(id_area == 0){//Sin asignar
-					//Valor de área sin asignar
-					id_area = '';
-					$scope.areas = id_area;
-					//Si no está asignada el area muestro todos los departamentos
-					$scope.DepartamentosLista();
-					//Ahora verifico si tiene departamento asignado
-					if(id_departamento == 0){//Sin asignar
-						id_departamento = 'elige';
-						$scope.departamentos = id_departamento;
-						//Cargo todos los productos ya que no hay departamentos asignados
-						$scope.ProductosLista();
-						//Ahora verifico si tiene producto asignado
-						if(id_producto == 0){//Sin asignar
-							id_producto = 'elige';
-							$scope.productos = id_producto;	
-						}
-						else{
-							//Si tiene asignado muestro el valor y la descripcion
-							$scope.productos = id_producto;			
-							$scope.productos_cambio();
-						}
-					}
-					else{
-						//Si el departamento esta asignado lo selecciono 
-						//y limito los productos
-						$scope.departamentos = id_departamento;
-						$scope.departamentos_cambio();
-						//Ahora verifico si tiene producto asignado
-						if(id_producto == 0){//Sin asignar
-							id_producto = 'elige';
-							$scope.productos = id_producto;	
-						}
-						else{
-							//Si tiene asignado muestro el valor y la descripcion
-							$scope.productos = id_producto;			
-							$scope.productos_cambio();
-						}
-					}
-				}
-				else{
-					//Si esta actualizado muestro el área seleccionada
-					$scope.areas = id_area;
-					//Llamo a la funcion de cambios para que asigne los departamentos
-					$scope.areas_cambio();
-					//Ahora verifico si tiene departamento asignado
-					if(id_departamento == 0){//Sin asignar
-						id_departamento = 'elige';
-						$scope.departamentos = id_departamento;
-						//Cargo todos los productos ya que no hay departamentos asignados
-						$scope.ProductosLista();
-						//Ahora verifico si tiene producto asignado
-						if(id_producto == 0){//Sin asignar
-							id_producto = 'elige';
-							$scope.productos = id_producto;	
-						}
-						else{
-							//Si tiene asignado muestro el valor y la descripcion
-							$scope.productos = id_producto;			
-							$scope.productos_cambio();
-						}
-					}
-					else{
-						//Si el departamento esta asignado lo selecciono 
-						//y limito los productos
-						$scope.departamentos = id_departamento;
-						$scope.departamentos_cambio();
-						//Ahora verifico si tiene producto asignado
-						if(id_producto == 0){//Sin asignar
-							id_producto = 'elige';
-							$scope.productos = id_producto;	
-						}
-						else{
-							//Si tiene asignado muestro el valor y la descripcion
-							$scope.productos = id_producto;			
-							$scope.productos_cambio();
-						}
-					}
-				}
-			},
-			function (response){});
-		$("#modalTituloProductoProspecto").html('MODIFICAR PRODUCTO');
-		$("#btnGuardarProductoProspecto").attr("accion","editar");
-		$("#btnGuardarProductoProspecto").attr("id_producto",id);
-		$("#modalInsertarActualizarProductoProspecto").modal('show');
+	$scope.editarProducto = function(producto){
+		var datos = {
+			id_prospecto: producto.id_prospecto,
+			id_servicio: producto.id_servicio,
+			id_tipo_servicio: producto.id_tipo_servicio,
+			id_norma: producto.id_norma
+		}
+		$http.post(global_apiserver + "/prospecto_producto/getById/",datos).
+		then(function(response){
+			var id_servicio = response.data[0]["ID_SERVICIO"];	
+			var id_tipo_servicio = response.data[0]["ID_TIPO_SERVICIO"];	
+			var id_norma = response.data[0]["ID_NORMA"];
+			var alcance = response.data[0]["ALCANCE"];
+			
+			$scope.alcance_producto = alcance;
+			if($scope.areas){
+				$scope.areas = id_servicio;
+			} else {
+				$scope.AreasLista(id_servicio);
+			}
+			if($scope.departamentos){
+				$scope.departamentos = id_tipo_servicio;
+			} else {
+				$scope.DepartamentosLista(id_tipo_servicio);
+			}
+			if($scope.productos){
+				$scope.productos = id_norma;
+			} else {
+				$scope.ProductosLista(id_norma);
+			}
+
+			$("#modalTituloProductoProspecto").html('MODIFICAR PRODUCTO');
+			$("#btnGuardarProductoProspecto").attr("accion","editar");
+			$("#modalInsertarActualizarProductoProspecto").modal('show');
+		});
 	}
 	$scope.ActualizarAreas = function(){
 		//recibe la url del php que se ejecutará
@@ -806,108 +743,17 @@ $scope.eliminar = function(id){
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
 	  			$scope.ProductosProspecto = response.data.map(function(item){
 	  				return{
-	  					id : item.ID_PROSPECTO_PRODUCTO,
-	  					nombre : item.NOMBRE_PRODUCTO,
-						departamento: item.NOMBRE_DEPARTAMENTO,
-						area: item.NOMBRE_AREA
+						  id_prospecto : item.ID_PROSPECTO,
+						  id_servicio: item.ID_SERVICIO,
+						  nombre_servicio: item.NOMBRE_SERVICIO,
+						  id_tipo_servicio: item.ID_TIPO_SERVICIO,
+						  nombre_tipo_servicio: item.NOMBRE_TIPO_SERVICIO,
+						  id_norma: item.ID_NORMA,
+						  nombre_norma: item.NOMBRE_NORMA
 	  				}
 	  			});
-	  			
 			},
 			function (response){});
-		//recibe la url del php que se ejecutará
-		/*
-		$http.get(  global_apiserver + "/prospecto_producto/getByIdProspecto/?id="+$scope.id_prospecto)
-	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta				
-				var id_area = response.data["ID_AREA"];	
-				var id_departamento = response.data["ID_DEPARTAMENTO"];	
-				var id_producto = response.data["ID_PRODUCTO"];	
-				
-				//Primero cargo todas las areas
-				$scope.AreasLista();
-				//Luego verificio que tenga area asignada
-				if(id_area == 0){//Sin asignar
-					//Valor de área sin asignar
-					id_area = '';
-					$scope.areas = id_area;
-					//Si no está asignada el area muestro todos los departamentos
-					$scope.DepartamentosLista();
-					//Ahora verifico si tiene departamento asignado
-					if(id_departamento == 0){//Sin asignar
-						id_departamento = 'elige';
-						$scope.departamentos = id_departamento;
-						//Cargo todos los productos ya que no hay departamentos asignados
-						$scope.ProductosLista();
-						//Ahora verifico si tiene producto asignado
-						if(id_producto == 0){//Sin asignar
-							id_producto = 'elige';
-							$scope.productos = id_producto;	
-						}
-						else{
-							//Si tiene asignado muestro el valor y la descripcion
-							$scope.productos = id_producto;			
-							$scope.productos_cambio();
-						}
-					}
-					else{
-						//Si el departamento esta asignado lo selecciono 
-						//y limito los productos
-						$scope.departamentos = id_departamento;
-						$scope.departamentos_cambio();
-						//Ahora verifico si tiene producto asignado
-						if(id_producto == 0){//Sin asignar
-							id_producto = 'elige';
-							$scope.productos = id_producto;	
-						}
-						else{
-							//Si tiene asignado muestro el valor y la descripcion
-							$scope.productos = id_producto;			
-							$scope.productos_cambio();
-						}
-					}
-				}
-				else{
-					//Si esta actualizado muestro el área seleccionada
-					$scope.areas = id_area;
-					//Llamo a la funcion de cambios para que asigne los departamentos
-					$scope.areas_cambio();
-					//Ahora verifico si tiene departamento asignado
-					if(id_departamento == 0){//Sin asignar
-						id_departamento = 'elige';
-						$scope.departamentos = id_departamento;
-						//Cargo todos los productos ya que no hay departamentos asignados
-						$scope.ProductosLista();
-						//Ahora verifico si tiene producto asignado
-						if(id_producto == 0){//Sin asignar
-							id_producto = 'elige';
-							$scope.productos = id_producto;	
-						}
-						else{
-							//Si tiene asignado muestro el valor y la descripcion
-							$scope.productos = id_producto;			
-							$scope.productos_cambio();
-						}
-					}
-					else{
-						//Si el departamento esta asignado lo selecciono 
-						//y limito los productos
-						$scope.departamentos = id_departamento;
-						$scope.departamentos_cambio();
-						//Ahora verifico si tiene producto asignado
-						if(id_producto == 0){//Sin asignar
-							id_producto = 'elige';
-							$scope.productos = id_producto;	
-						}
-						else{
-							//Si tiene asignado muestro el valor y la descripcion
-							$scope.productos = id_producto;			
-							$scope.productos_cambio();
-						}
-					}
-				}
-			},
-			function (response){});
-			*/
 	}
 	$scope.OrigenLista = function(){
 		//recibe la url del php que se ejecutará
@@ -923,9 +769,9 @@ $scope.eliminar = function(id){
 			},
 			function (response){});
 	}
-	$scope.AreasLista = function(){
+	$scope.AreasLista = function(seleccion){
 		//recibe la url del php que se ejecutará
-		$http.get(  global_apiserver + "/areas/getAll/")
+		$http.get(  global_apiserver + "/servicios/getAll/")
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
 	  			$scope.Areas = response.data.map(function(item){
 	  				return{
@@ -933,12 +779,9 @@ $scope.eliminar = function(id){
 	  					nombre : item.NOMBRE
 	  				}
 	  			});
-				/*
-	  		$scope.Areas.push({
-					id: 'elige',
-					nombre: 'Seleccione un área'
-				});
-			*/				
+				if(seleccion){
+					$scope.areas = seleccion;
+				}		
 			},
 			function (response){});
 	}
@@ -946,10 +789,8 @@ $scope.eliminar = function(id){
 		//Si se cambia el área que solo aparezcan los departamentos de esa área
 		var id_area = $scope.areas;
 		if(id_area){
-			//Selecciona los productos de esta area
-			productos_por_area(id_area);
 			//recibe la url del php que se ejecutará
-			$http.get(  global_apiserver + "/departamentos/getByIdArea/?id_area="+id_area)
+			$http.get(  global_apiserver + "/tipos_servicio/getByService/?id="+id_area)
 				.then(function( response ) {//se ejecuta cuando la petición fue correcta
 					$scope.Departamentos = response.data.map(function(item){
 						return{
@@ -962,23 +803,10 @@ $scope.eliminar = function(id){
 				function (response){});
 		}
 	}
-	function productos_por_area(id_area){
+	
+	$scope.DepartamentosLista = function(seleccionado){
 		//recibe la url del php que se ejecutará
-		$http.get(  global_apiserver + "/productos/getByIdArea/?id_area="+id_area)
-	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
-	  			$scope.Productos = response.data.map(function(item){
-	  				return{
-	  					id : item.ID,
-	  					nombre : item.NOMBRE
-	  				}
-	  			});
-	  			
-			},
-			function (response){});
-	}
-	$scope.DepartamentosLista = function(){
-		//recibe la url del php que se ejecutará
-		$http.get(  global_apiserver + "/departamentos/getAll/")
+		$http.get(  global_apiserver + "/tipos_servicio/getAll/")
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
 	  			$scope.Departamentos = response.data.map(function(item){
 	  				return{
@@ -986,7 +814,9 @@ $scope.eliminar = function(id){
 	  					nombre : item.NOMBRE
 	  				}
 	  			});
-	  			
+	  			if(seleccionado){
+					$scope.departamentos = seleccionado;  
+				}
 			},
 			function (response){});
 	}
@@ -995,7 +825,7 @@ $scope.eliminar = function(id){
 		var id_departamento = $scope.departamentos;
 		if(id_departamento){
 			//recibe la url del php que se ejecutará
-			$http.get(  global_apiserver + "/productos/getByIdDepartamento/?id_departamento="+id_departamento)
+			$http.get(  global_apiserver + "/normas/getByIdTipoServicio/?id="+id_departamento)
 				.then(function( response ) {//se ejecuta cuando la petición fue correcta
 					$scope.Productos = response.data.map(function(item){
 						return{
@@ -1003,14 +833,16 @@ $scope.eliminar = function(id){
 							nombre : item.NOMBRE
 						}
 					});
-					
+					if($scope.Productos.length == 1){
+						$scope.productos = $scope.Productos[0].id;
+					}
 				},
 				function (response){});
 		}
 	}
-	$scope.ProductosLista = function(){
+	$scope.ProductosLista = function(seleccionado){
 		//recibe la url del php que se ejecutará
-		$http.get(  global_apiserver + "/productos/getAll/")
+		$http.get(  global_apiserver + "/normas/getAll/")
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
 	  			$scope.Productos = response.data.map(function(item){
 	  				return{
@@ -1018,21 +850,14 @@ $scope.eliminar = function(id){
 	  					nombre : item.NOMBRE
 	  				}
 	  			});
-	  			
+	  			if(seleccionado){
+					$scope.productos = seleccionado;  
+				}
 			},
 			function (response){});
 	}
 	$scope.productos_cambio = function(){
-		//Si se cambia el producto se muestra su descripcion
-		var id_producto = $scope.productos;
-		if(id_producto){
-			//recibe la url del php que se ejecutará
-			$http.get(  global_apiserver + "/productos/getById/?id="+id_producto)
-	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
-					$scope.desc_producto = response.data["DESCRIPCION"];  			
-			},
-			function (response){});
-		}
+		//Ya no es necesaria eta función
 	}
 	/*
 		Función para limpiar la información del módelo y que no se quede guardada
@@ -1657,6 +1482,152 @@ function fill_cmb_domicilio(seleccionado){
 		notify("Érror", "Debe elegir un contacto y un domicilio", "error");
  });
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+// ==============================================================================
+// ***** 	Funciones para trabajar con los sectores de SGC 				*****
+// ==============================================================================	
+// =======================================================================
+// ***** 			FUNCION PARA EL BOTON AGREGAR SECTOR			 *****
+// =======================================================================
+$scope.agregar_editar_sector	=	function(accion_sector,id_prospecto,id_sector)	{
+	
+	clear_modal_sector();
+	cargarSectoresTipoServicio($scope.DatosServicio.ID_TIPO_SERVICIO);
+	$scope.accion_sector	=	accion_sector;
+	if($scope.accion_sector == 'insertar'){
+		$scope.modal_titulo_sector = "INSERTAR SECTOR DE PROSPECTO";
+	}
+	if($scope.accion_sector == 'editar'){
+		$scope.modal_titulo_sector = "EDITAR SECTOR DE PROSPECTO";
+		llenar_modal_sector(id_prospecto,id_sector);
+	}
+	$("#modalInsertarActualizarTServSector").modal("show");
+}
+$scope.eliminar_sector = function(id_servicio_cliente_etapa,id_sector){
+	$.confirm({
+        title: 'Eliminar registro',
+        content: 'Estas a punto de eliminar un sector, la operación es irreversible, estas seguro?',
+        buttons: {
+            cancel: {
+                text: 'Cancelar'
+            },
+            irAuditoria: {
+                text: 'Eliminar',
+                btnClass: 'btn-blue',
+                keys: ['enter', 'shift'],
+                action: function(){
+					var datos = {
+						id_servicio_cliente_etapa: id_servicio_cliente_etapa,
+						id_sector: id_sector
+					}
+                    $http.post(global_apiserver + "/i_sg_sectores/delete/",datos).
+					then(function(response){
+						if(response.data.resultado == 'ok'){
+							notify('&Eacutexito','El sector ha sido eliminado','success');	
+							cargarSectoresServicio($scope.id_servicio_cliente_etapa);					
+						}
+						else{
+							notify('Error','No se pudo eliminar el registro','error');
+						}
+						
+					});
+                }
+            }
+        }
+    });
+}
+// ===========================================================================
+// ***** 		Funcion para limpiar las variables del modal sector		 *****
+// ===========================================================================
+function clear_modal_sector(){
+	
+	$scope.formDataSector.Id_Sector	=	"";
+	$scope.formDataSector.Principal	=	"S";
+	
+}
+// ===========================================================================
+// ***** 		Funcion para llenar las variables del modal sector		 *****
+// ===========================================================================
+function llenar_modal_sector(id_servicio_cliente_etapa,id_sector){
+	
+	var datos_servicio	=	$scope.SectoresServicio.find(function(element,index,array){
+				return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.ID_SECTOR  == id_sector )
+			});
+	$scope.formDataSector.Id_Sector	=	datos_servicio.ID_SECTOR;
+	$scope.formDataSector.Principal	=	datos_servicio.PRINCIPAL;
+	
+}
+// ===========================================================================
+// ***** 		FUNCION PARA EL BOTON GUARDAR DEL MODAL	SECTOR			 *****
+// ===========================================================================
+	$scope.submitFormSector = function (formDataSector) {
+						
+			
+		if($scope.accion_sector == 'insertar'){
+			var datos	=	{
+				ID_SECTOR	:	$scope.formDataSector.Id_Sector,
+				ID_SERVICIO_CLIENTE_ETAPA	:	$scope.id_servicio_cliente_etapa,
+				PRINCIPAL	:	$scope.formDataSector.Principal,
+				ID_USUARIO:	sessionStorage.getItem("id_usuario")
+			};
+			$http.post(global_apiserver + "/i_sg_sectores/insert/",datos).
+            then(function(response){
+                if(response){
+					notify('&Eacutexito','Se han actualizado los datos','success');
+                   cargarSectoresServicio($scope.id_servicio_cliente_etapa);
+				   
+                }
+                else{
+                    notify('Error','No se pudo guardar los cambios','error');
+                }
+                
+            });
+		 }
+		if($scope.accion_sector == 'editar'){	
+			var datos	=	{
+				
+				ID_SECTOR	:	$scope.formDataSector.Id_Sector,
+				ID_SERVICIO_CLIENTE_ETAPA	:	$scope.id_servicio_cliente_etapa,
+				PRINCIPAL	:	$scope.formDataSector.Principal,
+				ID_USUARIO:	sessionStorage.getItem("id_usuario")
+			};
+			$http.post(global_apiserver + "/i_sg_sectores/update/",datos).
+            then(function(response){
+                if(response){
+					notify('&Eacutexito','Se han actualizado los datos','success');
+                   cargarSectoresServicio($scope.id_servicio_cliente_etapa);
+				   
+                }
+                else{
+                    notify('Error','No se pudo guardar los cambios','error');
+                }
+                
+            });
+		}
+		$("#modalInsertarActualizarTServSector").modal("hide");
+		
+	};
+// =======================================================================================
+// ***** 			FUNCION PARA CARGAR DATOS DE SECTORES DEL SERVICIO				 *****
+// =======================================================================================	
+	function cargarSectoresServicio(id_servicio){
+		$http.get(  global_apiserver + "/i_sg_sectores/getByIdServicio/?id="+id_servicio)
+		.then(function( response ){
+			$scope.SectoresServicio = response.data;
+			
+		});
+		
+	}
+// =======================================================================================
+// ***** 			FUNCION PARA CARGAR DATOS DE SECTORES DEL TIPO SERVICIO			 *****
+// =======================================================================================	
+	function cargarSectoresTipoServicio(id_tipo_servicio){
+		$http.get(  global_apiserver + "/sectores/getByIdTipoServicio/?id_tipo_servicio="+id_tipo_servicio)
+		.then(function( response ){
+			$scope.SectoresTipoServicio = response.data;
+			
+		});
+		
+	}	
 
 	
 	function onCalendar()

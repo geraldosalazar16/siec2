@@ -24,12 +24,20 @@ function valida_error_medoo_and_die(){
 	}
 }
 
-$id_tipo_servicio = $_REQUEST["id_tipo_servicio"];
+$id_tipo_servicio = $_REQUEST["id"];
 
-$sectores = $database->select("SECTORES", "*", ["ID_TIPO_SERVICIO"=>$id_tipo_servicio]);
+$normas = $database->query("SELECT 
+NORMAS.ID AS ID,
+NORMAS.NOMBRE AS NOMBRE
+FROM 
+NORMAS_TIPOSERVICIO 
+INNER JOIN NORMAS 
+ON NORMAS.ID = NORMAS_TIPOSERVICIO.ID_NORMA
+WHERE
+NORMAS_TIPOSERVICIO.ID_TIPO_SERVICIO = ".$id_tipo_servicio)->fetchAll(PDO::FETCH_ASSOC);
 valida_error_medoo_and_die();
 
-print_r(json_encode($sectores));
+print_r(json_encode($normas));
 
 
 //-------- FIN --------------

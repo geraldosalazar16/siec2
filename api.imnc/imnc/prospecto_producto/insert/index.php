@@ -1,39 +1,63 @@
 <?php  
-	include  '../../ex_common/query.php';
-	function valida_parametro_and_die1($parametro, $mensaje_error){ 
-	$parametro = "" . $parametro; 
-	if ($parametro == "" or is_null($parametro) or $parametro == "ninguno" or $parametro == 0 or $parametro == "elige") { 
-		$respuesta["resultado"] = "error"; 
-		$respuesta["mensaje"] = $mensaje_error; 
-		print_r(json_encode($respuesta)); 
-		die(); 
-	} 
+include  '../../common/conn-apiserver.php'; 
+include  '../../common/conn-medoo.php'; 
+include  '../../common/conn-sendgrid.php'; 
+
+function valida_parametro_and_die($parametro, $mensaje_error){
+	$parametro = "".$parametro;
+	if ($parametro == "") {
+		$respuesta['resultado'] = 'error';
+		$respuesta['mensaje'] = $mensaje_error;
+		print_r(json_encode($respuesta));
+		die();
+	}
+}
+
+function valida_error_medoo_and_die(){
+	global $database, $mailerror;
+	if ($database->error()[2]) { //Aqui está el error
+		$respuesta['resultado']="error";
+		$error = $database->error();
+		if($error[0] == '23000' && $error[1] == 1062){
+			$respuesta['mensaje']="El registro que intenta ingresar ya existe";
+		} else {
+			$respuesta['mensaje']="Error al ejecutar script: " . $database->error()[2];
+		}
+		print_r(json_encode($respuesta));
+		die();
+	}
 }	
 	
-	$nombre_tabla = "PROSPECTO_PRODUCTO";
-	$correo = "lqc347@gmail.com";
 	
 	$respuesta=array(); 
 	$json = file_get_contents("php://input"); 
 	$objeto = json_decode($json);
 	
-	$ultimo_id = $database->max($nombre_tabla,"ID");
-	$ID = $ultimo_id + 1;
 	$ID_PROSPECTO = $objeto->id_prospecto;
-	$ID_AREA=$objeto->area;
-	$ID_DEPARTAMENTO = $objeto->departamento; 
-	$ID_PRODUCTO= $objeto->producto;
-    	valida_parametro_and_die1($ID_PRODUCTO,"Es necesario seleccionar un producto");
-    	
-	$id = $database->insert($nombre_tabla, [ 
-	    "ID" => $ID,
+	valida_parametro_and_die($ID_PROSPECTO,"Es necesario seleccionar un prospecto");
+	$ID_SERVICIO=$objeto->area;
+	valida_parametro_and_die($ID_SERVICIO,"Es necesario seleccionar un servicio");
+	$ID_TIPO_SERVICIO = $objeto->departamento; 
+	valida_parametro_and_die($ID_TIPO_SERVICIO,"Es necesario seleccionar un tipo de servicio");
+	$ID_NORMA= $objeto->producto;
+	valida_parametro_and_die($ID_NORMA,"Es necesario seleccionar una norma");
+	$ALCANCE= $objeto->alcance;
+	if(!$ALCANCE){
+		$ALCANCE = "";
+	}
+    /*	
+	$id = $database->insert("PROSPECTO_PRODUCTO", [ 
 	    "ID_PROSPECTO" => $ID_PROSPECTO,
-		"ID_AREA" => $ID_AREA, 
-		"ID_DEPARTAMENTO" => $ID_DEPARTAMENTO,
-		"ID_PRODUCTO" => $ID_PRODUCTO
+		"ID_SERVICIO" => $ID_SERVICIO, 
+		"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
+		"ID_NORMA" => $ID_NORMA,
+		"ALCANCE" => $ALCANCE
 	]); 
-	
-	valida_error_medoo_and_die($nombre_tabla,$correo); 
+	*/	
+	$QUERY = "INSERT INTO PROSPECTO_PRODUCTO VALUES (".$ID_PROSPECTO.",".$ID_SERVICIO.",".$ID_TIPO_SERVICIO.",'".$ID_NORMA."','".$ALCANCE."')";
+	$id = $database->query($QUERY);
+	valida_error_medoo_and_die(); 
+
 	$respuesta["resultado"]="ok"; 
 	print_r(json_encode($respuesta)); 
 ?> 
