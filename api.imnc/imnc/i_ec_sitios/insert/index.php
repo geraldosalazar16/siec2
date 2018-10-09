@@ -40,7 +40,7 @@ $id_servicio_cliente_etapa = $objeto->ID;
 valida_parametro_and_die($id_servicio_cliente_etapa, "Falta ID de servicio cliente etapa");
 
 $DOMICILIO	=	$objeto->DOMICILIO; 
-valida_parametro_and_die($DOMICILIO, "Falta ID de servicio cliente etapa");
+valida_parametro_and_die($DOMICILIO, "Falta el ID del domicilio");
 
 $ID_USUARIO = $objeto->ID_USUARIO; 
 valida_parametro_and_die($ID_USUARIO, "Falta el ID_USUARIO");

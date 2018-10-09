@@ -58,7 +58,7 @@
                           			Sitios</a>
 								</li>
 								
-								<li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 1">
+								<li role="presentation" class="" > <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
 								<a href="#tab_auditorias" id="tab_auditorias-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
                           			Auditor&iacuteas </a>
 								</li>
@@ -164,10 +164,10 @@
 											<td> {{x.ACRONIMO}}<br>{{x.NOMBRE_DOMICILIO}}</td>
 											<td ng-init="CargarDatosSitiosEC(x.ID_CLIENTE_DOMICILIO)">
 												<ul class="list-unstyled user_data">
-													<li ng-repeat="y in DatosSitiosEC">
+													<li ng-repeat="y in DatosSitiosEC[x.ID_CLIENTE_DOMICILIO]">
 														{{y.NOMBRE_META_SITIOS}}:
 														<i ng-show="y.TIPO_META_SITIOS!=2"> {{y.VALOR}}</i>
-														<i ng-show="y.TIPO_META_SITIOS==2" ng-init="mostrarvalorselectsitios(y.VALOR,$index)"> {{resp1[$index]}}</i>
+														<i ng-show="y.TIPO_META_SITIOS==2" ng-init="mostrarvalorselectsitios(y.VALOR)"> {{resp1[y.VALOR]}}</i>
 													</li>
 												</ul>
 											</td>
@@ -216,7 +216,7 @@
 									</tbody>
 								</table>
 								</div>
-								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab" ng-if="DatosServicio.ID_SERVICIO == 1">
+								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" --> 
 									<div class="x_title">
 										<p><h2>Auditor&iacuteas </h2></p>
 											<p ng-if='modulo_permisos["registrar"] == 1'>
@@ -428,7 +428,190 @@
 													</tbody>
 												</table>
 											</td>
+										</tr>
+										<tr ng-repeat-start="xx in DatosAuditoriasEC" ng-if="DatosServicio.ID_SERVICIO == 2" class="ng-scope  even pointer"  >
+											<td>	
+												<table>
+													<tr>
+														<td>
+															<datepicker date-format="yyyy-MM-dd" date-min-limit="{{FechaHoy}}" date-typer="true" button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' >
+																<input type="text"  ng-model="txtInsertarFechas[xx.TIPO_AUDITORIA]" placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" />
+															</datepicker>
+															
+														</td>
+														<td>
+															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,'insertar',xx.CICLO)" >Agregar Fechas</button>
+														</td>
+														<td>
+														</td>
+													</tr>
+													<tr ng-repeat = "z in xx.AUDITORIA_FECHAS">
+														<td>												
+															<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-min-limit="{{FechaHoy}}"  >
+																<input type="text"  ng-model="txtFechasAuditoria[z.ID]"  data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria-{{z.ID}}" />
+															</datepicker>
+														</td>
+														<td>
+															<button class="btn btn-primary btn-xs btn-imnc" ng-click="
+															agregar_editar_fechasAuditoria(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,'editar',xx.CICLO,z.ID)" >Guardar fecha</button>
+														</td>
+														<td>
+															<button class="btn btn-primary btn-xs btn-imnc" ng-if='modulo_permisos["editar"] == 1' ng-click="eliminar_fechasAuditoria(z.ID)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+														</td>		
+													</tr>	
+												</table>			
+											</td>
+											<td>
+												<ul class="list-unstyled user_data">
+													<li>
+														{{xx.DURACION_DIAS}}		
+													</li>
+												
+												</ul>
+												
+											</td>
+											<td>Tipo: {{xx.TIPO}} <br> Ciclo: {{xx.CICLO}}<br>Status: {{xx.STATUS}}</td>
+											<td>
+													<button class="btn btn-success btn-xs btnSitiosAuditoria" ng-click="btnSitiosAuditoriaEC(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,xx.CICLO)" >{{xx.SITIOS_ASOCIADOS}} sitios</button>
+												<!--	<ul class="list-unstyled user_data">
+														<li ng-repeat="n in x.RESTRICCIONES_SITIOS">
+															{{n}}		
+														</li>
+														
+													</ul>
+													-->
+											</td>
+											<td> 
+													<button class="btn btn-success btn-xs btnGrupoAuditoria"  ng-click="btnGrupoAuditoriaEC(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,xx.CICLO)" >{{xx.AUDITORES_ASOCIADOS}} auditores</button>
+												<!--	<ul class="list-unstyled user_data">
+														<li ng-repeat="m in x.RESTRICCIONES_GRUPOS">
+															{{m}}		
+														</li>
+														
+													</ul>	-->
+											</td>
+											<td>
+												<p ng-if='modulo_permisos["registrar"] == 1'>
+													<button type="button"  ng-click="agregar_editar_auditorias('editar',xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,xx.CICLO)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+														<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar auditor&iacuteas 
+													</button>
+												</p>
+											</td>
+											<td>
+												<p ng-if='modulo_permisos["registrar"] == 1'>
+													<button type="button"  ng-click="agregar_editar_auditorias('editar',xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+														<i class="fa fa-download" aria-hidden="true"></i> Notificaci&oacuten 
+													</button>
+												</p>
+											</td>
+										</tr>
+										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->
+										<tr  ng-if="DatosServicio.ID_SERVICIO == 2" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-sitios-auditoria_ec">
+											<td colspan="13">
+												<table class="table subtable">
+													<caption>Sitios de auditor&iacutea
+														<p ng-if='modulo_permisos["registrar"] == 1'>
+															<button type="button" class="btn btn-success btn-xs btnInsertaSitiosAuditoria" ng-click="btnInsertaSitiosAuditoriaEC(id_servicio_cliente_etapa,xx.TIPO_AUDITORIA,xx.ID_CLIENTE_DOMICILIO,xx.CICLO)" style="float: right;"> 
+																<i class="fa fa-plus" aria-hidden="true"></i>  Agregar sitio de auditor&iacuteas
+															</button>
+														</p>
+													</caption>
+													<thead>
+														 <tr>
+															<th>Clave del Tipo de Servicio</th>
+															<th>Nombre Domicilio del Cliente</th>
+															<th>Dias de Auditoria</th>
+															<th>Datos</th>
+															<th></th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="y in xx.SITIOS">
+															<td> {{y.NOMBRE}} </td>
+															<td> {{y.NOMBRE_DOMICILIO}} </td>
+															<td ng-if="y.DURACION_DIAS > 0" > {{y.DURACION_DIAS}} </td>
+															<td ng-if="y.DURACION_DIAS == 0" > N/A </td>
+															<td> 
+																<ul class="list-unstyled user_data">
+																	<li  ng-repeat = "f in y.DATOS">
+																		{{f.NOMBRE_META_SITIOS}}: 
+																		<i ng-show="f.TIPO_META_SITIOS!=2"> {{f.VALOR}}</i>
+																		<i ng-show="f.TIPO_META_SITIOS==2" ng-init="mostrarvalorselectsitios(f.VALOR)"> {{resp1[f.VALOR]}}</i>
+																	</li>
+																</ul>
+															</td>
+															<td> 
+																<p ng-if='modulo_permisos["editar"] == 1'>
+																	<button class="btn btn-primary btn-xs btnEliminaSitioAuditoria" ng-click="eliminar_sitio_auditoria(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,y.ID_CLIENTE_DOMICILIO,xx.CICLO)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+																</p>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</td>
 										</tr>	
+
+										<!--++++++++++++++++++++GRUPO DE AUDITORES++++++++++++++++++-->
+										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 2" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-grupo-auditoria_ec">	
+											<td colspan="13">
+												<table class="table subtable">
+													<caption>Grupo de auditores
+														<p ng-if='modulo_permisos["registrar"] == 1'>
+															<button type="button" class="btn btn-success btn-xs btnInsertaGrupoAuditoriaEC" ng-click="btnInsertaGrupoAuditoriaEC(id_servicio_cliente_etapa,xx.TIPO_AUDITORIA,xx.CICLO)"  style="float: right;"> 
+																<i class="fa fa-plus" aria-hidden="true"></i>  Agregar auditor a grupo
+															</button>
+														</p>
+													</caption>
+													<thead>
+														 <tr>
+															<th>Nombre completo</th>
+															<th>Email</th>
+															<th>Registro</th>
+															<th>Rol en auditor&iacutea </th>
+															<th>Tipo de Servicio </th>
+															<th>Fechas asignadas </th>
+															<th></th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="w in xx.AUDITORES">
+															<td>{{w.NOMBRE}} {{w.APELLIDO_PATERNO}} {{w.APELLIDO_MATERNO}} </td>
+															<td> {{w.EMAIL}} </td>
+															<td> {{w.REGISTRO}} </td>
+															<td> {{w.ID_ROL}} </td>
+															<td> {{w.NOMBRE_SERVICIO}} </td>
+															<td>
+																<table>
+																	<tr>
+																		<td>
+																			<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-enabled-dates="{{GenerarArregloFecha(xx.AUDITORIA_FECHAS)}}"  >
+																				<input type="text"  ng-model="txtInsertarFechasGrupo[w.ID_PERSONAL_TECNICO_CALIF]" placeholder="Fechas" data-parsley-id="2324" class="txtFechasAuditoria" style="width:100px;" />
+																			</datepicker>
+																		</td>
+																		<td>
+																			<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoriaGrupo(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,xx.CICLO,w.ID_PERSONAL_TECNICO_CALIF)" >Agregar Fechas</button>
+																		</td>
+																	</tr>
+																</table>
+																
+				
+															<ul class="list-unstyled user_data">
+																<li ng-repeat="r in xx.AUDITORES_FECHAS[w.ID_PERSONAL_TECNICO_CALIF]">
+																	{{mostrarFecha(r.FECHA)}}
+														
+																</li>
+															</ul>	
+															</td>
+															<td> 
+																<p ng-if='modulo_permisos["editar"] == 1'>
+																	<button class="btn btn-primary btn-xs btnEliminaGrupoAuditoria" ng-click="eliminar_grupo_auditoria(id_servicio_cliente_etapa,xx.TIPO_AUDITORIA,xx.CICLO,w.ID_PERSONAL_TECNICO_CALIF)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+																</p>
+															</td>
+														</tr>	
+													</tbody>
+												</table>
+											</td>
+										</tr>										
 										<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 									</tbody>
 
@@ -450,9 +633,12 @@
   include "ec_tipos_servicio/modal_inserta_actualiza_sitios.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_sitios_ec.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_auditoria.php";
+  include "ec_tipos_servicio/modal_inserta_actualiza_auditoria_ec.php";
  
   include "ec_tipos_servicio/modal_explorar_sitios_auditoria.php";
+  include "ec_tipos_servicio/modal_explorar_sitios_auditoria_ec.php";
   include "ec_tipos_servicio/modal_explorar_auditores_grupo_auditoria.php";
+  include "ec_tipos_servicio/modal_explorar_auditores_grupo_auditoria_ec.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_auditoria_grupo_auditores.php";
   include "ec_tipos_servicio/modal_confirmacion.php";
   ?>
