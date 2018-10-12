@@ -1,6 +1,7 @@
 var globla_domicilioprospecto;
 var globla_contactoprospecto;
 app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope, $http) { 
+
 	var form = $scope;
 	//Titulo que aparece en el html
 	$scope.modulo_permisos =  global_permisos["CRM"];
@@ -73,6 +74,8 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope
 	//Manejo de sectores del prospecto
 	$scope.PrincipalSectores	=	{0:{ID:"S",NOMBRE:"Si"},1:{ID:"N",NOMBRE:"No"}};
 	$scope.formDataSector = {};
+	$scope.SectoresTipoServicio = [];
+	$scope.modal_titulo_sector = 'Insertar/Actualizar sectores';
 
 	$scope.changeInAutoComplete = function(){
 		$( "#autocompletePais" ).change(function() {
@@ -644,6 +647,7 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope
 		else if (accion == "editar")
 		{
 			var info = {
+				id: $scope.producto_actual.id,
 				id_prospecto: $scope.id_prospecto,
 				area: area,
 				departamento: departamento,
@@ -663,13 +667,57 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope
 			});
 		}
 	}
-	$scope.agregarProducto = function(){
-		$scope.AreasLista();
-		$scope.DepartamentosLista();
-		$scope.ProductosLista();
-		$("#modalTituloProductoProspecto").html('INSERTAR PRODUCTO');
-		$("#btnGuardarProductoProspecto").attr("accion","insertar");
-		$("#modalInsertarActualizarProductoProspecto").modal('show');
+	$scope.mostrar_modal_insertar_editar_producto = function(accion,producto){
+		if(accion == 'insertar'){
+			clear_modal_insertar_actualizar_productos();
+			$("#modalTituloProductoProspecto").html('INSERTAR PRODUCTO');
+			$("#btnGuardarProductoProspecto").attr("accion","insertar");
+			$("#modalInsertarActualizarProductoProspecto").modal('show');
+		}
+		if(accion == 'editar'){
+			$scope.producto_actual = producto;
+
+			$scope.alcance_producto = producto.alcance;
+			$scope.areas = producto.id_servicio;
+			$scope.productos = producto.normas;
+			$http.get(  global_apiserver + "/tipos_servicio/getByService/?id="+producto.id_servicio)
+				.then(function( response ) {//se ejecuta cuando la petición fue correcta
+					$scope.Departamentos = response.data.map(function(item){
+						return{
+							id : item.ID,
+							nombre : item.NOMBRE
+						}
+					});
+					$scope.departamentos = producto.id_tipo_servicio;
+					$http.get(  global_apiserver + "/normas/getByIdTipoServicio/?id="+producto.id_tipo_servicio)
+					.then(function( response ) {//se ejecuta cuando la petición fue correcta
+						$scope.Productos = response.data.map(function(item){
+							return{
+								ID_NORMA : item.ID,
+								NOMBRE_NORMA : item.NOMBRE
+							}
+						});
+						$("#modalTituloProductoProspecto").html('MODIFICAR PRODUCTO');
+						$("#btnGuardarProductoProspecto").attr("accion","editar");
+						$("#modalInsertarActualizarProductoProspecto").modal('show');
+					},
+					function (response){});
+				},
+				function (response){});
+			
+			/*
+			if($scope.areas){
+				$scope.areas = producto.id_servicio;
+				$scope.areas_cambio(producto.id_tipo_servicio);
+			} else {
+				$scope.AreasLista(producto.id_servicio);
+				$scope.areas_cambio(producto.id_tipo_servicio);
+			}
+			$scope.productos = producto.normas;
+			*/
+
+			
+		}
 	}
 ////////////////////////////////////////////////////////////////////////////
 //Funciones para Eliminar PRODUCTOS
@@ -682,7 +730,6 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope
 	}
 	
 $( "#btnEliminar" ).click(function() {
-
     $scope.eliminar($("#btnEliminar").attr("id_tabla_producto"));
  });
 $scope.eliminar = function(id){	
@@ -700,56 +747,35 @@ $scope.eliminar = function(id){
 		}
     });
 }	
-////////////////////////////////////////////////////////////////////////////////
-	$scope.editarProducto = function(producto){
-		var datos = {
-			id_prospecto: producto.id_prospecto,
-			id_servicio: producto.id_servicio,
-			id_tipo_servicio: producto.id_tipo_servicio,
-			id_norma: producto.id_norma
-		}
-		$http.post(global_apiserver + "/prospecto_producto/getById/",datos).
-		then(function(response){
-			var id_servicio = response.data[0]["ID_SERVICIO"];	
-			var id_tipo_servicio = response.data[0]["ID_TIPO_SERVICIO"];	
-			var id_norma = response.data[0]["ID_NORMA"];
-			var alcance = response.data[0]["ALCANCE"];
-			
-			$scope.alcance_producto = alcance;
-			if($scope.areas){
-				$scope.areas = id_servicio;
-			} else {
-				$scope.AreasLista(id_servicio);
-			}
-			if($scope.departamentos){
-				$scope.departamentos = id_tipo_servicio;
-			} else {
-				$scope.DepartamentosLista(id_tipo_servicio);
-			}
-			if($scope.productos){
-				$scope.productos = id_norma;
-			} else {
-				$scope.ProductosLista(id_norma);
-			}
-
-			$("#modalTituloProductoProspecto").html('MODIFICAR PRODUCTO');
-			$("#btnGuardarProductoProspecto").attr("accion","editar");
-			$("#modalInsertarActualizarProductoProspecto").modal('show');
-		});
+///////////////////////////////////////////////////////////////////////////////
+	function clear_modal_insertar_actualizar_productos(){
+		$scope.areas = "";
+		$scope.departamentos = "";
+		$scope.Departamentos = [];
+		$scope.productos = [];
+		$scope.Productos = [];
+		$scope.alcance_producto = "";
 	}
 	$scope.ActualizarAreas = function(){
 		//recibe la url del php que se ejecutará
 		$http.get(  global_apiserver + "/prospecto_producto/getByIdProspecto/?id="+$scope.id_prospecto)
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
 	  			$scope.ProductosProspecto = response.data.map(function(item){
+					  var normas_string = '';
+					  item.NORMAS.forEach(norma => {
+						  normas_string = normas_string+norma.ID_NORMA+'; ';
+					  });
 	  				return{
+						  id: item.ID,
 						  id_prospecto : item.ID_PROSPECTO,
 						  id_servicio: item.ID_SERVICIO,
 						  nombre_servicio: item.NOMBRE_SERVICIO,
 						  id_tipo_servicio: item.ID_TIPO_SERVICIO,
 						  nombre_tipo_servicio: item.NOMBRE_TIPO_SERVICIO,
-						  id_norma: item.ID_NORMA,
-						  nombre_norma: item.NOMBRE_NORMA
+						  normas: item.NORMAS,
+						  normas_string: normas_string,
+						  sectores_mostrandose: false,
+						  sectores: []
 	  				}
 	  			});
 			},
@@ -785,7 +811,7 @@ $scope.eliminar = function(id){
 			},
 			function (response){});
 	}
-	$scope.areas_cambio = function(){
+	$scope.areas_cambio = function(seleccionado){
 		//Si se cambia el área que solo aparezcan los departamentos de esa área
 		var id_area = $scope.areas;
 		if(id_area){
@@ -798,7 +824,10 @@ $scope.eliminar = function(id){
 							nombre : item.NOMBRE
 						}
 					});
-					
+					if(seleccionado){
+						$scope.departamentos = seleccionado;
+						$scope.departamentos_cambio();
+					}
 				},
 				function (response){});
 		}
@@ -829,12 +858,13 @@ $scope.eliminar = function(id){
 				.then(function( response ) {//se ejecuta cuando la petición fue correcta
 					$scope.Productos = response.data.map(function(item){
 						return{
-							id : item.ID,
-							nombre : item.NOMBRE
+							ID_NORMA : item.ID,
+							NOMBRE_NORMA : item.NOMBRE
 						}
 					});
+					$scope.productos = [];
 					if($scope.Productos.length == 1){
-						$scope.productos = $scope.Productos[0].id;
+						$scope.productos.push($scope.Productos[0]);
 					}
 				},
 				function (response){});
@@ -846,8 +876,8 @@ $scope.eliminar = function(id){
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
 	  			$scope.Productos = response.data.map(function(item){
 	  				return{
-	  					id : item.ID,
-	  					nombre : item.NOMBRE
+	  					ID_NORMA : item.ID,
+	  					NOMBRE_NORMA : item.NOMBRE
 	  				}
 	  			});
 	  			if(seleccionado){
@@ -1484,150 +1514,122 @@ function fill_cmb_domicilio(seleccionado){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////		
 // ==============================================================================
 // ***** 	Funciones para trabajar con los sectores de SGC 				*****
-// ==============================================================================	
-// =======================================================================
-// ***** 			FUNCION PARA EL BOTON AGREGAR SECTOR			 *****
-// =======================================================================
-$scope.agregar_editar_sector	=	function(accion_sector,id_prospecto,id_sector)	{
-	
-	clear_modal_sector();
-	cargarSectoresTipoServicio($scope.DatosServicio.ID_TIPO_SERVICIO);
-	$scope.accion_sector	=	accion_sector;
-	if($scope.accion_sector == 'insertar'){
-		$scope.modal_titulo_sector = "INSERTAR SECTOR DE PROSPECTO";
-	}
-	if($scope.accion_sector == 'editar'){
-		$scope.modal_titulo_sector = "EDITAR SECTOR DE PROSPECTO";
-		llenar_modal_sector(id_prospecto,id_sector);
+// ==============================================================================
+//Mostrar los sectores asociados a un producto
+$scope.verSectores = function(producto){
+	cargarSectoresProducto(producto);
+	fill_cmb_sectores(producto.id_tipo_servicio);
+	$("#collapse_sectores_"+producto.id_tipo_servicio).collapse("show");
+	$scope.ProductosProspecto.forEach(element => {
+		if(element.nombre_tipo_servicio == producto.nombre_tipo_servicio){
+			element.sectores_mostrandose = true;
+		}
+	});
+}	
+//Ocultar los sectores asociados a un producto
+$scope.ocultarSectores = function(producto){
+	$("#collapse_sectores_"+producto.id_tipo_servicio).collapse("hide");
+	$scope.ProductosProspecto.forEach(element => {
+		if(element.nombre_tipo_servicio == producto.nombre_tipo_servicio){
+			element.sectores_mostrandose = false;
+		}
+	});
+}
+//Cargar los sectores asociados a un producto
+function cargarSectoresProducto(producto){
+	$http.get(  global_apiserver + "/prospecto_sectores/getByIdProducto/?id="+producto.id)
+	.then(function( response ) {	  	
+	  	if(response.data){
+			$scope.ProductosProspecto.forEach(prod => {
+				if(prod.id == producto.id){
+					prod.sectores = [];
+					response.data.forEach(sector => {
+						prod.sectores.push(sector);
+					});
+				}
+			});
+			//$scope.SectoresProducto = response.data;
+		} else {
+			console.error('Error al ejecutar la peticion http /prospecto_sectores/getByIdProducto/');
+		}		
+	},
+	function (response){});
+}
+function fill_cmb_sectores(id_tipo_servicio){
+	$http.get(  global_apiserver + "/sectores/getByIdTipoServicio/?id_tipo_servicio="+id_tipo_servicio)
+	.then(function( response ) {//se ejecuta cuando la petición fue correcta
+		if(response.data){
+			$scope.SectoresTipoServicio = response.data;
+		} else {
+			console.error('Error al ejecutar la peticion http /sectores/getbyIdTipoServicio/');
+		}
+	},
+	function (response){});
+}
+//Mostrar modal agregar editar sector
+$scope.mostrar_modal_agregar_editar_sector = function(accion,producto,sector){
+	$scope.accion_modal_sectores = accion;
+	$scope.producto_actual = producto;
+	if(accion == 'insertar'){
+		clear_modal_insertar_actualizar_sectores();
+	} else {
+		fill_modal_insertar_actualizar_sectores(sector);
 	}
 	$("#modalInsertarActualizarTServSector").modal("show");
 }
-$scope.eliminar_sector = function(id_servicio_cliente_etapa,id_sector){
-	$.confirm({
-        title: 'Eliminar registro',
-        content: 'Estas a punto de eliminar un sector, la operación es irreversible, estas seguro?',
-        buttons: {
-            cancel: {
-                text: 'Cancelar'
-            },
-            irAuditoria: {
-                text: 'Eliminar',
-                btnClass: 'btn-blue',
-                keys: ['enter', 'shift'],
-                action: function(){
-					var datos = {
-						id_servicio_cliente_etapa: id_servicio_cliente_etapa,
-						id_sector: id_sector
-					}
-                    $http.post(global_apiserver + "/i_sg_sectores/delete/",datos).
-					then(function(response){
-						if(response.data.resultado == 'ok'){
-							notify('&Eacutexito','El sector ha sido eliminado','success');	
-							cargarSectoresServicio($scope.id_servicio_cliente_etapa);					
-						}
-						else{
-							notify('Error','No se pudo eliminar el registro','error');
-						}
-						
-					});
-                }
-            }
-        }
-    });
+function clear_modal_insertar_actualizar_sectores(){
+	$scope.cmb_sectores = "";
 }
-// ===========================================================================
-// ***** 		Funcion para limpiar las variables del modal sector		 *****
-// ===========================================================================
-function clear_modal_sector(){
-	
-	$scope.formDataSector.Id_Sector	=	"";
-	$scope.formDataSector.Principal	=	"S";
-	
+function fill_modal_insertar_actualizar_sectores(sector){
+	$scope.cmb_sectores = sector.ID_SECTOR;
 }
-// ===========================================================================
-// ***** 		Funcion para llenar las variables del modal sector		 *****
-// ===========================================================================
-function llenar_modal_sector(id_servicio_cliente_etapa,id_sector){
-	
-	var datos_servicio	=	$scope.SectoresServicio.find(function(element,index,array){
-				return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.ID_SECTOR  == id_sector )
-			});
-	$scope.formDataSector.Id_Sector	=	datos_servicio.ID_SECTOR;
-	$scope.formDataSector.Principal	=	datos_servicio.PRINCIPAL;
-	
-}
-// ===========================================================================
-// ***** 		FUNCION PARA EL BOTON GUARDAR DEL MODAL	SECTOR			 *****
-// ===========================================================================
-	$scope.submitFormSector = function (formDataSector) {
-						
-			
-		if($scope.accion_sector == 'insertar'){
-			var datos	=	{
-				ID_SECTOR	:	$scope.formDataSector.Id_Sector,
-				ID_SERVICIO_CLIENTE_ETAPA	:	$scope.id_servicio_cliente_etapa,
-				PRINCIPAL	:	$scope.formDataSector.Principal,
-				ID_USUARIO:	sessionStorage.getItem("id_usuario")
-			};
-			$http.post(global_apiserver + "/i_sg_sectores/insert/",datos).
-            then(function(response){
-                if(response){
-					notify('&Eacutexito','Se han actualizado los datos','success');
-                   cargarSectoresServicio($scope.id_servicio_cliente_etapa);
-				   
-                }
-                else{
-                    notify('Error','No se pudo guardar los cambios','error');
-                }
-                
-            });
-		 }
-		if($scope.accion_sector == 'editar'){	
-			var datos	=	{
-				
-				ID_SECTOR	:	$scope.formDataSector.Id_Sector,
-				ID_SERVICIO_CLIENTE_ETAPA	:	$scope.id_servicio_cliente_etapa,
-				PRINCIPAL	:	$scope.formDataSector.Principal,
-				ID_USUARIO:	sessionStorage.getItem("id_usuario")
-			};
-			$http.post(global_apiserver + "/i_sg_sectores/update/",datos).
-            then(function(response){
-                if(response){
-					notify('&Eacutexito','Se han actualizado los datos','success');
-                   cargarSectoresServicio($scope.id_servicio_cliente_etapa);
-				   
-                }
-                else{
-                    notify('Error','No se pudo guardar los cambios','error');
-                }
-                
-            });
+//Guardar sector
+$scope.guardarSector = function(){
+	if($scope.accion_modal_sectores == 'insertar'){
+		var id_sector = $scope.cmb_sectores;
+		var datos = {
+			ID_PRODUCTO: $scope.producto_actual.id,
+			ID_SECTOR: id_sector,
+			ID_USUARIO:sessionStorage.getItem("id_usuario")
 		}
-		$("#modalInsertarActualizarTServSector").modal("hide");
-		
-	};
-// =======================================================================================
-// ***** 			FUNCION PARA CARGAR DATOS DE SECTORES DEL SERVICIO				 *****
-// =======================================================================================	
-	function cargarSectoresServicio(id_servicio){
-		$http.get(  global_apiserver + "/i_sg_sectores/getByIdServicio/?id="+id_servicio)
-		.then(function( response ){
-			$scope.SectoresServicio = response.data;
-			
+		$http.post(global_apiserver + "/prospecto_sectores/insert/",datos).
+		then(function(response){
+			if(response.data.resultado == 'ok'){
+				notify("Éxito", "Se ha insertado un nuevo sector ", "success");
+				$("#modalInsertarActualizarTServSector").modal("hide");
+				cargarSectoresProducto($scope.producto_actual);
+			} else {
+				notify("Error", response.data.mensaje, "error");
+			}
 		});
-		
 	}
-// =======================================================================================
-// ***** 			FUNCION PARA CARGAR DATOS DE SECTORES DEL TIPO SERVICIO			 *****
-// =======================================================================================	
-	function cargarSectoresTipoServicio(id_tipo_servicio){
-		$http.get(  global_apiserver + "/sectores/getByIdTipoServicio/?id_tipo_servicio="+id_tipo_servicio)
-		.then(function( response ){
-			$scope.SectoresTipoServicio = response.data;
-			
-		});
-		
-	}	
+}
+//Mostrar modal Eliminar sector
+$scope.mostrar_modal_eliminar_sector = function(producto,sector){
+	$("#modalEliminarSector").modal("show");
+	$scope.producto_actual = producto;
+	$scope.sector_actual = sector;
+}
+$scope.eliminar_sector = function(){
+	var datos = {
+		ID_PRODUCTO: $scope.producto_actual.id,
+		ID_SECTOR: $scope.sector_actual.ID_SECTOR
+	}
+	$http.post(global_apiserver + "/prospecto_sectores/delete/",datos).
+	then(function(response){
+		if(response.data.resultado == "ok"){
+			notify("Éxito", "Se ha eliminado el sector", "success");
+			$scope.verSectores($scope.producto_actual);
+		} else {
+			notify("Error", response.data.mensaje, "error");
+		}
+		$("#modalEliminarSector").modal("hide");
+	});
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+// ==============================================================================
+// ***** 	FIN				*****
+// ==============================================================================	
 
 	
 	function onCalendar()
@@ -1685,6 +1687,9 @@ function llenar_modal_sector(id_servicio_cliente_etapa,id_sector){
 	}
 
 	$scope.OrigenLista();
+	$scope.AreasLista();
+	$scope.DepartamentosLista();
+	$scope.ProductosLista();
 	$scope.ActualizarAreas();
 	
 	$scope.actualizaTablaContacto();
