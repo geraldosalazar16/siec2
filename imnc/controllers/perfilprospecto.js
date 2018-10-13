@@ -77,6 +77,13 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope
 	$scope.SectoresTipoServicio = [];
 	$scope.modal_titulo_sector = 'Insertar/Actualizar sectores';
 
+	//Creación de la cotización
+	$scope.Prospectos = [];
+	$scope.EstatusSeguimiento = [];
+	//$scope.Etapas = [];
+	$scope.Tarifas = [];
+	$scope.cotizacion_insertar_editar = {};
+
 	$scope.changeInAutoComplete = function(){
 		$( "#autocompletePais" ).change(function() {
 			$scope.pais = $( "#autocompletePais" ).val();
@@ -1630,7 +1637,68 @@ $scope.eliminar_sector = function(){
 // ==============================================================================
 // ***** 	FIN				*****
 // ==============================================================================	
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+// ==============================================================================
+// ***** 	CREAR COTIZACION A PARTIR DE PRODUCTO				*****
+// ==============================================================================
+$scope.mostrar_modal_crear_cotizacion = function(producto){
+	$scope.producto_actual = producto;
+	$scope.cotizacion_insertar_editar.ID_SERVICIO = producto.id_servicio;
+	$scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO = producto.id_tipo_servicio;
+	$scope.cotizacion_insertar_editar.NORMAS = producto.normas;
+	//CargarEtapas(producto.id_servicio);
+	$("#modalInsertarActualizarCotizacion").modal("show");
+}
+function CargarestatusSeguimiento(){
+	$http.get(global_apiserver + "/prospecto_estatus_seguimiento/getAll/").
+	then(function(response){
+		$scope.EstatusSeguimiento = response.data;
+	});
+}
+/*
+function CargarEtapas(id_servicio){
+	$http.get(global_apiserver + "/etapas_proceso/getByIdServicio/?id="+id_servicio).
+	then(function(response){
+		$scope.Etapas = response.data;
+	});
+}
+*/
+function CargarTarifas(){
+	$http.get(global_apiserver + "/tarifa_cotizacion/getAll/").
+	then(function(response){
+		$scope.Tarifas = response.data;
+	});
+}
+$scope.cotizacion_guardar = function(){
+	datos = {
+        ID_PROSPECTO : $scope.id_prospecto, 
+        ID_SERVICIO : $scope.cotizacion_insertar_editar.ID_SERVICIO,
+        ID_TIPO_SERVICIO : $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO,
+        NORMAS: $scope.producto_actual.normas,
+        ETAPA: 0,
+        FOLIO_INICIALES : $scope.cotizacion_insertar_editar.FOLIO_INICIALES,
+        FOLIO_SERVICIO : $scope.cotizacion_insertar_editar.FOLIO_SERVICIO,
+        ESTADO_COTIZACION : $scope.cotizacion_insertar_editar.ESTADO_SEG.ID,
+        TARIFA : $scope.cotizacion_insertar_editar.TARIFA,
+        DESCUENTO : $scope.cotizacion_insertar_editar.DESCUENTO,
+        BANDERA : 0,
+        COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
+        ID_USUARIO : sessionStorage.getItem("id_usuario")
+	};
+	$http.post(global_apiserver + "/cotizaciones/insert/",datos).
+	then(function(response){
+		if(response.data.resultado == "ok"){
+			notify("Éxito", "Se ha insertado la cotización", "success");
+		} else {
+			notify("Error", response.data.mensaje, "error");
+		}
+		$("#modalInsertarActualizarCotizacion").modal("hide");
+	});
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+// ==============================================================================
+// ***** 	FIN				*****
+// ==============================================================================
 	
 	function onCalendar()
 	{
@@ -1691,7 +1759,14 @@ $scope.eliminar_sector = function(){
 	$scope.DepartamentosLista();
 	$scope.ProductosLista();
 	$scope.ActualizarAreas();
-	
+
+	/*
+	Cargar información necesara para insertar una cotización
+	*/
+	CargarestatusSeguimiento();
+	CargarTarifas();
+
+	/* Cargar información inicial */
 	$scope.actualizaTablaContacto();
 	$scope.actualizaTablaDomicilio();
 	$scope.actualizarCotizacion();

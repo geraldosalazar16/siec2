@@ -20,9 +20,16 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 	//$ID = $objeto->id;
 	$ID = $_REQUEST["id"];
       
-	$id = $database->delete($nombre_tabla, ["ID"=>$ID]); 
-	
+	$id_producto = $database->delete($nombre_tabla, ["ID"=>$ID]);
 	valida_error_medoo_and_die($nombre_tabla,$correo); 
+	//Borrar de prospecto_sectores
+	$id_producto = $database->delete("PROSPECTO_SECTORES", ["ID_PRODUCTO"=>$ID]); 
+	valida_error_medoo_and_die("PROSPECTO_SECTORES",$correo); 
+	//Borrar de prospecto_producto_normas
+	$id_producto = $database->delete("PROSPECTO_PRODUCTO_NORMAS", ["ID_PRODUCTO"=>$ID]); 
+	valida_error_medoo_and_die($nombre_tabla,$correo); 
+	
+	valida_error_medoo_and_die("PROSPECTO_PRODUCTO_NORMAS",$correo); 
 	$respuesta["resultado"]="ok"; 
 	print_r(json_encode($respuesta)); 
 ?> 

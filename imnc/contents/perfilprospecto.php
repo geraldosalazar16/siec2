@@ -237,6 +237,8 @@
 																		<td>
 																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="mostrar_modal_insertar_editar_producto('editar',producto)" style=	"float: right;"><i class="fa fa-edit"> </i> Editar
 																			</button>
+																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="mostrar_modal_crear_cotizacion(producto)" style=	"float: right;"><i class="fa fa-usd"> </i> Crear cotización
+																			</button>
 																		</td>
 																		<td>																																		
 																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" ng-if="producto.sectores_mostrandose == false"
@@ -526,6 +528,7 @@
 	include "perfilprospecto/modal_insertar_actualizar_producto.php";
 	include "perfilprospecto/modal_insertar_actualizar_prospecto.php";
 	include "perfilprospecto/modal_insertar_actualizar_sector.php";
+	include "perfilprospecto/modal_insertar_cotizacion.php";
 	?>
 </span>
 
