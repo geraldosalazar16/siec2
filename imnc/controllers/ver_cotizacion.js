@@ -278,13 +278,16 @@ $scope.formData = {};
   $scope.modal_insertar_servicio = function(tramite){
     var nombre_cliente = '';
     var id_cliente = 0;
+    var cliente_prospecto = 'prospecto';
     //PROSPECTO
     if($scope.obj_cotizacion.BANDERA != 0) {
       nombre_cliente = $scope.obj_cotizacion.CLIENTE['NOMBRE'];
       id_cliente = $scope.obj_cotizacion.CLIENTE['ID'];
+      cliente_prospecto = 'cliente';
     } else {
       nombre_cliente = $scope.obj_cotizacion.PROSPECTO['NOMBRE'];
       id_cliente = $scope.obj_cotizacion.PROSPECTO['ID'];
+      cliente_prospecto = 'prospecto';
     }
     
     const nombre_servicio = $scope.obj_cotizacion.SERVICIO['NOMBRE'];
@@ -295,6 +298,8 @@ $scope.formData = {};
     const id_norma = $scope.obj_cotizacion.NORMA['ID'];
 
     $scope.servicio_insertar = {
+      ID_COTIZACION: $scope.obj_cotizacion.ID,
+      CLIENTE_PROSPECTO: cliente_prospecto,
       ID_CLIENTE: id_cliente,
       NOMBRE_CLIENTE: nombre_cliente,
       ID_SERVICIO: id_servicio,
@@ -348,6 +353,8 @@ $scope.formData = {};
   }
   $scope.crear_servicio = function () {
     var datos = {
+      ID_COTIZACION: $scope.servicio_insertar.ID_COTIZACION,
+      CLIENTE_PROSPECTO: $scope.servicio_insertar.CLIENTE_PROSPECTO,
       ID_CLIENTE: $scope.servicio_insertar.ID_CLIENTE,
       ID_SERVICIO: $scope.servicio_insertar.ID_SERVICIO,
       ID_TIPO_SERVICIO: $scope.servicio_insertar.ID_TIPO_SERVICIO,
@@ -358,12 +365,12 @@ $scope.formData = {};
       ID_USUARIO:	sessionStorage.getItem("id_usuario")
     };
     
-    $http.post(global_apiserver + "/servicio_cliente_etapa/insert/",datos).
+    $http.post(global_apiserver + "/servicio_cliente_etapa/insertDesdeCotizador/",datos).
     then(function(response){
-      if(response){
+      if(response.data.resultado == 'ok'){
         notify('Éxito','Se ha insertado un nuevo registro','success');        
       } else {
-        notify('Error','No se pudo guardar el registro','error');
+        notify('Error',response.data.mensaje,'error');
       }
       $("#modalAddServicio").modal("hide");
     });
@@ -586,10 +593,15 @@ $scope.formData = {};
         $scope.obj_cotizacion_tramite = data;
         $scope.arr_sitios_cotizacion = data.COTIZACION_SITIOS;
         $scope.arr_tarifa_adicional_cotizacion = data.COTIZACION_TARIFA_ADICIONAL;
-		if(data.E1 == 0) //Etapa 1 ocultar datos
-			$scope.tipo_auditoria_e1 = true;
-		else
-			$scope.tipo_auditoria_e1 = false;
+
+        $scope.tipo_auditoria_e1 = false;
+        if($scope.arr_sitios_cotizacion.length > 0){
+          if($scope.arr_sitios_cotizacion[0].ETAPA == 'E1') {//Etapa 1 ocultar datos
+            $scope.tipo_auditoria_e1 = true;
+          } else {
+            $scope.tipo_auditoria_e1 = false;
+          }
+        }        
         $('#sitio_tramite').show();
       } 
       else  {
@@ -600,6 +612,7 @@ $scope.formData = {};
     });
   }
 
+  /*
   $scope.crear_servicio = function(){
     var cotizacion =  $scope.obj_cotizacion;
     cotizacion.OBJ_TRAMITE = $scope.obj_tramite;
@@ -630,7 +643,7 @@ $scope.formData = {};
       console.log("Error al generar petición: " + response);
     });
   }
-
+  */
   $scope.actualizar_servicio = function(obj_tramite){
     var cotizacion =  $scope.obj_cotizacion;
     cotizacion.OBJ_TRAMITE = obj_tramite;

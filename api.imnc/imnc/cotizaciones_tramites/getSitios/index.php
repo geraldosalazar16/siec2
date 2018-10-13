@@ -49,7 +49,8 @@ $norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
 valida_error_medoo_and_die(); 
 $etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$cotizacio_tramite["ID_ETAPA_PROCESO"]]);
 valida_error_medoo_and_die(); 
-
+$tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizacion[0]["TARIFA"]]);
+valida_error_medoo_and_die(); 
 $cantidad_de_sitios = $database->count("COTIZACION_SITIOS", ["ID_COTIZACION"=>$cotizacio_tramite["ID"]]);
 valida_error_medoo_and_die(); 
 
@@ -113,6 +114,7 @@ else if(strpos($etapa["ETAPA"], 'Renovación') !== false || strpos($etapa["ETAPA
 }
 $obj_cotizacion = [];
 $obj_cotizacion["ETAPA"] = $etapa["ETAPA"];
+$obj_cotizacion["TARIFA_TOTAL"] = $tarifa;
 
 $obj_cotizacion["COUNT_SITIOS"] = count_sitios($id, $const_sitio);
 $obj_cotizacion["COTIZACION_SITIOS"] = $cotizacion_sitios;
@@ -189,9 +191,9 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 	$obj_cotizacion["VIATICOS"] = $cotizacio_tramite["VIATICOS"];
 	$obj_cotizacion["TARIFA_ADICIONAL"] = $total_tarifa_adicional;
 	$obj_cotizacion["FACTOR_INTEGRACION"] = $cotizacio_tramite["FACTOR_INTEGRACION"];
-	$obj_cotizacion["TARIFA_DES"] = (floatval($cotizacion[0]["TARIFA"]) * (1-($cotizacio_tramite["DESCUENTO"]/100)) );
+	$obj_cotizacion["TARIFA_DES"] = (floatval($tarifa['TARIFA']) * (1-($cotizacio_tramite["DESCUENTO"]/100)) );
 
-	$costo_inicial = ($total_dias_auditoria * floatval($cotizacion[0]["TARIFA"]) );
+	$costo_inicial = ($total_dias_auditoria * floatval($tarifa['TARIFA']) );
 	$costo_desc = ($costo_inicial * (1-($cotizacio_tramite["DESCUENTO"]/100)) );
 	$obj_cotizacion["COSTO_INICIAL"] = $costo_inicial;
 	$obj_cotizacion["COSTO_DESCUENTO"] = $costo_desc;

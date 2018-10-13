@@ -6,28 +6,28 @@
         <p><h2>Detalle de cotización</h2></p>
           <!--
           <p>
-            <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_editar()' 
-            ng-if='modulo_permisos["editar"] == 1 && !bl_firmado'> 
-              <i class="fa fa-edit"> </i> Editar cotización 
+            <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_editar()'
+            ng-if='modulo_permisos["editar"] == 1 && !bl_firmado'>
+              <i class="fa fa-edit"> </i> Editar cotización
             </button>
           </p>
           -->
           <!--
           <p>
-            <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_actualizar()' 
-            ng-if='modulo_permisos["editar"] == 1 && bl_cotizado'> 
-              <i class="fa fa-edit"> </i> Actualizar cotización 
+            <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_actualizar()'
+            ng-if='modulo_permisos["editar"] == 1 && bl_cotizado'>
+              <i class="fa fa-edit"> </i> Actualizar cotización
             </button>
           </p>
           -->
 		      <p>
-            <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_generar()' 
-            ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'> 
-              <i class="fa fa-file"></i> Generar cotización 
+            <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_generar()'
+            ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'>
+              <i class="fa fa-file"></i> Generar cotización
             </button>
           </p>
           <p>
-          <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
+          <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar"
             ng-click="modal_insertar_servicio(tramites_cotizacion)"
             ng-if='modulo_permisos["editar"] == 1 && bl_firmado && !tramites_cotizacion.ID_SERVICIO_CLIENTE' style="float: right;">
               Crear Servicio
@@ -50,7 +50,10 @@
                     Tipo de servicio: {{obj_cotizacion.TIPOS_SERVICIO.NOMBRE}}
                   </li>
                   <li id="lbNorma">
-                    Norma: {{obj_cotizacion.NORMA.ID}}
+                    Normas:
+                    <div ng-repeat="norma in obj_cotizacion.NORMAS">
+                      <span>{{$index+1}}- {{norma.ID_NORMA}}</span>
+                    </div>
                   </li>
                   <li id="lbFolio">
                     Folio: {{obj_cotizacion.FOLIO}}
@@ -92,8 +95,8 @@
             <div class="col-md-4 col-sm-4 col-xs-4">
               <ul class="list-unstyled user_data">
                   <li>
-                    <button type="button" id="btnInsertarTramite" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_tramite_insertar()' 
-                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'> 
+                    <button type="button" id="btnInsertarTramite" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_tramite_insertar()'
+                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'>
                       <i class="fa fa-plus"> </i> Agregar trámite
                     </button>
                   </li>
@@ -132,19 +135,19 @@
                   </button>
                   <!--
 
-                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
+                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar"
                   ng-click="modal_crear_servicio(tramites_cotizacion.ID_ETAPA_PROCESO, true, tramites_cotizacion)"
                   ng-if='modulo_permisos["editar"] == 1 && bl_firmado && !tramites_cotizacion.ID_SERVICIO_CLIENTE && obj_cotizacion.SG_INTEGRAL == "si"' style="float: right;">
                     Agregar a servicio integral
                   </button>
 
-                   <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
+                   <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar"
                   ng-click="actualizar_servicio(tramites_cotizacion)"
                   ng-if='modulo_permisos["editar"] == 1 && bl_firmado && obj_cotizacion.FOLIO_UPDATE == "E" && tramites_cotizacion.ID_SERVICIO_CLIENTE != null' style="float: right;">
                     Actulizar Servicio
                   </button>
                   -->
-                  <a type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
+                  <a type="button" class="btn btn-primary btn-xs btn-imnc btnEditar"
                   href="./?pagina=sg_tipos_servicio&id_serv_cli_et={{tramites_cotizacion.ID_SERVICIO_CLIENTE}}"
                   ng-if='tramites_cotizacion.ID_SERVICIO_CLIENTE != null' style="float: right;">
                     Ver Auditoría
@@ -170,19 +173,19 @@
                     {{obj_cotizacion_tramite.COUNT_SITIOS.RESTRICCIONES_SITIOS}}
                   </li>
                   <li>
-                    <button type="button" id="btnInsertarSitio" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_sitio_insertar()' 
-                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'> 
+                    <button type="button" id="btnInsertarSitio" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_sitio_insertar()'
+                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'>
                       <i class="fa fa-plus"> </i> Agregar sitio
                     </button>
 
-                    <button type="button" id="btnInsertarTarifa" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_tarifa_adicional_insertar()' 
-                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'> 
+                    <button type="button" id="btnInsertarTarifa" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_tarifa_adicional_insertar()'
+                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'>
                       <i class="fa fa-plus"> </i> Agregar Tarifa Adicional
                     </button>
                   </li>
               </ul>
             </div>
-          
+
           <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
             <thead>
               <tr class="headings">
@@ -207,9 +210,9 @@
                     ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
                     <i class="fa fa-trash"></i>
                   </button>
-                  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;" 
-                    ng-click='modal_tarifa_adicional_editar(tarifa_cotizacion.ID)' ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'> 
-                    <i class="fa fa-edit"> </i> Editar Tarifa Adicional 
+                  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"
+                    ng-click='modal_tarifa_adicional_editar(tarifa_cotizacion.ID)' ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'>
+                    <i class="fa fa-edit"> </i> Editar Tarifa Adicional
                   </button>
                 </td>
 
@@ -254,11 +257,11 @@
                   Factor de reducción y ampliación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_RED}}</b><br>
                   Factor de ajuste por vigilancia o renovación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_SUBTOTAL}}</b>
                 </td>
-				<td ng-if="tipo_auditoria_e1">
+				        <td ng-if="tipo_auditoria_e1">
                   Días auditor: <b>{{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}}</b><br>
                 </td>
                 <td>
-                  <input type="checkbox" class="flat" ng-click="actualiza_sitio_seleccionado(sitios_cotizacion.ID)" 
+                  <input type="checkbox" class="flat" ng-click="actualiza_sitio_seleccionado(sitios_cotizacion.ID)"
                   ng-checked="sitios_cotizacion.SELECCIONADO == 1" ng-disabled="bl_cotizado || modulo_permisos['editar'] != 1">
                 </td>
                 <td>
@@ -266,9 +269,9 @@
                     ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
                     <i class="fa fa-trash"></i>
                   </button>
-                  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;" 
-                    ng-click='modal_sitio_editar(sitios_cotizacion.ID)' ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'> 
-                    <i class="fa fa-edit"> </i> Editar sitio 
+                  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"
+                    ng-click='modal_sitio_editar(sitios_cotizacion.ID)' ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'>
+                    <i class="fa fa-edit"> </i> Editar sitio
                   </button>
                 </td>
 
@@ -302,11 +305,11 @@
                       Factor de Integración: {{obj_cotizacion_tramite.FACTOR_INTEGRACION}}%<br>
                       Total Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA_INTG}}<br>
                     </div>
-                    Tarifa de Día Auditor <span style="font-size: 12px;"> *c/ descuento</span>: {{obj_cotizacion_tramite.TARIFA_DES | currency}}<br>
+                    Tarifa de Día Auditor <span style="font-size: 12px;"> *c/ descuento</span>: {{obj_cotizacion_tramite.TARIFA_TOTAL.TARIFA | currency}}<br>
                     Costo de auditoría : {{obj_cotizacion_tramite.COSTO_DESCUENTO | currency}}<br>
                     Viáticos: {{obj_cotizacion_tramite.VIATICOS | currency}}<br>
                     Total Tarifa Adicional: {{obj_cotizacion_tramite.TARIFA_ADICIONAL | currency}}<br>
-                    Costo Total de auditoría<span style="font-size: 12px;"> *costos adicionales incluidos</span> 
+                    Costo Total de auditoría<span style="font-size: 12px;"> *costos adicionales incluidos</span>
                     : {{obj_cotizacion_tramite.COSTO_TOTAL | currency}}
                   </li>
               </ul>
@@ -337,7 +340,7 @@
               <div class="form-group">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Estado de la cotización<span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select ng-model="cotizacion_insertar_editar.ESTADO_SEG" required="required" class="form-control" 
+                  <select ng-model="cotizacion_insertar_editar.ESTADO_SEG" required="required" class="form-control"
                   ng-options="estseg as estseg.DESCRIPCION for estseg in Estatus_seguimiento track by estseg.ID">
                     <option value="" selected disabled>---Seleccione un estatus---</option>
                   </select>
@@ -347,18 +350,18 @@
               <div class="form-group form-vertical" >
                 <label class="control-label col-md-12"> Folio <span class="required">*</span></label>
                 <div class="col-md-4">
-                  <input type="text" ng-model="cotizacion_insertar_editar.FOLIO_INICIALES"  required="required" class="form-control" 
+                  <input type="text" ng-model="cotizacion_insertar_editar.FOLIO_INICIALES"  required="required" class="form-control"
                   ng-change="cotizacion_insertar_editar.FOLIO_INICIALES = cotizacion_insertar_editar.FOLIO_INICIALES.toUpperCase()">
                   <div style="float: left;"><span style="font-size: 11px;">Iniciales del Ejecutivo</span></div>
                 </div>
                  <div class="col-md-4">
-                  <input type="text" ng-model="cotizacion_insertar_editar.FOLIO_SERVICIO"  required="required" class="form-control" 
+                  <input type="text" ng-model="cotizacion_insertar_editar.FOLIO_SERVICIO"  required="required" class="form-control"
                   ng-change="cotizacion_insertar_editar.FOLIO_SERVICIO = cotizacion_insertar_editar.FOLIO_SERVICIO.toUpperCase()">
                   <div style="float: left;"><span style="font-size: 11px;">Iniciales del Servicio</span></div>
                 </div>
               </div>
               <!--
-              <div class="form-group form-vertical" 
+              <div class="form-group form-vertical"
               ng-if='cotizacion_insertar_editar.ESTADO_SEG.DESCRIPCION == "Cotizado" || cotizacion_insertar_editar.ESTADO_SEG.DESCRIPCION == "Firmado"'>
                 <label class="control-label col-md-12">Referencia</label>
                 <div class="col-md-12">
@@ -413,7 +416,7 @@
               <div class="form-group">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa por Día Auditor<span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select ng-model="cotizacion_insertar_editar.TARIFA" required="required" class="form-control" 
+                  <select ng-model="cotizacion_insertar_editar.TARIFA" required="required" class="form-control"
                   ng-options="item_tarifa.tarifa as item_tarifa.descripcion for item_tarifa in Tarifa_Cotizacion">
                     <option value="" selected disabled>---Seleccione una tarifa---</option>
                   </select>
@@ -436,7 +439,7 @@
                      <option value="no">No</option>
                   </select>
                 </div>
-              </div>   
+              </div>
             </form>
         </div>
         <div class="modal-footer">
@@ -460,7 +463,7 @@
               <div class="form-group">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa Adicional<span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select ng-model="obj_tarifa_adicional.ID_TARIFA_ADICIONAL" required="required" class="form-control" 
+                  <select ng-model="obj_tarifa_adicional.ID_TARIFA_ADICIONAL" required="required" class="form-control"
                   ng-options="item_tarifa.ID as item_tarifa.DESCRIPCION for item_tarifa in arr_tarifa_adicional">
                     <option value="" selected disabled>---Seleccione una tarifa---</option>
                   </select>
@@ -473,7 +476,7 @@
                   <input type="numeric" ng-model="obj_tarifa_adicional.CANTIDAD" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-  
+
             </form>
         </div>
         <div class="modal-footer">
@@ -592,7 +595,7 @@
               <div class="form-group form-vertical" ng-if="obj_cotizacion.SG_INTEGRAL == 'si' && intgBol">
                 <label class="control-label col-md-12">¿Cuál es el nivel de integración del sistema?(%)<span class="required">*</span></label>
                 <div class="col-md-12">
-                  <input type="numeric" ng-model="obj_integracion.X" required="required" class="form-control col-md-7 col-xs-12" 
+                  <input type="numeric" ng-model="obj_integracion.X" required="required" class="form-control col-md-7 col-xs-12"
                   ng-change="get_factor_integracion()">
                 </div>
               </div>
@@ -629,7 +632,7 @@
                 <label class="control-label col-md-12">¿Hay Cambio? <span class="required">*</span>
                 </label>
                 <div class="col-md-12">
-                  <select class="form-control" id="cambio" ng-model="tramite_insertar_editar.CAMBIO" class="form-control" 
+                  <select class="form-control" id="cambio" ng-model="tramite_insertar_editar.CAMBIO" class="form-control"
                   ng-change ="change_cmb_cambio(tramite_insertar_editar.CAMBIO)">
                     <option value="" selected disabled>--elige una opción--</option>
                     <option value="S">Si</option>
@@ -641,7 +644,7 @@
               <div ng-repeat="item_cmb in arr_cambio">
                 <div class='checkbox col-md-12 cambioCheckbox' >
                   <label>
-                    <input type='checkbox' ng-model="check_cmb_list[item_cmb.ID]" ng-change="check_checkbox_cambio(item_cmb.ID,check_cmb_list[item_cmb.ID])" /> 
+                    <input type='checkbox' ng-model="check_cmb_list[item_cmb.ID]" ng-change="check_checkbox_cambio(item_cmb.ID,check_cmb_list[item_cmb.ID])" />
                     {{item_cmb.CAMBIO}}
                   </label>
                 </div>
@@ -652,7 +655,7 @@
                   <label class='control-label col-md-12' for='txtDescripcionCambio-{{item_cmb.ID}}'>Descripción del Cambio {{item_cmb.CAMBIO}}
                     <span class='required'>*</span></label>
                   <div class='col-md-12' >
-                    <textarea rows='4' ng-model='descripcion_cambio[item_cmb.ID]' cols='50' type='text' 
+                    <textarea rows='4' ng-model='descripcion_cambio[item_cmb.ID]' cols='50' type='text'
                     required='required' class='form-control col-md-7 col-xs-12'>
                     </textarea>
                   </div>
@@ -761,7 +764,7 @@
                 </div>
               </div>
               <div class="form-group form-vertical">
-                <label class="control-label col-md-12">¿Matriz o principal? <span class="required">*</span></label>
+                <label class="control-label col-md-12">¿Matriz principal? <span class="required">*</span></label>
                 <div class="col-md-12">
                   <select  ng-model="obj_sitio.MATRIZ_PRINCIPAL" class="form-control">
                      <option value="" selected disabled>-- selecciona una opción --</option>
@@ -802,7 +805,7 @@
                 <div class="col-md-12">
                   <input type="text" ng-model="servicio_insertar.NOMBRE_CLIENTE"  required="required" class="form-control col-md-7 col-xs-12" readonly>
                 </div>
-              </div>  
+              </div>
 
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Servicio</label>
@@ -816,8 +819,8 @@
                 <div class="col-md-12">
                   <input type="text" ng-model="servicio_insertar.NOMBRE_TIPO_SERVICIO"  required="required" class="form-control col-md-7 col-xs-12" readonly>
                 </div>
-              </div>         
-              
+              </div>
+
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Norma</label>
                 <div class="col-md-12">
@@ -829,13 +832,13 @@
                 <label class="control-label col-md-12" for="etapa">Etapa<span class="required">*</span>
                 </label>
                 <div class="col-md-12">
-                  <select class="form-control" 
+                  <select class="form-control"
                   ng-model="servicio_insertar.ID_ETAPA"
-                  ng-change="cambioEtapa()" 
+                  ng-change="cambioEtapa()"
                   ng-options="etapa.ID as etapa.NOMBRE for etapa in Etapas">
                   </select>
                 </div>
-              </div> 
+              </div>
             </form>
         </div>
         <div class="modal-footer">
@@ -866,11 +869,11 @@
 						<label class="control-label col-md-4 col-xs-4 col-sm-4">Viaticos</label>
 					</div>
 				</div>
-			
+
 				<div class='form-group' ng-repeat="x in arr_tramites_cotizacion" ng-init="tram_index = $index" >
-					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>	
+					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].ETAPA" required ng-class="{ error: exampleFormGenCotizacion.tramite.x.$error.required && !exampleForm.$pristine}"  >
-					</div>	
+					</div>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TRAMITE_COSTO" required ng-class="{ error: exampleFormGenCotizacion.monto.x.$error.required && !exampleForm.$pristine}"  >
 					</div>
@@ -883,41 +886,41 @@
 						</div>
 						<div class='form-group  col-md-3 col-xs-3 col-sm-3'>
 							<input type="text" class="form-control"  ng-model="formDataGenCotizacion.descripcion[tram_index][$index].TARIFA" required ng-class="{ error: exampleFormGenCotizacion.tarifa.$error.required && !exampleForm.$pristine}"  >
-						</div>	
-						
+						</div>
+
 					</div>
-	
+
 				</div>
-				
+
 				<div class="form-group" ng-if="obj_cotizacion.BANDERA == 0">
 						<label class="control-label">Contactos</label>
 						<select class="form-control" id="formDataGenCotizacion.contactoprospecto1" ng-model="formDataGenCotizacion.contactoprospecto1"  ng-options="ContactoProspecto1.ID as ContactoProspecto1.NOMBRE for ContactoProspecto1 in ContactoProspectos1"  class="form-control" required ng-class="{ error: exampleFormGenCotizacion.contactoprospecto1.$error.required && !exampleForm.$pristine}" >
-                  
+
 						</select>
 					</div>
 					<div class="form-group" ng-if="obj_cotizacion.BANDERA == 0">
 						<label class="control-label">Domicilio</label>
 						<select class="form-control" id="formDataGenCotizacion.domicilioprospecto1" ng-model="formDataGenCotizacion.domicilioprospecto1"  ng-options="DomicilioProspecto1.ID as DomicilioProspecto1.NOMBRE for DomicilioProspecto1 in DomicilioProspectos1"  class="form-control" required ng-class="{ error: exampleFormGenCotizacion.domicilioprospecto1.$error.required && !exampleForm.$pristine}" >
-                  
+
 						</select>
 					</div>
 				<div class="form-group" ng-if="obj_cotizacion.BANDERA == 1">
 					<label class="control-label">Contactos</label>
 					<select class="form-control" id="formDataGenCotizacion.contactoprospecto1" ng-model="formDataGenCotizacion.contactoprospecto1"  ng-options="ContactoCliente1.ID as ContactoCliente1.NOMBRE_CONTACTO for ContactoCliente1 in ContactoClientes1"  class="form-control" required ng-class="{ error: exampleFormGenCotizacion.contactoprospecto1.$error.required && !exampleForm.$pristine}" >
-                  
+
 					</select>
 				</div>
 				<div class="form-group" ng-if="obj_cotizacion.BANDERA == 1">
 					<label class="control-label">Domicilio</label>
 					<select class="form-control" id="formDataGenCotizacion.domicilioprospecto1" ng-model="formDataGenCotizacion.domicilioprospecto1"  ng-options="DomicilioCliente1.ID as DomicilioCliente1.NOMBRE for DomicilioCliente1 in DomicilioClientes1"  class="form-control" required ng-class="{ error: exampleFormGenCotizacion.domicilioprospecto1.$error.required && !exampleForm.$pristine}" >
-                  
+
 					</select>
-				</div>	
+				</div>
 			<input type="submit" class="btn btn-success pull-right mt-2" ng-click="submitFormGenCotizacion(formDataGenCotizacion)" ng-disabled="!exampleFormGenCotizacion.$valid" value="Generar PDF"/>
           </form>
       </div>
       <div class="modal-footer">
-        
+
       </div>
     </div>
   </div>
@@ -934,7 +937,7 @@ data-backdrop="static" data-keyboard="true">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="modalInsertarServicioTitulo">{{titulo}}</h4>
       </div>
-    <div class="modal-body"> 
+    <div class="modal-body">
       <!--<form name="exampleForm">-->
         <span>{{$scope.ts}}</span>
         <div class='form-group'>
@@ -964,14 +967,14 @@ data-backdrop="static" data-keyboard="true">
         </div>
 				<div class="form-group">
           <label for="etapa">Etapa<span class="required">*</span></label>
-          <select ng-model="formData.etapa" ng-options="etapa.ID_ETAPA as etapa.ETAPA for etapa in Etapas" 
+          <select ng-model="formData.etapa" ng-options="etapa.ID_ETAPA as etapa.ETAPA for etapa in Etapas"
           class="form-control" id="etapa" name="etapa" ng-change='cambioEtapa()' required
           ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}" ></select>
-        </div>	
+        </div>
         <input type="submit" class="btn btn-success pull-right mt-2" ng-click="submitForm(formData)" ng-disabled="!exampleForm.$valid" value="Guardar"/>
       <!--</form>-->
-    </div>                                  
-    <div class="modal-footer">                        
+    </div>
+    <div class="modal-footer">
     </div>
   </div>
 </div>

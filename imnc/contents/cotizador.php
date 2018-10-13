@@ -6,8 +6,8 @@
         <p><h2>Cotizaciones</h2></p>
         <p>
           <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_insertar()'
-          ng-if='modulo_permisos["registrar"] == 1'> 
-            <i class="fa fa-plus"> </i> Agregar cotización 
+          ng-if='modulo_permisos["registrar"] == 1'>
+            <i class="fa fa-plus"> </i> Agregar cotización
           </button>
         </p>
           <div class="clearfix"></div>
@@ -26,6 +26,7 @@
                 <th class="column-title">Estado</th>
                 <th class="column-title">Tarifa día auditor</th>
                 <th class="column-title">¿SG Integral?</th>
+                <th class="column-title"></th>
                 <th class="column-title"></th>
                 <th class="column-title"></th>
 				<th class="column-title"></th>
@@ -51,13 +52,19 @@
                   </button>
                 </td>
                 <td>
+                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="eliminar_cotizacion(cotizacion.ID)"
+                  ng-if='modulo_permisos["editar"] == 1' style="float: right;">
+                    <i class="fa fa-trash"></i> Eliminar cotización
+                  </button>
+                </td>
+                <td>
                   <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion&id_cotizacion={{cotizacion.ID}}" style="float: right;">
-                    <i class="fa fa-bullseye"></i> Ver cotización 
+                    <i class="fa fa-bullseye"></i> Ver cotización
                   </a>
                 </td>
-				 <td>
+				        <td>
                   <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=registro_expediente&id={{cotizacion.ID}}&id_entidad=4" style="float: right;">
-                    <i class="fa fa-home"></i> Ver expedientes 
+                    <i class="fa fa-home"></i> Ver expedientes
                   </a>
                 </td>
               </tr>
@@ -105,16 +112,19 @@
               <div class="form-group form-vertical" id="comboCliente" ng-if="bandera==1">
                 <label class="control-label col-md-12">Cliente <span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select id="selectCliente" ng-model="cotizacion_insertar_editar.CLIENTE" class="form-control" ng-options="cliente as cliente.NOMBRE for cliente in arr_clientes track by cliente.ID">
+                  <select id="selectCliente"
+                  ng-model="cotizacion_insertar_editar.CLIENTE" class="form-control"
+                  ng-options="cliente as cliente.NOMBRE for cliente in arr_clientes track by cliente.ID"
+                  ng-change="cambioCliente()">
                      <option value="" selected disabled>-- selecciona un cliente --</option>
                   </select>
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group form-vertical">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Estado de la cotización<span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select ng-model="cotizacion_insertar_editar.ESTADO_SEG" required="required" class="form-control" 
+                  <select ng-model="cotizacion_insertar_editar.ESTADO_SEG" required="required" class="form-control"
                   ng-options="estseg as estseg.DESCRIPCION for estseg in Estatus_seguimiento track by estseg.ID">
                     <option value="" selected disabled>---Seleccione un estatus---</option>
                   </select>
@@ -124,18 +134,29 @@
               <div class="form-group form-vertical" >
                 <label class="control-label col-md-12"> Folio  <span class="required">*</span></label>
                 <div class="col-md-4">
-                  <input type="text" ng-model="cotizacion_insertar_editar.FOLIO_INICIALES"  required="required" class="form-control" 
+                  <input type="text" ng-model="cotizacion_insertar_editar.FOLIO_INICIALES"  required="required" class="form-control"
                   ng-change="cotizacion_insertar_editar.FOLIO_INICIALES = cotizacion_insertar_editar.FOLIO_INICIALES.toUpperCase()">
                   <div style="float: left;"><span style="font-size: 11px;">Iniciales del Ejecutivo</span></div>
                 </div>
                  <div class="col-md-4">
-                  <input type="text" ng-model="cotizacion_insertar_editar.FOLIO_SERVICIO"  required="required" class="form-control" 
+                  <input type="text" ng-model="cotizacion_insertar_editar.FOLIO_SERVICIO"  required="required" class="form-control"
                   ng-change="cotizacion_insertar_editar.FOLIO_SERVICIO = cotizacion_insertar_editar.FOLIO_SERVICIO.toUpperCase()">
                   <div style="float: left;"><span style="font-size: 11px;">Iniciales del Servicio</span></div>
                 </div>
               </div>
+              <div class="form-group form-vertical" ng-if='bandera==1'>
+                <label class="control-label col-md-12">Servicio contratado<span class="required">*</span></label>
+                <div class="col-md-12">
+                  <select id="selectReferencia" ng-model="cotizacion_insertar_editar.REFERENCIA"
+                  ng-change="cambioReferencia()"
+                  ng-options="referencia as referencia.VALOR for referencia in Referencias" class="form-control">
+                     <option value="" selected disabled>-- selecciona una referencia --</option>
+                  </select>
+                </div>
+              </div>
+
               <!--
-              <div class="form-group form-vertical" 
+              <div class="form-group form-vertical"
                 ng-if='cotizacion_insertar_editar.ESTADO_SEG.DESCRIPCION == "Cotizado" || cotizacion_insertar_editar.ESTADO_SEG.DESCRIPCION == "Firmado"'>
                 <label class="control-label col-md-12">Referencia</label>
                 <div class="col-md-12">
@@ -147,9 +168,10 @@
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Servicio <span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select id="selectServicio" ng-model="cotizacion_insertar_editar.ID_SERVICIO" 
+                  <select id="selectServicio" ng-model="cotizacion_insertar_editar.ID_SERVICIO"
                   ng-options="servicio as servicio.NOMBRE for servicio in Servicios"
-                  ng-change ="cambio_servicio()" class="form-control">
+                  ng-change ="cambio_servicio()" class="form-control"
+                  ng-disabled="bandera==1">
                      <option value="" selected disabled>-- selecciona un servicio --</option>
                   </select>
                 </div>
@@ -159,17 +181,40 @@
                 <div class="col-md-12">
                   <select id="selectTipoServicio" ng-model="cotizacion_insertar_editar.ID_TIPO_SERVICIO" class="form-control"
                   ng-options="item_servicio as item_servicio.NOMBRE for item_servicio in Tipos_Servicio"
-                  ng-change="cambio_tipo_servicio()">
+                  ng-change="cambio_tipo_servicio()"
+                  ng-disabled="bandera==1">
                      <option value="" selected disabled>-- selecciona un tipo de servicio --</option>
                   </select>
                 </div>
               </div>
+              <!--
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Norma <span class="required">*</span></label>
                 <div class="col-md-12">
                   <select id="selectNorma" ng-model="cotizacion_insertar_editar.ID_NORMA" class="form-control"
-                  ng-options="norma as norma.ID_NORMA for norma in Normas">
-                     <option value="" selected disabled>-- selecciona un tipo de servicio --</option>
+                  ng-options="norma as norma.ID_NORMA for norma in Normas"
+                  ng-disabled="bandera==1">
+                     <option value="" selected disabled>-- selecciona una norma --</option>
+                  </select>
+                </div>
+              </div>
+            -->
+            <div class="form-group form-vertical">
+						<label class="control-label col-md-12">Normas</label>
+            <div class="col-md-12">
+  						<multiple-autocomplete ng-model="normas_cotizacion"
+  						object-property="ID_NORMA"
+  						suggestions-arr="Normas">
+  						</multiple-autocomplete>
+            </div>
+					</div>
+
+              <div class="form-group form-vertical" ng-if='bandera==1'>
+                <label class="control-label col-md-12">Etapa<span class="required">*</span></label>
+                <div class="col-md-12">
+                  <select id="selectEtapa" ng-model="cotizacion_insertar_editar.ETAPA"
+                  ng-options="etapa.ID as etapa.NOMBRE for etapa in Etapas" class="form-control">
+                     <option value="" selected disabled>-- selecciona una etapa --</option>
                   </select>
                 </div>
               </div>
@@ -194,10 +239,10 @@
                 </div>
               </div>
               -->
-              <div class="form-group">
+              <div class="form-group form-vertical">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa por Día Auditor<span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select ng-model="cotizacion_insertar_editar.TARIFA" required="required" class="form-control" 
+                  <select ng-model="cotizacion_insertar_editar.TARIFA" required="required" class="form-control"
                   ng-options="item_tarifa.id as item_tarifa.descripcion for item_tarifa in Tarifa_Cotizacion">
                     <option value="" selected disabled>---Seleccione una tarifa---</option>
                   </select>

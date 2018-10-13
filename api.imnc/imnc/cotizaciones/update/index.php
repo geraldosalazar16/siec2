@@ -37,6 +37,8 @@ $ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO;
 valida_parametro_and_die($ID_TIPO_SERVICIO,"Falta ID de TIPO DE SERVICIO");
 $ID_NORMA = $objeto->ID_NORMA; 
 valida_parametro_and_die($ID_NORMA,"Falta ID de NORMA");
+$ETAPA = $objeto->ETAPA; 
+valida_parametro_and_die($ETAPA,"Falta la etapa");
 $ESTADO_COTIZACION = $objeto->ESTADO_COTIZACION; 
 valida_parametro_and_die($ESTADO_COTIZACION,"Falta ESTADO COTIZACION");
 $FOLIO_SERVICIO = $objeto->FOLIO_SERVICIO; 
@@ -71,6 +73,7 @@ $id = $database->update("COTIZACIONES", [
 	"ID_SERVICIO" => $ID_SERVICIO, 
 	"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
 	"ID_NORMA" => $ID_NORMA,
+	"ETAPA" => $ETAPA,
 	"ESTADO_COTIZACION" => $ESTADO_COTIZACION, 
 	"FOLIO_SERVICIO" => $FOLIO_SERVICIO, 
 	"FOLIO_INICIALES" => $FOLIO_INICIALES,
