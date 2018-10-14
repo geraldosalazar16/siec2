@@ -494,6 +494,26 @@ $("#txtColonia").val($("#nuevaColonia").val());
 // *****                       Calificaciones                                 *****
 // ================================================================================
 
+ function fill_cmb_norma(seleccionado,id_tipo_servicio){
+    $.getJSON( global_apiserver + "/normas_tiposervicio/getNormabyIdTipoServicio/?id="+id_tipo_servicio, function( response ) {
+      $("#cmbNorma").html('<option value="elige" selected disabled>-elige una opción-</option>');
+      $.each(response, function( indice, objTserv ) {
+        $("#cmbNorma").append('<option value="'+objTserv.ID_NORMA+'">'+objTserv.ID_NORMA+'</option>'); 
+      });
+      $("#cmbNorma").val(seleccionado);
+    });
+  }
+ 
+ function fill_cmb_norma_actualizacion(seleccionado,id_tipo_servicio){
+    $.getJSON( global_apiserver + "/normas_tiposervicio/getNormabyIdTipoServicio/?id="+id_tipo_servicio, function( response ) {
+      $("#cmbNormaActualizacion").html('<option value="elige" selected disabled>-elige una opción-</option>');
+      $.each(response, function( indice, objTserv ) {
+        $("#cmbNormaActualizacion").append('<option value="'+objTserv.ID_NORMA+'">'+objTserv.ID_NORMA+'</option>'); 
+      });
+	  $("#cmbNormaActualizacion").val(seleccionado);
+    });
+  } 
+
   function fill_cmb_tipo_servicio(seleccionado){
     $.getJSON( global_apiserver + "/tipos_servicio/getAll/", function( response ) {
       $("#cmbTipoServicio").html('<option value="elige" selected disabled>-elige una opción-</option>');
@@ -533,6 +553,7 @@ $("#txtColonia").val($("#nuevaColonia").val());
           $("#txtFecIniCalif").val(fec_ini);
           $("#txtFecFinCalif").val(fec_fin);
           fill_cmb_tipo_servicio(response.ID_TIPO_SERVICIO);
+		  fill_cmb_norma(response.ID_NORMA,response.ID_TIPO_SERVICIO);
           fill_cmb_rol(response.ID_ROL);
        });
   }
@@ -622,6 +643,7 @@ function clear_modal_insertar_actualizar_calif(){
   $("#txtFecIniCalif").val("");
   $("#txtFecFinCalif").val("");
   fill_cmb_tipo_servicio("elige");
+ // fill_cmb_norma("elige");
   fill_cmb_rol("elige");
 }
 
@@ -629,11 +651,17 @@ function clear_modal_insertar_actualizar_calif(){
     $( "#btnNuevoCalif" ).click(function() {
       $("#btnGuardarCalif").attr("accion","insertar");
       $("#modalTituloCalif").html("Insertar nueva calificación");
+	  $("#cmbNorma").prop("disabled", true);
       clear_modal_insertar_actualizar_calif();
       $("#modalInsertarActualizarCalif").modal("show");
     });
   }
 
+  	$("#cmbTipoServicio").change(function(){
+		 $("#cmbNorma").prop("disabled", false);
+		 fill_cmb_norma("elige",$("#cmbTipoServicio").val());
+	});
+  
   function listener_btn_guardar_calif(){
     $( "#btnGuardarCalif" ).click(function() {
       if ($("#btnGuardarCalif").attr("accion") == "insertar")
@@ -650,7 +678,7 @@ function clear_modal_insertar_actualizar_calif(){
   function insertar_calif_anterior(){
     
 	
-    $.post(global_apiserver + "/personal_tecnico_calificaciones/updateCalificacionSectores/?id_calificacion="+$("#id_calificacion_input").val()+"&id_tipo_servicio="+$("#cmbTipoServicioActualizacion").val()+"&id_usuario="+sessionStorage.getItem("id_usuario"), function(respuesta){
+    $.post(global_apiserver + "/personal_tecnico_calificaciones/updateCalificacionSectores/?id_calificacion="+$("#id_calificacion_input").val()+"&id_tipo_servicio="+$("#cmbTipoServicioActualizacion").val()+"&id_norma="+$("#cmbNormaActualizacion").val()+"&id_usuario="+sessionStorage.getItem("id_usuario"), function(respuesta){
         respuesta = JSON.parse(respuesta);
         if (respuesta.resultado == "ok") {
           $("#modalInsertarActualizarCalifSectorAnterior").modal("hide");
@@ -679,11 +707,17 @@ function clear_modal_insertar_actualizar_calif(){
 
 	$(".btnActualizarAnterior").click(function() {
        $("#id_calificacion_input").val($(this).attr("id_calificacion"));
-	  fill_cmb_tipo_servicio_actualizacion();
+	   $("#cmbNormaActualizacion").prop("disabled", true);
+		//fill_cmb_norma_actualizacion();
+		fill_cmb_tipo_servicio_actualizacion();
       $("#modalInsertarActualizarCalifSectorAnterior").modal("show");
     });
   }
-
+	$("#cmbTipoServicioActualizacion").change(function(){
+		 $("#cmbNormaActualizacion").prop("disabled", false);
+		 fill_cmb_norma_actualizacion("elige",$("#cmbTipoServicioActualizacion").val());
+	});
+	
   function listener_btn_editar_calif(){
     $( ".btnEditarCalif" ).click(function() {
       $("#btnGuardarCalif").attr("accion","editar");
@@ -703,11 +737,13 @@ function clear_modal_insertar_actualizar_calif(){
     strHtml += '<tr>';
     strHtml += '  <td>'+num+'. </td>';
     strHtml += '  <td>'+objCalif.ID_ROL+'</td>';
-    strHtml += '  <td>'+objCalif.ID_TIPO_SERVICIO+': <br>' + objCalif.NOMBRE_TIPO_SERVICIO + '</td>';
+    strHtml += '  <td>'+objCalif.ACRONIMO+': <br>' + objCalif.NOMBRE_TIPO_SERVICIO + '</td>';
     strHtml += '  <td>'+objCalif.REGISTRO+'</td>';
     strHtml += '  <td> de: '+fec_ini+' <br> a: '+fec_fin+'</td>';
     strHtml += '  <td>';
-    strHtml += '    <button type="button" class="btn btn-primary btn-xs btn-imnc btnSectores" id_tipo_servicio="'+objCalif.ID_TIPO_SERVICIO+'" id="'+objCalif.ID+'" style="float: right;"> <i class="fa fa-dot-circle-o" aria-hidden="true"></i> Ver sectores </button>';
+	if (objCalif.ID_SERVICIO == 1) {
+		strHtml += '    <button type="button" class="btn btn-primary btn-xs btn-imnc btnSectores" id_tipo_servicio="'+objCalif.ID_TIPO_SERVICIO+'" id="'+objCalif.ID+'" style="float: right;"> <i class="fa fa-dot-circle-o" aria-hidden="true"></i> Ver sectores </button>';
+	}
     strHtml += '  </td>';
 	strHtml += '  <td>';
     if (global_permisos["AUDITORES"]["editar"] == 1) {
@@ -747,6 +783,7 @@ function clear_modal_insertar_actualizar_calif(){
       ID_PERSONAL_TECNICO:parseInt(global_id_personal_tecnico),
       ID_ROL:$("#cmbRol").val(),
       ID_TIPO_SERVICIO:$("#cmbTipoServicio").val(),
+	  ID_NORMA:$("#cmbNorma").val(),
       REGISTRO:$("#txtRegistro").val(),
       FECHA_INICIO:fec_ini,
       FECHA_FIN:fec_fin,
@@ -775,6 +812,7 @@ function clear_modal_insertar_actualizar_calif(){
       ID:$("#btnGuardarCalif").attr("id_calif"),
       ID_ROL:$("#cmbRol").val(),
       ID_TIPO_SERVICIO:$("#cmbTipoServicio").val(),
+	  ID_NORMA:$("#cmbNorma").val(),
       REGISTRO:$("#txtRegistro").val(),
       FECHA_INICIO:fec_ini,
       FECHA_FIN:fec_fin,
@@ -909,7 +947,7 @@ function removeOptions(selectbox)
       $("#btnGuardarCalifSector").attr("id_calif",$(this).attr("id_calif"));
       $("#btnGuardarCalifSector").attr("id_tipo_servicio",$(this).attr("id_tipo_servicio"));
       $("#modalTituloCalifSector").html("Insertar nuevo sector de calificación");
-      clear_modal_insertar_actualizar_calif_sector();
+	  clear_modal_insertar_actualizar_calif_sector();
       $("#modalInsertarActualizarCalifSector").modal("show");
     });
   }

@@ -425,8 +425,8 @@ $html = <<<EOD
 		
 		<td style="font-size: small; text-align:left;" width="115"> 
 			Clave: FPEC23 <br>
-			Fecha de aplicación: 2017-08-09 <br>
-			Versión: 02 <br>
+			Fecha de aplicación: 2018-08-02 <br>
+			Versión: 04 <br>
 			Página $NumPage de $TotPage
 		</td>
 	</tr>
@@ -600,9 +600,11 @@ for($i=0;$i<count($datos);$i++){
 		$Titulo_Tabla="SERVICIO DE AUDITORÍA DE CERTIFICACIÓN INICIAL";
 		$dias_auditor_E1 = $datos[$i]->DIAS_AUDITORIA;
 		$costo_E1	=	$datos[$i]->TRAMITE_COSTO;
+		$viaticos_E1 = $datos[$i]->VIATICOS;
 		$dias_auditor_E2 = $datos[$i+1]->DIAS_AUDITORIA;
 		$costo_E2	=	$datos[$i+1]->TRAMITE_COSTO;
-		$subtotal=$costo_E1+$costo_E2;
+		$viaticos_E2 = $datos[$i+1]->VIATICOS;
+		$subtotal=$costo_E1+$costo_E2+$viaticos_E1+$viaticos_E2;
 		$IVA16=0.16*$subtotal;
 		$total=$subtotal+$IVA16;
 		$html = <<<EOT
@@ -660,7 +662,7 @@ EOT;
 EOT;
 			}}
 			}		
-			$subtotal=$costo_E1+$costo_E2+$suma_tarifa;
+			$subtotal=$costo_E1+$costo_E2+$suma_tarifa+$viaticos_E1+$viaticos_E2;
 			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
 			$html .= <<<EOT
@@ -690,7 +692,7 @@ $i=$i+1;
 		$Descripcion_servicio=$datos[$i]->ETAPA;
 		$dias_auditor = $datos[$i]->DIAS_AUDITORIA;
 		$costo	=	$datos[$i]->TRAMITE_COSTO;
-		
+		$viaticos = $datos[$i]->VIATICOS;
 		
 		$html = <<<EOT
 		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -726,7 +728,7 @@ EOT;
 						</tr>
 EOT;
 			}}		
-			$subtotal=$costo+$suma_tarifa;
+			$subtotal=$costo+$suma_tarifa+$viaticos;
 			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
 			$html .= <<<EOT
@@ -795,35 +797,35 @@ $html .= ' Si el IMNC requiere conducir Auditorías de Seguimiento en las instal
 acciones para dar atención a las no conformidades reportadas durante cualquier auditoría sobre la certificación, éstas tendrán un costo
 de $10,000.00 pesos más I.V.A. por día/auditor. Si esta revisión se requiere hacer en instalaciones del IMNC, tendrá un costo de
 $5,000.00 pesos por esta actividad.';
-$html .= '<h3>4.3 Auditorías con notificación a corto plazo.</h3>';
+$html .= '<h3>4.4 Auditorías con notificación a corto plazo.</h3>';
 $html .= ' El IMNC se reserva el derecho de tener que realizar auditorías a sus clientes certificados, bajo la forma de visita notificada a corto plazo,
 con el fin de investigar quejas, o respuestas a cambios, o como seguimientos de clientes cuya certificación haya sido suspendida. Este tipo
 de auditorías, no tendrán ningún costo para el cliente.';
 $pdf1->writeHTML($html, true, false, true, false, '');
 
 $pdf1->AddPage();
-$html = '<h3>4.4 Certificado.</h3>';
+$html = '<h3>4.5 Certificado.</h3>';
 $html .= ' La Vigencia del Certificado emitido por el IMNC, será de 3 años. Los certificados emitidos bajo una norma que se encuentre en periodo
 de transición, quedarán obsoletos a partir de la fecha límite dada a conocer por el IMNC.<br>
 La entrega del documento de certificación, se hará de 5 a 8 días hábiles posteriores a la aprobación del boceto.<br>
 Cuando el cliente solicite su certificado en Placa, la entrega se hará en un plazo no mayor a los 20 días hábiles posteriores a la aprobación
 del boceto y tendrá un costo de 10,000 pesos por cada placa.';
-$html .= '<h3>4.5 Modificaciones al certificado.</h3>';
+$html .= '<h3>4.6 Modificaciones al certificado.</h3>';
 $html .= ' Si durante la vigencia de este contrato, surge la necesidad de hacer modificaciones al Certificado (por ejemplo: nombre o razón social de
 la empresa, dirección, norma, alcance y número de sitios), tendrá un costo de $10,000.00 pesos más I.V.A.';
-$html .= '<h3>4.6 Cambios en la organización del cliente.</h3>';
+$html .= '<h3>4.7 Cambios en la organización del cliente.</h3>';
 $html .= ' El Cliente se obliga a informar al IMNC dentro de los primeros 15 días posteriores a estos, que puedan afectar la capacidad de su sistema
 de gestión certificado para continuar cumpliendo los requisitos de la norma utilizada para la certificación (por ejemplo: cambios en la
 condición legal, comercial o de propiedad); la organización y la gestión (por ejemplo: personal clave como directivos, personal que toma
 decisiones o personal técnico), cambio de domicilio y lugar de contacto; el alcance de las operaciones, procesos y productos cubiertos por
 el sistema de gestión certificado. En tales casos el IMNC se reserva el derecho de determinar si es necesario conducir una auditoría
 especial, y en su caso emitirá una nueva Propuesta económica/Cotización del servicio para el visto bueno del cliente.';
-$html .= '<h3>4.7 Renovación</h3>';
+$html .= '<h3>4.8 Renovación</h3>';
 $html .= ' Para renovar el certificado, se tendrá que realizar una auditoría de Renovación, y tendrá que ejecutarse preferentemente con una
 antelación de 4 meses al vencimiento del certificado.<br>
 En caso de que la Recertificación sea concluida después de la fecha del vencimiento del certificado, no se podrá conservar la fecha de
 antigüedad del certificado de origen.';
-$html .= '<h3>4.8 Testificación.</h3>';
+$html .= '<h3>4.9 Testificación.</h3>';
 $html .= ' En una testificación se evalúa al Organismo de Certificación por parte del Organismo de Acreditación ema durante la realización de una
 auditoría practicada a un cliente. La ema en ningún caso estará evaluando al cliente y esto no afectará su auditoría.<br>
 En caso de que el Organismo de Acreditación (ema) solicite que se haga una testificación durante alguna de sus auditorías, esta se deberá
@@ -831,7 +833,7 @@ realizar de acuerdo a lo solicitado. En caso de no poder recibir esta auditoría
 autorizada por la ema, o por el IMNC, se deberá recibir la auditoría de testificación.<br>
 En caso de no cumplir con lo citado anteriormente, se podría proceder a la CANCELACIÓN DE SU CERTIFICADO con base en lo establecido
 en el Documento Mandatorio IAF MD 17:2015 en su punto 2.2.2.';
-$html .= '<h3>4.9</h3>';
+$html .= '<h3>4.10</h3>';
 $html .= ' En el caso de que algún elemento de los párrafos anteriores sea incumplido por parte del cliente, el IMNC podrá poner en proceso de
 Suspensión la certificación; en caso de no atenderse los plazos y actividades marcadas en el plazo de suspensión, se procederá a la
 Cancelación del Certificado del Cliente.';

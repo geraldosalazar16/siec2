@@ -43,9 +43,11 @@ if (isset($completo)) {
 	$califis = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["ID_PERSONAL_TECNICO"=>$id]);
 	valida_error_medoo_and_die();
 	for ($i=0; $i < count($califis) ; $i++) { 
-		$nombre_tipo_servicio = $database->get("TIPOS_SERVICIO", "NOMBRE", ["ID"=>$califis[$i]["ID_TIPO_SERVICIO"]]);
+		$datos_tipo_servicio = $database->get("TIPOS_SERVICIO", ["NOMBRE","ACRONIMO","ID_SERVICIO"], ["ID"=>$califis[$i]["ID_TIPO_SERVICIO"]]);
 		valida_error_medoo_and_die();
-		$califis[$i]["NOMBRE_TIPO_SERVICIO"] = $nombre_tipo_servicio;
+		$califis[$i]["NOMBRE_TIPO_SERVICIO"] = $datos_tipo_servicio["NOMBRE"];
+		$califis[$i]["ACRONIMO"] = $datos_tipo_servicio["ACRONIMO"];
+		$califis[$i]["ID_SERVICIO"] = $datos_tipo_servicio["ID_SERVICIO"];
 	}
 	$personal_tecnico["CALIFICACIONES"] = $califis;
 }

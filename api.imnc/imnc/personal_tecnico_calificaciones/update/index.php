@@ -46,6 +46,9 @@ valida_parametro_and_die($ID_ROL, "Es necesario seleccionar un rol");
 $ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO;
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
 
+$ID_NORMA = $objeto->ID_NORMA;
+valida_parametro_and_die($ID_NORMA, "Es necesario seleccionar una norma");
+
 $REGISTRO = $objeto->REGISTRO;
 valida_parametro_and_die($REGISTRO, "Es necesario capturar un registro");
 
@@ -85,6 +88,7 @@ $HORA_MODIFICACION = date("His");
 $id = $database->update("PERSONAL_TECNICO_CALIFICACIONES", [
 	"ID_ROL" => $ID_ROL,
 	"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
+	"ID_NORMA" => $ID_NORMA,
 	"REGISTRO" => $REGISTRO,
 	"FECHA_INICIO" => $FECHA_INICIO,
 	"FECHA_FIN" => $FECHA_FIN,

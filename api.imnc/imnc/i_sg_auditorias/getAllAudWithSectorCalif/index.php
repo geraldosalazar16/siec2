@@ -75,7 +75,7 @@ $strQuery = "SELECT
 		INNER JOIN `SECTORES` ON `SECTORES`.`ID_SECTOR` = `I_SG_SECTORES`.`ID_SECTOR` 
 		INNER JOIN `PERSONAL_TECNICO_CALIFICACIONES` ON `PERSONAL_TECNICO_CALIFICACIONES`.`ID`= `PERSONAL_TECNICO_CALIF_SECTOR`.`ID_PERSONAL_TECNICO_CALIFICACION` 
 		INNER JOIN `PERSONAL_TECNICO` ON `PERSONAL_TECNICO`.`ID` = `PERSONAL_TECNICO_CALIFICACIONES`.`ID_PERSONAL_TECNICO` 
-		INNER JOIN `SERVICIO_CLIENTE_ETAPA` ON `SERVICIO_CLIENTE_ETAPA`.`ID` = `I_SG_SECTORES`.`ID_SERVICIO_CLIENTE_ETAPA` AND `SERVICIO_CLIENTE_ETAPA`.`ID_TIPO_SERVICIO` = `PERSONAL_TECNICO_CALIFICACIONES`.`ID_TIPO_SERVICIO` 
+		INNER JOIN `SERVICIO_CLIENTE_ETAPA` ON `SERVICIO_CLIENTE_ETAPA`.`ID` = `I_SG_SECTORES`.`ID_SERVICIO_CLIENTE_ETAPA` AND `SERVICIO_CLIENTE_ETAPA`.`ID_TIPO_SERVICIO` = `PERSONAL_TECNICO_CALIFICACIONES`.`ID_TIPO_SERVICIO`  AND `SERVICIO_CLIENTE_ETAPA`.`ID_NORMA` = `PERSONAL_TECNICO_CALIFICACIONES`.`ID_NORMA`
 		INNER JOIN `TIPOS_SERVICIO` ON `TIPOS_SERVICIO`.`ID` = `SERVICIO_CLIENTE_ETAPA`.`ID_TIPO_SERVICIO` 
 		
 		WHERE `I_SG_SECTORES`.`ID_SERVICIO_CLIENTE_ETAPA`= " . $database->quote($id_sce) . "
@@ -172,12 +172,12 @@ for ($i=0; $i < count($all_pt) ; $i++) {
 	
 		//echo $consulta;
 		//$tiene_fechas = array();
-		$tiene_fechas = $database->query($consulta)->fetchAll();
+/*		$tiene_fechas = $database->query($consulta)->fetchAll();
 		valida_error_medoo_and_die();
 		if (sizeof($tiene_fechas) == 0) {
 			$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["STATUS"] = "asignado";
 		}
-
+*/
 		// Detalles de las calificaciones del auditor
 		
 		$detalles_de_califs = array();
@@ -201,14 +201,15 @@ for ($i=0; $i < count($all_pt) ; $i++) {
 // ==============================================================
 
 $tipo_servicio = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_TIPO_SERVICIO", ["ID"=>$id_sce]);
+$norma = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_NORMA", ["ID"=>$id_sce]);
 valida_error_medoo_and_die();
 
 if (count($array_pt_califs) > 0) { // Si hay auditores con calificacion se hace un query con todos menos ellos
-	$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs, "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
+	$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs, "ID_TIPO_SERVICIO"=>$tipo_servicio,"ID_NORMA"=>$norma]]);
 
 	}
 else{
-	$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["ID_TIPO_SERVICIO"=>$tipo_servicio]);
+	$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>[ "ID_TIPO_SERVICIO"=>$tipo_servicio,"ID_NORMA"=>$norma]]);
 }
 
 valida_error_medoo_and_die();
@@ -278,12 +279,12 @@ for ($i=0; $i < count($otras_califs); $i++) {
 		//$consulta = "SELECT * FROM PERSONAL_TECNICO,PERSONAL_TECNICO_CALIFICACIONES,SG_AUDITORIA_GRUPOS, SG_AUDITORIA_GRUPO_FECHAS ";
 		
 		//echo $consulta;
-		$tiene_fechas = $database->query($consulta)->fetchAll();
+/*		$tiene_fechas = $database->query($consulta)->fetchAll();
 		valida_error_medoo_and_die();
 		if (sizeof($tiene_fechas) == 0) {
 			//$respuesta[$otras_califs[$i]["ID_PERSONAL_TECNICO"]]["STATUS"] = "asignado";
 			$otras_califs[$i]["STATUS"] = "asignado";
-		}
+		}*/
 }
 
 // ==============================================================

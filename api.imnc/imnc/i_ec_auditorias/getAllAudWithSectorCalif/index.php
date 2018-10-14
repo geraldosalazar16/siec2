@@ -202,14 +202,15 @@ $array_pt_califs = array();
 // ==============================================================
 
 $tipo_servicio = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_TIPO_SERVICIO", ["ID"=>$id_sce]);
+$norma = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_NORMA", ["ID"=>$id_sce]);
 valida_error_medoo_and_die();
 
 if (count($array_pt_califs) > 0) { // Si hay auditores con calificacion se hace un query con todos menos ellos
-	$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs, "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
+	$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs, "ID_TIPO_SERVICIO"=>$tipo_servicio,"ID_NORMA"=>$norma]]);
 
 	}
 else{
-	$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["ID_TIPO_SERVICIO"=>$tipo_servicio]);
+	$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>[ "ID_TIPO_SERVICIO"=>$tipo_servicio,"ID_NORMA"=>$norma]]);
 }
 
 valida_error_medoo_and_die();
@@ -279,12 +280,12 @@ for ($i=0; $i < count($otras_califs); $i++) {
 		//$consulta = "SELECT * FROM PERSONAL_TECNICO,PERSONAL_TECNICO_CALIFICACIONES,SG_AUDITORIA_GRUPOS, SG_AUDITORIA_GRUPO_FECHAS ";
 		
 		//echo $consulta;
-		$tiene_fechas = $database->query($consulta)->fetchAll();
-		valida_error_medoo_and_die();
-		if (sizeof($tiene_fechas) == 0) {
+//		$tiene_fechas = $database->query($consulta)->fetchAll();
+//		valida_error_medoo_and_die();
+//		if (sizeof($tiene_fechas) == 0) {
 			//$respuesta[$otras_califs[$i]["ID_PERSONAL_TECNICO"]]["STATUS"] = "asignado";
-			$otras_califs[$i]["STATUS"] = "asignado";
-		}
+//			$otras_califs[$i]["STATUS"] = "asignado";
+//		}
 }
 
 // ==============================================================

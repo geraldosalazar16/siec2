@@ -18,8 +18,18 @@
                 </select>
                 <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
               </div>
-            </div>
-            </form>
+            </div>		
+			  <label class="control-label col-md-4 col-sm-4 col-xs-12" for="cmbNormaActualizacion">Norma <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+			  <input type="hidden" id="id_calificacion_input"/>
+                <select class="form-control" id="cmbNormaActualizacion">
+                  
+                </select>
+                <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
+              </div>
+            </div>	
+            </form>   
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
