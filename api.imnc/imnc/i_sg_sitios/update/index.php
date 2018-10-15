@@ -125,6 +125,6 @@ $id = $database->update("I_SG_SITIOS", [
 ], ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$ID,"ID_CLIENTE_DOMICILIO"=>$ID_CLIENTE_DOMICILIO]]); 
 
 valida_error_medoo_and_die(); 
-$respuesta["resultado"]="OK"; 
+$respuesta["resultado"]="ok"; 
 print_r(json_encode($respuesta)); 
 ?> 

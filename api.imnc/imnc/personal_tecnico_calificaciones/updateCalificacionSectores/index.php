@@ -37,6 +37,7 @@ $HORA_CREACION = date("His");
 
 $id_calificacion = $_REQUEST["id_calificacion"];
 $id_tipo_servicio = $_REQUEST["id_tipo_servicio"];
+$id_norma = $_REQUEST["id_norma"];
 $id_usuario = $_REQUEST["id_usuario"];
 $query_calificacion = "SELECT * FROM PERSONAL_TECNICO_CALIFICACIONES WHERE ID = ".$id_calificacion;
 $res_calificacion = $database->query($query_calificacion)->fetchAll(PDO::FETCH_ASSOC);
@@ -45,6 +46,7 @@ $IdPTC = $database->insert("PERSONAL_TECNICO_CALIFICACIONES", [
 	"ID_PERSONAL_TECNICO" => $res_calificacion[0]["ID_PERSONAL_TECNICO"],
 	"ID_ROL" => $res_calificacion[0]["ID_ROL"],
 	"ID_TIPO_SERVICIO" => $id_tipo_servicio,
+	"ID_NORMA" => $id_norma,
 	"REGISTRO" => $res_calificacion[0]["REGISTRO"],
 	"FECHA_INICIO" => $res_calificacion[0]["FECHA_INICIO"],
 	"FECHA_FIN" => $res_calificacion[0]["FECHA_FIN"],

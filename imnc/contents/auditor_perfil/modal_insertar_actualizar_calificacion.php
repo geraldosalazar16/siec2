@@ -8,11 +8,21 @@
       </div>
       <div class="modal-body">
           <form id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
-            <div class="form-group">
+           <div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12" for="cmbTipoServicio">Tipo de servicio <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
                 <select class="form-control" id="cmbTipoServicio">
+                  
+                </select>
+                <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
+              </div>
+            </div>	
+			<div class="form-group">
+              <label class="control-label col-md-4 col-sm-4 col-xs-12" for="cmbNorma">Norma <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <select class="form-control" id="cmbNorma">
                   
                 </select>
                 <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
