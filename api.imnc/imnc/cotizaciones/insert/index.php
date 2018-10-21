@@ -88,6 +88,24 @@ else
 
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
+
+//Verificar que el servicio no exista
+$id_cotizacion = $database->get("COTIZACIONES",
+"*",
+[
+	"AND" => [
+		"ID_PROSPECTO" => $ID_PROSPECTO,
+		"ID_SERVICIO" => $ID_SERVICIO,
+		"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO
+	]
+]);
+valida_error_medoo_and_die();
+if($id_cotizacion != 0){
+	$respuesta["resultado"] = "error";
+	$respuesta["mensaje"] = "La cotización que intenta ingresar ya existe";
+	print_r(json_encode($respuesta));
+	die();
+}
 $id_cotizacion = $database->insert("COTIZACIONES", [
 	"ID_PROSPECTO" => $ID_PROSPECTO,
 	"ID_SERVICIO" => $ID_SERVICIO,

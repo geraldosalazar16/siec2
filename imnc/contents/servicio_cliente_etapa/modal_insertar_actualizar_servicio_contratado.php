@@ -34,9 +34,18 @@
                             </div>
 							<div class="form-group">
                                 <label for="Norma">Norma<span class="required">*</span></label>
+                                <multiple-autocomplete ng-model="formData.Normas" 
+                                object-property="ID_NORMA"
+                                suggestions-arr="Normas"
+                                ng-class="{ error: exampleForm.Norma.$error.required && !exampleForm.$pristine}" 
+                                ng-disabled="!formData.sel_tipoServicio || accion=='editar'" >
+                                </multiple-autocomplete>
+                                <!--
                                 <select ng-model="formData.Norma" ng-options="Norma.ID_NORMA as Norma.ID_NORMA for Norma in Normas" 
                                 class="form-control" id="Norma" name="Norma" ng-change='cambioNorma()' required
-                                ng-class="{ error: exampleForm.Norma.$error.required && !exampleForm.$pristine}" ng-disabled="!formData.sel_tipoServicio || accion=='editar'" ></select>
+                                ng-class="{ error: exampleForm.Norma.$error.required && !exampleForm.$pristine}" 
+                                ng-disabled="!formData.sel_tipoServicio || accion=='editar'" ></select>
+                                -->
                             </div>
 							 <div class="form-group">
                                 <label for="etapa">Etapa<span class="required">*</span></label>

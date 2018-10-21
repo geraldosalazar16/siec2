@@ -822,12 +822,19 @@
               </div>
 
               <div class="form-group form-vertical">
+					      <label class="control-label col-md-12">Normas</label>
+                    <div class="col-md-12" ng-repeat="norma in obj_cotizacion.NORMAS">
+                        <span>{{norma.ID_NORMA}}</span>
+                    </div>
+				      </div>
+              <!--
+              <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Norma</label>
                 <div class="col-md-12">
                   <input type="text" ng-model="servicio_insertar.NOMBRE_NORMA"  required="required" class="form-control col-md-7 col-xs-12" readonly>
                 </div>
               </div>
-
+              -->
               <div class="form-group form-vertical" id="etapa">
                 <label class="control-label col-md-12" for="etapa">Etapa<span class="required">*</span>
                 </label>

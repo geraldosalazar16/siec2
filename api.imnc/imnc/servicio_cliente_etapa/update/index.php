@@ -40,8 +40,13 @@ valida_parametro_and_die($ID_SERVICIO, "Es necesario seleccionar un servicio");
 $ID_TIPO_SERVICIO	= $objeto->ID_TIPO_SERVICIO; 
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
 
-$ID_NORMA	= $objeto->ID_NORMA; 
-valida_parametro_and_die($ID_NORMA, "Es necesario seleccionar una NORMA");
+$NORMAS= $objeto->NORMAS;
+	if(count($NORMAS) == 0){
+		$respuesta['resultado']="error";
+		$respuesta['mensaje']="Es necesario seleccionar una norma";
+		print_r(json_encode($respuesta));
+		die();
+	}
 
 $ID_ETAPA_PROCESO = $objeto->ID_ETAPA_PROCESO; 
 valida_parametro_and_die($ID_ETAPA_PROCESO, "Es neceario seleccionar un trámite");
@@ -66,8 +71,7 @@ $ID_ETAPA_ANTERIOR	=	$database->get("SERVICIO_CLIENTE_ETAPA","ID_ETAPA_PROCESO",
 $id = $database->update("SERVICIO_CLIENTE_ETAPA", [ 
 		"ID_CLIENTE" => $ID_CLIENTE, 
 		"ID_SERVICIO" => $ID_SERVICIO,
-		"ID_TIPO_SERVICIO"=>	$ID_TIPO_SERVICIO,
-		"ID_NORMA"=>	$ID_NORMA,		
+		"ID_TIPO_SERVICIO"=>	$ID_TIPO_SERVICIO,	
 		"ID_ETAPA_PROCESO" => $ID_ETAPA_PROCESO, 
 		//"SG_INTEGRAL" => $SG_INTEGRAL, 
 		"REFERENCIA" => $REFERENCIA, 
@@ -81,6 +85,24 @@ $id = $database->update("SERVICIO_CLIENTE_ETAPA", [
 	["ID"=>$ID]
 ); 
 valida_error_medoo_and_die(); 
+//ACTUALIZAR LAS NORMAS
+	//borro todas las normas asociadas al servicio
+	$id = $database->delete("SCE_NORMAS", 
+	[
+		"AND" => [
+			"ID_SCE" => $ID
+		]		
+	]);
+	valida_error_medoo_and_die();
+	//Inserto las normas capturadas
+	for ($i=0; $i < count($NORMAS); $i++) { 
+		$id_norma = $NORMAS[$i]->ID_NORMA;
+		$id_sce_normas = $database->insert("SCE_NORMAS", [ 
+			"ID_SCE" => $ID,
+			"ID_NORMA" => $id_norma
+		]); 
+		valida_error_medoo_and_die(); 
+	}
 /*******************************************************/
 if($ID_ETAPA_ANTERIOR!=$ID_ETAPA_PROCESO){
 	$idet=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [ 

@@ -86,8 +86,8 @@ function llenar_modal_insertar_actualizar(){
 		cargartipoServicio($scope.formData.claveServicio);
 		cargarEtapas($scope.formData.claveServicio);
         $scope.formData.sel_tipoServicio = servicio_obtenido.ID_TIPO_SERVICIO;
-		cargarNormastipoServicio($scope.formData.sel_tipoServicio);
-		$scope.formData.Norma	=	servicio_obtenido.ID_NORMA;
+		cargarNormastipoServicio($scope.formData.sel_tipoServicio,servicio_obtenido.NORMAS);
+		//$scope.formData.Norma	=	servicio_obtenido.ID_NORMA;
 		$scope.formData.etapa	=	servicio_obtenido.ID_ETAPA_PROCESO;
 		$scope.formData.cambio	= servicio_obtenido.CAMBIO;
 		
@@ -132,7 +132,8 @@ function clear_modal_insertar_actualizar(){
         $scope.formData.claveCliente = "";
         $scope.formData.claveServicio = "";
         $scope.formData.sel_tipoServicio	=	"";
-		$scope.formData.Norma	=	"";
+		$scope.formData.Normas	=	[];
+		$scope.Normas = [];
 		$scope.formData.etapa	=	"";
 	}
 	
@@ -147,7 +148,7 @@ function clear_modal_insertar_actualizar(){
 				ID_SERVICIO: $scope.formData.claveServicio,
 				ID_TIPO_SERVICIO: $scope.formData.sel_tipoServicio,
 				ID_ETAPA_PROCESO:	$scope.formData.etapa,
-				ID_NORMA: $scope.formData.Norma,
+				NORMAS: $scope.formData.Normas,
                 REFERENCIA: formData.txtReferencia,
 				CAMBIO	: "N",
                 ID_USUARIO:	sessionStorage.getItem("id_usuario")
@@ -209,7 +210,7 @@ function clear_modal_insertar_actualizar(){
                 ID_CLIENTE: $scope.formData.claveCliente,
 				ID_SERVICIO: $scope.formData.claveServicio,
 				ID_TIPO_SERVICIO: $scope.formData.sel_tipoServicio,
-				ID_NORMA: $scope.formData.Norma,
+				NORMAS: $scope.formData.Normas,
 				ID_ETAPA_PROCESO:	$scope.formData.etapa,
                 REFERENCIA: $scope.formData.txtReferencia,
 				CAMBIO	: $scope.formData.cambio,
@@ -304,10 +305,30 @@ $scope.cambiosel_tipoServicio	=	function(id_tipo_servicio){
 // ==============================================================================
 // ***** 	Funcion para traer las Normas de este tipo de Servicio			*****
 // ==============================================================================
-function cargarNormastipoServicio(id_tipo_servicio){
+function cargarNormastipoServicio(id_tipo_servicio,normas_a_mostrar){
+		//Agregue normas a mostrar para cuando sea edición 
+		//Se muestre en el multiselect las que tiene seleccionadas
+		//Mientras que en las sugerencias no se muestren estas
 		$http.get(  global_apiserver + "/normas_tiposervicio/getNormabyIdTipoServicio/?id="+id_tipo_servicio)
 		.then(function( response ){
-			$scope.Normas = response.data;
+			$scope.Normas = [];
+			response.data.forEach(norma_asociada => {
+				var found = normas_a_mostrar.find(function(norma_mostrar){
+					return norma_mostrar.ID_NORMA == norma_asociada.ID_NORMA;
+				});
+				if(!found){
+					$scope.Normas.push(norma_asociada);
+				}
+			});			
+			if($scope.Normas.length == 1){
+				$scope.formData.Normas = $scope.Normas;
+			} else {
+				if(normas_a_mostrar){
+					$scope.formData.Normas = normas_a_mostrar;
+				} else {
+					$scope.formData.Normas = [];
+				}				
+			}
 		});
 	}	
 // ==============================================================================

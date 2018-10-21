@@ -35,8 +35,13 @@ $ID_SERVICIO = $objeto->ID_SERVICIO;
 valida_parametro_and_die($ID_SERVICIO,"Falta ID de SERVICIO");
 $ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO; 
 valida_parametro_and_die($ID_TIPO_SERVICIO,"Falta ID de TIPO DE SERVICIO");
-$ID_NORMA = $objeto->ID_NORMA; 
-valida_parametro_and_die($ID_NORMA,"Falta ID de NORMA");
+$NORMAS = $objeto->NORMAS;
+if(count($NORMAS) == 0){
+		$respuesta['resultado']="error";
+		$respuesta['mensaje']="Es necesario seleccionar una norma";
+		print_r(json_encode($respuesta));
+		die();
+}
 $ETAPA = $objeto->ETAPA; 
 valida_parametro_and_die($ETAPA,"Falta la etapa");
 $ESTADO_COTIZACION = $objeto->ESTADO_COTIZACION; 
@@ -72,7 +77,6 @@ $id = $database->update("COTIZACIONES", [
 	"ID_PROSPECTO" => $ID_PROSPECTO, 
 	"ID_SERVICIO" => $ID_SERVICIO, 
 	"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
-	"ID_NORMA" => $ID_NORMA,
 	"ETAPA" => $ETAPA,
 	"ESTADO_COTIZACION" => $ESTADO_COTIZACION, 
 	"FOLIO_SERVICIO" => $FOLIO_SERVICIO, 
@@ -89,6 +93,22 @@ $id = $database->update("COTIZACIONES", [
 ], ["ID"=>$ID]); 
 
 valida_error_medoo_and_die(); 
+//Borrar todas las normas
+$id = $database->delete("COTIZACION_NORMAS", 
+	[
+		"AND" => [
+			"ID_COTIZACION" => $ID
+		]		
+	]);
+//iNSERTAR LAS NORMAS
+for ($i=0; $i < count($NORMAS); $i++) {
+	$id_norma = $NORMAS[$i]->ID_NORMA;
+	$id_cotizacion_normas = $database->insert("COTIZACION_NORMAS", [
+		"ID_COTIZACION" => $ID,
+		"ID_NORMA" => $id_norma
+	]);
+	valida_error_medoo_and_die();
+}
 $respuesta["resultado"]="ok"; 
 print_r(json_encode($respuesta)); 
 ?> 

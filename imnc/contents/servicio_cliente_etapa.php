@@ -118,7 +118,8 @@
                       <thead>
                         <tr class="headings">
                           <th class="column-title">ID</th>
-                          <th class="column-title">Referencia, cliente y servicio</th>
+                          <th class="column-title">Información del servicio</th>
+                          <th class="column-title">Normas del servicio</th>
                           <th class="column-title">Trámite</th>
                           <th class="column-title"></th>
 						</tr>
@@ -128,9 +129,13 @@
 							<tr ng-repeat="x in tablaDatos" class="ng-scope  even pointer">
 								<td>{{x.ID}}</td>
 								<td>
-									{{x.REFERENCIA}}<br>
-									<strong>{{x.NOMBRE_CLIENTE}}</strong><br>
-									<i>{{x.NOMBRE_SERVICIO}}</i>
+									Referencia: <strong>{{x.REFERENCIA}}</strong><br>
+									Cliente: <strong>{{x.NOMBRE_CLIENTE}}</strong><br>
+									Servicio: <i>{{x.NOMBRE_SERVICIO}}</i><br>
+                  Tipo de servicio: <strong>{{x.NOMBRE_TIPO_SERVICIO}}</strong><br>
+								</td>
+                <td>
+									<i ng-repeat-start="norma in x.NORMAS">{{norma.ID_NORMA}}</i><br ng-repeat-end>
 								</td>
 								<td>{{x.NOMBRE_ETAPA}}</td>
 								

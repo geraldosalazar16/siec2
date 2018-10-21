@@ -27,11 +27,17 @@ for ($i=0; $i < count($servicio_cliente_etapa) ; $i++) {
 	$servicio_nombre = $database->get("SERVICIOS", "NOMBRE", ["ID"=>$servicio_cliente_etapa[$i]["ID_SERVICIO"]]);
 	$servicio_cliente_etapa[$i]["NOMBRE_SERVICIO"] = $servicio_nombre;
 
+	$tipo_servicio_nombre = $database->get("TIPOS_SERVICIO", "NOMBRE", ["ID"=>$servicio_cliente_etapa[$i]["ID_TIPO_SERVICIO"]]);
+	$servicio_cliente_etapa[$i]["NOMBRE_TIPO_SERVICIO"] = $tipo_servicio_nombre;
+
 	$cliente_nombre = $database->get("CLIENTES", "NOMBRE", ["ID"=>$servicio_cliente_etapa[$i]["ID_CLIENTE"]]);
 	$servicio_cliente_etapa[$i]["NOMBRE_CLIENTE"] = $cliente_nombre;
 
 	$etapa_nombre = $database->get("ETAPAS_PROCESO", "ETAPA", ["ID_ETAPA"=>$servicio_cliente_etapa[$i]["ID_ETAPA_PROCESO"]]);
 	$servicio_cliente_etapa[$i]["NOMBRE_ETAPA"] = $etapa_nombre;
+
+	$normas = $database->select("SCE_NORMAS", "*", ["ID_SCE"=>$servicio_cliente_etapa[$i]["ID"]]);
+	$servicio_cliente_etapa[$i]["NORMAS"] = $normas;
 }
 valida_error_medoo_and_die(); 
 print_r(json_encode($servicio_cliente_etapa)); 

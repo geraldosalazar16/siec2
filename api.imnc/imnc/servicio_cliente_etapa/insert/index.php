@@ -39,8 +39,13 @@ valida_parametro_and_die($ID_SERVICIO, "Es necesario seleccionar un servicio");
 $ID_TIPO_SERVICIO	= $objeto->ID_TIPO_SERVICIO; 
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
 
-$ID_NORMA	= $objeto->ID_NORMA; 
-valida_parametro_and_die($ID_NORMA, "Es necesario seleccionar una NORMA");
+$NORMAS= $objeto->NORMAS;
+	if(count($NORMAS) == 0){
+		$respuesta['resultado']="error";
+		$respuesta['mensaje']="Es necesario seleccionar una norma";
+		print_r(json_encode($respuesta));
+		die();
+	}
 
 $ID_ETAPA_PROCESO = $objeto->ID_ETAPA_PROCESO; 
 valida_parametro_and_die($ID_ETAPA_PROCESO, "Es neceario seleccionar un trámite");
@@ -60,11 +65,10 @@ $CAMBIO= $objeto->CAMBIO;
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
 
-$id = $database->insert("SERVICIO_CLIENTE_ETAPA", [ 
+$id_sce = $database->insert("SERVICIO_CLIENTE_ETAPA", [ 
 	"ID_CLIENTE" => $ID_CLIENTE, 
 	"ID_SERVICIO" => $ID_SERVICIO, 
 	"ID_TIPO_SERVICIO"=>	$ID_TIPO_SERVICIO,
-	"ID_NORMA"=>	$ID_NORMA,
 	"ID_ETAPA_PROCESO" => $ID_ETAPA_PROCESO, 
 //	"SG_INTEGRAL" => $SG_INTEGRAL, 
 	"REFERENCIA" => $REFERENCIA,
@@ -75,10 +79,19 @@ $id = $database->insert("SERVICIO_CLIENTE_ETAPA", [
     //"OBSERVACION_CAMBIO"=>$OBSERVACION_CAMBIO
 ]); 
 valida_error_medoo_and_die(); 
+//Agregar las normas
+for ($i=0; $i < count($NORMAS); $i++) { 
+	$id_norma = $NORMAS[$i]->ID_NORMA;
+	$id_sce_normas = $database->insert("SCE_NORMAS", [ 
+		"ID_SCE" => $id_sce,
+		"ID_NORMA" => $id_norma
+	]); 
+	valida_error_medoo_and_die();
+}
 
-if($id	!=	0){
+if($id_sce	!=	0){
 	$id1=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [ 
-			"ID_SERVICIO_CONTRATADO" => $id, 
+			"ID_SERVICIO_CONTRATADO" => $id_sce, 
 			"MODIFICACION" => "NUEVO SERVICIO", 
 			"ESTADO_ANTERIOR"=>	"",
 			"ESTADO_ACTUAL"=>	"",
@@ -91,10 +104,10 @@ $respuesta["resultado"]="ok";
 }
 
 
-$respuesta["id"]=$id; 
+$respuesta["id"]=$id_sce; 
 
-creacion_expediente_registro($id,5,$rutaExpediente, $database);
-crea_instancia_expedientes_registro($id,5,$database);
+creacion_expediente_registro($id_sce,5,$rutaExpediente, $database);
+crea_instancia_expedientes_registro($id_sce,5,$database);
 
 
 print_r(json_encode($respuesta)); 

@@ -42,8 +42,13 @@ valida_parametro_and_die($ID_SERVICIO, "Es necesario seleccionar un servicio");
 $ID_TIPO_SERVICIO	= $objeto->ID_TIPO_SERVICIO; 
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
 
-$ID_NORMA	= $objeto->ID_NORMA; 
-valida_parametro_and_die($ID_NORMA, "Es necesario seleccionar una NORMA");
+$NORMAS= $objeto->NORMAS;
+if(count($NORMAS) == 0){
+	$respuesta['resultado']="error";
+	$respuesta['mensaje']="Es necesario seleccionar una norma";
+	print_r(json_encode($respuesta));
+	die();
+}
 
 $ID_ETAPA_PROCESO = $objeto->ID_ETAPA_PROCESO; 
 valida_parametro_and_die($ID_ETAPA_PROCESO, "Es neceario seleccionar un trámite");
@@ -82,7 +87,6 @@ $id_servicio_cliente_etapa = $database->insert("SERVICIO_CLIENTE_ETAPA", [
 	"ID_CLIENTE" => $ID_FINAL, 
 	"ID_SERVICIO" => $ID_SERVICIO, 
 	"ID_TIPO_SERVICIO"=>	$ID_TIPO_SERVICIO,
-	"ID_NORMA"=>	$ID_NORMA,
 	"ID_ETAPA_PROCESO" => $ID_ETAPA_PROCESO,  
 	"REFERENCIA" => $REFERENCIA,
 	"FECHA_CREACION" => $FECHA_CREACION,

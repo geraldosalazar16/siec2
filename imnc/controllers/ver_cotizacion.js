@@ -294,8 +294,7 @@ $scope.formData = {};
     const id_servicio = $scope.obj_cotizacion.SERVICIO['ID'];
     const nombre_tipo_servicio = $scope.obj_cotizacion.TIPOS_SERVICIO['NOMBRE'];
     const id_tipo_servicio = $scope.obj_cotizacion.TIPOS_SERVICIO['ID'];
-    const nombre_norma = $scope.obj_cotizacion.NORMA['NOMBRE'];
-    const id_norma = $scope.obj_cotizacion.NORMA['ID'];
+    const normas = $scope.obj_cotizacion.NORMAS;
 
     $scope.servicio_insertar = {
       ID_COTIZACION: $scope.obj_cotizacion.ID,
@@ -308,8 +307,7 @@ $scope.formData = {};
       NOMBRE_TIPO_SERVICIO: nombre_tipo_servicio,
       ID_ETAPA:	"",
       NOMBRE_ETAPA: "",
-      ID_NORMA: id_norma,
-      NOMBRE_NORMA: nombre_norma,
+      NORMAS: normas,
       REFERENCIA: "",
       CAMBIO	: "N",
       ID_USUARIO:	sessionStorage.getItem("id_usuario")
@@ -359,7 +357,7 @@ $scope.formData = {};
       ID_SERVICIO: $scope.servicio_insertar.ID_SERVICIO,
       ID_TIPO_SERVICIO: $scope.servicio_insertar.ID_TIPO_SERVICIO,
       ID_ETAPA_PROCESO:	$scope.servicio_insertar.ID_ETAPA,
-      ID_NORMA: $scope.servicio_insertar.ID_NORMA,
+      NORMAS: $scope.servicio_insertar.NORMAS,
       REFERENCIA: $scope.servicio_insertar.REFERENCIA,
       CAMBIO	: "N",
       ID_USUARIO:	sessionStorage.getItem("id_usuario")

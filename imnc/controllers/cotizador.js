@@ -265,7 +265,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         ID_PROSPECTO : id_entidad,
         ID_SERVICIO : $scope.cotizacion_insertar_editar.ID_SERVICIO.ID,
         ID_TIPO_SERVICIO : $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID,
-        NORMAS: $scope.cotizacion_insertar_editar.NORMAS,
+        NORMAS: $scope.normas_cotizacion,
         ETAPA: $scope.cotizacion_insertar_editar.ETAPA,
         FOLIO_INICIALES : $scope.cotizacion_insertar_editar.FOLIO_INICIALES,
         FOLIO_SERVICIO : $scope.cotizacion_insertar_editar.FOLIO_SERVICIO,
@@ -301,7 +301,6 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       if(data) {
         if (data.resultado == "ok") {
            notify("Éxito", "Se han guardado los cambios", "success");
-           $('#modalInsertarActualizarCotizacion').modal('hide');
            $scope.despliega_cotizaciones();
         }
         else{
@@ -311,6 +310,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       else  {
         console.log("No hay datos");
       }
+      $('#modalInsertarActualizarCotizacion').modal('hide');
     }).error(function(response) {
       console.log("Error al generar petición: " + response);
     });
