@@ -28,8 +28,12 @@ $respuesta=array();
 $json = file_get_contents("php://input"); 
 $objeto = json_decode($json); 
 
-$ID = $objeto->ID; 
+$ID_SERVICIO = $objeto->ID_SERVICIO; 
+valida_parametro_and_die($ID_SERVICIO,"Falta ID_SERVICIO");
+$ACRONIMO = $objeto->ACRONIMO; 
+valida_parametro_and_die($ACRONIMO,"Falta ACRONIMO");
 $TIPO = $objeto->TIPO; 
+valida_parametro_and_die($TIPO,"Falta TIPO");
 
 $ID_USUARIO_CREACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_CREACION,"Falta ID de USUARIO");
@@ -38,7 +42,8 @@ $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
 
 $id = $database->insert("SG_AUDITORIAS_TIPOS", [ 
-	"ID" => $ID, 
+	"ID_SERVICIO" => $ID_SERVICIO, 
+	"ACRONIMO" => $ACRONIMO,
 	"TIPO" => $TIPO, 
 	"FECHA_CREACION" => $FECHA_CREACION, 
 	"HORA_CREACION" => $HORA_CREACION, 

@@ -20,6 +20,23 @@ app.controller("tipos_auditoria_controller", ['$scope','$window', '$http','$docu
     }).error(function(response) {
       console.log("Error al generar petición: " + response);
     });
+
+    //Cargar los servicios
+    var http_request = {
+      method: 'GET',
+      url: global_apiserver + "/servicios/getAll/",
+    };
+
+    $http(http_request).success(function(data) {
+      if(data) {
+        $scope.Servicios = data;
+      } 
+      else  {
+        console.log("No hay datos");
+      }
+    }).error(function(response) {
+      console.log("Error al generar petición: " + response);
+    });
   }
 
   // Abrir modal para insertar

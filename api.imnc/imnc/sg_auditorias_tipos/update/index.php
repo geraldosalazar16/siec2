@@ -29,7 +29,13 @@ $json = file_get_contents("php://input");
 $objeto = json_decode($json); 
 
 $ID = $objeto->ID; 
+valida_parametro_and_die($ID,"Falta ID");
+$ID_SERVICIO = $objeto->ID_SERVICIO; 
+valida_parametro_and_die($ID_SERVICIO,"Falta ID_SERVICIO");
+$ACRONIMO = $objeto->ACRONIMO; 
+valida_parametro_and_die($ACRONIMO,"Falta ACRONIMO");
 $TIPO = $objeto->TIPO; 
+valida_parametro_and_die($TIPO,"Falta TIPO"); 
 
 $ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
@@ -38,7 +44,8 @@ $FECHA_MODIFICACION = date("Ymd");
 $HORA_MODIFICACION = date("His");
 
 $id = $database->update("SG_AUDITORIAS_TIPOS", [ 
-	"ID" => $ID, 
+	"ID_SERVICIO" => $ID_SERVICIO, 
+	"ACRONIMO" => $ACRONIMO,
 	"TIPO" => $TIPO, 
 	"FECHA_MODIFICACION" => $FECHA_MODIFICACION, 
 	"HORA_MODIFICACION" => $HORA_MODIFICACION, 

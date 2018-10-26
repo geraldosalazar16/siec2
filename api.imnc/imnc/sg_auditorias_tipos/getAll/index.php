@@ -17,12 +17,20 @@ function valida_error_medoo_and_die(){
 		$respuesta["resultado"]="error"; 
 		$respuesta["mensaje"]="Error al ejecutar script:" . $database->error()[2]; 
 		print_r(json_encode($respuesta)); 
-		$mailerror->send("SG_AUDITORIAS_TIPOS", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
 		die(); 
 	} 
 } 
-$respuesta=array(); 
-$sectores = $database->select("SG_AUDITORIAS_TIPOS", "*"); 
+$respuesta=array();
+$query = "SELECT 
+SGAT.ID AS ID,
+SGAT.ACRONIMO AS ACRONIMO_AUDITORIA,
+SGAT.TIPO AS TIPO_AUDITORIA,
+S.NOMBRE AS NOMBRE_SERVICIO,
+S.ID AS ID_SERVICIO
+FROM SG_AUDITORIAS_TIPOS SGAT
+INNER JOIN SERVICIOS S
+ON S.ID = SGAT.ID_SERVICIO"; 
+$tipos_auditoria = $database->query($query)->fetchAll(PDO::FETCH_ASSOC); 
 valida_error_medoo_and_die(); 
-print_r(json_encode($sectores)); 
+print_r(json_encode($tipos_auditoria)); 
 ?> 
