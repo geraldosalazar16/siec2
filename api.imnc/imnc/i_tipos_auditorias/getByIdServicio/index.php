@@ -23,8 +23,9 @@ function valida_error_medoo_and_die(){
 } 
 $id = $_REQUEST["id"]; 
 
-$tipos_auditorias = $database->select("I_SG_AUDITORIAS_TIPOS",
-											["[><]ETAPAS_PROCESO"=>["I_SG_AUDITORIAS_TIPOS.ID_ETAPA"=>"ID_ETAPA"]],
+$tipos_auditorias = $database->select(
+	"I_SG_AUDITORIAS_TIPOS",
+	["[><]ETAPAS_PROCESO"=>["I_SG_AUDITORIAS_TIPOS.ID_ETAPA"=>"ID_ETAPA"]],
 										
 											["I_SG_AUDITORIAS_TIPOS.ID","I_SG_AUDITORIAS_TIPOS.ACRONIMO","I_SG_AUDITORIAS_TIPOS.TIPO","I_SG_AUDITORIAS_TIPOS.ID_ETAPA"],
 											["ETAPAS_PROCESO.ID_SERVICIO"=>$id]); 
