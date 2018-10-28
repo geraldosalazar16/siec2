@@ -255,8 +255,8 @@
                   <input type="numeric" ng-model="cotizacion_insertar_editar.DESCUENTO" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-
-              <div class="form-group form-vertical">
+              <!-- Se oculta este control peus ya no se utiliza-->
+              <div class="form-group form-vertical" ng-show="false">
                 <label class="control-label col-md-12">¿Es SG integral? <span class="required">*</span></label>
                 <div class="col-md-12">
                   <select id="selectSGIntegral" ng-model="cotizacion_insertar_editar.SG_INTEGRAL" class="form-control">
@@ -266,6 +266,7 @@
                   </select>
                 </div>
               </div>
+              
             </form>
         </div>
         <div class="modal-footer">

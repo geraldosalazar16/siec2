@@ -24,6 +24,8 @@ function valida_error_medoo_and_die(){
 }  
 
 $respuesta=array(); 
+$respuesta["warnings"] = [];
+
 $json = file_get_contents("php://input"); 
 $objeto = json_decode($json); 
 
@@ -94,6 +96,15 @@ $id_servicio_cliente_etapa = $database->insert("SERVICIO_CLIENTE_ETAPA", [
 	"CAMBIO"=>$CAMBIO,
 ]); 
 valida_error_medoo_and_die(); 
+//Agregar las normas
+for ($i=0; $i < count($NORMAS); $i++) { 
+	$id_norma = $NORMAS[$i]->ID_NORMA;
+	$id_sce_normas = $database->insert("SCE_NORMAS", [ 
+		"ID_SCE" => $id_servicio_cliente_etapa,
+		"ID_NORMA" => $id_norma
+	]); 
+	valida_error_medoo_and_die();
+}
 
 //Insertar en SERVICIO_CLIENTE_ETAPA_HISTÓRICO
 if($id_servicio_cliente_etapa	!=	0){
@@ -113,7 +124,8 @@ if($id_servicio_cliente_etapa	!=	0){
 	$cant_empleados_total = 0;
 	$cant_empleados_cert_total = 0;
 
-	$tramites = $database->select("COTIZACIONES_TRAMITES","*",["ID_COTIZACION" => $ID_COTIZACION]);
+	$tramites = $database->select("COTIZACIONES_TRAMITES",
+	"*",["ID_COTIZACION" => $ID_COTIZACION]);
 	$ids_tramites = [];
 	$cont = count($tramites);
 	for($i=0;$i<$cont;$i++){
@@ -158,8 +170,7 @@ if($id_servicio_cliente_etapa	!=	0){
 		die();
 	}
 	//Información adicional
-	//CSGC
-	if($ID_SERVICIO == 1){
+	if($ID_SERVICIO == 1){//CSGC
 		//total_empleados	
 		$id_sitio = $database->insert("I_TIPOS_SERVICIOS", [ 
 			"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
@@ -175,8 +186,96 @@ if($id_servicio_cliente_etapa	!=	0){
 		]); 
 		valida_error_medoo_and_die();
 	}
+	if($ID_SERVICIO == 2){ //EC AUN SIN INCLUIR EN EL COTIZADOR
+
+	}
+	if($ID_SERVICIO == 3){ //CIFA AUN SIN INCLUIR EN EL COTIZADOR
+
+	}
 	//Sectores
+	//Buscar en prospecto_producto el id del producto
+	//filtrando con id prospecto id servicio y id tipo servicio
+	//porque no tengo el id producto, de todas formas esta combinación nose repite
+	$id_producto = $database->get("PROSPECTO_PRODUCTO",
+	"ID",["AND" => [
+		"ID_PROSPECTO" => $ID_CLIENTE,
+		"ID_SERVICIO" => $ID_SERVICIO,
+		"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO
+		]
+	]);
+	valida_error_medoo_and_die();
+	//Con el id del producto busco en prospecto_sectores
+	$sectores = $database->select("PROSPECTO_SECTORES",
+	"*",["ID_PRODUCTO" => $id_producto]);
+	valida_error_medoo_and_die();
+	if(count($sectores) == 0){
+		$adv = "No existen sectores cargados al prospecto, se deben cargar manualmente en Programación";
+		array_push($respuesta["warnings"],$adv);
+	}
+	foreach ($sectores as $sector) {
+		$id_sce_sectores = $database->insert("I_SG_SECTORES", [ 
+			"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+			"ID_SECTOR" => $sector["ID_SECTOR"],  
+			"FECHA_CREACION" => $FECHA_CREACION,
+			"HORA_CREACION" => $HORA_CREACION,
+			"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+		]); 
+		valida_error_medoo_and_die();
+	}
 	//Auditorías
+	//Para cargar una auditoría necesito
+	/*
+	TIPO_AUDITORIA: 
+	CICLO: Si es un prospecto es ciclo 1 
+	DURACION_DIAS: Se obtiene de cotizaciones/getById?id=x
+	STATUS_AUDITORIA: Pendiente
+	NO_USA_METODO: No
+	SITIOS_AUDITAR: Se obtienen de cotizacion_sitios
+	ID_SERVICIO_CLIENTE_ETAPA
+	*/
+	$ruta = $global_apiserver.'/cotizaciones/getById?id='.$ID_COTIZACION;
+	$cotizacion = file_get_contents($ruta);
+	$cotizacion = json_decode($cotizacion);
+
+	//Recorro todos los trámites e inserto sus auditorías correspondientes
+	foreach ($cotizacion[0]->COTIZACION_TRAMITES as $tramite) {
+		//para cada trámite hay que agregar una auditoría en 
+		$dias_auditoria = $tramite->DIAS_AUDITORIA;
+		$tipo_auditoria = $tramite->ID_ETAPA_PROCESO;
+		
+		//Buscar los sitios
+		$sitios = $database->select("COTIZACION_SITIOS", "*", ["ID_COTIZACION"=>$tramite->ID]);
+		valida_error_medoo_and_die();
+		
+		//Insertar en I_SG_AAUDITORIAS
+		$id_sg_auditoria = $database->insert("I_SG_AUDITORIAS", [ 
+			"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+			"TIPO_AUDITORIA" => $tipo_auditoria,  
+			"CICLO" => 1,
+			"DURACION_DIAS" => $dias_auditoria,
+			"STATUS_AUDITORIA" => "1",
+			"NO_USA_METODO" => 0,
+			"SITIOS_AUDITAR" => count($sitios),
+			"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+		]); 
+		valida_error_medoo_and_die();
+
+		//Insertar los sitios en I_SG_AUDITORIA_SITIOS
+		foreach ($sitios as $key => $sitio) {
+			$id_cliente_domicilio = $sitio["ID_DOMICILIO_SITIO"];
+			$id_sg_auditoria_sitios = $database->insert("I_SG_AUDITORIA_SITIOS", [ 
+				"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+				"TIPO_AUDITORIA" => $tipo_auditoria,  
+				"CICLO" => 1,
+				"ID_CLIENTE_DOMICILIO" => $id_cliente_domicilio,
+				"FECHA_CREACION" => $FECHA_CREACION,
+				"HORA_CREACION" => $HORA_CREACION,
+				"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+			]); 
+			valida_error_medoo_and_die();
+		}
+	}
+	
 	$respuesta["resultado"]="ok"; 
 }
 print_r(json_encode($respuesta)); 

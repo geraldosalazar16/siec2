@@ -570,9 +570,9 @@
         <div class="modal-body">
             <form id="demo-form2" style="margin-top: -20px;">
               <div class="form-group form-vertical">
-                <label class="control-label col-md-12">Trámite  <span class="required">*</span></label>
+                <label class="control-label col-md-12">Evento  <span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select id="selectTramite" ng-model="tramite_insertar_editar.ID_ETAPA_PROCESO" class="form-control" ng-options="tramite.ID_ETAPA as tramite.ETAPA for tramite in arr_tramites">
+                  <select id="selectTramite" ng-model="tramite_insertar_editar.ID_ETAPA_PROCESO" class="form-control" ng-options="tramite.ID as tramite.TIPO for tramite in arr_tramites">
                      <option value="" selected disabled>-- selecciona un trámite --</option>
                   </select>
                 </div>

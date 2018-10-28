@@ -47,8 +47,11 @@ $tipos_servicio = $database->get("TIPOS_SERVICIO", "*", ["ID"=>$cotizacion[0]["I
 valida_error_medoo_and_die(); 
 $norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
 valida_error_medoo_and_die(); 
-$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$cotizacio_tramite["ID_ETAPA_PROCESO"]]);
+//$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$tramite_item["ID_ETAPA_PROCESO"]]);
+$etapa = $database->get("SG_AUDITORIAS_TIPOS", "*", ["ID"=>$tramite_item["ID_ETAPA_PROCESO"]]);
 valida_error_medoo_and_die(); 
+//Sustituyo $etapa["ETAPA"] por nombre_auditoria
+$nombre_auditoria = $etapa["TIPO"];
 $tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizacion[0]["TARIFA"]]);
 valida_error_medoo_and_die(); 
 $cantidad_de_sitios = $database->count("COTIZACION_SITIOS", ["ID_COTIZACION"=>$cotizacio_tramite["ID"]]);
@@ -104,16 +107,16 @@ valida_error_medoo_and_die();
 //Multiplicador para el calculo de sitios
 $const_sitio = 1; //Default - Etapa certificacion 
 $const_dias = 1;
-if(strpos($etapa["ETAPA"], 'Vigilancia') !== false){ // Vigilancia
+if(strpos($nombre_auditoria, 'Vigilancia') !== false || strpos($nombre_auditoria, 'VIGILANCIA') !== false){ // Vigilancia
 	$const_sitio = 0.6;
 	$const_dias = 0.33;
 }
-else if(strpos($etapa["ETAPA"], 'Renovación') !== false || strpos($etapa["ETAPA"], 'Renovacion') !== false){ // Renovacion
+else if(strpos($nombre_auditoria, 'Renovación') !== false || strpos($nombre_auditoria, 'Renovacion') !== false || strpos($nombre_auditoria, 'RENOVACION') !== false){ // Renovacion
 	$const_sitio = 0.8;
 	$const_dias = 0.66;
 }
 $obj_cotizacion = [];
-$obj_cotizacion["ETAPA"] = $etapa["ETAPA"];
+$obj_cotizacion["ETAPA"] = $nombre_auditoria;
 $obj_cotizacion["TARIFA_TOTAL"] = $tarifa;
 
 $obj_cotizacion["COUNT_SITIOS"] = count_sitios($id, $const_sitio);
@@ -156,7 +159,7 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 		$obj_cotizacion["COTIZACION_SITIOS"][$i]["DIAS_AUDITORIA_RED"] = $dias_reduccion;
 		$obj_cotizacion["COTIZACION_SITIOS"][$i]["DIAS_AUDITORIA_SUBTOTAL"] = $dias_subtotal;
 		//Saber si es etapa 1 para modificar la visa
-		$es_etapa_1 = strpos($etapa["ETAPA"], 'Etapa 1');
+		$es_etapa_1 = (strpos($nombre_auditoria, 'Etapa 1') || strpos($nombre_auditoria, 'ETAPA 1'));
 		if($es_etapa_1 !== false){ 
 			$obj_cotizacion["COTIZACION_SITIOS"][$i]["ETAPA"] = 'E1';
 		} else {
@@ -168,10 +171,10 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 		$total_dias_auditoria += $dias_subtotal;
 		$total_empleados += $obj_cotizacion["COTIZACION_SITIOS"][$i]["TOTAL_EMPLEADOS"];
 	}
-	$es_vigilancia = strpos($etapa["ETAPA"], 'Vigilancia');
-	$es_renovacion = strpos($etapa["ETAPA"], 'Renovacion');
-	$es_renovacion1 = strpos($etapa["ETAPA"], 'Renovación');
-	$es_etapa_2 = strpos($etapa["ETAPA"], 'Etapa 2');
+	$es_vigilancia = (strpos($nombre_auditoria, 'Vigilancia') || strpos($nombre_auditoria, 'VIGILANCIA'));
+	$es_renovacion = strpos($nombre_auditoria, 'Renovacion') || strpos($nombre_auditoria, 'RENOVACION');
+	$es_renovacion1 = strpos($nombre_auditoria, 'Renovación') || strpos($nombre_auditoria, 'RENOVACIÓN');
+	$es_etapa_2 = strpos($nombre_auditoria, 'Etapa 2') || strpos($nombre_auditoria, 'ETAPA 2');
 	//Cuando es diferente de vigilancia y renovación es 1 día
 	if($es_vigilancia === false && $es_renovacion === false && $es_renovacion1 === false && $es_etapa_2 === false){ 
 		$total_dias_auditoria = 1;

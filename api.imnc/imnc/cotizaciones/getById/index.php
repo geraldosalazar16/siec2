@@ -67,9 +67,9 @@ $campos_tramite = [
 	"COTIZACIONES_TRAMITES.JUSTIFICACION",
 	"COTIZACIONES_TRAMITES.CAMBIO",
 	"COTIZACIONES_TRAMITES.ID_SERVICIO_CLIENTE",
-	"ETAPAS_PROCESO.ETAPA"
+	"I_SG_AUDITORIAS_TIPOS.TIPO"
 ];
-$tramites =  $database->select("COTIZACIONES_TRAMITES", ["[>]ETAPAS_PROCESO" => ["ID_ETAPA_PROCESO" => "ID_ETAPA"]], $campos_tramite,
+$tramites =  $database->select("COTIZACIONES_TRAMITES", ["[>]I_SG_AUDITORIAS_TIPOS" => ["ID_ETAPA_PROCESO" => "ID"]], $campos_tramite,
 	["ID_COTIZACION"=>$cotizacion[0]["ID"]]);
 valida_error_medoo_and_die();
 
@@ -92,16 +92,20 @@ $cotizacion[0]["FOLIO"] = $FOLIO;
 $total_cotizacion = 0;
 $total_dias_cotizacion = 0;
 foreach ($tramites as $key => $tramite_item) {
-	$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$tramite_item["ID_ETAPA_PROCESO"]]);
+	//En vez de usar la etapa usar el tipo de auditoria
+	//$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$tramite_item["ID_ETAPA_PROCESO"]]);
+	$etapa = $database->get("SG_AUDITORIAS_TIPOS", "*", ["ID"=>$tramite_item["ID_ETAPA_PROCESO"]]);
+	//Sustituyo $etapa["ETAPA"] por nombre_auditoria
+	$nombre_auditoria = $etapa["TIPO"];
 	valida_error_medoo_and_die();
 	$etapa_para_sgen = "VIGILANCIA";
 	//Multiplicador para el calculo de sitios
 	$const_dias = 1; //Default - Etapa certificacion
-	if(strpos($etapa["ETAPA"], 'Vigilancia') !== false){ // Vigilancia
+	if(strpos($nombre_auditoria, 'Vigilancia') !== false || strpos($nombre_auditoria, 'VIGILANCIA')){ // Vigilancia
 		$const_dias = 0.33;
 		$etapa_para_sgen = "VIGILANCIA";
 	}
-	else if(strpos($etapa["ETAPA"], 'Renovación') !== false || strpos($etapa["ETAPA"], 'Renovacion') !== false){ // Renovacion
+	else if(strpos($nombre_auditoria, 'Renovación') !== false || strpos($nombre_auditoria, 'Renovacion') !== false || strpos($nombre_auditoria, 'RENOVACIÓN')){ // Renovacion
 		$const_dias = 0.66;
 		$etapa_para_sgen = "RENOVACION";
 	}
@@ -154,10 +158,10 @@ foreach ($tramites as $key => $tramite_item) {
 	if($cotizacion[0]["SG_INTEGRAL"] == "si"){
 		$total_dias_auditoria = round( $total_dias_auditoria * (1 - ($tramite_item["FACTOR_INTEGRACION"]/100)) );
 	}
-	$es_vigilancia = strpos($etapa["ETAPA"], 'Vigilancia');
-	$es_renovacion = strpos($etapa["ETAPA"], 'Renovacion');
-	$es_renovacion1 = strpos($etapa["ETAPA"], 'Renovación');
-	$es_etapa_2 = strpos($etapa["ETAPA"], 'Etapa 2');
+	$es_vigilancia = strpos($nombre_auditoria, 'Vigilancia') || strpos($nombre_auditoria, 'VIGILANCIA');
+	$es_renovacion = strpos($nombre_auditoria, 'Renovacion') || strpos($nombre_auditoria, 'RENOVACIÓN') || strpos($nombre_auditoria, 'RENOVACION');
+	$es_renovacion1 = strpos($nombre_auditoria, 'Renovación');
+	$es_etapa_2 = strpos($nombre_auditoria, 'Etapa 2') || strpos($nombre_auditoria, 'ETAPA 2');
 	//Cuando es diferente de vigilancia y renovación es 1 día
 	if($es_vigilancia === false && $es_renovacion === false && $es_renovacion1 === false && $es_etapa_2 === false){
 		$total_dias_auditoria = 1;

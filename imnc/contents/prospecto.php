@@ -1,7 +1,7 @@
 <span ng-controller="prospecto_controller">
 <div class="right_col" role="main">
 	<div class="row">
-		<div class="col-md-10">
+		<div class="col-md-12 col-sm-12 col-xs-12">
 			<div class="x_panel">
 				<div class="x_title">
 					<p><h2>{{titulo}}</h2></p>
@@ -15,69 +15,80 @@
 				</div>
 				
 				<div class="x_content">
-					<div class="col-sm-12">	
-						<label class="control-label col-md-12 col-sm-12 col-xs-12">Filtrar por nombre de prospecto</label>
-						<select id="cmbProspectos" ng-model="listado_prospecto" class="select2_single form-control col-md-7 col-xs-12" ng-options="prospecto.ID as prospecto.NOMBRE for prospecto in Prospectos"> 
-							<option value="elige" ng-selected="true" disabled>Seleccione un prospecto</option>
-						</select>						
-					<a href="./?pagina=perfilprospecto&id={{prospecto_seleccionado}}&entidad=1" ng-if='modulo_permisos["editar"] == 1 && mostrar_perfil_seleccionado' class="btn btn-primary btn-xs btn-success" style="float: left;margin-top:10px;"><i class="fa fa-home"> </i>Perfil</a>	
-						<button type="button" style="margin-top:10px" ng-if="mostrar_editar_seleccionado == true" ng-click="editar(prospecto_seleccionado)" class="btn btn-primary btn-xs btn-imnc btnEditar" style="margin-top:10px;">
-							<i class="fa fa-edit"> </i> Editar
-						</button>
-						
-						<button type="button" style="margin-top:10px" ng-click="detalles(prospecto_seleccionado)" ng-if='mostrar_detalles_seleccionado' class="btn btn-primary btn-xs btn-info">
-							Detalles
-						</button>          
-						<a href="./?pagina=registro_expediente&id={{prospecto_seleccionado}}&id_entidad=3" class="btn btn-primary btn-xs btn-imnc" ng-if='modulo_permisos["documentos"] == 1&&mostrar_expedientes_seleccionado' style="margin-top:10px;"><i class="fa fa-home"> </i> Expedientes </a>
-					</div>
-				</div>
-				<!-- Aca se muestra la cantidad de prospectos asignados al comercial-->
-				<div>
-					<p>
-						Cantidad de prospectos asignados al comercial: {{cantidad_prospectos}}
-					</p>
-				</div>
-				<div class="x_content">
-					<table class="table table-striped responsive-utilities jambo_table bulk_action">
-						<thead>
-							<tr class="headings">
-								<th class="column-title">Nombre</th>
-								<th class="column-title">RFC</th>
-								<th class="column-title">Porcentaje</th>
-								<th class="column-title">Estatus</th>
-								<th class="column-title">Tipo Contrato</th>
-								  
-								<th class="column-title">&nbsp;</th>
-								<th class="column-title">&nbsp;</th>
-								<th class="column-title">&nbsp;</th>
-							</tr>
-						</thead>
+          <div class="row">
+            <div class="col-sm-12">	
+              <label class="control-label col-md-12 col-sm-12 col-xs-12">Filtrar por nombre de prospecto</label>
+              <select id="cmbProspectos" 
+              ng-model="listado_prospecto" 
+              class="select2_single form-control col-md-7 col-xs-12" 
+              ng-options="prospecto.ID as prospecto.NOMBRE for prospecto in Prospectos"> 
+                <option value="elige" ng-selected="true" disabled>Seleccione un prospecto</option>
+              </select>	
+                        
+              <a href="./?pagina=perfilprospecto&id={{prospecto_seleccionado}}&entidad=1" ng-if='modulo_permisos["editar"] == 1 && mostrar_perfil_seleccionado' class="btn btn-primary btn-xs btn-success" style="float: left;margin-top:10px;"><i class="fa fa-home"> </i>Perfil</a>	
+              <button type="button" style="margin-top:10px" ng-if="mostrar_editar_seleccionado == true" ng-click="editar(prospecto_seleccionado)" class="btn btn-primary btn-xs btn-imnc btnEditar" style="margin-top:10px;">
+                <i class="fa fa-edit"> </i> Editar
+              </button>
+              
+              <button type="button" style="margin-top:10px" ng-click="detalles(prospecto_seleccionado)" ng-if='mostrar_detalles_seleccionado' class="btn btn-primary btn-xs btn-info">
+                Detalles
+              </button>          
+              <a href="./?pagina=registro_expediente&id={{prospecto_seleccionado}}&id_entidad=3" class="btn btn-primary btn-xs btn-imnc" ng-if='modulo_permisos["documentos"] == 1&&mostrar_expedientes_seleccionado' style="margin-top:10px;"><i class="fa fa-home"> </i> Expedientes </a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <p>
+                Cantidad de prospectos asignados al comercial: {{cantidad_prospectos}}
+              </p>
+            </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-striped responsive-utilities jambo_table bulk_action">
+                
+                <thead>
+                  <tr class="headings">
+                    <th class="column-title">Nombre</th>
+                    <th class="column-title">RFC</th>
+                    <th class="column-title">Porcentaje</th>
+                    <th class="column-title">Estatus</th>
+                    <th class="column-title">Tipo Contrato</th>
+                      
+                    <th class="column-title">&nbsp;</th>
+                    <th class="column-title">&nbsp;</th>
+                    <th class="column-title">&nbsp;</th>
+                  </tr>
+                </thead>
 
-						<tbody>
-							<tr ng-repeat="x in prospecto" class="ng-scope even pointer">
-								<!--<td>{{x.ID}}</td>-->
-								<td>{{x.NOMBRE}}</td>
-								<td>{{x.RFC}}</td>
-								<td>{{x.PORCENTAJE}}</td>
-								<td>{{x.NOMBRE_ESTATUS_SEGUIMIENTO}}</td>
-								<td>{{x.NOMBRE_TIPO_CONTRATO}}</td>
-								<td>
-									<button type="button" ng-if='modulo_permisos["editar"] == 1' ng-click="editar(x.ID)" class="btn btn-primary btn-xs btn-imnc btnEditar" style="float: right;">
-										<i class="fa fa-edit"> </i> Editar
-									</button>
-								</td>
-								<td>
-									<a href="./?pagina=perfilprospecto&id={{x.ID}}&entidad=1" class="btn btn-primary btn-xs btn-success" style="float: right;"><i class="fa fa-home"> </i>Perfil</a>
-								</td>
-								<td>
-									<button type="button"  ng-click="detalles(x.ID)" class="btn btn-primary btn-xs btn-info">Detalles </button>          
-									<a href="./?pagina=registro_expediente&id={{x.ID}}&id_entidad=3" class="btn btn-primary btn-xs btn-imnc" ng-if='modulo_permisos["documentos"] == 1' style="float: right;">            <i class="fa fa-home"> </i> Expedientes </a>
-							
-								</td>                   
-							</tr>
-						</tbody>
-					</table>
-				</div>
+                <tbody>
+                  <tr ng-repeat="x in prospecto" class="ng-scope even pointer">
+                    <!--<td>{{x.ID}}</td>-->
+                    <td>{{x.NOMBRE}}</td>
+                    <td>{{x.RFC}}</td>
+                    <td>{{x.PORCENTAJE}}</td>
+                    <td>{{x.NOMBRE_ESTATUS_SEGUIMIENTO}}</td>
+                    <td>{{x.NOMBRE_TIPO_CONTRATO}}</td>
+                    <td>
+                      <button type="button" ng-if='modulo_permisos["editar"] == 1' ng-click="editar(x.ID)" class="btn btn-primary btn-xs btn-imnc btnEditar" style="float: right;">
+                        <i class="fa fa-edit"> </i> Editar
+                      </button>
+                    </td>
+                    <td>
+                      <a href="./?pagina=perfilprospecto&id={{x.ID}}&entidad=1" class="btn btn-primary btn-xs btn-success" style="float: right;"><i class="fa fa-home"> </i>Perfil</a>
+                    </td>
+                    <td>
+                      <button type="button"  ng-click="detalles(x.ID)" class="btn btn-primary btn-xs btn-info">Detalles </button>          
+                      <a href="./?pagina=registro_expediente&id={{x.ID}}&id_entidad=3" class="btn btn-primary btn-xs btn-imnc" ng-if='modulo_permisos["documentos"] == 1' style="float: right;">            <i class="fa fa-home"> </i> Expedientes </a>
+                  
+                    </td>                   
+                  </tr>
+                </tbody>
+
+              </table>
+            </div>
+          </div>
+        </div>
+
 			</div>
 		</div>
 	</div>

@@ -118,11 +118,17 @@ $scope.formData = {};
   }
 
   $scope.fill_select_tramites = function (){ 
+    /*
     var http_request = {
       method: 'GET',
       url: global_apiserver + "/etapas_proceso/getByIdServicio/?id="+$scope.obj_cotizacion.ID_SERVICIO,
     };
-
+    */
+    //Usar tipo de auditoría en vez de etapa
+    var http_request = {
+      method: 'GET',
+      url: global_apiserver + "/sg_auditorias_tipos/getByIdServicio/?id="+$scope.obj_cotizacion.ID_SERVICIO,
+    };
     $http(http_request).success(function(data) {
       if(data) { 
         $scope.arr_tramites = data;
@@ -350,28 +356,33 @@ $scope.formData = {};
     generar_referencia(ref,id_etapa,id_tipo_servicio);
   }
   $scope.crear_servicio = function () {
-    var datos = {
-      ID_COTIZACION: $scope.servicio_insertar.ID_COTIZACION,
-      CLIENTE_PROSPECTO: $scope.servicio_insertar.CLIENTE_PROSPECTO,
-      ID_CLIENTE: $scope.servicio_insertar.ID_CLIENTE,
-      ID_SERVICIO: $scope.servicio_insertar.ID_SERVICIO,
-      ID_TIPO_SERVICIO: $scope.servicio_insertar.ID_TIPO_SERVICIO,
-      ID_ETAPA_PROCESO:	$scope.servicio_insertar.ID_ETAPA,
-      NORMAS: $scope.servicio_insertar.NORMAS,
-      REFERENCIA: $scope.servicio_insertar.REFERENCIA,
-      CAMBIO	: "N",
-      ID_USUARIO:	sessionStorage.getItem("id_usuario")
-    };
-    
-    $http.post(global_apiserver + "/servicio_cliente_etapa/insertDesdeCotizador/",datos).
-    then(function(response){
-      if(response.data.resultado == 'ok'){
-        notify('Éxito','Se ha insertado un nuevo registro','success');        
-      } else {
-        notify('Error',response.data.mensaje,'error');
-      }
-      $("#modalAddServicio").modal("hide");
-    });
+    //Solo permitir SG, esto habrá que quitarlo cuando se invcluya EC en el cotizador
+    if($scope.servicio_insertar.ID_SERVICIO != 1){
+      notify('Error','Solo se pueden crear servicios de Sistema de Gestión','error')
+    } else {
+      var datos = {
+        ID_COTIZACION: $scope.servicio_insertar.ID_COTIZACION,
+        CLIENTE_PROSPECTO: $scope.servicio_insertar.CLIENTE_PROSPECTO,
+        ID_CLIENTE: $scope.servicio_insertar.ID_CLIENTE,
+        ID_SERVICIO: $scope.servicio_insertar.ID_SERVICIO,
+        ID_TIPO_SERVICIO: $scope.servicio_insertar.ID_TIPO_SERVICIO,
+        ID_ETAPA_PROCESO:	$scope.servicio_insertar.ID_ETAPA,
+        NORMAS: $scope.servicio_insertar.NORMAS,
+        REFERENCIA: $scope.servicio_insertar.REFERENCIA,
+        CAMBIO	: "N",
+        ID_USUARIO:	sessionStorage.getItem("id_usuario")
+      };
+      
+      $http.post(global_apiserver + "/servicio_cliente_etapa/insertDesdeCotizador/",datos).
+      then(function(response){
+        if(response.data.resultado == 'ok'){
+          notify('Éxito','Se ha insertado un nuevo registro','success');        
+        } else {
+          notify('Error',response.data.mensaje,'error');
+        }
+        $("#modalAddServicio").modal("hide");
+      });
+    }
   }
   // Abrir modal para editar
   $scope.modal_cotizacion_editar = function(){
