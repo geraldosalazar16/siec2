@@ -621,38 +621,6 @@ $scope.formData = {};
     });
   }
 
-  /*
-  $scope.crear_servicio = function(){
-    var cotizacion =  $scope.obj_cotizacion;
-    cotizacion.OBJ_TRAMITE = $scope.obj_tramite;
-    cotizacion.OBJ_SERVICIO = $scope.obj_servicio;
-    cotizacion.ID_USUARIO = sessionStorage.getItem("id_usuario");
-
-    var http_request = {
-        method: 'POST',
-        url: global_apiserver + "/cotizaciones/createServicio/",
-        data: angular.toJson(cotizacion)
-    };
-   
-    $http(http_request).success(function(data) {
-      if(data) { 
-        if (data.resultado == "ok") {
-           notify("Éxito", "Se han guardado los cambios", "success");
-           $('#modalAddServicio').modal('hide');
-           $scope.despliega_cotizacion();
-        }
-        else{
-          notify("Error", data.mensaje, "error");
-        }
-      } 
-      else  {
-        console.log("No hay datos");
-      }
-    }).error(function(response) {
-      console.log("Error al generar petición: " + response);
-    });
-  }
-  */
   $scope.actualizar_servicio = function(obj_tramite){
     var cotizacion =  $scope.obj_cotizacion;
     cotizacion.OBJ_TRAMITE = obj_tramite;

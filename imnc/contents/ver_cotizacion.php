@@ -29,9 +29,14 @@
           <p>
           <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar"
             ng-click="modal_insertar_servicio(tramites_cotizacion)"
-            ng-if='modulo_permisos["editar"] == 1 && bl_firmado && !tramites_cotizacion.ID_SERVICIO_CLIENTE' style="float: right;">
-              Crear Servicio
+            ng-if='modulo_permisos["editar"] == 1 && bl_firmado && obj_cotizacion.BANDERA == 0' style="float: right;">
+            <i class="fa fa-plus"></i>Crear Servicio
             </button>
+          <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar"
+            ng-click="modal_insertar_servicio(tramites_cotizacion)"
+            ng-if='modulo_permisos["editar"] == 1 && bl_firmado && obj_cotizacion.BANDERA == 1' style="float: right;">
+            <i class="fa fa-send"></i> Enviar eventos a programación
+          </button>
           </p>
           <div class="clearfix"></div>
         </div>
@@ -778,6 +783,79 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
           <button type="button" class="btn btn-primary"  id="btnGuardarUsuario" ng-click="insertar_actividad()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalAgregarEventos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="modalTituloAgregarEventos">Agregar eventos</h4>
+        </div>
+        <div class="modal-body">
+            <form id="demo-form2" style="margin-top: -20px;">
+
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Referencia</label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.REFERENCIA"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>
+
+              <div class="form-group form-vertical" ng-if="obj_cotizacion.BANDERA == 0">
+                <label class="control-label col-md-12">Cliente </label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_CLIENTE"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>
+
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Servicio</label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_SERVICIO"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>
+
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Tipo de servicio</label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_TIPO_SERVICIO"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>
+
+              <div class="form-group form-vertical">
+					      <label class="control-label col-md-12">Normas</label>
+                    <div class="col-md-12" ng-repeat="norma in obj_cotizacion.NORMAS">
+                        <span>{{norma.ID_NORMA}}</span>
+                    </div>
+				      </div>
+              <!--
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Norma</label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_NORMA"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>
+              -->
+              <div class="form-group form-vertical" id="etapa">
+                <label class="control-label col-md-12" for="etapa">Etapa<span class="required">*</span>
+                </label>
+                <div class="col-md-12">
+                  <select class="form-control"
+                  ng-model="servicio_insertar.ID_ETAPA"
+                  ng-change="cambioEtapa()"
+                  ng-options="etapa.ID as etapa.NOMBRE for etapa in Etapas">
+                  </select>
+                </div>
+              </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" id="btnGuardarUsuario" ng-click="crear_servicio()">Guardar</button>
         </div>
       </div>
     </div>

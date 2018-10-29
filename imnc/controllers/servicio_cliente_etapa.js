@@ -306,6 +306,9 @@ $scope.cambiosel_tipoServicio	=	function(id_tipo_servicio){
 // ***** 	Funcion para traer las Normas de este tipo de Servicio			*****
 // ==============================================================================
 function cargarNormastipoServicio(id_tipo_servicio,normas_a_mostrar){
+	if(!normas_a_mostrar){
+		normas_a_mostrar = [];
+	}
 		//Agregue normas a mostrar para cuando sea edición 
 		//Se muestre en el multiselect las que tiene seleccionadas
 		//Mientras que en las sugerencias no se muestren estas
@@ -323,7 +326,7 @@ function cargarNormastipoServicio(id_tipo_servicio,normas_a_mostrar){
 			if($scope.Normas.length == 1){
 				$scope.formData.Normas = $scope.Normas;
 			} else {
-				if(normas_a_mostrar){
+				if(normas_a_mostrar || normas_a_mostrar.length == 0){
 					$scope.formData.Normas = normas_a_mostrar;
 				} else {
 					$scope.formData.Normas = [];
