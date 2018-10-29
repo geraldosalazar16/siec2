@@ -55,6 +55,7 @@ function valida_error_medoo_and_die(){
 		"*",
 		[
 			"AND" => [
+				"ID_PROSPECTO" => $ID_PROSPECTO,
 				"ID_SERVICIO" => $ID_SERVICIO,
 				"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO
 			]

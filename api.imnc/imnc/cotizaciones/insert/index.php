@@ -35,8 +35,10 @@ $respuesta=array();
 $json = file_get_contents("php://input");
 $objeto = json_decode($json);
 
+$ID_PRODUCTO = $objeto->ID_PRODUCTO;
+
 $ID_PROSPECTO = $objeto->ID_PROSPECTO;
-valida_parametro_and_die($ID_PROSPECTO,"Falta ID de USUARIO");
+valida_parametro_and_die($ID_PROSPECTO,"Falta ID de prospecto");
 $ID_SERVICIO = $objeto->ID_SERVICIO;
 valida_parametro_and_die($ID_SERVICIO,"Falta ID de SERVICIO");
 $ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO;
@@ -126,8 +128,8 @@ $id_cotizacion = $database->insert("COTIZACIONES", [
 	"HORA_CREACION" => $HORA_CREACION,
 	"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
 ]);
-
 valida_error_medoo_and_die();
+
 //iNSERTAR LAS NORMAS
 	for ($i=0; $i < count($NORMAS); $i++) {
 		$id_norma = $NORMAS[$i]->ID_NORMA;
@@ -137,6 +139,19 @@ valida_error_medoo_and_die();
 		]);
 		valida_error_medoo_and_die();
 	}
+
+//Si todo salio bien agregar el id de la cotizacion al producto
+if($id_cotizacion && $id_cotizacion !== 0 && $ID_PRODUCTO){
+	$id_producto = $database->update("PROSPECTO_PRODUCTO", 
+		[
+			"ID_COTIZACION" => $id_cotizacion
+		],
+		[
+			"ID" => $ID_PRODUCTO
+		]
+	);
+	valida_error_medoo_and_die();
+}
 $respuesta["resultado"]="ok";
 $respuesta["id"]=$id;
 

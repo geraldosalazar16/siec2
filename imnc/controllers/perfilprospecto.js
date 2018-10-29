@@ -1,6 +1,6 @@
 var globla_domicilioprospecto;
 var globla_contactoprospecto;
-app.controller('perfilprospecto_controller', ['$scope', '$http', function($scope, $http) { 
+app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', function($scope, $http, $window) { 
 
 	var form = $scope;
 	//Titulo que aparece en el html
@@ -782,6 +782,8 @@ $scope.eliminar = function(id){
 						  normas: item.NORMAS,
 						  normas_string: normas_string,
 						  sectores_mostrandose: false,
+						  tiene_cotizacion: item.TIENE_COTIZACION,
+						  id_cotizacion: item.ID_COTIZACION,
 						  sectores: []
 	  				}
 	  			});
@@ -1641,6 +1643,14 @@ $scope.eliminar_sector = function(){
 // ==============================================================================
 // ***** 	CREAR COTIZACION A PARTIR DE PRODUCTO				*****
 // ==============================================================================
+$scope.ver_cotizacion = function(producto){
+	if(producto.id_cotizacion != 0 && producto.id_cotizacion){
+		var url = "./?pagina=ver_cotizacion&id_cotizacion="+producto.id_cotizacion;
+		$window.location.href = url;
+	} else {
+		notify("Error", "El producto no tiene una cotización asociada" , "error");
+	}
+}
 $scope.mostrar_modal_crear_cotizacion = function(producto){
 	$scope.producto_actual = producto;
 	$scope.cotizacion_insertar_editar.ID_SERVICIO = producto.id_servicio;
@@ -1671,6 +1681,7 @@ function CargarTarifas(){
 }
 $scope.cotizacion_guardar = function(){
 	datos = {
+		ID_PRODUCTO: $scope.producto_actual.id,
         ID_PROSPECTO : $scope.id_prospecto, 
         ID_SERVICIO : $scope.cotizacion_insertar_editar.ID_SERVICIO,
         ID_TIPO_SERVICIO : $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO,
@@ -1689,6 +1700,7 @@ $scope.cotizacion_guardar = function(){
 	then(function(response){
 		if(response.data.resultado == "ok"){
 			notify("Éxito", "Se ha insertado la cotización", "success");
+			$scope.ActualizarAreas();
 		} else {
 			notify("Error", response.data.mensaje, "error");
 		}

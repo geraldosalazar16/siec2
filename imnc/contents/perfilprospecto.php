@@ -235,9 +235,19 @@
 																			</div>
 																		</td>
 																		<td>
-																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="mostrar_modal_insertar_editar_producto('editar',producto)" style=	"float: right;"><i class="fa fa-edit"> </i> Editar
+																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
+																			ng-click="mostrar_modal_insertar_editar_producto('editar',producto)" style=	"float: right;">
+																				<i class="fa fa-edit"> </i> Editar
 																			</button>
-																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="mostrar_modal_crear_cotizacion(producto)" style=	"float: right;"><i class="fa fa-usd"> </i> Crear cotización
+																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
+																			ng-if="producto.tiene_cotizacion == 0"
+																			ng-click="mostrar_modal_crear_cotizacion(producto)" style=	"float: right;">
+																				<i class="fa fa-usd"> </i> Crear cotización
+																			</button>
+																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
+																			ng-if="producto.tiene_cotizacion == 1 && producto.id_cotizacion != 0 && producto.id_cotizacion"
+																			ng-click="ver_cotizacion(producto)" style=	"float: right;">
+																				<i class="fa fa-usd"> </i> Ver cotización
 																			</button>
 																		</td>
 																		<td>																																		
@@ -249,7 +259,10 @@
 																			</button>
 																		</td>
 																		<td>																																		
-																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" ng-click="eliminarProducto(producto.id)" style=	"float: right;"><i class="fa fa-trash"> </i> Eliminar
+																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" 
+																			ng-if="producto.tiene_cotizacion == 0"
+																			ng-click="eliminarProducto(producto.id)" style=	"float: right;">
+																				<i class="fa fa-trash"> </i> Eliminar
 																			</button>
 																		</td>
 																	</tr>
