@@ -149,6 +149,7 @@
                 <div class="col-md-12">
                   <select id="selectReferencia" ng-model="cotizacion_insertar_editar.REFERENCIA"
                   ng-change="cambioReferencia()"
+                  ng-disabled="opcion_guardar_cotizacion == 'editar'"
                   ng-options="referencia as referencia.VALOR for referencia in Referencias" class="form-control">
                      <option value="" selected disabled>-- selecciona una referencia --</option>
                   </select>
@@ -208,8 +209,8 @@
   						</multiple-autocomplete>
             </div>
 					</div>
-
-              <div class="form-group form-vertical" ng-if='bandera==1'>
+              <!-- Esto se oculta con ng-show porque por el momento no se va a usar -->
+              <div class="form-group form-vertical" ng-if='bandera==1' ng-show="false">
                 <label class="control-label col-md-12">Etapa<span class="required">*</span></label>
                 <div class="col-md-12">
                   <select id="selectEtapa" ng-model="cotizacion_insertar_editar.ETAPA"

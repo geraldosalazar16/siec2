@@ -933,6 +933,80 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="modalAddServicioCliente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="modalTituloServicioCliente">Agregar eventos al Servicio</h4>
+        </div>
+        <div class="modal-body">
+            <form id="demo-form2" style="margin-top: -20px;">
+
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Referencia</label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.REFERENCIA"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>
+
+              <div class="form-group form-vertical" ng-if="obj_cotizacion.BANDERA == 0">
+                <label class="control-label col-md-12">Cliente </label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_CLIENTE"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>
+
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Servicio</label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_SERVICIO"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>
+
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Tipo de servicio</label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_TIPO_SERVICIO"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>
+
+              <div class="form-group form-vertical">
+					      <label class="control-label col-md-12">Normas</label>
+                    <div class="col-md-12" ng-repeat="norma in obj_cotizacion.NORMAS">
+                        <span>{{norma.ID_NORMA}}</span>
+                    </div>
+				      </div>
+              <!--
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Norma</label>
+                <div class="col-md-12">
+                  <input type="text" ng-model="servicio_insertar.NOMBRE_NORMA"  required="required" class="form-control col-md-7 col-xs-12" readonly>
+                </div>
+              </div>
+              -->
+              <div class="form-group form-vertical" id="etapaCliente">
+                <label class="control-label col-md-12" for="renovacion">Es renovación?<span class="required">*</span>
+                </label>
+                <div class="col-md-12">
+                  <select class="form-control"
+                  ng-model="servicio_insertar.ES_RENOVACION">
+                    <option value = 'S' ng-selected="true">Si</option>
+                    <option value='N'>No</option>
+                  </select>
+                  <span class="info mt-4">Cuando es renovación los eventos se agregan al siguiente ciclo del servicio. Cuando no, se agregan al ciclo actual</span>
+                </div>
+              </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" id="btnGuardarUsuario" ng-click="cargar_eventos_servicio()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 <!--**************************************************************************************-->
 <div class="modal fade" id="modalGenerarCotizacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">

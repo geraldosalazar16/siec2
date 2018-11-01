@@ -39,8 +39,8 @@ if (!in_array($complejidad, $complejidades_validas)) {
 $complejidad = "_" . strtoupper($complejidad);
 
 if($cotizacion[0]["BANDERA"] != "0"){
-	$id_cliente = $database->get("PROSPECTO", "ID_CLIENTE", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
-	$cliente = $database->get("CLIENTES", "*", ["ID"=>$id_cliente]);
+	//$id_cliente = $database->get("PROSPECTO", "ID_CLIENTE", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
+	$cliente = $database->get("CLIENTES", "*", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
 	$cotizacion[0]["CLIENTE"] = $cliente;
 } else {
 	$prospecto = $database->get("PROSPECTO", "*", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
