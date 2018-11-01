@@ -110,11 +110,20 @@ var id_user = sessionStorage.getItem("id_usuario");
                    $http.get(  global_apiserver + "/cita_calendario_servicios/getByIdServicio/?id="+id_serv_cli_et)//+"&entidad="+$scope.entidad)
 	  					.then(function( response ) {//se ejecuta cuando la petición fue correcta
 			  			var eventos = response.data.map(function(item){
+							var f_ini= item.FECHA_INICIO;
+							var anhio_ini = parseInt(f_ini.substring(0,4));
+							var mes_ini = parseInt(f_ini.substring(5,7))-1; //En js los meses comienzan en 0
+							var dia_ini = parseInt(f_ini.substring(8,10));
+
+							var f_fin= item.FECHA_FIN;
+							var anhio_f = parseInt(f_fin.substring(0,4));
+							var mes_f = parseInt(f_fin.substring(5,7))-1; //En js los meses comienzan en 0
+							var dia_f = parseInt(f_fin.substring(8,10));
 			  				return{
 			  					id: item.ID,
                                 title: item.NOMBRE_TAREA,
-                                start: item.FECHA_INICIO,
-                                end : item.FECHA_FIN,
+                                start: new Date(anhio_ini, mes_ini, dia_ini, 07, 0),
+                                end : new Date(anhio_f, mes_f, dia_f, 18, 30),
                                 editable: false
                                 //color: item.color
                                 //id_cotizacion : item.id_cotizacion
