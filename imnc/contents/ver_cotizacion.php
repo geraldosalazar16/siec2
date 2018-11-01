@@ -21,7 +21,8 @@
           </p>
           -->
 		      <p>
-            <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_generar()'
+            <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  
+            ng-click='modal_cotizacion_generar()'
             ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'>
               <i class="fa fa-file"></i> Generar cotización
             </button>
@@ -73,7 +74,7 @@
                     ¿Es SG integral?: {{obj_cotizacion.SG_INTEGRAL}}
                   </li>
                   <li id="lbTarifa">
-                    Tarifa por Día Auditor: {{obj_cotizacion.TARIFA | currency}}
+                    Tarifa por Día Auditor: {{obj_cotizacion.TARIFA_COMPLETA.TARIFA | currency}}
                   </li>
                   <li id="lbDias">
                     TOTAL DIAS COTIZACION: {{obj_cotizacion.TOTAL_DIAS_COTIZACION}}
@@ -112,7 +113,7 @@
             <thead>
               <tr class="headings">
                 <th class="column-title">ID</th>
-                <th class="column-title">Trámite</th>
+                <th class="column-title">Tipo</th>
                 <th class="column-title">Días de Auditoría</th>
                 <th class="column-title">Descuento del Día Auditor</th>
                 <th class="column-title">Costo</th>
@@ -124,7 +125,7 @@
             <tbody>
               <tr class="even pointer" ng-repeat="tramites_cotizacion in arr_tramites_cotizacion">
                 <td>{{$index + 1}}</td>
-                <td>{{tramites_cotizacion.ETAPA }}</td>
+                <td>{{tramites_cotizacion.TIPO }}</td>
                 <td>{{tramites_cotizacion.DIAS_AUDITORIA }}</td>
                 <td>{{tramites_cotizacion.DESCUENTO != null? tramites_cotizacion.DESCUENTO+"%" : "--" }}</td>
                 <td>{{tramites_cotizacion.TRAMITE_COSTO_DES | currency }}</td>
@@ -134,7 +135,8 @@
                   ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
                     Editar
                   </button>
-                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="mostrar_tramite_sitios(tramites_cotizacion.ID)"
+                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
+                  ng-click="mostrar_tramite_sitios(tramites_cotizacion.ID)"
                   style="float: right;">
                     Mostrar cotización
                   </button>
@@ -1031,7 +1033,7 @@
 
 				<div class='form-group' ng-repeat="x in arr_tramites_cotizacion" ng-init="tram_index = $index" >
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
-						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].ETAPA" required ng-class="{ error: exampleFormGenCotizacion.tramite.x.$error.required && !exampleForm.$pristine}"  >
+						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TIPO" required ng-class="{ error: exampleFormGenCotizacion.tramite.x.$error.required && !exampleForm.$pristine}"  >
 					</div>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TRAMITE_COSTO" required ng-class="{ error: exampleFormGenCotizacion.monto.x.$error.required && !exampleForm.$pristine}"  >

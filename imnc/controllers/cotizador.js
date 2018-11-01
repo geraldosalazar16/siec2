@@ -169,7 +169,11 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
   // Abrir modal para insertar
   $scope.modal_cotizacion_insertar = function(){
+    //Limpiar el listado de normas sugeridas
     $scope.Normas = [];
+    //Limpiar el control de normas
+    $scope.normas_cotizacion = [];
+
     $('#modalTituloCotizacion').html("Agregar cotización");
     //$('#btnGuardarUsuario').attr("opcion", "insertar");
     $scope.opcion_guardar_cotizacion = "insertar";
@@ -215,8 +219,10 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         $scope.bandera = data[0].BANDERA;
         $scope.fill_select_estatus(data[0].ESTADO_COTIZACION);
         
-        //Cargar referencias
-        $scope.cambioCliente(data[0].REFERENCIA);
+        //Cargar referencias cuando es una cotización para un cliente
+        if($scope.bandera != 0){
+          $scope.cambioCliente(data[0].REFERENCIA);
+        }
 
       }
       else  {

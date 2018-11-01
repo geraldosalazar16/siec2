@@ -62,6 +62,9 @@ $TARIFA = $objeto->TARIFA;
 valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
 $DESCUENTO = $objeto->DESCUENTO;
 $REFERENCIA = $objeto->REFERENCIA;
+if(!$REFERENCIA){
+	$REFERENCIA = "";
+}
 /*
 $SG_INTEGRAL = $objeto->SG_INTEGRAL;
 valida_parametro_and_die($SG_INTEGRAL,"Falta INTEGRAL");

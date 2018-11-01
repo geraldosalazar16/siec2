@@ -642,6 +642,7 @@ $scope.formData = {};
 
   // Abrir modal para insertar
   $scope.mostrar_tramite_sitios = function(id){
+    //Id del trámite
     current_tramite = id;
     if(id == 0){
       $scope.arr_sitios_cotizacion = [];

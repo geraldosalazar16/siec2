@@ -158,12 +158,28 @@ foreach ($tramites as $key => $tramite_item) {
 	if($cotizacion[0]["SG_INTEGRAL"] == "si"){
 		$total_dias_auditoria = round( $total_dias_auditoria * (1 - ($tramite_item["FACTOR_INTEGRACION"]/100)) );
 	}
-	$es_vigilancia = strpos($nombre_auditoria, 'Vigilancia') || strpos($nombre_auditoria, 'VIGILANCIA');
-	$es_renovacion = strpos($nombre_auditoria, 'Renovacion') || strpos($nombre_auditoria, 'RENOVACIÓN') || strpos($nombre_auditoria, 'RENOVACION');
-	$es_renovacion1 = strpos($nombre_auditoria, 'Renovación');
-	$es_etapa_2 = strpos($nombre_auditoria, 'Etapa 2') || strpos($nombre_auditoria, 'ETAPA 2');
+	$a = strpos($nombre_auditoria, 'Vigilancia');
+	$b = strpos($nombre_auditoria, 'VIGILANCIA');
+	$es_vigilancia = false;
+	if($a !== false || $b !== false){
+		$es_vigilancia = true;
+	}
+	$a = strpos($nombre_auditoria, 'Renovacion');
+	$b = strpos($nombre_auditoria, 'RENOVACIÓN');
+	$c = strpos($nombre_auditoria, 'RENOVACION');
+	$d = strpos($nombre_auditoria, 'Renovación');
+	$es_renovacion = false;
+	if($a !== false || $b !== false || $c !== false || $d !== false){
+		$es_renovacion = true;
+	}
+	$es_etapa_2 = false;
+	$a = strpos($nombre_auditoria, 'Etapa 2');
+	$b = strpos($nombre_auditoria, 'ETAPA 2');
+	if($a !== false || $b !== false ){
+		$es_etapa_2 = true;
+	}
 	//Cuando es diferente de vigilancia y renovación es 1 día
-	if($es_vigilancia === false && $es_renovacion === false && $es_renovacion1 === false && $es_etapa_2 === false){
+	if($es_vigilancia === false && $es_renovacion === false && $es_etapa_2 === false){
 		$total_dias_auditoria = 1;
 	}
 	//Estapa 2 es la cantidad de días de etapa 1 menos 1

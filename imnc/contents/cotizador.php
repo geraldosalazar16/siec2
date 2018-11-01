@@ -5,7 +5,8 @@
         <div class="x_title">
         <p><h2>Cotizaciones</h2></p>
         <p>
-          <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_insertar()'
+          <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  
+          ng-click='modal_cotizacion_insertar()'
           ng-if='modulo_permisos["registrar"] == 1'>
             <i class="fa fa-plus"> </i> Agregar cotización
           </button>
@@ -25,7 +26,6 @@
                 <th class="column-title">Folio</th>
                 <th class="column-title">Estado</th>
                 <th class="column-title">Tarifa día auditor</th>
-                <th class="column-title">¿SG Integral?</th>
                 <th class="column-title"></th>
                 <th class="column-title"></th>
                 <th class="column-title"></th>
@@ -44,7 +44,6 @@
                 <td>{{cotizacion.FOLIO}}</td>
                 <td>{{cotizacion.ESTADO.ESTATUS_SEGUIMIENTO}}</td>
                 <td>{{cotizacion.VALOR_TARIFA | currency}}</td>
-                <td>{{cotizacion.SG_INTEGRAL}}</td>
                 <td>
                   <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="modal_cotizacion_editar(cotizacion.ID)"
                   ng-if='modulo_permisos["editar"] == 1 && cotizacion.ESTADO.ESTATUS_SEGUIMIENTO != "Firmado"' style="float: right;">
