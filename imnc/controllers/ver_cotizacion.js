@@ -285,7 +285,7 @@ $scope.formData = {};
     var nombre_cliente = '';
     var id_cliente = 0;
     var cliente_prospecto = 'prospecto';
-    //PROSPECTO
+    //Determinar si la cotización es para un prospecto o cliente
     if($scope.obj_cotizacion.BANDERA != 0) {
       nombre_cliente = $scope.obj_cotizacion.CLIENTE['NOMBRE'];
       id_cliente = $scope.obj_cotizacion.CLIENTE['ID'];
@@ -295,44 +295,72 @@ $scope.formData = {};
       id_cliente = $scope.obj_cotizacion.PROSPECTO['ID'];
       cliente_prospecto = 'prospecto';
     }
-    
+
     const nombre_servicio = $scope.obj_cotizacion.SERVICIO['NOMBRE'];
     const id_servicio = $scope.obj_cotizacion.SERVICIO['ID'];
     const nombre_tipo_servicio = $scope.obj_cotizacion.TIPOS_SERVICIO['NOMBRE'];
     const id_tipo_servicio = $scope.obj_cotizacion.TIPOS_SERVICIO['ID'];
     const normas = $scope.obj_cotizacion.NORMAS;
+    if(cliente_prospecto == 'prospecto'){
 
-    $scope.servicio_insertar = {
-      ID_COTIZACION: $scope.obj_cotizacion.ID,
-      CLIENTE_PROSPECTO: cliente_prospecto,
-      ID_CLIENTE: id_cliente,
-      NOMBRE_CLIENTE: nombre_cliente,
-      ID_SERVICIO: id_servicio,
-      NOMBRE_SERVICIO: nombre_servicio,
-      ID_TIPO_SERVICIO: id_tipo_servicio,
-      NOMBRE_TIPO_SERVICIO: nombre_tipo_servicio,
-      ID_ETAPA:	"",
-      NOMBRE_ETAPA: "",
-      NORMAS: normas,
-      REFERENCIA: "",
-      CAMBIO	: "N",
-      ID_USUARIO:	sessionStorage.getItem("id_usuario")
-    };
+      //Información del servicio a insertar para prospecto
+      $scope.servicio_insertar = {
+        ID_COTIZACION: $scope.obj_cotizacion.ID,
+        CLIENTE_PROSPECTO: cliente_prospecto,
+        ID_CLIENTE: id_cliente,
+        NOMBRE_CLIENTE: nombre_cliente,
+        ID_SERVICIO: id_servicio,
+        NOMBRE_SERVICIO: nombre_servicio,
+        ID_TIPO_SERVICIO: id_tipo_servicio,
+        NOMBRE_TIPO_SERVICIO: nombre_tipo_servicio,
+        ID_ETAPA:	"",
+        NOMBRE_ETAPA: "",
+        NORMAS: normas,
+        REFERENCIA: "",
+        CAMBIO	: "N",
+        ID_USUARIO:	sessionStorage.getItem("id_usuario")
+      };
+      //Posibles etapas en las que se puede iniciar un servicio 
+      //cuando la cotización es sobre un prospecto
+      $scope.Etapas = [];
+      if (id_servicio == 1) { //SG
+        $scope.Etapas.push({ID:3,NOMBRE:"Asignación"});
+        $scope.Etapas.push({ID:12,NOMBRE:"Transferencia"});
+        $scope.servicio_insertar.ID_ETAPA = 3;
+      } else {
+        $scope.Etapas.push({ID:17,NOMBRE:"Asignación"});
+        $scope.Etapas = 17;
+      }
 
-    $scope.Etapas = [];
-    if (id_servicio == 1) { //SG
-      $scope.Etapas.push({ID:3,NOMBRE:"Asignación"});
-      $scope.Etapas.push({ID:12,NOMBRE:"Transferencia"});
-      $scope.servicio_insertar.ID_ETAPA = 3;
+      //Se genera la referencia automáticamente
+      //Ciclo 1 etapa 3 asignación 
+      generar_referencia("C1",3,id_tipo_servicio);
+
+      $('#modalAddServicio').modal('show');
     } else {
-      $scope.Etapas.push({ID:17,NOMBRE:"Asignación"});
-      $scope.Etapas = 17;
-    }
+      //Cargar la referencia del cliente
+      var referencia = $scope.obj_cotizacion.REFERENCIA;
+      
+      //Información del servicio a insertar para cliente
+      $scope.servicio_insertar = {
+        ID_COTIZACION: $scope.obj_cotizacion.ID,
+        CLIENTE_PROSPECTO: cliente_prospecto,
+        ID_CLIENTE: id_cliente,
+        NOMBRE_CLIENTE: nombre_cliente,
+        ID_SERVICIO: id_servicio,
+        NOMBRE_SERVICIO: nombre_servicio,
+        ID_TIPO_SERVICIO: id_tipo_servicio,
+        NOMBRE_TIPO_SERVICIO: nombre_tipo_servicio,
+        NORMAS: normas,
+        REFERENCIA: referencia,
+        ES_RENOVACION: "S",
+        CAMBIO	: "N",
+        ID_USUARIO:	sessionStorage.getItem("id_usuario")
+      };
 
-    //Ciclo 1 etapa 3 asignación 
-    generar_referencia("C1",3,id_tipo_servicio);
-
-    $('#modalAddServicio').modal('show');
+      $('#modalAddServicioCliente').modal('show');
+    } 
+    
   }
   function generar_referencia(ref,etapa,tipo_servicio){
     if(!tipo_servicio)
@@ -381,6 +409,35 @@ $scope.formData = {};
           notify('Error',response.data.mensaje,'error');
         }
         $("#modalAddServicio").modal("hide");
+      });
+    }
+  }
+  $scope.cargar_eventos_servicio = function () {
+    //Solo permitir SG, esto habrá que quitarlo cuando se invcluya EC en el cotizador
+    if($scope.servicio_insertar.ID_SERVICIO != 1){
+      notify('Error','Esta funcionalidad solo sirve para Sistema de Gestión','error')
+    } else {
+      var datos = {
+        ID_COTIZACION: $scope.servicio_insertar.ID_COTIZACION,
+        CLIENTE_PROSPECTO: $scope.servicio_insertar.CLIENTE_PROSPECTO,
+        ID_CLIENTE: $scope.servicio_insertar.ID_CLIENTE,
+        ID_SERVICIO: $scope.servicio_insertar.ID_SERVICIO,
+        ID_TIPO_SERVICIO: $scope.servicio_insertar.ID_TIPO_SERVICIO,
+        NORMAS: $scope.servicio_insertar.NORMAS,
+        REFERENCIA: $scope.servicio_insertar.REFERENCIA,
+        CAMBIO	: "N",
+        ES_RENOVACION : $scope.servicio_insertar.ES_RENOVACION,
+        ID_USUARIO:	sessionStorage.getItem("id_usuario")
+      };
+      
+      $http.post(global_apiserver + "/servicio_cliente_etapa/agregarEventosServicio/",datos).
+      then(function(response){
+        if(response.data.resultado == 'ok'){
+          notify('Éxito','Se han agregado los eventos','success');        
+        } else {
+          notify('Error',response.data.mensaje,'error');
+        }
+        $("#modalAddServicioCliente").modal("hide");
       });
     }
   }
@@ -585,6 +642,7 @@ $scope.formData = {};
 
   // Abrir modal para insertar
   $scope.mostrar_tramite_sitios = function(id){
+    //Id del trámite
     current_tramite = id;
     if(id == 0){
       $scope.arr_sitios_cotizacion = [];

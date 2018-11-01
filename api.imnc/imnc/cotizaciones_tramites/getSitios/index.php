@@ -27,7 +27,13 @@ function valida_error_medoo_and_die(){
 $id = $_REQUEST["id"]; 
 $id_cotizacion = $_REQUEST["cotizacion"]; 
 
-$query = "SELECT * FROM TABLA_ENTIDADES,COTIZACIONES WHERE ID_PROSPECTO = ID_VISTA AND BANDERA_VISTA = BANDERA AND ID =".$database->quote($id_cotizacion);
+$query = "SELECT * 
+FROM TABLA_ENTIDADES,COTIZACIONES 
+WHERE 
+ID_PROSPECTO = ID_VISTA 
+AND BANDERA_VISTA = BANDERA 
+AND ID =".$database->quote($id_cotizacion);
+
 $cotizacion = $database->query($query)->fetchAll(PDO::FETCH_ASSOC); 
 valida_error_medoo_and_die();
 $cotizacio_tramite = $database->get("COTIZACIONES_TRAMITES", "*", ["ID"=>$id]); 
@@ -48,7 +54,7 @@ valida_error_medoo_and_die();
 $norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
 valida_error_medoo_and_die(); 
 //$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$tramite_item["ID_ETAPA_PROCESO"]]);
-$etapa = $database->get("SG_AUDITORIAS_TIPOS", "*", ["ID"=>$tramite_item["ID_ETAPA_PROCESO"]]);
+$etapa = $database->get("SG_AUDITORIAS_TIPOS", "*", ["ID"=>$cotizacio_tramite["ID_ETAPA_PROCESO"]]);
 valida_error_medoo_and_die(); 
 //Sustituyo $etapa["ETAPA"] por nombre_auditoria
 $nombre_auditoria = $etapa["TIPO"];
@@ -171,10 +177,26 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 		$total_dias_auditoria += $dias_subtotal;
 		$total_empleados += $obj_cotizacion["COTIZACION_SITIOS"][$i]["TOTAL_EMPLEADOS"];
 	}
-	$es_vigilancia = (strpos($nombre_auditoria, 'Vigilancia') || strpos($nombre_auditoria, 'VIGILANCIA'));
-	$es_renovacion = strpos($nombre_auditoria, 'Renovacion') || strpos($nombre_auditoria, 'RENOVACION');
-	$es_renovacion1 = strpos($nombre_auditoria, 'Renovación') || strpos($nombre_auditoria, 'RENOVACIÓN');
-	$es_etapa_2 = strpos($nombre_auditoria, 'Etapa 2') || strpos($nombre_auditoria, 'ETAPA 2');
+	$a = strpos($nombre_auditoria, 'Vigilancia');
+	$b = strpos($nombre_auditoria, 'VIGILANCIA');
+	$es_vigilancia = false;
+	if($a !== false || $b !== false){
+		$es_vigilancia = true;
+	}
+	$a = strpos($nombre_auditoria, 'Renovacion');
+	$b = strpos($nombre_auditoria, 'RENOVACIÓN');
+	$c = strpos($nombre_auditoria, 'RENOVACION');
+	$d = strpos($nombre_auditoria, 'Renovación');
+	$es_renovacion = false;
+	if($a !== false || $b !== false || $c !== false || $d !== false){
+		$es_renovacion = true;
+	}
+	$es_etapa_2 = false;
+	$a = strpos($nombre_auditoria, 'Etapa 2');
+	$b = strpos($nombre_auditoria, 'ETAPA 2');
+	if($a !== false || $b !== false ){
+		$es_etapa_2 = true;
+	}
 	//Cuando es diferente de vigilancia y renovación es 1 día
 	if($es_vigilancia === false && $es_renovacion === false && $es_renovacion1 === false && $es_etapa_2 === false){ 
 		$total_dias_auditoria = 1;

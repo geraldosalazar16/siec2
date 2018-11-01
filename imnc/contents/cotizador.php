@@ -5,7 +5,8 @@
         <div class="x_title">
         <p><h2>Cotizaciones</h2></p>
         <p>
-          <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  ng-click='modal_cotizacion_insertar()'
+          <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  
+          ng-click='modal_cotizacion_insertar()'
           ng-if='modulo_permisos["registrar"] == 1'>
             <i class="fa fa-plus"> </i> Agregar cotización
           </button>
@@ -25,7 +26,6 @@
                 <th class="column-title">Folio</th>
                 <th class="column-title">Estado</th>
                 <th class="column-title">Tarifa día auditor</th>
-                <th class="column-title">¿SG Integral?</th>
                 <th class="column-title"></th>
                 <th class="column-title"></th>
                 <th class="column-title"></th>
@@ -44,7 +44,6 @@
                 <td>{{cotizacion.FOLIO}}</td>
                 <td>{{cotizacion.ESTADO.ESTATUS_SEGUIMIENTO}}</td>
                 <td>{{cotizacion.VALOR_TARIFA | currency}}</td>
-                <td>{{cotizacion.SG_INTEGRAL}}</td>
                 <td>
                   <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="modal_cotizacion_editar(cotizacion.ID)"
                   ng-if='modulo_permisos["editar"] == 1 && cotizacion.ESTADO.ESTATUS_SEGUIMIENTO != "Firmado"' style="float: right;">
@@ -149,6 +148,7 @@
                 <div class="col-md-12">
                   <select id="selectReferencia" ng-model="cotizacion_insertar_editar.REFERENCIA"
                   ng-change="cambioReferencia()"
+                  ng-disabled="opcion_guardar_cotizacion == 'editar'"
                   ng-options="referencia as referencia.VALOR for referencia in Referencias" class="form-control">
                      <option value="" selected disabled>-- selecciona una referencia --</option>
                   </select>
@@ -208,8 +208,8 @@
   						</multiple-autocomplete>
             </div>
 					</div>
-
-              <div class="form-group form-vertical" ng-if='bandera==1'>
+              <!-- Esto se oculta con ng-show porque por el momento no se va a usar -->
+              <div class="form-group form-vertical" ng-if='bandera==1' ng-show="false">
                 <label class="control-label col-md-12">Etapa<span class="required">*</span></label>
                 <div class="col-md-12">
                   <select id="selectEtapa" ng-model="cotizacion_insertar_editar.ETAPA"

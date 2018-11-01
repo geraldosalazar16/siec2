@@ -169,7 +169,11 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
   // Abrir modal para insertar
   $scope.modal_cotizacion_insertar = function(){
+    //Limpiar el listado de normas sugeridas
     $scope.Normas = [];
+    //Limpiar el control de normas
+    $scope.normas_cotizacion = [];
+
     $('#modalTituloCotizacion').html("Agregar cotización");
     //$('#btnGuardarUsuario').attr("opcion", "insertar");
     $scope.opcion_guardar_cotizacion = "insertar";
@@ -215,6 +219,11 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         $scope.bandera = data[0].BANDERA;
         $scope.fill_select_estatus(data[0].ESTADO_COTIZACION);
         
+        //Cargar referencias cuando es una cotización para un cliente
+        if($scope.bandera != 0){
+          $scope.cambioCliente(data[0].REFERENCIA);
+        }
+
       }
       else  {
         console.log("No hay datos");
@@ -250,7 +259,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         FOLIO_INICIALES : $scope.cotizacion_insertar_editar.FOLIO_INICIALES,
         FOLIO_SERVICIO : $scope.cotizacion_insertar_editar.FOLIO_SERVICIO,
         ESTADO_COTIZACION : $scope.cotizacion_insertar_editar.ESTADO_SEG.ID,
-        REFERENCIA : $scope.cotizacion_insertar_editar.REFERENCIA,
+        REFERENCIA : $scope.cotizacion_insertar_editar.REFERENCIA.VALOR,
         TARIFA : $scope.cotizacion_insertar_editar.TARIFA,
         DESCUENTO : $scope.cotizacion_insertar_editar.DESCUENTO,
         SG_INTEGRAL : $scope.cotizacion_insertar_editar.SG_INTEGRAL,
@@ -266,11 +275,12 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         ID_SERVICIO : $scope.cotizacion_insertar_editar.ID_SERVICIO.ID,
         ID_TIPO_SERVICIO : $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID,
         NORMAS: $scope.normas_cotizacion,
-        ETAPA: $scope.cotizacion_insertar_editar.ETAPA,
+        //ETAPA: $scope.cotizacion_insertar_editar.ETAPA, se deja de usar por el momento
+        ETAPA: 0, //Se pone a cero porque no se esta usando
         FOLIO_INICIALES : $scope.cotizacion_insertar_editar.FOLIO_INICIALES,
         FOLIO_SERVICIO : $scope.cotizacion_insertar_editar.FOLIO_SERVICIO,
         ESTADO_COTIZACION : $scope.cotizacion_insertar_editar.ESTADO_SEG.ID,
-        REFERENCIA : $scope.cotizacion_insertar_editar.REFERENCIA,
+        REFERENCIA : $scope.cotizacion_insertar_editar.REFERENCIA.VALOR,
         TARIFA : $scope.cotizacion_insertar_editar.TARIFA,
         DESCUENTO : $scope.cotizacion_insertar_editar.DESCUENTO,
         SG_INTEGRAL : $scope.cotizacion_insertar_editar.SG_INTEGRAL,
@@ -365,7 +375,8 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
    });
  }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
- $scope.cambioCliente = function(){
+ $scope.cambioCliente = function(ref){
+   //ref es la referencia a cargar para edicion
    $http.get(  global_apiserver + "/servicio_cliente_etapa/getReferenciaByClient/?cliente="+$scope.cotizacion_insertar_editar.CLIENTE.ID)
         .then(function( response ) {//se ejecuta cuando la petición fue correcta
           $scope.Referencias = response.data.map(function(item){
@@ -377,6 +388,13 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
               VALOR : item.REFERENCIA
             }
           });
+          if(ref){
+            $scope.Referencias.forEach(referencia => {
+              if(referencia.VALOR == ref){
+                $scope.cotizacion_insertar_editar.REFERENCIA = referencia;
+              }
+            });
+          }
       },
       function (response){});
  }

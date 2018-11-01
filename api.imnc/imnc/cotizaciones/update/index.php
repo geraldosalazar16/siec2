@@ -55,6 +55,7 @@ $TARIFA = $objeto->TARIFA;
 valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
 $DESCUENTO = $objeto->DESCUENTO;
 $COMPLEJIDAD = $objeto->COMPLEJIDAD;
+$REFERENCIA = $objeto->REFERENCIA;
 valida_parametro_and_die($COMPLEJIDAD,"Falta COMPLEJIDAD");
 $BANDERA = $objeto->BANDERA;
 

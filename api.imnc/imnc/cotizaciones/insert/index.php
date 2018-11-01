@@ -61,6 +61,10 @@ valida_parametro_and_die($FOLIO_INICIALES,"Falta FOLIO INICIALES");
 $TARIFA = $objeto->TARIFA;
 valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
 $DESCUENTO = $objeto->DESCUENTO;
+$REFERENCIA = $objeto->REFERENCIA;
+if(!$REFERENCIA){
+	$REFERENCIA = "";
+}
 /*
 $SG_INTEGRAL = $objeto->SG_INTEGRAL;
 valida_parametro_and_die($SG_INTEGRAL,"Falta INTEGRAL");
@@ -121,6 +125,7 @@ $id_cotizacion = $database->insert("COTIZACIONES", [
 	"FOLIO_YEAR" => $FOLIO_YEAR,
 	"TARIFA" => $TARIFA,
 	"DESCUENTO" => $DESCUENTO,
+	"REFERENCIA" => $REFERENCIA,
 	//"SG_INTEGRAL" => $SG_INTEGRAL,
 	"BANDERA" => $BANDERA,
 	"COMPLEJIDAD" => $COMPLEJIDAD,
