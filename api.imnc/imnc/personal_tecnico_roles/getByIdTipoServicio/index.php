@@ -28,34 +28,24 @@ function valida_error_medoo_and_die(){
 	}
 }
 
-$respuesta=array();
-$json = file_get_contents('php://input'); //Obtiene lo que se envía vía POST
-$objeto = json_decode($json); // Lo transforma de JSON a un objeto de PHP
+$id = $_REQUEST["id"];
 
-$ID =   $objeto->ID;
-$ACRONIMO = $objeto->ACRONIMO;
-$ROL = $objeto->ROL;
-$JERARQUIA = $objeto->JERARQUIA;
-
-$ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
-valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
-
-$FECHA_MODIFICACION = date("Ymd");
-$HORA_MODIFICACION = date("His");
-
-$IdPTR = $database->update("PERSONAL_TECNICO_ROLES", [
-	"ACRONIMO" => $ACRONIMO,
-	"ROL" => $ROL,
-	"JERARQUIA"=> $JERARQUIA,
-	"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
-	"HORA_MODIFICACION" => $HORA_MODIFICACION,
-	"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION
-], ["ID"=>$ID]);
-
+$rol = $database->select("PERSONALTECNICOROLES_TIPOSERVICIO",
+							[
+								"[><]PERSONAL_TECNICO_ROLES"=> ["PERSONALTECNICOROLES_TIPOSERVICIO.ID_ROL"=>"ID"]
+							], 
+							[
+								"PERSONAL_TECNICO_ROLES.ID",
+								"PERSONAL_TECNICO_ROLES.ACRONIMO",
+								"PERSONAL_TECNICO_ROLES.ROL",
+								"PERSONALTECNICOROLES_TIPOSERVICIO.DESC_DIAS",
+								"PERSONALTECNICOROLES_TIPOSERVICIO.OBLIGATORIO"
+							]
+							,
+									["PERSONALTECNICOROLES_TIPOSERVICIO.ID_TIPO_SERVICIO"=>$id]);
 valida_error_medoo_and_die();
 
-$respuesta['resultado']="ok";
-print_r(json_encode($respuesta));
+print_r(json_encode($rol));
 
 
 //-------- FIN --------------

@@ -23,18 +23,16 @@ function valida_error_medoo_and_die(){
 		$respuesta['resultado']="error";
 		$respuesta['mensaje']="Error al ejecutar script: " . $database->error()[2];
 		print_r(json_encode($respuesta));
-		$mailerror->send("certificando", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx");
 		die();
 	}
 }
 
-$respuesta=array();
+$id = $_REQUEST["id"];
 
-//$personal_tecnico_roles = $database->select("PERSONAL_TECNICO_ROLES", "*",["ORDER"=>"JERARQUIA"]);
-$personal_tecnico_roles = $database->select("PERSONAL_TECNICO_ROLES", "*",["ORDER"=>"ID"]);
+$personal_tecnico_eventos = $database->select("PERSONAL_TECNICO_EVENTOS", "*", ["ID_PERSONAL_TECNICO"=>$id]);
 valida_error_medoo_and_die();
 
-print_r(json_encode($personal_tecnico_roles));
+print_r(json_encode($personal_tecnico_eventos));
 
 
 //-------- FIN --------------

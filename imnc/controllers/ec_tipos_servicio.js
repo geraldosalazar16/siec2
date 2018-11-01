@@ -9,6 +9,7 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.formDataAuditoria = {};
 	$scope.formDataAuditoriaEC = {};
 	$scope.formDataGrupoAuditor	=	{};
+	$scope.formDataGeneraNotificacionPDF = {};
 	$scope.resp={};
 	$scope.resp1={};
 	$scope.DatosSitiosEC={};
@@ -745,8 +746,7 @@ cargarSitiosSGServicio($scope.id_servicio_cliente_etapa);
 			else{
 				//$scope.formDataSitiosEC.input[$scope.MetaDatosSitios[key].ID]	= "";
 			}
-	//}		
-	//$scope.formDataSitioSG.cmbClaveClienteDomSitio = id_cliente_domicilio;
+	
 }
 // =======================================================================
 // ***** 		FUNCION PARA EL BOTON GUARDAR DEL MODAL	SITIOS 		 *****
@@ -1275,6 +1275,7 @@ $scope.btnInsertaGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_aud
 $scope.cargarModalInsertarActualizarGrupoAuditor = function(id_pt_calif,nombre_completo){
 	$scope.formDataGrupoAuditor.txtClavePTCalifGrupo = nombre_completo;
 	$scope.formDataGrupoAuditor.idPTCalifGrupo = id_pt_calif;
+	cargarRolesAuditorTipoServicio($scope.DatosServicio.ID_TIPO_SERVICIO);
 	if($scope.DatosServicio.ID_SERVICIO == 1){
 		$("#modalExplorarGrupo").modal("hide");
 	}
@@ -1283,6 +1284,16 @@ $scope.cargarModalInsertarActualizarGrupoAuditor = function(id_pt_calif,nombre_c
 	}
 	
     $("#modalInsertarActualizarGrupoAuditoria").modal("show");
+}	
+// ======================================================================
+// *****	FUNCION CARGAR AUDITORES ROLES	SEGUN TIPO SERVICIO	 	*****
+// ======================================================================
+function cargarRolesAuditorTipoServicio(idts){
+	$http.get(  global_apiserver + "/personal_tecnico_roles/getByIdTipoServicio/?id="+idts)
+		.then(function( response ){
+			$scope.cmbRoles = response.data;
+			
+		});
 }	
 // ======================================================================
 // *****			FUNCION CARGAR AUDITORES ROLES					*****
@@ -1605,6 +1616,57 @@ cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 	
 }
 /*================================================================*/
+
+/*============================================================================================*/
+//GENERAR NOTIFICACION
+  $scope.modal_generar_notificacion = function(id_sce,id_ta,ciclo){
+		$("#inputIdSCE").val(id_sce);
+		$("#inputIdTA").val(id_ta);
+		$("#inputCiclo").val(ciclo);
+		$scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa);
+//		Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+//		Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+//		Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
+//		Contactos_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
+		
+//		$scope.formDataGenCotizacion.tramites=$scope.arr_tramites_cotizacion;
+//		$scope.formDataGenCotizacion.descripcion=[];
+//		$scope.tarifa_adicional_tramite_cotizacion_by_tramite=[];
+		
+		
+//		for(var key in $scope.formDataGenCotizacion.tramites){
+			
+			/*===========================================================================*/
+//			 tramite_tarifa_adicional_by_tramite($scope.formDataGenCotizacion.tramites[key].ID,key);
+			/*===========================================================================*/
+			
+//		}
+		
+//		$scope.formDataGenCotizacion.descripcion=$scope.tarifa_adicional_tramite_cotizacion_by_tramite;
+		
+  
+    $('#modalGeneraNotificacion').modal('show');
+  }
+  
+  
+ //	FUNCIONES PARA OBTENER LOS DOMICILIOS DEL CLIENTE 
+$scope.get_domicilio_cliente	= function(id_cliente){
+  $http.get(  global_apiserver + "/servicio_cliente_etapa/getDomicilioByIDSCE/?id="+id_cliente)
+	.then(function( response ){
+		$scope.Domicilios	= response.data;
+			
+	});
+	
+  }
+  
+ $scope.submitFormGeneraNotificacionPDF = function (formDataGeneraNotificacionPDF) {
+ 
+		window.open('', 'VentanaNotificacionPDF');
+		document.getElementById('formGeneraNotificacionPDF').submit();
+ // submitFormGeneraNotificacionPDF(formGeneraNotificacionPDF)
+  }
+  /*==========================================================================*/
+
 DatosServicioContratado($scope.id_servicio_cliente_etapa);
 cargarValoresMetaDatosServicio($scope.id_servicio_cliente_etapa);
 cargarSectoresServicio($scope.id_servicio_cliente_etapa);
@@ -1613,7 +1675,7 @@ cargarSitiosSGServicio($scope.id_servicio_cliente_etapa);
 cargarTodosSitiosECServicio($scope.id_servicio_cliente_etapa);
 cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
-cargarRolesAuditor();
+//cargarRolesAuditor();
 //cargarOpcionesSelectMetaDatos();
 
 

@@ -87,7 +87,8 @@ if (!isset($_SESSION['CREATED'])) {
   <script src="js/angular.min.js"></script>
   <script src="js/certificando-app.js"></script>
   <script src="js/jquery.min.js"></script>
-  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+  <!-- <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>	-->
+  <script src="js/jquery-ui.js"></script>
   <script src="js/nprogress.js"></script>
   <script src="js/input_mask/jquery.inputmask.js"></script>
   <script src="js/jquery.uploadfile.min.js"></script>

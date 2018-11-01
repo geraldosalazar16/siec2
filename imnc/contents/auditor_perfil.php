@@ -6,7 +6,7 @@
       font-size: 18px;
     }
 </style>
-
+<span ng-controller="auditor_perfil_controller">
 <div class="right_col" role="main">
 
   <div class="">
@@ -116,20 +116,21 @@
                         } 
                     ?>
                     
-                    <table class="data table table-striped jambo_table no-margin">
+                     <table class="table table-striped responsive-utilities jambo_table bulk_action">
                       <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Rol</th>
-                          <th>Tipo de servicio</th>
-                          <th>Registro</th>
-                          <th>Periodo</th>
-                          <th></th>
-                          <th></th>
-						  <th></th>
+                        <tr class="headings">
+                          <th class="column-title">#</th>
+                          <th class="column-title">Rol</th>
+                          <th class="column-title">Tipo de servicio</th>
+						  <th class="column-title">Normas</th>
+                          <th class="column-title">Registro</th>
+                          <th class="column-title">Periodo</th>
+                          <th class="column-title"></th>
+                          <th class="column-title"></th>
+						  <th class="column-title"></th>
                         </tr>
                       </thead>
-                      <tbody id="tbodyCalifs" style="font-size: 12px;">
+                      <tbody id="tbodyCalifs" style="font-size: 12px;" class="ng-scope even pointer" >
                         
                       </tbody>
                     </table>
@@ -154,6 +155,7 @@
   include "auditor_perfil/modal_insertar_actualizar_calificacion.php";
   include "auditor_perfil/modal_insertar_actualizar_calif_sector.php";
   include "auditor_perfil/modal_insertar_actualizar_calificacion_anterior.php";
+  include "auditor_perfil/modal_insertar_actualizar_evento.php";
 
 ?>
 
@@ -172,3 +174,4 @@
   ?>
 
 </script>
+</span>

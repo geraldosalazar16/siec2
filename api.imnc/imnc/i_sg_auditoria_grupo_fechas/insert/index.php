@@ -2,27 +2,8 @@
 include  '../../common/conn-apiserver.php'; 
 include  '../../common/conn-medoo.php'; 
 include  '../../common/conn-sendgrid.php'; 
-
-function valida_parametro_and_die($parametro, $mensaje_error){ 
-	$parametro = "" . $parametro; 
-	if ($parametro == "") { 
-		$respuesta["resultado"] = "error"; 
-		$respuesta["mensaje"] = $mensaje_error; 
-		print_r(json_encode($respuesta)); 
-		die(); 
-	} 
-} 
-
-function valida_error_medoo_and_die(){ 
-	global $database, $mailerror; 
-	if ($database->error()[2]) { 
-		$respuesta["resultado"]="error"; 
-		$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
-		print_r(json_encode($respuesta)); 
-		$mailerror->send("I_SG_AUDITORIA_GRUPO_FECHAS", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
-		die(); 
-	} 
-} 
+include  '../../common/common_functions.php';   
+ 
 
 $respuesta=array(); 
 $json = file_get_contents("php://input"); 
@@ -45,6 +26,34 @@ $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
 
 if($database->count("I_SG_AUDITORIA_GRUPO_FECHAS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO,"ID_PERSONAL_TECNICO_CALIF" => $ID_PERSONAL_TECNICO_CALIF,"FECHA"=>$FECHA]])==0){
+
+	//Modificacion Geraldo agregar eventos a la validacion
+	$ID_PERSONAL_TECNICO	=	$database->get("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ID_PERSONAL_TECNICO_CALIF]);
+	valida_error_medoo_and_die();
+	$eventos	=	$database->select("PERSONAL_TECNICO_EVENTOS","*",["ID_PERSONAL_TECNICO"=>$ID_PERSONAL_TECNICO]);
+	valida_error_medoo_and_die();
+	
+	// Validar que la fecha no coincida con ningun evento
+	for($e=0; $e<count($eventos); $e++){
+		$f_ini = date("Ymd",strtotime($eventos[$e]["FECHA_INICIO"]));
+		$f_fin = date("Ymd",strtotime($eventos[$e]["FECHA_FIN"]));
+		if($FECHA >= $f_ini && $FECHA <= $f_fin){
+			imprime_error_and_die("La fecha " . $FECHA . " coincide con el evento ".$eventos[$e]["EVENTO"]);
+		}
+	}
+	// Validar que el auditor este libre para esta fecha
+	$consulta="SELECT COUNT(*) AS C
+
+					FROM    `I_SG_AUDITORIA_GRUPO_FECHAS` AS ISAGF
+					INNER JOIN 
+						`PERSONAL_TECNICO_CALIFICACIONES` AS PTC ON PTC.`ID` = ISAGF.`ID_PERSONAL_TECNICO_CALIF`
+					WHERE
+						PTC.`ID_PERSONAL_TECNICO` =".$ID_PERSONAL_TECNICO." AND  ISAGF.`FECHA` = ".$FECHA;
+	$ocupado = $database->query($consulta)->fetchAll();
+	valida_error_medoo_and_die();
+	if($ocupado[0]["C"] > 0){
+		imprime_error_and_die( "Este auditor tiene la fecha ". $FECHA . " asignada a otra auditoria.");
+	}
 $idd = $database->insert("I_SG_AUDITORIA_GRUPO_FECHAS",
 											
 											[

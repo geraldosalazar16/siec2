@@ -3,7 +3,6 @@ use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\PdfReader;
 
 /*/////////////////////////////////////////////////////////////////////////*/
-
 require_once('../../../phplibs/libPDF/tcpdf.php');
 require_once ('../../../phplibs/fpdf181/fpdf.php');
 require_once('../../../phplibs/FPDI-2.0.2/src/autoload.php');
@@ -353,7 +352,7 @@ $NoN="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 */
 /*/////////////////////////////////////////////////////////////////////////*/
 
-$pdf = new Fpdi();
+//$pdf = new Fpdi();
 ///////////////////////////////////////////
 /*$pdf->AddFont('Calibri','','calibri.php');
 $pdf->AddFont('Calibri','B','calibrib.php');
@@ -466,7 +465,8 @@ $No14="";//$No14 = $NoSitios;
 //$pdf1 = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 $str_direccion="Daniel Hernandez Barroso";
-$global_diffname="E:/xampp/htdocs/imnc/imnc/generar/pdf/cotizacion/";
+//$global_diffname="E:/xampp/htdocs/imnc/imnc/generar/pdf/cotizacion/";
+$global_diffname="E:/xampp/htdocs/pruebagit/siec2/imnc/generar/pdf/cotizacion/";
 // create new PDF document
 $pdf1 = new MYPDF($No5, $str_direccion, $global_diffname, PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 //$fontname = TCPDF_FONTS::addTTFfont('E:/xampp/htdocs/imnc/imnc/phplibs/libPDF/fonts/Calibri Bold Italic.ttf','TrueTypeUnicode','',96);
@@ -475,12 +475,6 @@ $pdf1->AddFont('Calibri','B','calibrib.php');
 $pdf1->AddFont('Calibri','I','calibrii.php');
 $pdf1->AddFont('Calibri','BI','calibribi.php');
 $pdf1->AddFont('Calibril','','calibril.php');
-// set document information
-//$pdf1->SetCreator(PDF_CREATOR);
-//$pdf1->SetAuthor('Nicola Asuni');
-//$pdf1->SetTitle('TCPDF Example 021');
-//$pdf1->SetSubject('TCPDF Tutorial');
-//$pdf1->SetKeywords('TCPDF, PDF, example, test, guide');
 
 // set default header data
 $pdf1->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 021', PDF_HEADER_STRING);

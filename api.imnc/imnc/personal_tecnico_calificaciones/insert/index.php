@@ -46,10 +46,10 @@ valida_parametro_and_die($ID_ROL, "Es necesario seleccionar un rol");
 $ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO;
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
 
-$ID_NORMA = $objeto->ID_NORMA;
-valida_parametro_and_die($ID_NORMA, "Es necesario seleccionar una norma");
-
-
+$NORMA = $objeto->ID_NORMA;
+if(sizeof($NORMA) == 0){
+	imprime_error_and_die("Es necesario seleccionar una norma");
+}
 $REGISTRO = $objeto->REGISTRO;
 valida_parametro_and_die($REGISTRO, "Es necesario capturar un registro");
 
@@ -92,43 +92,59 @@ $personal_tecnico_fecha_fin=array();
 $personal_tecnico_fecha_fin= $database->query("SELECT MAX(FECHA_FIN) AS MAXIMO FROM PERSONAL_TECNICO_CALIFICACIONES
 WHERE ID_PERSONAL_TECNICO=".$database->quote($ID_PERSONAL_TECNICO )."
 AND ID_ROL = ".$database->quote($ID_ROL)."
-AND ID_TIPO_SERVICIO = ".$database->quote($ID_TIPO_SERVICIO)."
-AND ID_NORMA=".$database->quote($ID_NORMA).";")->fetchAll(PDO::FETCH_ASSOC);
+AND ID_TIPO_SERVICIO = ".$database->quote($ID_TIPO_SERVICIO).";")->fetchAll(PDO::FETCH_ASSOC);
 
-if(sizeof($personal_tecnico_fecha_fin)>0){
+if($database->count("PERSONAL_TECNICO_CALIFICACIONES","*",["AND"=>["ID_PERSONAL_TECNICO"=>$ID_PERSONAL_TECNICO,"ID_ROL"=>$ID_ROL,"ID_TIPO_SERVICIO"=>$ID_TIPO_SERVICIO]])>0){
 
-	if($FECHA_INICIO>$personal_tecnico_fecha_fin[0]["MAXIMO"]){
-
-	    insertar_personal_tecnico_calificacion($ID_PERSONAL_TECNICO,$ID_ROL,$ID_TIPO_SERVICIO,
-	    $ID_NORMA,$REGISTRO,$FECHA_INICIO,$FECHA_FIN,$FECHA_CREACION,
-	    $HORA_CREACION,$ID_USUARIO_CREACION, $respuestas);
-	}else{
-	    imprime_error_and_die("Error se interlazan fechas, con una misma NORMA");
-	}
+	
+	imprime_error_and_die("Esta calificacion ya existe. Para modificar debe darle editar calificacion.");
+				
+	
 }else{
 	insertar_personal_tecnico_calificacion($ID_PERSONAL_TECNICO,$ID_ROL,$ID_TIPO_SERVICIO,
-	$ID_NORMA,$REGISTRO,$FECHA_INICIO,$FECHA_FIN,$FECHA_CREACION,
-	$HORA_CREACION,$ID_USUARIO_CREACION, $respuestas);
+		$NORMA,$REGISTRO,$FECHA_INICIO,$FECHA_FIN,$FECHA_CREACION,
+		$HORA_CREACION,$ID_USUARIO_CREACION, $respuestas);
 }
 //Terminacion de la valicación
 function insertar_personal_tecnico_calificacion($ID_PERSONAL_TECNICO,$ID_ROL,$ID_TIPO_SERVICIO,
-	$ID_NORMA,$REGISTRO,$FECHA_INICIO,$FECHA_FIN,$FECHA_CREACION,
+	$NORMA,$REGISTRO,$FECHA_INICIO,$FECHA_FIN,$FECHA_CREACION,
 	$HORA_CREACION,$ID_USUARIO_CREACION, $respuesta){
 global $database;
 	
-$IdPTC = $database->insert("PERSONAL_TECNICO_CALIFICACIONES", [
-	"ID_PERSONAL_TECNICO" => $ID_PERSONAL_TECNICO,
-	"ID_ROL" => $ID_ROL,
-	"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
-	"ID_NORMA" => $ID_NORMA,
-	"REGISTRO" => $REGISTRO,
-	"FECHA_INICIO" => $FECHA_INICIO,
-	"FECHA_FIN" => $FECHA_FIN,
-	"FECHA_CREACION" => $FECHA_CREACION,
-	"HORA_CREACION" => $HORA_CREACION,
-	"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
-]);
-valida_error_medoo_and_die();
+	$IdPTC = $database->insert("PERSONAL_TECNICO_CALIFICACIONES", [
+		"ID_PERSONAL_TECNICO" => $ID_PERSONAL_TECNICO,
+		"ID_ROL" => $ID_ROL,
+		"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
+		//"ID_NORMA" => $ID_NORMA,
+		"REGISTRO" => $REGISTRO,
+		"FECHA_INICIO" => $FECHA_INICIO,
+		"FECHA_FIN" => $FECHA_FIN,
+		"FECHA_CREACION" => $FECHA_CREACION,
+		"HORA_CREACION" => $HORA_CREACION,
+		"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+		]);
+		valida_error_medoo_and_die();
+
+
+///////////////////////////////////////////////////////////////////////////////
+//				PARA INSERTAR LAS RELACIONES NORMAS CALIFICACIONES
+
+$id2	=	$database->delete("CALIFICACIONES_NORMAS",["ID_CALIFICACION"=>$IdPTC]);
+
+for($i=0;$i<count($NORMA);$i++){
+$ID_NORMA = $NORMA[$i]->ID_NORMA;
+
+$id1 = $database->insert("CALIFICACIONES_NORMAS", [
+			
+		"ID_NORMA" => $ID_NORMA, 
+		"ID_CALIFICACION" => $IdPTC,
+		"FECHA_CREACION" => $FECHA_CREACION,
+		"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION		
+		
+	]); 
+	valida_error_medoo_and_die();
+
+}
 
 $respuesta['resultado']="ok";
 $respuesta['id']=$IdPTC;

@@ -28,7 +28,7 @@ $respuesta=array();
 $json = file_get_contents('php://input'); //Obtiene lo que se envía vía POST
 $objeto = json_decode($json); // Lo transforma de JSON a un objeto de PHP
 
-$ID = $objeto->ID;
+$ACRONIMO = $objeto->ACRONIMO;
 $ROL = $objeto->ROL;
 $JERARQUIA = $objeto->JERARQUIA;
 
@@ -39,7 +39,7 @@ $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
 
 $id = $database->insert("PERSONAL_TECNICO_ROLES", [
-	"ID" => $ID,
+	"ACRONIMO" => $ACRONIMO,
 	"ROL" => $ROL,
 	"JERARQUIA" =>$JERARQUIA,
 	"FECHA_CREACION" => $FECHA_CREACION,
@@ -49,7 +49,7 @@ $id = $database->insert("PERSONAL_TECNICO_ROLES", [
 valida_error_medoo_and_die();
 
 $respuesta['resultado']="ok";
-$respuesta['id']=$ID;
+$respuesta['id']=$id;
 print_r(json_encode($respuesta));
 
 

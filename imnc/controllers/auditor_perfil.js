@@ -1,9 +1,88 @@
+
+/*
+	Creación del controlador con el nombre "auditor_perfil_controller".
+*/
+
+app.controller('auditor_perfil_controller',['$scope','$http',function($scope,$http){
+$scope.selectedList=[];
+$scope.optionsList=[];
+/*
+	Funcion para traer las normas que ya estan asociadas a ese servicio
+*/
+$scope.funcioncalificacionesnormas = function(id_calificacion){
+	 $.ajax({
+		type:'GET',
+		url:global_apiserver+"/normas_calificaciones/getNormabyIdCalificacion/?id="+id_calificacion,
+		success:function(data){
+		data=JSON.parse(data);
+			$.each(data, function( index, data1 ) {
+				$scope.$apply(function(){
+				//$scope.selectedList.push(angular.fromJson(data));
+				//data1['ID']=data1['ID_NORMA'];
+				$scope.selectedList.push(data1);
+				 
+				 })
+			})
+
+		}
+	});
+}
+/*
+	Funcion para traer las normas de este servicio
+*/
+$scope.funcionparalistanormas = function(id_tipo_servicio){
+	$scope.selectedList.splice(0);
+	$scope.optionsList.splice(0);
+	$.ajax({
+		type:'GET',
+		url:global_apiserver+"/normas_tiposervicio/getNormabyIdTipoServicio/?id="+id_tipo_servicio,
+		success:function(data){
+		//	$scope.$apply(function(){
+		//		$scope.optionsList=angular.fromJson(data);
+		//		
+		//	})
+		data=JSON.parse(data);
+			$.each(data, function( index, data1 ) {
+				$scope.$apply(function(){
+				//data1['ID']=data1['ID_NORMA'];
+				$scope.optionsList.push(data1);
+				 })
+			})
+			
+		}
+	});
+	
+}
+/*
+	Funcion para crear los registros de forma automatica
+*/
+$scope.funcionGenerarRegistros = function(id_rol,id_tipo_servicio,id_pt){
+	
+	if(!id_tipo_servicio)
+	{
+		id_tipo_servicio = "XXX";
+	}
+	if(!id_rol)
+	{
+		id_rol = "XX";
+	}
+	$http.get(  global_apiserver + "/personal_tecnico_calificaciones/generarReferencia/?id_rol="+id_rol+"&id="+id_tipo_servicio+"&id_pt="+id_pt)
+		.then(function( response ){
+	//$.getJSON(  global_apiserver + "/personal_tecnico_calificaciones/generarReferencia/?id_rol="+id_rol+"&id="+id_tipo_servicio+"&id_pt="+id_pt, function( response ) {		
+			//$scope.formData.txtReferencia = response.data;
+			$("#txtRegistro").val(response.data);
+			//$scope.formData.txtReferencia	= response.data;
+			
+		});
+	
+}
 // ================================================================================
 // *****                        Al cargar la página                           *****
 // ================================================================================
 
   $( window ).load(function() {
   var mod = true;
+  onCalendar();
   draw_calendario();
   draw_perfil();
   draw_domicilios_y_califs(); 
@@ -553,8 +632,11 @@ $("#txtColonia").val($("#nuevaColonia").val());
           $("#txtFecIniCalif").val(fec_ini);
           $("#txtFecFinCalif").val(fec_fin);
           fill_cmb_tipo_servicio(response.ID_TIPO_SERVICIO);
-		  fill_cmb_norma(response.ID_NORMA,response.ID_TIPO_SERVICIO);
+		  //fill_cmb_norma(response.ID_NORMA,response.ID_TIPO_SERVICIO);
+		  $scope.funcionparalistanormas(response.ID_TIPO_SERVICIO);
+		  $scope.funcioncalificacionesnormas(id_personal_tecnico_calif);
           fill_cmb_rol(response.ID_ROL);
+		   $("#cmbTipoServicio").attr("disabled","true");
        });
   }
 
@@ -613,6 +695,7 @@ $("#txtColonia").val($("#nuevaColonia").val());
   		else{
   			$("#txtFecFinCalif").attr('readonly', false);
   		}
+		$scope.funcionGenerarRegistros($("#cmbRol").val(),$("#cmbTipoServicio").val(),global_id_personal_tecnico);
   	});
   	$("#cmbRol").change(function(){
   		var fecha_inicio = get_fecha_inicio();
@@ -624,6 +707,7 @@ $("#txtColonia").val($("#nuevaColonia").val());
   		else{
   			$("#txtFecFinCalif").attr('readonly', false);
   		}
+		$scope.funcionGenerarRegistros($("#cmbRol").val(),$("#cmbTipoServicio").val(),global_id_personal_tecnico);
   	});
   	$("#txtFecIniCalif").change(function(){
   		var fecha_inicio = get_fecha_inicio();
@@ -639,12 +723,14 @@ $("#txtColonia").val($("#nuevaColonia").val());
   }
   
 function clear_modal_insertar_actualizar_calif(){
-  $("#txtRegistro").val("");
-  $("#txtFecIniCalif").val("");
-  $("#txtFecFinCalif").val("");
-  fill_cmb_tipo_servicio("elige");
- // fill_cmb_norma("elige");
-  fill_cmb_rol("elige");
+	$scope.selectedList.splice(0);
+	$scope.optionsList.splice(0);
+	$("#txtRegistro").val("");
+	$("#txtFecIniCalif").val("");
+	$("#txtFecFinCalif").val("");
+	fill_cmb_tipo_servicio("elige");
+	fill_cmb_rol("elige");
+	
 }
 
   function listener_btn_nuevo_calif(){
@@ -652,6 +738,7 @@ function clear_modal_insertar_actualizar_calif(){
       $("#btnGuardarCalif").attr("accion","insertar");
       $("#modalTituloCalif").html("Insertar nueva calificación");
 	  $("#cmbNorma").prop("disabled", true);
+	  $("#cmbTipoServicio").prop("disabled",false);
       clear_modal_insertar_actualizar_calif();
       $("#modalInsertarActualizarCalif").modal("show");
     });
@@ -659,7 +746,9 @@ function clear_modal_insertar_actualizar_calif(){
 
   	$("#cmbTipoServicio").change(function(){
 		 $("#cmbNorma").prop("disabled", false);
-		 fill_cmb_norma("elige",$("#cmbTipoServicio").val());
+		 //fill_cmb_norma("elige",$("#cmbTipoServicio").val());
+		 
+		 $scope.funcionparalistanormas($("#cmbTipoServicio").val());
 	});
   
   function listener_btn_guardar_calif(){
@@ -720,6 +809,7 @@ function clear_modal_insertar_actualizar_calif(){
 	
   function listener_btn_editar_calif(){
     $( ".btnEditarCalif" ).click(function() {
+		clear_modal_insertar_actualizar_calif();
       $("#btnGuardarCalif").attr("accion","editar");
       $("#btnGuardarCalif").attr("id_calif",$(this).attr("id_calif"));
       $("#modalTituloCalif").html("Editar calificación");
@@ -736,8 +826,9 @@ function clear_modal_insertar_actualizar_calif(){
     var strHtml = "";
     strHtml += '<tr>';
     strHtml += '  <td>'+num+'. </td>';
-    strHtml += '  <td>'+objCalif.ID_ROL+'</td>';
+    strHtml += '  <td>'+objCalif.ACRONIMO_ROL+'</td>';
     strHtml += '  <td>'+objCalif.ACRONIMO+': <br>' + objCalif.NOMBRE_TIPO_SERVICIO + '</td>';
+	strHtml += '  <td>'+objCalif.NORMA_ID+'</td>';
     strHtml += '  <td>'+objCalif.REGISTRO+'</td>';
     strHtml += '  <td> de: '+fec_ini+' <br> a: '+fec_fin+'</td>';
     strHtml += '  <td>';
@@ -783,7 +874,7 @@ function clear_modal_insertar_actualizar_calif(){
       ID_PERSONAL_TECNICO:parseInt(global_id_personal_tecnico),
       ID_ROL:$("#cmbRol").val(),
       ID_TIPO_SERVICIO:$("#cmbTipoServicio").val(),
-	  ID_NORMA:$("#cmbNorma").val(),
+	  ID_NORMA:	$scope.selectedList,				//$("#cmbNorma").val(),
       REGISTRO:$("#txtRegistro").val(),
       FECHA_INICIO:fec_ini,
       FECHA_FIN:fec_fin,
@@ -812,7 +903,7 @@ function clear_modal_insertar_actualizar_calif(){
       ID:$("#btnGuardarCalif").attr("id_calif"),
       ID_ROL:$("#cmbRol").val(),
       ID_TIPO_SERVICIO:$("#cmbTipoServicio").val(),
-	  ID_NORMA:$("#cmbNorma").val(),
+	  ID_NORMA:$scope.selectedList,
       REGISTRO:$("#txtRegistro").val(),
       FECHA_INICIO:fec_ini,
       FECHA_FIN:fec_fin,
@@ -1091,6 +1182,7 @@ function removeOptions(selectbox)
             var mes_ini = parseInt(f_ini.substring(4,6))-1; //En js los meses comienzan en 0
             var dia_ini = parseInt(f_ini.substring(6,8));
 
+           const descripcion = 'Auditoría: ' + objAuditoria.ID_SG_AUDITORIA + " (" + objAuditoria.ID_TIPO_SERVICIO + ")";
             eventos.push(
               {
                 title: 'Auditoría: ' + objAuditoria.ID_SG_AUDITORIA + " (" + objAuditoria.ID_TIPO_SERVICIO + ")",
@@ -1098,26 +1190,174 @@ function removeOptions(selectbox)
                 end: new Date(anhio_ini, mes_ini, dia_ini, 18, 30),
                 allDay: false,
                 url: './?pagina=sg_tipos_servicio&id_serv_cli_et='+objAuditoria.ID_SERVICIO_CLIENTE_ETAPA +'&sg_tipo_servicio='+objAuditoria.ID_SG_TIPO_SERVICIO,
+				descripcion: descripcion,
+                tipo: 'Auditoría'
               }
             )
           } 
         }
         
       });
-      var calendar = $('#calendar').fullCalendar({
-        header: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'month,agendaWeek,agendaDay'
-        },
-        minTime:"07:00:00",
-        allDaySlot:false,
-        selectable: false,
-        selectHelper: true,
-        editable: false,
-        eventBackgroundColor:"#3e5a23",
-        events: eventos
-      });
-      
+  //Agrego los eventos
+      $.getJSON( global_apiserver + "/personal_tecnico_eventos/getByIdPersonalTecnico/?id="+global_id_personal_tecnico, function( response ) {
+        $.each(response, function( indice, evento ) {
+          var f_ini= evento.FECHA_INICIO;
+          var anhio_ini = parseInt(f_ini.substring(0,4));
+          var mes_ini = parseInt(f_ini.substring(5,7))-1; //En js los meses comienzan en 0
+          var dia_ini = parseInt(f_ini.substring(8,10));
+
+          var f_fin= evento.FECHA_FIN;
+          var anhio_fin = parseInt(f_fin.substring(0,4));
+          var mes_fin = parseInt(f_fin.substring(5,7))-1; //En js los meses comienzan en 0
+          var dia_fin = parseInt(f_fin.substring(8,10));
+  
+          const descripcion = 'Evento: ' + evento.EVENTO;
+          const tipo = 'Evento';
+
+          const start = new Date(anhio_ini, mes_ini, dia_ini, 07, 0);
+          const end = new Date(anhio_fin, mes_fin, dia_fin, 18, 30);
+          eventos.push(
+            {
+              title: evento.EVENTO,
+              start: start,
+              end: end,
+              color: '#8AECFA',
+              allDay: false,
+              descripcion: descripcion,
+              tipo: tipo,
+              fecha_inicio: evento.FECHA_INICIO,
+              fecha_fin: evento.FECHA_FIN,
+              id_evento: evento.ID
+            }
+          )         
+        });
+        if ($('#calendar').fullCalendar() !== undefined) {
+          $('#calendar').fullCalendar('destroy');
+        }
+        var calendar = $('#calendar').fullCalendar({
+          customButtons: {
+            newEvent: {
+                text: '+ Nuevo Evento',
+                click: function() { 
+                  $("#btnGuardarEvento").attr("accion","insertar");
+                  $("#modalCrearEventoTitulo").html("Insertar nuevo evento");
+                  $("#btnEliminarEvento").hide();
+                  clear_modal_insertar_evento();
+                  $("#modalCrearEvento").modal("show");
+                }
+            }
+          },
+          header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay,newEvent'
+          },
+          minTime:"07:00:00",
+          allDaySlot:false,
+          selectable: false,
+          selectHelper: true,
+          editable: false,
+          eventBackgroundColor:"#3e5a23",
+          events: eventos,
+          eventClick: function( event, jsEvent, view ) { 
+            if (event.tipo == 'Evento') {
+              $("#btnGuardarEvento").attr("accion","editar");
+              $("#btnGuardarEvento").attr("id_evento",event.id_evento);
+              $("#btnEliminarEvento").show();
+              $("#modalCrearEventoTitulo").html("Editar evento");
+              fill_modal_insertar_evento(event);
+              $("#modalCrearEvento").modal("show");
+            }
+            //notify(event.tipo,event.descripcion,'info')
+          }
+        });
+      });      
     });
   }
+  function clear_modal_insertar_evento() {
+    $('#evento').val("");
+    $('#fecha_inicio').val("");
+    $('#fecha_fin').val("");
+  }
+  function fill_modal_insertar_evento(evento) {
+    $('#evento').val(evento.title);
+    $('#fecha_inicio').val(evento.fecha_inicio);
+    $('#fecha_fin').val(evento.fecha_fin);
+  }
+  function onCalendar() {
+    $(document).ready(function () {
+        $('#fecha_inicio').datepicker({
+            dateFormat: "yy/mm/dd",
+            minDate: "+0D"
+        }).css("display", "inline-block");
+        $('#fecha_fin').datepicker({
+          dateFormat: "yy/mm/dd",
+          minDate: "+0D"
+      }).css("display", "inline-block");
+    });  
+  }
+  $("#btnGuardarEvento" ).click(function() {
+    var accion = $("#btnGuardarEvento").attr("accion");
+    if (accion == 'insertar') {
+      var nuevo_evento = {
+        ID_PERSONAL_TECNICO:parseInt(global_id_personal_tecnico),
+        EVENTO: $("#evento").val(),
+        FECHA_INICIO: $("#fecha_inicio").val(),
+        FECHA_FIN: $("#fecha_fin").val(),
+        ID_USUARIO:parseInt(sessionStorage.getItem("id_usuario"))
+      };
+      $.post(global_apiserver + "/personal_tecnico_eventos/insert/", JSON.stringify(nuevo_evento), function(respuesta){
+          respuesta = JSON.parse(respuesta);
+          if (respuesta.resultado == "ok") {
+            $("#modalCrearEvento").modal("hide");
+            notify("Éxito", "Se ha insertado un nuevo evento", "success");
+            draw_calendario(); 
+          }
+          else
+          {
+             notify("Error", respuesta.mensaje, "error");
+          }
+      });
+    } else {
+      var id_evento = $("#btnGuardarEvento").attr("id_evento");
+      var evento = {
+        ID: id_evento,
+        EVENTO: $("#evento").val(),
+        FECHA_INICIO: $("#fecha_inicio").val(),
+        FECHA_FIN: $("#fecha_fin").val(),
+        ID_USUARIO:parseInt(sessionStorage.getItem("id_usuario"))
+      };
+      $.post(global_apiserver + "/personal_tecnico_eventos/update/", JSON.stringify(evento), function(respuesta){
+          respuesta = JSON.parse(respuesta);
+          if (respuesta.resultado == "ok") {
+            $("#modalCrearEvento").modal("hide");
+            notify("Éxito", "Se ha modificado el evento", "success");
+            draw_calendario(); 
+          }
+          else
+          {
+             notify("Error", respuesta.mensaje, "error");
+          }
+      });
+    }
+  });
+  $("#btnEliminarEvento" ).click(function() {
+    var id_evento = $("#btnGuardarEvento").attr("id_evento");
+      var evento = {
+        ID: id_evento,
+        ID_USUARIO:parseInt(sessionStorage.getItem("id_usuario"))
+      };
+      $.post(global_apiserver + "/personal_tecnico_eventos/delete/", JSON.stringify(evento), function(respuesta){
+          respuesta = JSON.parse(respuesta);
+          if (respuesta.resultado == "ok") {
+            $("#modalCrearEvento").modal("hide");
+            notify("Éxito", "Se ha eliminado el evento", "success");
+            draw_calendario(); 
+          }
+          else
+          {
+             notify("Error", respuesta.mensaje, "error");
+          }
+      });
+  });
+  }]);

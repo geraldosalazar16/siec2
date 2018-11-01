@@ -19,6 +19,16 @@
               </div>
             </div>	
 			<div class="form-group">
+				<label class="control-label col-md-4 col-sm-4 col-xs-12" for="txtRfc">Norma  
+				</label>
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<multiple-autocomplete ng-model="selectedList" 
+						object-property="ID_NORMA"
+						suggestions-arr="optionsList">
+					</multiple-autocomplete>
+				</div>
+            </div>
+	<!--		<div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12" for="cmbNorma">Norma <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
@@ -27,7 +37,7 @@
                 </select>
                 <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
               </div>
-            </div>
+            </div>	-->
             <div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12" for="cmbRol">Rol<span class="required">*</span>
               </label>
@@ -42,7 +52,7 @@
               <label class="control-label col-md-4 col-sm-4 col-xs-12" for="txtRegistro">Registro<span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" id="txtRegistro" required="required" class="form-control col-md-7 col-xs-12" data-parsley-id="4103"><ul class="parsley-errors-list" id="parsley-id-4103"></ul>
+                <input type="text" id="txtRegistro" required="required" class="form-control col-md-7 col-xs-12" data-parsley-id="4103" disabled><ul class="parsley-errors-list" id="parsley-id-4103"></ul>
               </div>
             </div>
             <div class="form-group">

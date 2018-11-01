@@ -29,33 +29,22 @@ function valida_error_medoo_and_die(){
 }
 
 $respuesta=array();
-$json = file_get_contents('php://input'); //Obtiene lo que se envía vía POST
-$objeto = json_decode($json); // Lo transforma de JSON a un objeto de PHP
 
-$ID =   $objeto->ID;
-$ACRONIMO = $objeto->ACRONIMO;
-$ROL = $objeto->ROL;
-$JERARQUIA = $objeto->JERARQUIA;
-
-$ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
-valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
-
-$FECHA_MODIFICACION = date("Ymd");
-$HORA_MODIFICACION = date("His");
-
-$IdPTR = $database->update("PERSONAL_TECNICO_ROLES", [
-	"ACRONIMO" => $ACRONIMO,
-	"ROL" => $ROL,
-	"JERARQUIA"=> $JERARQUIA,
-	"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
-	"HORA_MODIFICACION" => $HORA_MODIFICACION,
-	"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION
-], ["ID"=>$ID]);
-
+$query = "SELECT 
+PT.ID AS ID_PERSONAL_TECNICO,
+PT.NOMBRE, 
+PT.APELLIDO_PATERNO,
+PTE.EVENTO,
+PTE.FECHA_INICIO,
+PTE.FECHA_FIN
+FROM 
+PERSONAL_TECNICO PT
+INNER JOIN PERSONAL_TECNICO_EVENTOS PTE
+ON PT.ID = PTE.ID_PERSONAL_TECNICO";
+$personal_tecnico_eventos = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
 valida_error_medoo_and_die();
 
-$respuesta['resultado']="ok";
-print_r(json_encode($respuesta));
+print_r(json_encode($personal_tecnico_eventos));
 
 
 //-------- FIN --------------

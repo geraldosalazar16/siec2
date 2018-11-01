@@ -88,6 +88,8 @@ $modulo_permisos = $_SESSION["permisos"];
         if ($modulo_permisos["AUDITORES"]["ver"] == 1) {
             echo '<li><a><i class="fa fa-users"></i> ' .  $str_personal_tecnico . ' </a>';
             echo '  <ul class="nav child_menu" style="display: none">';
+			echo '      <li><a href="./?pagina=auditores_agenda_general">Agenda general</a>';
+            echo '      </li>';
             echo '      <li><a href="./?pagina=auditores">' .  $str_catalogo_personal_tecnico . '</a>';
             echo '      </li>';
             echo '      <li><a href="./?pagina=auditores-roles">Roles</a>';

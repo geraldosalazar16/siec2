@@ -8,6 +8,7 @@
       </div>
       <div class="modal-body">
 		<form name="exampleFormAuditoria" >
+		
 			<div class='form-group'>
 				<label class="control-label">No Aplicar Regla de Muestreo</label>
 				<div style="float: right;">

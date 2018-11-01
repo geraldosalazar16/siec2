@@ -311,7 +311,7 @@
 											</td>
 											<td>
 												<p ng-if='modulo_permisos["registrar"] == 1'>
-													<button type="button"  ng-click="agregar_editar_auditorias('editar',x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+													<button type="button"  ng-click='modal_generar_notificacion(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)' class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
 														<i class="fa fa-download" aria-hidden="true"></i> Notificaci&oacuten 
 													</button>
 												</p>
@@ -391,7 +391,7 @@
 															<td>{{w.NOMBRE}} {{w.APELLIDO_PATERNO}} {{w.APELLIDO_MATERNO}} </td>
 															<td> {{w.EMAIL}} </td>
 															<td> {{w.REGISTRO}} </td>
-															<td> {{w.ID_ROL}} </td>
+															<td> {{w.ACRONIMO}} </td>
 															<td> {{w.NOMBRE_SERVICIO}} </td>
 															<td>
 																<table>
@@ -578,7 +578,7 @@
 															<td>{{w.NOMBRE}} {{w.APELLIDO_PATERNO}} {{w.APELLIDO_MATERNO}} </td>
 															<td> {{w.EMAIL}} </td>
 															<td> {{w.REGISTRO}} </td>
-															<td> {{w.ID_ROL}} </td>
+															<td> {{w.ACRONIMO}} </td>
 															<td> {{w.NOMBRE_SERVICIO}} </td>
 															<td>
 																<table>
@@ -628,6 +628,7 @@
   </div>
  </div> 
  <?php 
+ 
   include "ec_tipos_servicio/modal_agregar_informacion_auditoria.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_sectores.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_sitios.php";
@@ -640,6 +641,8 @@
   include "ec_tipos_servicio/modal_explorar_auditores_grupo_auditoria.php";
   include "ec_tipos_servicio/modal_explorar_auditores_grupo_auditoria_ec.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_auditoria_grupo_auditores.php";
+  include "ec_tipos_servicio/modal_genera_notificacion.php";
   include "ec_tipos_servicio/modal_confirmacion.php";
+  
   ?>
 </span>
