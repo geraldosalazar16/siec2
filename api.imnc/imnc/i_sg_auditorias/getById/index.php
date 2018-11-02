@@ -75,9 +75,9 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 		$servicio_cliente_etapa["SG_SECTORES"] = $sg_sectores;
 
 		// SG_TIPOS_SERVICIO => NORMAS
-	//	$norma = $database->get("NORMAS", "*", ["ID"=>$sg_tipo_servicio["ID_NORMA"]]);
-	//	valida_error_medoo_and_die();
-	//	$sg_tipo_servicio["NORMA"] = $norma;
+		$norma = $database->select("SCE_NORMAS", "*", ["ID_SCE"=>$id_sce]);
+		valida_error_medoo_and_die();
+		$servicio_cliente_etapa["NORMA"] = $norma;
 
 		// SG_TIPOS_SERVICIO => TIPOS_SERVICIO
 		$tipo_servicio = $database->get("TIPOS_SERVICIO", "*", ["ID"=>$servicio_cliente_etapa["ID_TIPO_SERVICIO"]]);

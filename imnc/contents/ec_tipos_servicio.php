@@ -499,9 +499,9 @@
 											</td>
 											<td>
 												<p ng-if='modulo_permisos["registrar"] == 1'>
-													<button type="button"  ng-click="agregar_editar_auditorias('editar',xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+											<!--		<button type="button"  ng-click="agregar_editar_auditorias('editar',xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
 														<i class="fa fa-download" aria-hidden="true"></i> Notificaci&oacuten 
-													</button>
+													</button>	-->
 												</p>
 											</td>
 										</tr>
