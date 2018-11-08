@@ -11,6 +11,8 @@
 					<div class="form-group text-center">
 						<label class="control-label col-md-12 " >Esta seguro que desea eliminar el producto? </label>
 					</div>
+				<form>
+			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
 				<button type="button" class="btn btn-primary" id="btnEliminar">Aceptar</button>

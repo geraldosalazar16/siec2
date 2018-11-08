@@ -782,9 +782,12 @@ $scope.eliminar = function(id){
 						  normas: item.NORMAS,
 						  normas_string: normas_string,
 						  sectores_mostrandose: false,
+						  integracion_mostrandose: false,
 						  tiene_cotizacion: item.TIENE_COTIZACION,
 						  id_cotizacion: item.ID_COTIZACION,
-						  sectores: []
+						  sectores: [],
+						  integracion: [],
+						  nivel_integracion: 0
 	  				}
 	  			});
 			},
@@ -1544,6 +1547,26 @@ $scope.ocultarSectores = function(producto){
 		}
 	});
 }
+//Mostrar la integración de un producto
+$scope.verIntegracion = function(producto){
+	cargarIntegracionProducto(producto);
+	//fill_cmb_sectores(producto.id_tipo_servicio);
+	$("#collapse_integracion_"+producto.id_tipo_servicio).collapse("show");
+	$scope.ProductosProspecto.forEach(element => {
+		if(element.nombre_tipo_servicio == producto.nombre_tipo_servicio){
+			element.integracion_mostrandose = true;
+		}
+	});
+}	
+//Ocultar la integración de un producto
+$scope.ocultarIntegracion = function(producto){
+	$("#collapse_integracion_"+producto.id_tipo_servicio).collapse("hide");
+	$scope.ProductosProspecto.forEach(element => {
+		if(element.nombre_tipo_servicio == producto.nombre_tipo_servicio){
+			element.integracion_mostrandose = false;
+		}
+	});
+}
 //Cargar los sectores asociados a un producto
 function cargarSectoresProducto(producto){
 	$http.get(  global_apiserver + "/prospecto_sectores/getByIdProducto/?id="+producto.id)
@@ -1560,6 +1583,28 @@ function cargarSectoresProducto(producto){
 			//$scope.SectoresProducto = response.data;
 		} else {
 			console.error('Error al ejecutar la peticion http /prospecto_sectores/getByIdProducto/');
+		}		
+	},
+	function (response){});
+}
+//Cargar integración de un producto
+function cargarIntegracionProducto(producto){
+	$http.get(  global_apiserver + "/producto_integracion/getByIdProducto/?id="+producto.id)
+	.then(function( response ) {	  	
+	  	if(response.data){
+			$scope.ProductosProspecto.forEach(prod => {
+				if(prod.id == producto.id){
+					prod.integracion = [];
+					var valor = 0;
+					response.data.forEach(integracion => {
+						valor = valor + parseInt(integracion.VALOR);
+						prod.integracion.push(integracion);
+					});
+					prod.nivel_integracion = valor;
+				}
+			});
+		} else {
+			console.error('Error al ejecutar la peticion /producto_integracion/getByIdProducto/?id='+producto.id);
 		}		
 	},
 	function (response){});
@@ -1586,11 +1631,49 @@ $scope.mostrar_modal_agregar_editar_sector = function(accion,producto,sector){
 	}
 	$("#modalInsertarActualizarTServSector").modal("show");
 }
+//Mostrar modal editar integracion
+$scope.mostrar_modal_editar_integracion = function(producto,integracion){
+	$scope.producto_actual = producto;
+	fill_modal_actualizar_integracion(integracion);
+	$("#modalEditarIntegracion").modal("show");
+}
 function clear_modal_insertar_actualizar_sectores(){
 	$scope.cmb_sectores = "";
 }
 function fill_modal_insertar_actualizar_sectores(sector){
 	$scope.cmb_sectores = sector.ID_SECTOR;
+}
+function fill_modal_actualizar_integracion(integracion){
+	$scope.integracion_actual = integracion;
+	$http.get(  global_apiserver + "/producto_integracion/getRespuestasByIdPregunta/?id="+integracion.ID_PREGUNTA)
+	.then(function( response ) {	  	
+	  	if(response.data){
+			$scope.Respuestas = response.data;
+			// Asignar el valor correcto al select
+			$scope.respuestas_integracion = integracion.RESPUESTA;
+		} else {
+			console.error('/producto_integracion/getRespuestasByIdPregunta/?id='+integracion.ID_PREGUNTA);
+		}		
+	},
+	function (response){});
+}
+//Guardar integración
+$scope.guardar_integracion = function(){
+		var datos = {
+			ID_PRODUCTO: $scope.producto_actual.id,
+			ID_PREGUNTA: $scope.integracion_actual.ID_PREGUNTA,
+			RESPUESTA: $scope.respuestas_integracion
+		}
+		$http.post(global_apiserver + "/producto_integracion/update/",datos).
+		then(function(response){
+			if(response.data.resultado == 'ok'){
+				notify("Éxito", "Se ha actualizado la información ", "success");
+				$("#modalEditarIntegracion").modal("hide");
+				cargarIntegracionProducto($scope.producto_actual);
+			} else {
+				notify("Error", response.data.mensaje, "error");
+			}
+		});
 }
 //Guardar sector
 $scope.guardarSector = function(){
