@@ -94,14 +94,14 @@ $id_tipo_auditoria = $_REQUEST["ID_TA"];
 $ciclo = $_REQUEST["CICLO"];
 $abcde = explode("string:",$_REQUEST["cmbDomicilioNotificacionPDF"]);
 $id_domicilio =$abcde[1] ;
-$tipoNotificacionPDF = $_REQUEST["cmbTipoNotificacionPDF"];
-$tipoCambiosPDF = $_REQUEST["cmbTipoCambiosPDF"];
-$certificacionMantenimientoPDF = $_REQUEST["cmbCertificacionMantenimientoPDF"];
+//$tipoNotificacionPDF = $_REQUEST["cmbTipoNotificacionPDF"];
+//$tipoCambiosPDF = $_REQUEST["cmbTipoCambiosPDF"];
+//$certificacionMantenimientoPDF = $_REQUEST["cmbCertificacionMantenimientoPDF"];
 $nota1PDF = $_REQUEST["txtNota1PDF"];
 $nota2PDF = $_REQUEST["txtNota2PDF"];
 $nota3PDF = $_REQUEST["txtNota3PDF"];
 $nombreAutorizaPDF = $_REQUEST["txtNombreAutorizaPDF"];
-$cargoAutorizaPDF = $_REQUEST["txtCargoAutorizaPDF"];
+//$cargoAutorizaPDF = $_REQUEST["txtCargoAutorizaPDF"];
 $nombreAuxiliar = $_REQUEST["nombreUsuario"];
 
 /*/////////////////////////////////////////////////////////////////////////*/
@@ -192,8 +192,33 @@ valida_isset($TRAMITE, "Error: No se encuentra TRAMITE en linea: " . __LINE__);
 $ID_ETAPA = $json_object->SERVICIO_CLIENTE_ETAPA->ETAPA_PROCESO->ID_ETAPA;
 $ID_SERVICIO = $json_object->SERVICIO_CLIENTE_ETAPA->ID;
 
-//$NORMA = $json_object->SG_TIPO_SERVICIO->NORMA->ID;
-//valida_isset($NORMA, "Error: No se encuentra NORMA en linea: " . __LINE__);
+$NORMA = $json_object->SERVICIO_CLIENTE_ETAPA->NORMA;
+valida_isset($NORMA, "Error: No se encuentra NORMA en linea: " . __LINE__);
+/*===========================================================================*/
+//				CODIGO PARA LAS MOSTRAR LAS NORMAS
+$TEXT_NORMA ="";
+if(count($NORMA)>0){
+	
+	for($i=0;$i<count($NORMA);$i++){
+		if($i%2 == 0){
+			$TEXT_NORMA .='<tr>';
+			$TEXT_NORMA .='<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn'.($i+1).'" value="1" checked="true" readonly="false">'.trim($NORMA[$i]->ID_NORMA).'</td>';
+		}
+		else{
+			$TEXT_NORMA .='<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn'.($i+1).'" value="1" checked="true" readonly="false">'.trim($NORMA[$i]->ID_NORMA).'</td>';
+			$TEXT_NORMA .='</tr>';
+		}		
+	/*	<tr>
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn1" value="1" checked="false" readonly="false">NMX-CC-9001-IMNC-2015 / ISO 9001:2015</td>
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn2" value="1" checked="false" readonly="false">NMX-SAST-001-IMNC-2008</td>
+	</tr>*/
+	}
+	if(count($NORMA)%2 == 1){
+		$TEXT_NORMA .='</tr>';
+	}
+	
+}
+/*===========================================================================*/
 
 $fecha_aux = $json_object->SG_AUDITORIA_FECHAS[0]->FECHA;
 valida_isset($fecha_aux, "Error: No se encuentra FECHA_INICIO en linea: " . __LINE__);
@@ -231,9 +256,9 @@ for ($i=0; $i < count($pts) ; $i++) {
 	valida_isset($pts[$i]->PERSONAL_TECNICO_ROL->ROL, "Error: No se encuentra ROL en linea: " . __LINE__);
 	valida_isset($pts[$i]->PERSONAL_TECNICO_CALIFICACION->REGISTRO, "Error: No se encuentra REGISTRO en linea: " . __LINE__);
 }
-$CLAVE_CERTIFICADO = "12323";
-$CC_FECHA_INICIO = "02/04/2018";
-$CC_FECHA_FIN = "02/05/2018";
+$CLAVE_CERTIFICADO = " ";
+$CC_FECHA_INICIO = " ";
+$CC_FECHA_FIN = " ";
 //$CLAVE_CERTIFICADO = $json_object->SG_AUDITORIA_CERTIFICADO->CLAVE;
 valida_isset($CLAVE_CERTIFICADO, "Error: No se encuentra la clave certificado: " . __LINE__);
 //$CC_FECHA_INICIO = $json_object->SG_AUDITORIA_CERTIFICADO->FECHA_INICIO;
@@ -247,6 +272,69 @@ $FECHAS_AUDITORIAS = "";
 for ($i=0; $i < count($FA) ; $i++) { 
 	$FECHAS_AUDITORIAS .= $FA[$i]->FECHA.",";
 }
+/*===========================================================================*/
+//				LOGICA PARA MARCAR EL TIPO DE AUDITORIA
+$aud_et1 = "false";
+$aud_et2 = "false";
+$aud_vig1 = "false";
+$aud_vig2 = "false";
+$aud_otra = "false";
+$texto_otra="";
+$aud_ren = "false";
+$aud_trans = "false";
+$aud_esp = "false";
+$aud_cortoplazo = "false";
+switch($id_tipo_auditoria){
+	case 1:
+		$aud_esp = "true";
+		break;
+	case 2:
+		$aud_et1 = "true";
+		break;
+	case 3:
+		$aud_et2 = "true";
+		break;	
+	case 4:
+		$aud_ren = "true";
+		break;	
+	case 5:
+		//$aud_esp = true;
+		break;
+	case 6:
+		$aud_vig1 = "true";
+		break;		
+	case 7:
+		$aud_vig2 = "true";
+		break;
+	case 8:
+		$aud_otra = "true";
+		$texto_otra=" -  Vigilancia 1 Semestral";
+		break;	
+	case 9:
+		$aud_otra = "true";
+		$texto_otra=" -  Vigilancia 2 Semestral";
+		break;	
+	case 10:
+		$aud_otra = "true";
+		$texto_otra=" -  Vigilancia 3 Semestral";
+		break;		
+	case 11:
+		$aud_otra = "true";
+		$texto_otra=" -  Vigilancia 4 Semestral";
+		break;		
+	case 12:
+		$aud_otra = "true";
+		$texto_otra=" -  Vigilancia 5 Semestral";
+		break;		
+	case 13:
+		//$aud_otra = true;
+		//$texto_otra="Vigilancia 1 Semestral"
+		break;		
+	default:
+		break;
+}
+/*===========================================================================*/
+
 
 $fecha = mes_esp(date('d/n/Y'));
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -441,7 +529,7 @@ $html= <<<EOT
 		<td style="font-size: medium; text-align:center"  BGCOLOR="#1F487B"><strong>TIPO DE SERVICIO</strong></td>
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:center"  BGCOLOR="#E0E0E0"><i>Marque por favor con una “X” los recuadros que correspondan a la auditoría a realizar:</i></td>
+		<td style="font-size: medium; text-align:center"  BGCOLOR="#E0E0E0"><i>Marque por favor los recuadros que correspondan a la auditoría a realizar:</i></td>
 		
 	</tr>
 	
@@ -456,27 +544,27 @@ $html= <<<EOT
 		<td style="font-size: medium; text-align:center"  width="225"><input type="checkbox" name="chk2" value="1" checked="false" readonly="false">Auditoría en Sitio</td>
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk3" value="1" checked="false" readonly="false">Auditoría Etapa 1</td>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk4" value="1" checked="false" readonly="false">Auditoría Especial:</td>	
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk3" value="1" checked="$aud_et1" readonly="false">Auditoría Etapa 1</td>
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk4" value="1" checked="$aud_esp" readonly="false">Auditoría Especial:</td>	
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk18" value="1" checked="false" readonly="false">Auditoría Etapa 2</td>
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk18" value="1" checked="$aud_et2" readonly="false">Auditoría Etapa 2</td>
 		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk19" value="1" checked="false" readonly="false">Ampliación de alcance</td>	
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk5" value="1" checked="false" readonly="false">Auditoría de Vigilancia 1</td>
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk5" value="1" checked="$aud_vig1" readonly="false">Auditoría de Vigilancia 1</td>
 		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk6" value="1" checked="false" readonly="false">Reducción de alcance</td>	
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk7" value="1" checked="false" readonly="false">Auditoría de Vigilancia 2</td>
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk7" value="1" checked="$aud_vig2" readonly="false">Auditoría de Vigilancia 2</td>
 		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk8" value="1" checked="false" readonly="false">Actualización de Sistema de Gestión</td>	
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk9" value="1" checked="false" readonly="false">Otra (Indique el No. de vigilancia que corresponda)</td>
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk9" value="1" checked="$aud_otra" readonly="false">Otra (Indique el No. de vigilancia que corresponda)</td>
 		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk10" value="1" checked="false" readonly="false">Por cambios de domicilio</td>	
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"></td>
+		<td style="font-size: medium; text-align:left"  width="225">$texto_otra</td>
 		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk11" value="1" checked="false" readonly="false">Por cambio de situación legal</td>	
 	</tr>
 	<tr>
@@ -484,11 +572,11 @@ $html= <<<EOT
 		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk12" value="1" checked="false" readonly="false">Por cambio en personal clave</td>	
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk13" value="1" checked="false" readonly="false">Renovación de la certificación</td>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk14" value="1" checked="false" readonly="false">Auditoría con notificación a corto plazo:</td>	
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk13" value="1" checked="$aud_ren" readonly="false">Renovación de la certificación</td>
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk14" value="1" checked="$aud_cortoplazo" readonly="false">Auditoría con notificación a corto plazo:</td>	
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk15" value="1" checked="false" readonly="false">Transferencia de la certificación</td>
+		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk15" value="1" checked="$aud_trans" readonly="false">Transferencia de la certificación</td>
 		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk16" value="1" checked="false" readonly="false">Por quejas de clientes</td>	
 	</tr>
 	<tr>
@@ -532,18 +620,7 @@ $html= <<<EOT
 <br><br> Bajo la(s) siguiente(s) norma(s) de referencia: 
 <br>
 <br><br><table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" width="450">
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn1" value="1" checked="false" readonly="false">NMX-CC-9001-IMNC-2015 / ISO 9001:2015</td>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn2" value="1" checked="false" readonly="false">NMX-SAST-001-IMNC-2008</td>
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn1" value="1" checked="false" readonly="false">NMX-SAA-14001-IMNC-2015 / ISO 14001:2015</td>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn2" value="1" checked="false" readonly="false">NMX-J-SAA-50001-ANCE-IMNC-2011 / ISO 50001:2011</td>
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="450"><input type="checkbox" name="chkn1" value="1" checked="false" readonly="false">Otro(s) Indique: _____________________________________</td>
-		
-	</tr>
+	$TEXT_NORMA
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
