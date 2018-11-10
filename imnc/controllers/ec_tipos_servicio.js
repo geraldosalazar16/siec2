@@ -644,7 +644,7 @@ function llenar_modal_sitiosEC(id_servicio_cliente_etapa,id_cliente_domicilio){
 		$http.get(  global_apiserver + "/i_meta_sitios/getByIdTipoServicio/?id="+id_tipos_servicio)
 		.then(function( response ){
 			$scope.MetaDatosSitios = response.data;
-			
+			$scope.cant_MetaDatosSitios = $scope.MetaDatosSitios.length;
 		});
 		
 	}
