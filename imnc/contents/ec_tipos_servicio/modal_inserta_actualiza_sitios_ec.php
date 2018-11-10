@@ -26,7 +26,7 @@
 							
                             <input type="submit" class="btn btn-success pull-right mt-2" ng-click="submitFormSitiosEC(formDataSitiosEC)" ng-disabled="!exampleFormSitiosEC.$valid" value="Guardar"/>
                         </form>
-						<span ng-show="cant_MetaDatosSitios == 0">No puego insertar sitios para este tipo de servicio. Es necesario configurar sus metadatos.</span>
+						<span ng-show="cant_MetaDatosSitios == 0">No puede insertar sitios para este tipo de servicio. Es necesario configurar sus metadatos.</span>
                     </div>                                  
                     <div class="modal-footer">
                        
