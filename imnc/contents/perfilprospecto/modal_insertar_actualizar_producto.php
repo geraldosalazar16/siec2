@@ -10,7 +10,8 @@
 				<form name="form2" id="form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
 					<div class="form-group">
 						<label class="control-label">Servicio</label>
-						<select ng-model="areas" ng-change="areas_cambio()" class="form-control" style="margin-top:10px" ng-options="area.id as area.nombre for area in Areas"> 
+						<select ng-model="areas" ng-change="areas_cambio()" class="form-control" style="margin-top:10px" 
+						ng-options="area.id as area.nombre for area in Areas"> 
 							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
 						</select>
 					</div>
@@ -21,15 +22,7 @@
 							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
 						</select>
 		            </div>
-					<!--
-					<div class="form-group">
-						<label class="control-label">Norma</label>
-						<select ng-model="productos" ng-change="productos_cambio()" style="margin-top:10px" class="form-control" 
-						ng-options="producto.id as producto.nombre for producto in Productos"> 
-							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
-						</select>
-					</div>
-					-->
+					
 					<div class="form-group">
 						<label class="control-label">Normas</label>
 						<multiple-autocomplete ng-model="productos" 

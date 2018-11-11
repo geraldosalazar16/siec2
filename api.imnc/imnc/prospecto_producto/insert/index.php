@@ -84,6 +84,19 @@ function valida_error_medoo_and_die(){
 		valida_error_medoo_and_die();
 	}	 
 
+	//Insertar integración (si es integral)
+	if( $ID_TIPO_SERVICIO == 20){ //Id de integral
+		$preguntas = $database->select("INTEGRACION_PREGUNTAS","*");
+		valida_error_medoo_and_die();
+		foreach ($preguntas as $key => $pregunta) {
+			$id_producto_integracion = $database->insert("PRODUCTO_INTEGRACION", [ 
+				"ID_PRODUCTO" => $id_producto,
+				"ID_PREGUNTA" => $pregunta['ID'],
+				"RESPUESTA" => $pregunta['RESPUESTA_INICIAL']
+			]); 
+			valida_error_medoo_and_die();
+		}
+	}
 	$respuesta["resultado"]="ok"; 
 	print_r(json_encode($respuesta)); 
 ?> 

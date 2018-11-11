@@ -251,11 +251,27 @@
 																			</button>
 																		</td>
 																		<td>																																		
-																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" ng-if="producto.sectores_mostrandose == false"
-																			ng-click="verSectores(producto)" style=	"float: right;"><i class="fa fa-eye"> </i> Ver sectores
+																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" 
+																			ng-if="producto.sectores_mostrandose == false"
+																			ng-click="verSectores(producto)" style=	"float: right;">
+																				<i class="fa fa-eye"> </i> Ver sectores
 																			</button>
-																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" ng-if="producto.sectores_mostrandose == true" 
-																			ng-click="ocultarSectores(producto)" style=	"float: right;"><i class="fa fa-eye"> </i> Ocultar sectores
+																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" 
+																			ng-if="producto.sectores_mostrandose == true" 
+																			ng-click="ocultarSectores(producto)" style=	"float: right;">
+																				<i class="fa fa-eye"> </i> Ocultar sectores
+																			</button>
+
+																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" 
+																			ng-if="producto.integracion_mostrandose == false && producto.id_tipo_servicio == 20"
+																			ng-click="verIntegracion(producto)" style=	"float: right;">
+																				<i class="fa fa-eye"> </i> Ver Integración
+																			</button>
+																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" +
+																			ng-if="producto.integracion_mostrandose == true && producto.id_tipo_servicio == 20" 
+																			ng-click="ocultarIntegracion(producto)" 
+																			style=	"float: right;">
+																				<i class="fa fa-eye"> </i> Ocultar Integración
 																			</button>
 																		</td>
 																		<td>																																		
@@ -266,7 +282,7 @@
 																			</button>
 																		</td>
 																	</tr>
-																	<tr ng-repeat-end class="collapse out" id="collapse_sectores_{{producto.id_tipo_servicio}}">
+																	<tr class="collapse out" id="collapse_sectores_{{producto.id_tipo_servicio}}">
 																		<td colspan="13">
 																			<h4>Sectores del servicio</h4>
 																			<button type="button" ng-click="mostrar_modal_agregar_editar_sector('insertar',producto)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
@@ -295,6 +311,39 @@
 																						<p ng-if='modulo_permisos["editar"] == 1'>
 																							<button type="button"  ng-click="mostrar_modal_eliminar_sector(producto,sector)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
 																								<i class="fa fa-trash" aria-hidden="true"></i> Eliminar sector 
+																							</button>
+																						</p>
+																					</td>
+																				</tr>
+																			</tbody>
+																			</table>
+																		</td>																	
+																	</tr>
+																	<tr ng-repeat-end class="collapse out" id="collapse_integracion_{{producto.id_tipo_servicio}}">
+																		<td colspan="13">
+																			<h4>Integración del servicio: {{producto.nivel_integracion}}%</h4>
+																			
+																			<table class="table table-striped responsive-utilities jambo_table bulk_action" 
+																			ng-if="producto.integracion.length > 0">																	
+																			<thead>
+																				<tr class="headings">
+																					<th class="column-title">Pregunta</th>
+																					<th class="column-title">Respuesta</th>
+																					<th class="column-title">Porcentaje</th>
+																					<th class="column-title"></th>
+																				</tr>
+																			</thead>
+																			<tbody>
+																			<tr ng-repeat="integracion in producto.integracion" class="ng-scope  even pointer">
+																					<td> {{integracion.PREGUNTA}}</td>
+																					<td> {{integracion.RESPUESTA}}</td>
+																					<td> {{integracion.VALOR}}%</td>
+																					<td>
+																						<p ng-if='modulo_permisos["registrar"] == 1'>
+																							<button type="button"  
+																							ng-click="mostrar_modal_editar_integracion(producto,integracion)" 
+																							class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+																								<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar 
 																							</button>
 																						</p>
 																					</td>
@@ -528,12 +577,14 @@
 			</div>
 		</div>
 	</div>
+	
 	<?php 
 	include "perfilprospecto/modal_confirmacion.php";
 	include "perfilprospecto/modal_detalles_cliente.php";
 	include "perfilprospecto/modal_detalles_contacto.php";
 	include "perfilprospecto/modal_detalles_domicilio.php";
 	include "perfilprospecto/modal_detalles_prospecto.php";
+	include "perfilprospecto/modal_editar_integracion.php";
 	include "perfilprospecto/modal_eliminar_sector.php";
 	include "perfilprospecto/modal_generar_pdf.php";
 	include "perfilprospecto/modal_insertar_actualizar_contacto.php";
