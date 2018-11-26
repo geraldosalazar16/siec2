@@ -75,7 +75,7 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 		$servicio_cliente_etapa["SG_SECTORES"] = $sg_sectores;
 
 		// SG_TIPOS_SERVICIO => NORMAS
-		$norma = $database->select("SCE_NORMAS", "*", ["ID_SCE"=>$id_sce]);
+		$norma = $database->query("SELECT DISTINCT `ID_NORMA` FROM `SCE_NORMAS` WHERE `ID_SCE`= ".$id_sce)->fetchAll(PDO::FETCH_ASSOC);
 		valida_error_medoo_and_die();
 		$servicio_cliente_etapa["NORMA"] = $norma;
 

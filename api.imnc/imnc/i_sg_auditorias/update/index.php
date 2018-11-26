@@ -61,6 +61,27 @@ $id1 = $database->update("I_SG_AUDITORIAS",
 	["AND"=>["TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"CICLO"=>$CICLO]]
 ); 
 valida_error_medoo_and_die(); 
-$respuesta["resultado"]="ok";  
+
+if($objeto->DURACION_DIAS_INTEGRAL == "NO INTEGRAL"){
+	$respuesta["resultado"]="ok"; 
+}
+else{
+
+	$INPUT	=	json_decode($objeto->DURACION_DIAS_INTEGRAL,true);
+	foreach($INPUT as $i => $valor){
+		$id1 = $database->update("SCE_NORMAS", [ 
+					"DIAS_AUDITOR" => $valor,
+					"ID_TIPO_AUDITORIA"=>$TIPO_AUDITORIA,
+					"CICLO"=>$CICLO],[
+				"AND"=>["ID_SCE" => $ID_SERVICIO_CLIENTE_ETAPA,"ID_NORMA"=>$i,"ID_TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO]
+				]);
+	valida_error_medoo_and_die();
+	
+	
+	}
+	$respuesta["resultado"]="ok";
+}
+
+
 print_r(json_encode($respuesta));
 ?> 

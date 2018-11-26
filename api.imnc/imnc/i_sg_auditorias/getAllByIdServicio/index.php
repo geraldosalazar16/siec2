@@ -23,6 +23,8 @@ function valida_error_medoo_and_die(){
 } 
 $id = $_REQUEST["id"]; 
 
+//Lo primero es buscar el id tipo de servicio que sera un dato importante para trabajar
+	$tipo_servicio = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_TIPO_SERVICIO", ["ID"=>$id]);
 											
 $valores = $database->query("SELECT `I_SG_AUDITORIAS`.`ID_SERVICIO_CLIENTE_ETAPA`,`I_SG_AUDITORIAS`.`DURACION_DIAS`, `I_SG_AUDITORIAS_TIPOS`.`TIPO`,`I_SG_AUDITORIA_STATUS`.`STATUS`,`I_SG_AUDITORIAS`.`NO_USA_METODO`,`I_SG_AUDITORIAS`.`SITIOS_AUDITAR`,`I_SG_AUDITORIAS`.`ID_USUARIO_CREACION`,`I_SG_AUDITORIAS`.`ID_USUARIO_MODIFICACION`,`I_SG_AUDITORIAS`.`TIPO_AUDITORIA`,`I_SG_AUDITORIAS`.`STATUS_AUDITORIA`,`I_SG_AUDITORIAS`.`CICLO` FROM `I_SG_AUDITORIAS` INNER JOIN `I_SG_AUDITORIAS_TIPOS` ON `I_SG_AUDITORIAS_TIPOS`.`ID` = `I_SG_AUDITORIAS`.`TIPO_AUDITORIA` INNER JOIN `I_SG_AUDITORIA_STATUS` ON `I_SG_AUDITORIA_STATUS`.`ID` = `I_SG_AUDITORIAS`.`STATUS_AUDITORIA` WHERE `I_SG_AUDITORIAS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id)->fetchAll(PDO::FETCH_ASSOC);
 valida_error_medoo_and_die(); 
@@ -60,7 +62,7 @@ for ($i=0; $i < count($valores) ; $i++) {
 	
 	for($j=0;$j<$valores[$i]["AUDITORES_ASOCIADOS"];$j++){
 		
-		$valores[$i]["AUDITORES_FECHAS"][$valores[$i]["AUDITORES"][$j]["ID_PERSONAL_TECNICO_CALIF"]] = $database->query("SELECT `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID`,`I_SG_AUDITORIA_GRUPO_FECHAS`.`FECHA` FROM `I_SG_AUDITORIA_GRUPO_FECHAS` WHERE `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id. " AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`TIPO_AUDITORIA`=".$valores[$i]["TIPO_AUDITORIA"]." AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`CICLO`=".$valores[$i]["CICLO"]." AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_PERSONAL_TECNICO_CALIF`=".$valores[$i]["AUDITORES"][$j]["ID_PERSONAL_TECNICO_CALIF"])->fetchAll(PDO::FETCH_ASSOC);
+		$valores[$i]["AUDITORES_FECHAS"][$valores[$i]["AUDITORES"][$j]["ID_PERSONAL_TECNICO_CALIF"]] = $database->query("SELECT `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID`,`I_SG_AUDITORIA_GRUPO_FECHAS`.`FECHA`,`I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_NORMA` FROM `I_SG_AUDITORIA_GRUPO_FECHAS` WHERE `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id. " AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`TIPO_AUDITORIA`=".$valores[$i]["TIPO_AUDITORIA"]." AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`CICLO`=".$valores[$i]["CICLO"]." AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_PERSONAL_TECNICO_CALIF`=".$valores[$i]["AUDITORES"][$j]["ID_PERSONAL_TECNICO_CALIF"])->fetchAll(PDO::FETCH_ASSOC);
 		valida_error_medoo_and_die(); 
 	}
 	
@@ -104,11 +106,24 @@ for ($i=0; $i < count($valores) ; $i++) {
 	}
 	
 	// Restriccion de dias auditor
-	if ($valores[$i]["DIAS_ASIGNADOS"] < $valores[$i]["DURACION_DIAS"]) {
+	if($tipo_servicio != 20){
+		if ($valores[$i]["DIAS_ASIGNADOS"] < $valores[$i]["DURACION_DIAS"]) {
 		$mensaje_restriccion = "Faltan dias por asignar (se han asignado ".$valores[$i]["DIAS_ASIGNADOS"].' de '. $valores[$i]["DURACION_DIAS"].')';
 		$valores[$i]["RESTRICCIONES_DIA_AUDITOR"] = $mensaje_restriccion;
 		
 	}
+	}else{
+		$mensaje_restriccion = "";
+		$normas = $database->query("SELECT `ID_NORMA`,`DIAS_AUDITOR` FROM `SCE_NORMAS` WHERE `ID_SCE`= ".$id." AND `ID_TIPO_AUDITORIA` = ".$valores[$i]["TIPO_AUDITORIA"]." AND `CICLO` = ".$valores[$i]["CICLO"])->fetchAll(PDO::FETCH_ASSOC);
+		for($ddd=0;$ddd<count($normas);$ddd++){
+			$dias = $database->count("I_SG_AUDITORIA_GRUPO_FECHAS",["AND" => ["ID_SERVICIO_CLIENTE_ETAPA"=> $id,"TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"],"ID_NORMA"=>$normas[$ddd]["ID_NORMA"]]]);
+			if( $dias < $normas[$ddd]["DIAS_AUDITOR"]){
+				$mensaje_restriccion .= "Faltan dias por asignar (se han asignado ".$dias.' de '. $normas[$ddd]["DIAS_AUDITOR"].' para '.$normas[$ddd]["ID_NORMA"].'). ';
+			}
+		}
+		$valores[$i]["RESTRICCIONES_DIA_AUDITOR"] = $mensaje_restriccion;
+	}
+	
 
 	$sg_sectores = $database->select("I_SG_SECTORES", "ID_SECTOR", ["ID_SERVICIO_CLIENTE_ETAPA"=>$id]); 
 	$ids_pt_califs = $database->select("I_SG_AUDITORIA_GRUPOS", "ID_PERSONAL_TECNICO_CALIF", ["AND"=>["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);

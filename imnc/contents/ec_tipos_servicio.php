@@ -414,7 +414,7 @@
 				</datepicker>-->
 															<ul class="list-unstyled user_data">
 																<li ng-repeat="r in x.AUDITORES_FECHAS[w.ID_PERSONAL_TECNICO_CALIF]">
-																	{{mostrarFecha(r.FECHA)}}
+																	{{mostrarFecha(r.FECHA)}} {{mostrarNorma(r.ID_NORMA)}}
 														
 																</li>
 															</ul>	
@@ -641,6 +641,7 @@
   include "ec_tipos_servicio/modal_explorar_auditores_grupo_auditoria.php";
   include "ec_tipos_servicio/modal_explorar_auditores_grupo_auditoria_ec.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_auditoria_grupo_auditores.php";
+  include "ec_tipos_servicio/modal_fecha_norma_tipo_servicio_integral.php";
   include "ec_tipos_servicio/modal_genera_notificacion.php";
   include "ec_tipos_servicio/modal_confirmacion.php";
   

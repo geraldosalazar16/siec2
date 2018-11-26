@@ -19,7 +19,7 @@ $ID_PERSONAL_TECNICO_CALIF = $objeto->ID_PERSONAL_TECNICO_CALIF;
 valida_parametro_and_die($ID_PERSONAL_TECNICO_CALIF, "Falta la ID_PERSONAL_TECNICO_CALIF");
 $FECHA = $objeto->FECHA; 
 valida_parametro_and_die($FECHA, "Falta la FECHA");
-
+$ID_NORMA = $objeto->ID_NORMA; 
 $ID_USUARIO = $objeto->ID_USUARIO; 
 valida_parametro_and_die($ID_USUARIO, "Falta el ID_USUARIO");
 $FECHA_CREACION = date("Ymd");
@@ -62,6 +62,7 @@ $idd = $database->insert("I_SG_AUDITORIA_GRUPO_FECHAS",
 												"CICLO"=>$CICLO,
 												"ID_PERSONAL_TECNICO_CALIF" => $ID_PERSONAL_TECNICO_CALIF,
 												"FECHA" => $FECHA,
+												"ID_NORMA" => $ID_NORMA,
 												"FECHA_CREACION" => $FECHA_CREACION,
 												"HORA_CREACION" => $HORA_CREACION,
 												"FECHA_MODIFICACION" => "",

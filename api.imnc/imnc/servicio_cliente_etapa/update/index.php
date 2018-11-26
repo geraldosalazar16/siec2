@@ -87,16 +87,17 @@ $id = $database->update("SERVICIO_CLIENTE_ETAPA", [
 valida_error_medoo_and_die(); 
 //ACTUALIZAR LAS NORMAS
 	//borro todas las normas asociadas al servicio
-	$id = $database->delete("SCE_NORMAS", 
+/*	$id = $database->delete("SCE_NORMAS", 
 	[
 		"AND" => [
 			"ID_SCE" => $ID
 		]		
 	]);
-	valida_error_medoo_and_die();
+	valida_error_medoo_and_die();*/
 	//Inserto las normas capturadas
 	for ($i=0; $i < count($NORMAS); $i++) { 
 		$id_norma = $NORMAS[$i]->ID_NORMA;
+		if($database->count("SCE_NORMAS", ["AND"=>[ "ID_SCE" => $ID,"ID_NORMA" => $id_norma]])==0 )
 		$id_sce_normas = $database->insert("SCE_NORMAS", [ 
 			"ID_SCE" => $ID,
 			"ID_NORMA" => $id_norma
