@@ -127,7 +127,7 @@ $scope.formData = {};
     //Usar tipo de auditoría en vez de etapa
     var http_request = {
       method: 'GET',
-      url: global_apiserver + "/sg_auditorias_tipos/getByIdServicio/?id="+$scope.obj_cotizacion.ID_SERVICIO,
+      url: global_apiserver + "/i_sg_auditorias_tipos/getByIdServicio/?id="+$scope.obj_cotizacion.ID_SERVICIO,
     };
     $http(http_request).success(function(data) {
       if(data) { 

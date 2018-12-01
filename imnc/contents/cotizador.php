@@ -255,6 +255,14 @@
                   <input type="numeric" ng-model="cotizacion_insertar_editar.DESCUENTO" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
+              <!-- Esta opción es solo para integrales -->
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID == 20">
+                <label class="control-label col-md-12">Capacidad de realizar auditoría combinada (%)</label>
+                <div class="col-md-12">
+                  <input type="numeric" ng-model="cotizacion_insertar_editar.COMBINADA" required="required" class="form-control col-md-7 col-xs-12">
+                </div>
+              </div>
+
               <!-- Se oculta este control peus ya no se utiliza-->
               <div class="form-group form-vertical" ng-show="false">
                 <label class="control-label col-md-12">¿Es SG integral? <span class="required">*</span></label>

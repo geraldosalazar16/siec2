@@ -7,7 +7,7 @@ app.controller("tipos_auditoria_controller", ['$scope','$window', '$http','$docu
   $scope.despliega_tipos_auditoria = function () {
     var http_request = {
       method: 'GET',
-      url: global_apiserver + "/sg_auditorias_tipos/getAll/",
+      url: global_apiserver + "/i_sg_auditorias_tipos/getAll/",
     };
 
     $http(http_request).success(function(data) {
@@ -56,7 +56,7 @@ app.controller("tipos_auditoria_controller", ['$scope','$window', '$http','$docu
     
     var http_request = {
       method: 'GET',
-      url: global_apiserver + "/sg_auditorias_tipos/getById/?id="+id_tipo_auditoria,
+      url: global_apiserver + "/i_sg_auditorias_tipos/getById/?id="+id_tipo_auditoria,
     };
 
     $http(http_request).success(function(data) {
@@ -78,14 +78,14 @@ app.controller("tipos_auditoria_controller", ['$scope','$window', '$http','$docu
     if ($scope.opcion_guardar_tipo_auditoria == 'insertar') {
        var http_request = {
         method: 'POST',
-        url: global_apiserver + "/sg_auditorias_tipos/insert/",
+        url: global_apiserver + "/i_sg_auditorias_tipos/insert/",
         data: angular.toJson($scope.tipo_auditoria_insertar_editar)
       };
     }
     else if ($scope.opcion_guardar_tipo_auditoria = 'editar'){
       var http_request = {
         method: 'POST',
-        url: global_apiserver + "/sg_auditorias_tipos/update/",
+        url: global_apiserver + "/i_sg_auditorias_tipos/update/",
         data: angular.toJson($scope.tipo_auditoria_insertar_editar)
       };
     }

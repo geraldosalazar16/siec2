@@ -73,6 +73,17 @@ $COMPLEJIDAD = $objeto->COMPLEJIDAD;
 valida_parametro_and_die($COMPLEJIDAD,"Falta COMPLEJIDAD");
 $BANDERA = $objeto->BANDERA;
 
+$COMBINADA = $objeto->COMBINADA;
+//SOLO ES OBLIGATORIO PARA INTEGRAL
+if($ID_TIPO_SERVICIO == 20){
+	valida_parametro_and_die($COMBINADA,"Falta COMBINADA");
+} else {
+	if(!$COMBINADA){
+		$COMBINADA = 0;
+	}
+}
+
+
 if ($DESCUENTO != "" && ($DESCUENTO < 0 || $DESCUENTO > 100)) {
 	$respuesta["resultado"] = "error";
 	$respuesta["mensaje"] = "El Descuento no puede ser menor al 0% ni mayor al 100%";
@@ -131,6 +142,7 @@ $id_cotizacion = $database->insert("COTIZACIONES", [
 	"COMPLEJIDAD" => $COMPLEJIDAD,
 	"FECHA_CREACION" => $FECHA_CREACION,
 	"HORA_CREACION" => $HORA_CREACION,
+	"COMBINADA" => $COMBINADA,
 	"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
 ]);
 valida_error_medoo_and_die();

@@ -46,15 +46,69 @@ if (!in_array($complejidad, $complejidades_validas)) {
 }
 $complejidad = "_" . strtoupper($complejidad);
 
+//Buscar el nivel de integración para Integrales
+$cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"] = 0;
+if($cotizacion[0]["ID_TIPO_SERVICIO"] == 20){
+
+	//Necesito el id del producto
+	$id_producto = $database->get("PROSPECTO_PRODUCTO", "*", 
+	[
+		"AND" => [
+			"ID_PROSPECTO"=>$cotizacion[0]["ID_PROSPECTO"],
+			"ID_SERVICIO"=>$cotizacion[0]["ID_SERVICIO"],
+			"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
+		]
+	]);
+	valida_error_medoo_and_die();
+
+	//Con el id del producto busco la información de integración
+	$query = "SELECT 
+	PI.ID_PRODUCTO,
+	IP.PREGUNTA,
+	IPR.VALOR,
+	PI.ID_PREGUNTA,
+	PI.RESPUESTA
+	FROM PRODUCTO_INTEGRACION PI
+	INNER JOIN INTEGRACION_PREGUNTAS IP
+	ON IP.ID = PI.ID_PREGUNTA
+	INNER JOIN INTEGRACION_PREGUNTAS_RESPUESTAS IPR
+	ON IPR.ID_PREGUNTA = PI.ID_PREGUNTA
+	AND IPR.RESPUESTA = PI.RESPUESTA
+	WHERE PI.ID_PRODUCTO = ".$id_producto["ID"]; 
+	$producto_integracion = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+	valida_error_medoo_and_die();
+
+	//Ahora necesito recorrer el arreglo obtenido para calcular la integración
+	$nivel_integracion = 0;
+	foreach ($producto_integracion as $key => $integracion) {
+		$nivel_integracion += $integracion["VALOR"];
+	}
+	$cotizacion[0]["NIVEL_INTEGRACION"] = $nivel_integracion;
+
+	//La capacidad de ejecución está en cotizacion[0]["COMBINADA"]
+	$capacidad = $cotizacion[0]["COMBINADA"];
+	//Con estos dos valores busco en la tabla COTIZACION_NIVEL_INTEGRACION
+	//DONDE X ES CAPACIDAD Y Y ES NIVEL DE INTEGRACION
+	$query = "SELECT
+	VALOR FROM COTIZACION_NIVEL_INTEGRACION
+	WHERE X_MIN_PORCENTAJE < ".$capacidad.
+	" AND X_MAX_PORCENTAJE >= ".$capacidad.
+	" AND Y_MIN_PORCENTAJE < ".$nivel_integracion.
+	" AND Y_MAX_PORCENTAJE >= ".$nivel_integracion;
+	$factor_reduccion = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+	valida_error_medoo_and_die();
+	$cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"] = $factor_reduccion[0]["VALOR"];
+}
+
 
 $servicio = $database->get("SERVICIOS", "*", ["ID"=>$cotizacion[0]["ID_SERVICIO"]]);
 valida_error_medoo_and_die(); 
 $tipos_servicio = $database->get("TIPOS_SERVICIO", "*", ["ID"=>$cotizacion[0]["ID_TIPO_SERVICIO"]]);
 valida_error_medoo_and_die(); 
-$norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
-valida_error_medoo_and_die(); 
+$normas = $database->select("COTIZACION_NORMAS", "*", ["ID_COTIZACION"=>$id_cotizacion]);
+valida_error_medoo_and_die();
 //$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$tramite_item["ID_ETAPA_PROCESO"]]);
-$etapa = $database->get("SG_AUDITORIAS_TIPOS", "*", ["ID"=>$cotizacio_tramite["ID_ETAPA_PROCESO"]]);
+$etapa = $database->get("I_SG_AUDITORIAS_TIPOS", "*", ["ID"=>$cotizacio_tramite["ID_ETAPA_PROCESO"]]);
 valida_error_medoo_and_die(); 
 //Sustituyo $etapa["ETAPA"] por nombre_auditoria
 $nombre_auditoria = $etapa["TIPO"];
@@ -62,6 +116,8 @@ $tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizacion[0]["TARIFA
 valida_error_medoo_and_die(); 
 $cantidad_de_sitios = $database->count("COTIZACION_SITIOS", ["ID_COTIZACION"=>$cotizacio_tramite["ID"]]);
 valida_error_medoo_and_die(); 
+
+
 
 $campos = [
 	"COTIZACION_SITIOS.ID",
@@ -122,6 +178,7 @@ else if(strpos($nombre_auditoria, 'Renovación') !== false || strpos($nombre_aud
 	$const_dias = 0.66;
 }
 $obj_cotizacion = [];
+$obj_cotizacion["TIPOS_SERVICIO"] = $tipos_servicio;
 $obj_cotizacion["ETAPA"] = $nombre_auditoria;
 $obj_cotizacion["TARIFA_TOTAL"] = $tarifa;
 
@@ -149,8 +206,32 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 
 	$total_dias_auditoria = 0;
 	$total_empleados = 0;
-	for ($i=0; $i < count($obj_cotizacion["COTIZACION_SITIOS"]) ; $i++) { 
-		$dias = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad, 
+	for ($i=0; $i < count($obj_cotizacion["COTIZACION_SITIOS"]) ; $i++) {
+		$dias = 0; 
+		if($cotizacion[0]["ID_TIPO_SERVICIO"] == 20){
+			foreach ($normas as $key => $norma) {
+				//buscar el id_tipo_servicio dependiendo de la norma
+				$query = "SELECT ID_TIPO_SERVICIO 
+				FROM NORMAS_TIPOSERVICIO
+				WHERE ID_NORMA = '".$norma["ID_NORMA"].
+				"' AND ID_TIPO_SERVICIO <> 20";
+				$id_tipo_servicio = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+				valida_error_medoo_and_die();
+
+				$dias_norma = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad,
+				[
+					"AND"=>[
+								"ID_TIPO_SERVICIO"=>$id_tipo_servicio[0]["ID_TIPO_SERVICIO"],
+								"TOTAL_EMPLEADOS_MINIMO[<=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+								"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+							]
+				]);
+				valida_error_medoo_and_die();
+				$normas[$key]["DIAS"] = $dias_norma;
+				$dias += $dias_norma;				
+			}
+		} else {
+			$dias = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad, 
 			[
 				"AND"=>[
 							"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
@@ -158,6 +239,9 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 							"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$obj_cotizacion["COTIZACION_SITIOS"][$i]["TOTAL_EMPLEADOS"],
 						]
 			]);
+			valida_error_medoo_and_die();
+		}		
+
 		$dias_reduccion = round($dias * (1 - ($obj_cotizacion["COTIZACION_SITIOS"][$i]["FACTOR_REDUCCION"]/100) 
 			+ ($obj_cotizacion["COTIZACION_SITIOS"][$i]["FACTOR_AMPLIACION"]/100)) );
 		$dias_subtotal = round($dias_reduccion * $const_dias);
@@ -176,6 +260,12 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 		}
 		$total_dias_auditoria += $dias_subtotal;
 		$total_empleados += $obj_cotizacion["COTIZACION_SITIOS"][$i]["TOTAL_EMPLEADOS"];
+	}
+	//Si es integral hay que aplicar el factor de reducción para integrales
+	if($cotizacion[0]["ID_TIPO_SERVICIO"] == 20){
+		//Primero calcular el factor de integración
+		//Leer el nivel de integración de prospectos
+		$total_dias_auditoria = round( $total_dias_auditoria * (1 - ($cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"]/100)) );
 	}
 	$a = strpos($nombre_auditoria, 'Vigilancia');
 	$b = strpos($nombre_auditoria, 'VIGILANCIA');
@@ -224,5 +314,6 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 	$obj_cotizacion["COSTO_DESCUENTO"] = $costo_desc;
 	$obj_cotizacion["COSTO_TOTAL"] = $costo_desc + $cotizacio_tramite["VIATICOS"] + $total_tarifa_adicional;
 	
+	$obj_cotizacion["NORMAS"] = $normas;
 print_r(json_encode($obj_cotizacion)); 
 ?> 

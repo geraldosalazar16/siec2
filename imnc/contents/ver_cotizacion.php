@@ -259,13 +259,24 @@
                   Justificación :  {{sitios_cotizacion.JUSTIFICACION}}
                 </td>
                 <td>{{sitios_cotizacion.TOTAL_EMPLEADOS}}</td>
-                <td ng-if="!tipo_auditoria_e1">
+                <td ng-if="!tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID != 20">
                   Días base: <b>{{sitios_cotizacion.DIAS_AUDITORIA}}</b><br>
                   Factor de reducción y ampliación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_RED}}</b><br>
                   Factor de ajuste por vigilancia o renovación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_SUBTOTAL}}</b>
                 </td>
-				        <td ng-if="tipo_auditoria_e1">
+				        <td ng-if="tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID != 20">
                   Días auditor: <b>{{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}}</b><br>
+                </td>
+                <td ng-if="!tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID == 20">
+                  Días base: <b>{{sitios_cotizacion.DIAS_AUDITORIA}}</b><br>
+                  <span ng-repeat-start="norma in obj_cotizacion_tramite.NORMAS">{{norma.ID_NORMA}} : <strong>{{norma.DIAS}}</strong></span>
+                  <br ng-repeat-end>
+                  Factor de reducción y ampliación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_RED}}</b><br>
+                  Factor de ajuste por vigilancia o renovación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_SUBTOTAL}}</b>
+                </td>
+				        <td ng-if="tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID == 20">
+                  Días auditor: <b>{{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}}</b><br>
+                  <span ng-repeat="norma in obj_cotizacion_tramite.NORMAS">{{norma.ID_NORMA}} : <strong>{{norma.DIAS}}</strong></span>
                 </td>
                 <td>
                   <input type="checkbox" class="flat" ng-click="actualiza_sitio_seleccionado(sitios_cotizacion.ID)"

@@ -259,12 +259,13 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         FOLIO_INICIALES : $scope.cotizacion_insertar_editar.FOLIO_INICIALES,
         FOLIO_SERVICIO : $scope.cotizacion_insertar_editar.FOLIO_SERVICIO,
         ESTADO_COTIZACION : $scope.cotizacion_insertar_editar.ESTADO_SEG.ID,
-        REFERENCIA : $scope.cotizacion_insertar_editar.REFERENCIA.VALOR,
+        REFERENCIA : "",
         TARIFA : $scope.cotizacion_insertar_editar.TARIFA,
         DESCUENTO : $scope.cotizacion_insertar_editar.DESCUENTO,
         SG_INTEGRAL : $scope.cotizacion_insertar_editar.SG_INTEGRAL,
         BANDERA : $scope.bandera,
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
+        COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }else{
@@ -286,6 +287,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         SG_INTEGRAL : $scope.cotizacion_insertar_editar.SG_INTEGRAL,
         BANDERA : $scope.bandera,
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
+        COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }

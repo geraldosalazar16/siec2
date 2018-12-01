@@ -19,7 +19,6 @@ function valida_error_medoo_and_die(){
 		$respuesta["resultado"]="error";
 		$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2];
 		print_r(json_encode($respuesta));
-		$mailerror->send("COTIZACIONES", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx");
 		die();
 	}
 }
@@ -41,10 +40,66 @@ $complejidad = "_" . strtoupper($complejidad);
 if($cotizacion[0]["BANDERA"] != "0"){
 	//$id_cliente = $database->get("PROSPECTO", "ID_CLIENTE", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
 	$cliente = $database->get("CLIENTES", "*", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
+	valida_error_medoo_and_die();
 	$cotizacion[0]["CLIENTE"] = $cliente;
 } else {
 	$prospecto = $database->get("PROSPECTO", "*", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
+	valida_error_medoo_and_die();
 	$cotizacion[0]["PROSPECTO"] = $prospecto;
+
+	//Buscar el nivel de integración para Integrales
+	$cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"] = 0;
+	if($cotizacion[0]["ID_TIPO_SERVICIO"] == 20){
+
+		//Necesito el id del producto
+		$id_producto = $database->get("PROSPECTO_PRODUCTO", "*", 
+		[
+			"AND" => [
+				"ID_PROSPECTO"=>$cotizacion[0]["ID_PROSPECTO"],
+				"ID_SERVICIO"=>$cotizacion[0]["ID_SERVICIO"],
+				"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
+			]
+		]);
+		valida_error_medoo_and_die();
+
+		//Con el id del producto busco la información de integración
+		$query = "SELECT 
+		PI.ID_PRODUCTO,
+		IP.PREGUNTA,
+		IPR.VALOR,
+		PI.ID_PREGUNTA,
+		PI.RESPUESTA
+		FROM PRODUCTO_INTEGRACION PI
+		INNER JOIN INTEGRACION_PREGUNTAS IP
+		ON IP.ID = PI.ID_PREGUNTA
+		INNER JOIN INTEGRACION_PREGUNTAS_RESPUESTAS IPR
+		ON IPR.ID_PREGUNTA = PI.ID_PREGUNTA
+		AND IPR.RESPUESTA = PI.RESPUESTA
+		WHERE PI.ID_PRODUCTO = ".$id_producto["ID"]; 
+		$producto_integracion = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+		valida_error_medoo_and_die();
+
+		//Ahora necesito recorrer el arreglo obtenido para calcular la integración
+		$nivel_integracion = 0;
+		foreach ($producto_integracion as $key => $integracion) {
+			$nivel_integracion += $integracion["VALOR"];
+		}
+		$cotizacion[0]["NIVEL_INTEGRACION"] = $nivel_integracion;
+
+		//La capacidad de ejecución está en cotizacion[0]["COMBINADA"]
+		$capacidad = $cotizacion[0]["COMBINADA"];
+		//Con estos dos valores busco en la tabla COTIZACION_NIVEL_INTEGRACION
+		//DONDE X ES CAPACIDAD Y Y ES NIVEL DE INTEGRACION
+		$query = "SELECT
+		VALOR FROM COTIZACION_NIVEL_INTEGRACION
+		WHERE X_MIN_PORCENTAJE < ".$capacidad.
+		" AND X_MAX_PORCENTAJE >= ".$capacidad.
+		" AND Y_MIN_PORCENTAJE < ".$nivel_integracion.
+		" AND Y_MAX_PORCENTAJE >= ".$nivel_integracion;
+		$factor_reduccion = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+		valida_error_medoo_and_die();
+		$cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"] = $factor_reduccion[0]["VALOR"];
+	}
 }
 
 
@@ -69,7 +124,8 @@ $campos_tramite = [
 	"COTIZACIONES_TRAMITES.ID_SERVICIO_CLIENTE",
 	"I_SG_AUDITORIAS_TIPOS.TIPO"
 ];
-$tramites =  $database->select("COTIZACIONES_TRAMITES", ["[>]I_SG_AUDITORIAS_TIPOS" => ["ID_ETAPA_PROCESO" => "ID"]], $campos_tramite,
+$tramites =  $database->select("COTIZACIONES_TRAMITES", 
+["[>]I_SG_AUDITORIAS_TIPOS" => ["ID_ETAPA_PROCESO" => "ID"]], $campos_tramite,
 	["ID_COTIZACION"=>$cotizacion[0]["ID"]]);
 valida_error_medoo_and_die();
 
@@ -94,7 +150,7 @@ $total_dias_cotizacion = 0;
 foreach ($tramites as $key => $tramite_item) {
 	//En vez de usar la etapa usar el tipo de auditoria
 	//$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$tramite_item["ID_ETAPA_PROCESO"]]);
-	$etapa = $database->get("SG_AUDITORIAS_TIPOS", "*", ["ID"=>$tramite_item["ID_ETAPA_PROCESO"]]);
+	$etapa = $database->get("I_SG_AUDITORIAS_TIPOS", "*", ["ID"=>$tramite_item["ID_ETAPA_PROCESO"]]);
 	//Sustituyo $etapa["ETAPA"] por nombre_auditoria
 	$nombre_auditoria = $etapa["TIPO"];
 	valida_error_medoo_and_die();
@@ -130,33 +186,68 @@ foreach ($tramites as $key => $tramite_item) {
 			continue;
 		}
 			$dias = 0;
-			if($cotizacion[0]["ID_TIPO_SERVICIO"] == 21){
-				$dias = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad,
-				[
-					"AND"=>[
-								"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
-								"ETAPA"=>$etapa_para_sgen,
-								"TOTAL_EMPLEADOS_MINIMO[<=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
-								"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
-							]
-				]);
+			
+			//Si es integral es diferente
+			/* 
+				Es necesario buscar la cantidad de días para cada una de las normas asociadas al servicio
+				Por esto hay que buscar los tipos de servicio dependiendo de las normas
+				y hacer lo mismo que para una auditoría normal
+			*/
+			if($cotizacion[0]["ID_TIPO_SERVICIO"] == 20){
+				foreach ($normas as $index => $norma) {
+					//buscar el id_tipo_servicio dependiendo de la norma
+					$query = "SELECT ID_TIPO_SERVICIO 
+					FROM NORMAS_TIPOSERVICIO
+					WHERE ID_NORMA = '".$norma["ID_NORMA"].
+					"' AND ID_TIPO_SERVICIO <> 20";
+					$id_tipo_servicio = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+					
+					valida_error_medoo_and_die();
+					$dias_norma = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad,
+					[
+						"AND"=>[
+									"ID_TIPO_SERVICIO"=>$id_tipo_servicio[0]["ID_TIPO_SERVICIO"],
+									"TOTAL_EMPLEADOS_MINIMO[<=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+									"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+								]
+					]);
+					valida_error_medoo_and_die();
+					$normas[$index]["DIAS"] = $dias_norma;
+					$dias += $dias_norma;				
+				}
 			} else {
-				$dias = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad,
-				[
-					"AND"=>[
-								"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
-								"TOTAL_EMPLEADOS_MINIMO[<=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
-								"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
-							]
-				]);
+				//Para el caso de auditorías simples
+				if($cotizacion[0]["ID_TIPO_SERVICIO"] == 21){
+					$dias = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad,
+					[
+						"AND"=>[
+									"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
+									"ETAPA"=>$etapa_para_sgen,
+									"TOTAL_EMPLEADOS_MINIMO[<=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+									"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+								]
+					]);
+				} else {
+					$dias = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad,
+					[
+						"AND"=>[
+									"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
+									"TOTAL_EMPLEADOS_MINIMO[<=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+									"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+								]
+					]);
+				}
 			}
 			$dias_reduccion = round($dias * (1 - ($cotizacion_sitios[$i]["FACTOR_REDUCCION"]/100) + ($cotizacion_sitios[$i]["FACTOR_AMPLIACION"]/100) ));
 			$dias_subtotal = round($dias_reduccion * $const_dias);
 
 			$total_dias_auditoria += $dias_subtotal;
 	}
-	if($cotizacion[0]["SG_INTEGRAL"] == "si"){
-		$total_dias_auditoria = round( $total_dias_auditoria * (1 - ($tramite_item["FACTOR_INTEGRACION"]/100)) );
+	//Si es integral hay que aplicar el factor de reducción para integrales
+	if($cotizacion[0]["ID_TIPO_SERVICIO"] == 20){
+		//Primero calcular el factor de integración
+		//Leer el nivel de integración de prospectos
+		$total_dias_auditoria = round( $total_dias_auditoria * (1 - ($cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"]/100)) );
 	}
 	$a = strpos($nombre_auditoria, 'Vigilancia');
 	$b = strpos($nombre_auditoria, 'VIGILANCIA');
