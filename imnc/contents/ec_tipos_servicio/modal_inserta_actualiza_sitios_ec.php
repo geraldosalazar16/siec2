@@ -7,7 +7,7 @@
                         <h4 class="modal-title" id="modalTituloSitiosEC">{{modal_titulo_sitio}}</h4>
                     </div>
                     <div class="modal-body"> 
-                        <form name="exampleFormSitiosEC" >
+                        <form name="exampleFormSitiosEC"  ng-show="cant_MetaDatosSitios != 0">
 							<div class="form-group">
 								<label 	for="cmbClaveClienteDomSitio">Nombre del sitio a auditar <span class="required">*</span></label>
 								<select ng-model="formDataSitiosEC.cmbClaveClienteDomSitio" ng-options="ClientesDomicilio.ID as ClientesDomicilio.NOMBRE for ClientesDomicilio in ClientesDomicilios"  class="form-control" id="cmbClaveClienteDomSitio" name="cmbClaveClienteDomSitio" ng-change='cambiocmbClaveClienteDomSitiosEC()' required ng-class="{ error: exampleFormSitiosEC.cmbClaveClienteDomSitio.$error.required && !exampleFormSitiosEC.$pristine}"></select>
@@ -26,6 +26,7 @@
 							
                             <input type="submit" class="btn btn-success pull-right mt-2" ng-click="submitFormSitiosEC(formDataSitiosEC)" ng-disabled="!exampleFormSitiosEC.$valid" value="Guardar"/>
                         </form>
+						<span ng-show="cant_MetaDatosSitios == 0">No puede insertar sitios para este tipo de servicio. Es necesario configurar sus metadatos.</span>
                     </div>                                  
                     <div class="modal-footer">
                        

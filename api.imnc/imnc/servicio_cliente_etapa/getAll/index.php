@@ -36,7 +36,7 @@ for ($i=0; $i < count($servicio_cliente_etapa) ; $i++) {
 	$etapa_nombre = $database->get("ETAPAS_PROCESO", "ETAPA", ["ID_ETAPA"=>$servicio_cliente_etapa[$i]["ID_ETAPA_PROCESO"]]);
 	$servicio_cliente_etapa[$i]["NOMBRE_ETAPA"] = $etapa_nombre;
 
-	$normas = $database->select("SCE_NORMAS", "*", ["ID_SCE"=>$servicio_cliente_etapa[$i]["ID"]]);
+	$normas = $database->query("SELECT DISTINCT `ID_NORMA` FROM `SCE_NORMAS` WHERE `ID_SCE`= ".$servicio_cliente_etapa[$i]["ID"])->fetchAll(PDO::FETCH_ASSOC);
 	$servicio_cliente_etapa[$i]["NORMAS"] = $normas;
 }
 valida_error_medoo_and_die(); 

@@ -43,7 +43,7 @@ $id_servicio	=	$database->get("TIPOS_SERVICIO", "ID_SERVICIO", ["ID"=>$id]);
 valida_error_medoo_and_die();
 switch($id_servicio){
 	case 1:
-		$texto_servicio	=	"SC";
+		$texto_servicio	=	"S";
 		break;
 	case 2:
 		$texto_servicio	=	"S";
@@ -109,7 +109,7 @@ $referencias = $database->query($consulta)->fetchAll();
 	}
 	else
 	{
-		$mayor_consecutivo = 1;
+		$mayor_consecutivo = 0;
 	}
     $mayor_consecutivo++;
 	$consecutivo = substr("000".$mayor_consecutivo,-3);

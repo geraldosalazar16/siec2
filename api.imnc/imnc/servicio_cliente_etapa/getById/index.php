@@ -41,6 +41,8 @@ if ($_REQUEST["domicilios"] == "true") {
 	$servicio_cliente_etapa["DOMICILIOS_CLIENTE"] = $domicilios_cliente;
 }
 */
+$normas = $database->query("SELECT DISTINCT `ID_NORMA` FROM `SCE_NORMAS` WHERE `ID_SCE`= ".$id)->fetchAll(PDO::FETCH_ASSOC);
+$servicio_cliente_etapa["NORMAS"] = $normas;
 $etapa_nombre = $database->get("ETAPAS_PROCESO", "ETAPA", ["ID_ETAPA"=>$servicio_cliente_etapa["ID_ETAPA_PROCESO"]]);
 $servicio_cliente_etapa["NOMBRE_ETAPA"] = $etapa_nombre;
 $desde_cotizacion = $database->count("COTIZACIONES_TRAMITES", ["ID_SERVICIO_CLIENTE"=>$id]); 

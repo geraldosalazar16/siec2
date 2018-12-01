@@ -20,9 +20,13 @@
 				<label class="control-label">Sitios a Auditar<span class="required">*</span></label>
                 <input type="text" class="form-control"   ng-model="formDataAuditoria.txtSitiosAuditoria" required ng-class="{ error: exampleFormAuditoria.txtSitiosAuditoria.$error.required && !exampleFormAuditoria.$pristine}" >
 			</div>
-			<div class="form-group">
+			<div class="form-group" ng-if="DatosServicio.ID_TIPO_SERVICIO !=20 ">
 				<label class="control-label">Días auditor<span class="required">*</span></label>
-                <input type="text" class="form-control"   ng-model="formDataAuditoria.txtDuracionAuditoria" required ng-class="{ error: exampleFormAuditoria.txtDuracionAuditoria.$error.required && !exampleFormAuditoria.$pristine}" >
+                <input type="text" class="form-control"   ng-model="formDataAuditoria.txtDuracionAuditoria"  required ng-class="{ error: exampleFormAuditoria.txtDuracionAuditoria.$error.required && !exampleFormAuditoria.$pristine}" >
+			</div>
+			<div class="form-group" ng-if="DatosServicio.ID_TIPO_SERVICIO==20" ng-repeat="x in DatosServicio.NORMAS">
+				<label class="control-label">Días auditor para {{x.ID_NORMA}}<span class="required">*</span></label>
+                <input type="text" class="form-control"   ng-model="formDataAuditoria.txtDuracionAuditoria1[x.ID_NORMA]" ng-change='CambioDiaAuditor()' required ng-class="{ error: exampleFormAuditoria.txtDuracionAuditoria.$error.required && !exampleFormAuditoria.$pristine}" >
 			</div>
 			<div class="form-group">
 				<label class="control-label">Tipo de Auditor&iacutea <span class="required">*</span></label>

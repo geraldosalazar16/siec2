@@ -35,6 +35,8 @@ function valida_error_medoo_and_die(){
 	$idtipoauditoria = $_REQUEST["idtipoauditoria"];
 	$ciclo = $_REQUEST["ciclo"];
 	
+	//Lo primero es buscar el id tipo de servicio que sera un dato importante para trabajar
+	$tipo_servicio = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_TIPO_SERVICIO", ["ID"=>$id_sce]);
 //$auditoria = $database->get("SG_AUDITORIAS", ["FECHA_INICIO", "DURACION_DIAS"], ["ID"=>$id_sg_auditoria]);
 //valida_error_medoo_and_die();
 
@@ -49,8 +51,42 @@ valida_error_medoo_and_die();
 if ($total_sectores == 0){
 	valida_parametro_and_die("", "Debe existir por lo menos un sector asociado a este tipo de servicio");
 }
-
-$strQuery = "SELECT 
+// Aqui se verifica si es para un servicio integral o no
+if($tipo_servicio == 20){
+	$strQuery = "SELECT 
+		MAX(`PERSONAL_TECNICO_CALIF_SECTOR`.`FECHA_INICIO`),
+		`SECTORES`.`ID`,
+		`SECTORES`.`NOMBRE` AS `NOMBRE_SECTOR`,
+		`SECTORES`.`ANHIO` AS `ANHIO`,
+		`PERSONAL_TECNICO_CALIF_SECTOR`.`SECTOR_NACE`,
+		`PERSONAL_TECNICO_CALIF_SECTOR`.`ALCANCE`,
+		`PERSONAL_TECNICO_CALIFICACIONES`.`ID_PERSONAL_TECNICO`,
+		`PERSONAL_TECNICO_CALIFICACIONES`.`REGISTRO`,
+		`PERSONAL_TECNICO_CALIFICACIONES`.`ID` AS `PT_CALIF_ID`,
+		`PERSONAL_TECNICO_CALIFICACIONES`.`ID_TIPO_SERVICIO`,
+		`PERSONAL_TECNICO_CALIFICACIONES`.`ID_ROL`,
+		`PERSONAL_TECNICO`.`INICIALES`,
+		`PERSONAL_TECNICO`.`NOMBRE`,
+		`PERSONAL_TECNICO`.`APELLIDO_PATERNO`,
+		`PERSONAL_TECNICO`.`APELLIDO_MATERNO`,
+		`PERSONAL_TECNICO`.`EMAIL`,
+		`PERSONAL_TECNICO`.`STATUS`,
+		`PERSONAL_TECNICO`.`IMAGEN_BASE64` ,
+		`TIPOS_SERVICIO`.`ID_REFERENCIA`
+		FROM `PERSONAL_TECNICO_CALIF_SECTOR` 
+		INNER JOIN `I_SG_SECTORES` ON `I_SG_SECTORES`.`ID_SECTOR` = `PERSONAL_TECNICO_CALIF_SECTOR`.`ID_SECTOR` 
+		INNER JOIN `SECTORES` ON `SECTORES`.`ID_SECTOR` = `I_SG_SECTORES`.`ID_SECTOR` 
+		INNER JOIN `PERSONAL_TECNICO_CALIFICACIONES` ON `PERSONAL_TECNICO_CALIFICACIONES`.`ID`= `PERSONAL_TECNICO_CALIF_SECTOR`.`ID_PERSONAL_TECNICO_CALIFICACION` 
+		INNER JOIN `PERSONAL_TECNICO` ON `PERSONAL_TECNICO`.`ID` = `PERSONAL_TECNICO_CALIFICACIONES`.`ID_PERSONAL_TECNICO` 
+		INNER JOIN `SERVICIO_CLIENTE_ETAPA` ON `SERVICIO_CLIENTE_ETAPA`.`ID` = `I_SG_SECTORES`.`ID_SERVICIO_CLIENTE_ETAPA` AND `PERSONAL_TECNICO_CALIFICACIONES`.`ID_TIPO_SERVICIO` = 1 OR `PERSONAL_TECNICO_CALIFICACIONES`.`ID_TIPO_SERVICIO` = 2 OR `PERSONAL_TECNICO_CALIFICACIONES`.`ID_TIPO_SERVICIO` = 12
+		INNER JOIN `TIPOS_SERVICIO` ON `TIPOS_SERVICIO`.`ID` = `SERVICIO_CLIENTE_ETAPA`.`ID_TIPO_SERVICIO` 
+		
+		WHERE `I_SG_SECTORES`.`ID_SERVICIO_CLIENTE_ETAPA`= " . $database->quote($id_sce) . " 
+		GROUP BY `PERSONAL_TECNICO_CALIFICACIONES`.`ID_PERSONAL_TECNICO`,`PERSONAL_TECNICO_CALIFICACIONES`.`ID_TIPO_SERVICIO`,`PERSONAL_TECNICO_CALIFICACIONES`.`ID` 
+		ORDER BY `PERSONAL_TECNICO_CALIFICACIONES`.`ID_PERSONAL_TECNICO`";
+}
+else{
+	$strQuery = "SELECT 
 		MAX(`PERSONAL_TECNICO_CALIF_SECTOR`.`FECHA_INICIO`),
 		`SECTORES`.`ID`,
 		`SECTORES`.`NOMBRE` AS `NOMBRE_SECTOR`,
@@ -81,6 +117,8 @@ $strQuery = "SELECT
 		WHERE `I_SG_SECTORES`.`ID_SERVICIO_CLIENTE_ETAPA`= " . $database->quote($id_sce) . "
 		GROUP BY `PERSONAL_TECNICO_CALIFICACIONES`.`ID_PERSONAL_TECNICO`,`PERSONAL_TECNICO_CALIFICACIONES`.`ID_TIPO_SERVICIO`,`PERSONAL_TECNICO_CALIFICACIONES`.`ID` 
 		ORDER BY `PERSONAL_TECNICO_CALIFICACIONES`.`ID_PERSONAL_TECNICO`";
+}
+
 
 // ==============================================================
 // *		Recuperar auditores CON calificación				*
@@ -200,17 +238,27 @@ for ($i=0; $i < count($all_pt) ; $i++) {
 // *		Recuperar auditores SIN calificación				*
 // ==============================================================
 
-$tipo_servicio = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_TIPO_SERVICIO", ["ID"=>$id_sce]);
+
 $norma = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_NORMA", ["ID"=>$id_sce]);
 valida_error_medoo_and_die();
 
-if (count($array_pt_califs) > 0) { // Si hay auditores con calificacion se hace un query con todos menos ellos
-	$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs, "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
-
+if($tipo_servicio == 20){
+	if (count($array_pt_califs) > 0) { // Si hay auditores con calificacion se hace un query con todos menos ellos
+		$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs,"OR"=>[ "ID_TIPO_SERVICIO"=>1,"ID_TIPO_SERVICIO"=>2,"ID_TIPO_SERVICIO"=>12]]]);
 	}
-else{
-	$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>[ "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
+	else{
+		$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["OR"=>[ "ID_TIPO_SERVICIO"=>1,"ID_TIPO_SERVICIO"=>2,"ID_TIPO_SERVICIO"=>12]]);
+	}
 }
+else{
+	if (count($array_pt_califs) > 0) { // Si hay auditores con calificacion se hace un query con todos menos ellos
+		$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs, "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
+	}
+	else{
+		$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>[ "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
+	}
+}
+
 
 valida_error_medoo_and_die();
 for ($i=0; $i < count($otras_califs); $i++) { 
