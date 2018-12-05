@@ -133,7 +133,7 @@ valida_error_medoo_and_die();
 
 $cotizacion[0]["SERVICIO"] = $servicio;
 $cotizacion[0]["TIPOS_SERVICIO"] = $tipos_servicio;
-$cotizacion[0]["NORMAS"] = $normas;
+//$cotizacion[0]["NORMAS"] = $normas;
 $cotizacion[0]["ESTADO"] = $estado;
 $cotizacion[0]["COTIZACION_TRAMITES"] = $tramites;
 $cotizacion[0]["TARIFA_COMPLETA"] = $tarifa;
@@ -289,6 +289,7 @@ foreach ($tramites as $key => $tramite_item) {
 	$total_dias_cotizacion += $total_dias_auditoria;
 	$total_cotizacion += $cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"];
 }
+$cotizacion[0]["NORMAS"] = $normas;
 $cotizacion[0]["TOTAL_DIAS_COTIZACION"] = $total_dias_cotizacion;
 $cotizacion[0]["TOTAL_COTIZACION"] = $total_cotizacion;
 $cotizacion[0]["TOTAL_COTIZACION_DES"] = $total_cotizacion * (1-($cotizacion[0]["DESCUENTO"]/100));

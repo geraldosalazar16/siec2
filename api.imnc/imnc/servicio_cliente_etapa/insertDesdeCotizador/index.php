@@ -109,7 +109,7 @@ for ($i=0; $i < count($NORMAS); $i++) {
 //Insertar en SERVICIO_CLIENTE_ETAPA_HISTÓRICO
 if($id_servicio_cliente_etapa	!=	0){
 	$id1=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [ 
-			"ID_SERVICIO_CONTRATADO" => $id, 
+			"ID_SERVICIO_CONTRATADO" => $id_servicio_cliente_etapa, 
 			"MODIFICACION" => "NUEVO SERVICIO", 
 			"ESTADO_ANTERIOR"=>	"",
 			"ESTADO_ACTUAL"=>	"",
@@ -171,20 +171,112 @@ if($id_servicio_cliente_etapa	!=	0){
 	}
 	//Información adicional
 	if($ID_SERVICIO == 1){//CSGC
-		//total_empleados	
-		$id_sitio = $database->insert("I_TIPOS_SERVICIOS", [ 
-			"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
-			"ID_META_SCE" => 1,  
-			"VALOR" => $cant_empleados_total
-		]); 
-		valida_error_medoo_and_die();
-		//total_empleados_certificación
-		$id_sitio = $database->insert("I_TIPOS_SERVICIOS", [ 
-			"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
-			"ID_META_SCE" => 3,  
-			"VALOR" => $cant_empleados_cert_total
-		]); 
-		valida_error_medoo_and_die();
+		if($ID_TIPO_SERVICIO ==1){
+			//total_empleados	
+			$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+				"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+				"ID_META_SCE" => 1,  
+				"VALOR" => $cant_empleados_total
+			]); 
+			valida_error_medoo_and_die();
+			//total_empleados_certificación
+			$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+				"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+				"ID_META_SCE" => 3,  
+				"VALOR" => $cant_empleados_cert_total
+			]); 
+			valida_error_medoo_and_die();
+		}
+		if($ID_TIPO_SERVICIO ==2){
+			//total_empleados	
+			$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+				"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+				"ID_META_SCE" => 85,  
+				"VALOR" => $cant_empleados_total
+			]); 
+			valida_error_medoo_and_die();
+			//total_empleados_certificación
+			$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+				"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+				"ID_META_SCE" => 86,  
+				"VALOR" => $cant_empleados_cert_total
+			]); 
+			valida_error_medoo_and_die();
+		}
+		if($ID_TIPO_SERVICIO == 12){
+			//total_empleados	
+			$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+				"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+				"ID_META_SCE" => 88,  
+				"VALOR" => $cant_empleados_total
+			]); 
+			valida_error_medoo_and_die();
+			//total_empleados_certificación
+			$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+				"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+				"ID_META_SCE" => 89,  
+				"VALOR" => $cant_empleados_cert_total
+			]); 
+			valida_error_medoo_and_die();
+		}
+		if($ID_TIPO_SERVICIO == 20){
+			//Busco los tipos de servicio que tiene cargada la auditoria integral
+			$integral_ts = $database->query("SELECT `ID_TIPO_SERVICIO` FROM `NORMAS_TIPOSERVICIO` WHERE `ID_NORMA` IN (SELECT DISTINCT `ID_NORMA` FROM `SCE_NORMAS` WHERE `ID_SCE`=  ".$id_servicio_cliente_etapa.") AND `ID_TIPO_SERVICIO` !=20")->fetchAll(PDO::FETCH_ASSOC);
+			valida_error_medoo_and_die();
+			for($i=0;$i<count($integral_ts);$i++){
+				if($integral_ts[$i]["ID_TIPO_SERVICIO"] ==1){
+				//total_empleados	
+					$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_META_SCE" => 1,  
+						"VALOR" => $cant_empleados_total
+						]); 
+					valida_error_medoo_and_die();
+				//total_empleados_certificación
+					$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_META_SCE" => 3,  
+						"VALOR" => $cant_empleados_cert_total
+						]); 
+					valida_error_medoo_and_die();
+				}
+				if($integral_ts[$i]["ID_TIPO_SERVICIO"] ==2){
+					//total_empleados	
+					$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_META_SCE" => 85,  
+						"VALOR" => $cant_empleados_total
+						]); 
+					valida_error_medoo_and_die();
+					//total_empleados_certificación
+					$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_META_SCE" => 86,  
+						"VALOR" => $cant_empleados_cert_total
+						]); 
+					valida_error_medoo_and_die();
+				}
+				if($integral_ts[$i]["ID_TIPO_SERVICIO"] ==12){
+					//total_empleados	
+					$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_META_SCE" => 88,  
+						"VALOR" => $cant_empleados_total
+					]); 
+					valida_error_medoo_and_die();
+					//total_empleados_certificación
+					$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_META_SCE" => 89,  
+						"VALOR" => $cant_empleados_cert_total
+					]); 
+					valida_error_medoo_and_die();
+				}
+				
+			}
+			
+		}
+		
 	}
 	if($ID_SERVICIO == 2){ //EC AUN SIN INCLUIR EN EL COTIZADOR
 
@@ -242,7 +334,18 @@ if($id_servicio_cliente_etapa	!=	0){
 		//para cada trámite hay que agregar una auditoría en 
 		$dias_auditoria = $tramite->DIAS_AUDITORIA;
 		$tipo_auditoria = $tramite->ID_ETAPA_PROCESO;
-		
+		// Si el tipo servicio es Integral busco los dias para cada norma
+		if($ID_TIPO_SERVICIO == 20){
+			foreach($cotizacion[0]->NORMAS as $normasint){
+				$id1 = $database->update("SCE_NORMAS", [ 
+					"DIAS_AUDITOR" => $normasint->DIAS,
+					"ID_TIPO_AUDITORIA" => $tipo_auditoria,
+					"CICLO" => 1],[
+				"AND"=>["ID_SCE" => $id_servicio_cliente_etapa,"ID_NORMA" => $normasint->ID_NORMA,"ID_TIPO_AUDITORIA" => 0,"CICLO" => 0]
+				]);
+				valida_error_medoo_and_die();
+			}
+		}
 		//Buscar los sitios
 		$sitios = $database->select("COTIZACION_SITIOS", "*", ["ID_COTIZACION"=>$tramite->ID]);
 		valida_error_medoo_and_die();
