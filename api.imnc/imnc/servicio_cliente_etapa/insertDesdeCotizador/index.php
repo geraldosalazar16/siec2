@@ -337,13 +337,22 @@ if($id_servicio_cliente_etapa	!=	0){
 		// Si el tipo servicio es Integral busco los dias para cada norma
 		if($ID_TIPO_SERVICIO == 20){
 			foreach($cotizacion[0]->NORMAS as $normasint){
+				if($tipo_auditoria == 2){
+					$dia_int_norm = 1;
+				}
+				else{
+					$dia_int_norm = $normasint->DIAS;
+				}
 				$id1 = $database->update("SCE_NORMAS", [ 
-					"DIAS_AUDITOR" => $normasint->DIAS,
+					"DIAS_AUDITOR" => $dia_int_norm,
 					"ID_TIPO_AUDITORIA" => $tipo_auditoria,
 					"CICLO" => 1],[
 				"AND"=>["ID_SCE" => $id_servicio_cliente_etapa,"ID_NORMA" => $normasint->ID_NORMA,"ID_TIPO_AUDITORIA" => 0,"CICLO" => 0]
 				]);
 				valida_error_medoo_and_die();
+			}
+			if($tipo_auditoria == 2){
+				$dias_auditoria = count($cotizacion[0]->NORMAS);
 			}
 		}
 		//Buscar los sitios
