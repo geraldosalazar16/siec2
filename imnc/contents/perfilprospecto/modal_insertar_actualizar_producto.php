@@ -40,8 +40,7 @@
 					<!-- Solo mostrar para CIFA-->
 					<div class="form-group" ng-show="areas == 3">	
 						<label class="control-label">Tipo de persona</label>
-						<select ng-model="tipo_persona" style="margin-top:10px" class="form-control"
-							ng-options="curso.id as curso.nombre for curso in Cursos"> 
+						<select ng-model="tipo_persona" style="margin-top:10px" class="form-control"> 
 							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
 							<option value="fisica" >Física</option>
 							<option value="moral" >Moral</option>
@@ -51,15 +50,16 @@
 					<div class="form-group" ng-show="areas == 3">	
 						<label class="control-label">Modalidad del curso</label>
 						<select ng-model="modalidades" style="margin-top:10px" class="form-control"> 
-							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
-							<option value="programado" >Programado</option>
-							<option value="insitu" >In Company</option>
+							<option value="" ng-selected="tipo_persona == 'moral'" disabled>Seleccione una opción</option>
+							<option value="programado" ng-selected="tipo_persona == 'fisica'">Programado</option>
+							<option value="insitu" ng-disabled="tipo_persona == 'fisica'">In Company</option>
 						</select>
 		            </div>
 					<!-- Solo mostrar para CIFA-->
 					<div class="form-group" ng-show="areas == 3 && modalidades == 'programado'">	
 						<label class="control-label">Cursos disponibles</label>
-						<select ng-model="cursos_programados" style="margin-top:10px" class="form-control"> 
+						<select ng-model="cursos_programados" style="margin-top:10px" class="form-control"
+						ng-options="curso.id as curso.nombre for curso in Cursos"> 
 							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
 						</select>
 		            </div>
