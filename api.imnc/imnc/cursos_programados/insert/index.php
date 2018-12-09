@@ -19,8 +19,7 @@ function valida_error_medoo_and_die(){
 	if ($database->error()[2]) { 
 		$respuesta["resultado"]="error"; 
 		$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
-		print_r(json_encode($respuesta)); 
-		$mailerror->send("CURSO", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
+		print_r(json_encode($respuesta));
 		die(); 
 	} 
 } 
@@ -29,21 +28,24 @@ $respuesta=array();
 $json = file_get_contents("php://input"); 
 $objeto = json_decode($json); 
 
-$NOMBRE = $objeto->NOMBRE; 
-valida_parametro_and_die($NOMBRE, "Es necesario introducir un nombre de curso");
+$ID_CURSO = $objeto->ID_CURSO;
+valida_parametro_and_die($ID_CURSO, "Es necesario introducir un nombre de curso");
 
-$ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO; 
-valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un módulo");
+$FECHAS = $objeto->FECHAS;
+valida_parametro_and_die($FECHAS, "Es necesario seleccionar las fechas");
 
-$ID_NORMA	= $objeto->ID_NORMA; 
-valida_parametro_and_die($ID_NORMA, "Es necesario seleccionar una norma");
+$ID_INSTRUCTOR	= $objeto->ID_INSTRUCTOR;
+valida_parametro_and_die($ID_INSTRUCTOR, "Es necesario seleccionar un instructor");
+
+$PERSONAS_MINIMO	= $objeto->PERSONAS_MINIMO;
+valida_parametro_and_die($PERSONAS_MINIMO, "Es introducir un número mínimo de personas");
 
 
-$id_sce = $database->insert("CURSOS", [ 
-	"NOMBRE" => $NOMBRE, 
-	"ID_TIPO_SERVICIO"=>	$ID_TIPO_SERVICIO,
-	"ID_NORMA" => $ID_NORMA 
-//	
+$id_sce = $database->insert("CURSOS_PROGRAMADOS", [
+	"ID_CURSO" => $ID_CURSO,
+	"FECHAS"=>	$FECHAS,
+	"ID_INSTRUCTOR" => $ID_INSTRUCTOR,
+	"PERSONAS_MINIMO" => $PERSONAS_MINIMO
 ]); 
 valida_error_medoo_and_die(); 
 

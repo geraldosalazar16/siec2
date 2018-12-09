@@ -20,12 +20,12 @@ function valida_error_medoo_and_die(){
 		$respuesta['resultado']="error";
 		$respuesta['mensaje']="Error al ejecutar script: " . $database->error()[2];
 		print_r(json_encode($respuesta));
-		$mailerror->send("CURSO", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx");
 		die();
 	}
 }
 
 $respuesta = array();
+
 $cursos = $database->select("CURSOS", "*" , ["ORDER"=>"NOMBRE"]);
 valida_error_medoo_and_die();
 

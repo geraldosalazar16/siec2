@@ -75,13 +75,15 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="control-label col-md-4 col-sm-4 col-xs-12" for="tipoServicio">Tipo de servicio  <span class="required">*</span>
+              <label class="control-label col-md-4 col-sm-4 col-xs-12" for="tipoServicio">Módulo  <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12" >
               
               <select ng-model="formData.tipoServicio" ng-options="tipo.ID as tipo.NOMBRE for tipo in tipo_Servicio"
                                 class="form-control" id="tipoServicio" name="tipoServicio" ng-change='cambio_tipoServicio(formData.tipoServicio)' required
-                                ng-class="{ error: exampleForm.tipoServicio.$error.required && !exampleForm.$pristine}"></select>
+                                ng-class="{ error: exampleForm.tipoServicio.$error.required && !exampleForm.$pristine}">
+                  <option value="">---Seleccione un Módulo---</option>
+              </select>
 				            <span id="tipoServicioerror" class="text-danger"></span>
               </div>
 			  
@@ -93,7 +95,9 @@
               <select ng-model="formData.selectNorma" ng-options="norma.ID as norma.ID  for norma in optionsList"
                                       class="form-control" id="selectNorma" name="selectNorma" ng-change='cambio_Norma(formData.selectNorma)' required
                                       ng-class="{ error: exampleForm.selectNorma.$error.required && !exampleForm.$pristine}"
-                                      ng-disabled="!formData.tipoServicio"></select>
+                                      ng-disabled="!formData.tipoServicio">
+                  <option value="">---Seleccione una Norma---</option>
+              </select>
                       <span id="selectedListerror" class="text-danger"></span>
               </div>
       

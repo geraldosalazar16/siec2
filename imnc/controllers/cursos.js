@@ -131,12 +131,14 @@ $scope.valida_agregar = function(op){
   }else{
     $("#tipoServicioerror").text("");
   }
-  
+
+
   if(typeof $scope.formData.selectNorma !== "undefined")
   {
     $("#selectedListerror").text("");
    if( $scope.formData.selectNorma.length == 0){
     $scope.respuesta =  0;
+    $("#selectedListerror").text("No debe estar vacio");
     
   }else{
     $("#selectedListerror").text("");
@@ -225,7 +227,7 @@ $scope.guardarCurso = function(){
 $scope.funcionTipoServicio = function(){
 	$.ajax({
 		type:'GET',
-		url:global_apiserver+"/tipos_servicio/getAll/",
+		url:global_apiserver+"/tipos_servicio/getByService/?id=3",
 		success:function(data){
 			$scope.$apply(function(){
 			
