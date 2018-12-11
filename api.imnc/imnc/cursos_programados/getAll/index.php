@@ -41,15 +41,15 @@ for ($i=0; $i < count($eventos) ; $i++) {
         $ff = DateTime::createFromFormat('d/m/Y', $array[1]);
         $intervalo = date_diff($fi,$ff);
         $out = $intervalo->format("%d");
-        $eventos[$i]["DIAS"] = $out;
+        $eventos[$i]["DIAS"] = $out+1;
 
 		$curso = $database->get("CURSOS", "NOMBRE", ["ID_CURSO"=>$eventos[$i]["ID_CURSO"]]);
 		valida_error_medoo_and_die();
     $eventos[$i]["NOMBRE_CURSO"] = $curso;
 
-	$auditor= $database->get("PERSONAL_TECNICO", "NOMBRE", ["ID"=>$eventos[$i]["ID_INSTRUCTOR"]]);
+	$auditor= $database->get("PERSONAL_TECNICO", ["NOMBRE","APELLIDO_PATERNO","APELLIDO_MATERNO"], ["ID"=>$eventos[$i]["ID_INSTRUCTOR"]]);
 	valida_error_medoo_and_die();
-    $eventos[$i]["NOMBRE_AUDITOR"] = $auditor;
+    $eventos[$i]["NOMBRE_AUDITOR"] = $auditor["NOMBRE"]." ".$auditor["APELLIDO_PATERNO"]." ".$auditor["APELLIDO_MATERNO"];
 }
 
 print_r(json_encode($eventos));

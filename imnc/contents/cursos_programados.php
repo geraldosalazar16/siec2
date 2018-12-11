@@ -18,7 +18,7 @@
                     if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                         echo '<p>';
                         echo '  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-click="openModalInsertarModificar('."'insertar'".')"> ';
-                        echo '    <i class="fa fa-plus"> </i> Agregar Evento ';
+                        echo '    <i class="fa fa-plus"> </i> Agregar Curso ';
                         echo '  </button>';
                         echo '</p>';
                     }
@@ -64,7 +64,7 @@
 
                 </div>
                     <div class="modal-footer">
-
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="button" class="btn btn-default" ng-click="eliminaEvento()" id="btnEliminar">Eliminar</button>
                         <button type="button" class="btn btn-primary" ng-click="openModalInsertarModificar('editar')" id="btnEditar">&nbsp;&nbsp;&nbsp;&nbsp;Editar&nbsp;&nbsp;&nbsp;&nbsp;</button>
 

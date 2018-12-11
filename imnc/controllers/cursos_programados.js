@@ -12,6 +12,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
     $scope.formData = {};
     $scope.global_calendar;
     $scope.id_evento_select = '';
+    $scope.date_evento_select = '';
 
 
 // ===================================================================
@@ -71,7 +72,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
             if (response.DIAS == 0)
                 dias = ' 1 día ';
             else
-                dias = ' ' + response.DIAS + ' días ';
+                dias = ' ' + response.DIAS+1 + ' días ';
             $scope.txtDuracion = dias;
             $scope.txtCurso = response.NOMBRE_CURSO;
             $scope.txtInstructor = response.NOMBRE_AUDITOR.NOMBRE + " " + response.NOMBRE_AUDITOR.APELLIDO_PATERNO + " " + response.NOMBRE_AUDITOR.APELLIDO_MATERNO;
@@ -116,15 +117,17 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
 $scope.openModalInsertarModificar = function(accion){
 
 
-        $scope.modal_titulo = "Agregar Evento";
+        $scope.modal_titulo = "Agregar Curso";
 		$scope.accion = accion;
 		clear_modal_insertar_actualizar()
         $scope.cargarCursos();
         $scope.cargarInstructores();
+        $scope.formData.fecha_inicio = $scope.date_evento_select;
+
         if(accion == 'editar')
         {
 
-            $scope.modal_titulo = "Modificando Evento";
+            $scope.modal_titulo = "Modificando Curso";
             $.getJSON( global_apiserver + "/cursos_programados/getById/?id="+$scope.id_evento_select, function( response ) {
                 $scope.formData.selectCurso = response.ID_CURSO;
                 $scope.formData.instructor = response.ID_INSTRUCTOR;
@@ -339,7 +342,8 @@ function insertar(formData) {
         if (respuesta.resultado == "ok") {
             $("#modalMostrar").modal("hide");
             notify("Éxito", "Se ha insertado un nuevo evento", "success");
-            $scope.onAgenda();
+            $scope.onAgenda(formData.fecha_inicio);
+            irFechaCalendario(formData.fecha_inicio);
             //document.location = "./?pagina=auditores";
         }
         else{
@@ -347,6 +351,7 @@ function insertar(formData) {
         }
 
     });
+    $scope.date_evento_select = "";
 }
 
 // ===========================================================================
@@ -367,10 +372,7 @@ function insertar(formData) {
                 //$("#modalMostrar").modal("hide");
                 $scope.actualizaDatos(2);
                 notify("Éxito", "Se ha modificado el evento", "success");
-
-
-
-                $scope.onAgenda();
+                $scope.onAgenda(formData.fecha_inicio);
                 //document.location = "./?pagina=auditores";
             }
             else{
@@ -402,40 +404,56 @@ var dateFinal =$('#fecha_fin').datepicker({
         $scope.formData.fecha_fin = dateText;
     }
 }).css("display", "inline-block");
+    if($scope.date_evento_select!="")
+    {
+        dateInicial.datepicker("option", "minDate", $scope.date_evento_select)
+        dateFinal.datepicker("option", "minDate", $scope.date_evento_select)
+    }
 }
 
 // ===========================================================================
 // ***** 	              FUNCION PARA CARGAR LA AGENDA			         *****
 // ===========================================================================
-$scope.onAgenda = function() {
+$scope.onAgenda = function(fecha) {
+    var date = new Date();
+    if(typeof fecha !== "undefined" && fecha.length != 0)
+    {
+        var partes = fecha.split("/");
+        date = new Date(partes[2],parseInt(partes[1])-1,partes[0]);
+    }
     var eventos = [];
     $(".loading").show();
     //Codigo que carga los cursos programador
     $.post(global_apiserver + "/cursos_programados/getAll/", function(response){
         response = JSON.parse(response);
-
+        var i = 7;
         $.each(response, function( indice, objEvento ) {
 
             var array = objEvento.FECHA_INICIO.split('/');
             var anhio_ini = array[2];
             var mes_ini = array[1]-1; //En js los meses comienzan en 0
             var dia_ini =array[0];
-            var dias = "";
-            if(objEvento.DIAS==0)
-                dias = ' 1 día - ';
-            else
-                dias = ' '+objEvento.DIAS+' días - ';
+
+            var array = objEvento.FECHA_FIN.split('/');
+            var anhio_fin = array[2];
+            var mes_fin = array[1]-1; //En js los meses comienzan en 0
+            var dia_fin =array[0];
 
                 eventos.push(
                     {
-                        title: dias + objEvento.NOMBRE_CURSO + " Por: " + objEvento.NOMBRE_AUDITOR ,
+                        title: ' '+objEvento.DIAS+' días - ' + objEvento.NOMBRE_CURSO + " - Por: " + objEvento.NOMBRE_AUDITOR ,
                         start: new Date(anhio_ini, mes_ini, dia_ini, 07, 0),
-                        //end: new Date(anhio_fin, mes_fin, dia_fin,),
+                        end: new Date(anhio_fin, mes_fin, dia_fin, 18, 30),
                         allDay: false,
                         id: objEvento.ID,
+                        color: "#"+i+"0287E",
 
                     }
                 )
+            if(i==0)
+                i=7;
+                else
+                i--;
         });
 
         if($scope.global_calendar !== undefined)
@@ -444,14 +462,6 @@ $scope.onAgenda = function() {
         }
 
         $scope.global_calendar = $('#calendar').fullCalendar({
-            customButtons: {
-                newEvent: {
-                    text: '+ Nuevo Evento',
-                    click: function() {
-
-                    }
-                }
-            },
             header: {
                 left: 'prev,next today',
                 center: 'title',
@@ -460,9 +470,11 @@ $scope.onAgenda = function() {
             minTime:"07:00:00",
             selectable: false,
             editable: false,
+            //eventBackgroundColor:"#50287E",
             eventBackgroundColor:"#50287E",
             locale: 'es',
-            //defaultDate:eventos[eventos.length-1].start,
+            navLinks: true,
+            defaultDate:date,
             events: eventos,
             eventClick: function (calEvent, jsEvent, view) {
                 if(calEvent.id)
@@ -472,13 +484,35 @@ $scope.onAgenda = function() {
                 }
 
             }
-        });
-        $scope.global_calendar.fullCalendar( 'today' );
+            ,
+            dayClick: function(date, jsEvent, view) {
 
-        //$(".select2_single").select2({});
+                if(esDespuesHoy(date.format("DD/MM/YYYY")))
+                {
+                    $scope.date_evento_select = date.format("DD/MM/YYYY");
+                    $(this).css('background-color', '#F1FFFF');
+                    $scope.openModalInsertarModificar("insertar");
+                }
+
+
+            }
+
+        });
+
         $(".loading").hide();
 
     });
+}
+
+// ================================================================================
+// *****                  Funcion comparar fecha                  *****
+// ================================================================================
+function esDespuesHoy(fecha) {
+
+    var hoy = new Date();
+    var partes = fecha.split("/");
+    var select = new Date(partes[2],parseInt(partes[1])-1,partes[0]);
+    if(hoy<=select){return true;}else {return false;}
 }
 // ================================================================================
 // *****                  Funcion Mostrar/Ocultar elementos                   *****
@@ -494,7 +528,9 @@ function mytoggle(id)
 
 $(document).ready(function () {
 $scope.onAgenda();
-
+   /* $("button.btn-default:contains('Cerrar') ,#btnCerrar, .close").click(function(){
+        $scope.global_calendar.fullCalendar('unselect');
+    })*/
 });
 }]);
 
