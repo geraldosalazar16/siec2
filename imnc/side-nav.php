@@ -3,7 +3,7 @@
 $modulo_permisos = $_SESSION["permisos"];
 ?>
 <div class="col-md-3 left_col">
-        <div class="left_col scroll-view">
+        <div class="left_col">
 
           <div class="navbar nav_title" style="border: 0;">
             <a href="." class="site_title"><img src="./diff/<?php echo $global_diffname; ?>/logo.png" style="width: 155px; margin-left: 20px;"></a>
@@ -57,6 +57,8 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
 		   echo '     <li><a href="./?pagina=documentos">Documentos</a>';
            echo '     </li>';
+           echo '     <li><a href="./?pagina=cursos">Cursos</a>';
+           echo '     </li>'; 
         }
         if ($modulo_permisos["CLIENTES"]["catalogos"] == 1) {
            echo '     <li><a href="./?pagina=entidad_tipo">' . $str_tipo_entidad . '</a>';
@@ -65,21 +67,21 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
         }
         if ($modulo_permisos["CRM"]["catalogos"] == 1) {
-		       echo '     <li><a href="./?pagina=catalogos&catalogo=prospecto_origen">Prospecto origen</a>';
+		   echo '     <li><a href="./?pagina=catalogos&catalogo=prospecto_origen">Prospecto origen</a>';
            echo '     </li>';
-		       echo '     <li><a href="./?pagina=catalogos&catalogo=prospecto_propuesta_estado">Prospecto propuesta estado</a>';
+		   echo '     <li><a href="./?pagina=catalogos&catalogo=prospecto_propuesta_estado">Prospecto propuesta estado</a>';
            echo '     </li>';
-		       echo '     <li><a href="./?pagina=catalogos&catalogo=prospecto_tipo_contrato">Prospecto tipo de contrato</a>';
+		   echo '     <li><a href="./?pagina=catalogos&catalogo=prospecto_tipo_contrato">Prospecto tipo de contrato</a>';
            echo '     </li>';
-		       echo '     <li><a href="./?pagina=catalogos&catalogo=prospecto_estatus_seguimiento">Prospecto estatus seguimiento</a>';
+		   echo '     <li><a href="./?pagina=catalogos&catalogo=prospecto_estatus_seguimiento">Prospecto estatus seguimiento</a>';
            echo '     </li>';
-		       echo '     <li><a href="./?pagina=prospecto_porcentaje">Prospecto porcentaje</a>';
+		   echo '     <li><a href="./?pagina=prospecto_porcentaje">Prospecto porcentaje</a>';
            echo '     </li>';
-		       echo '     <li><a href="./?pagina=catalogos&catalogo=prospecto_competencia">Prospecto competencia</a>';
+		   echo '     <li><a href="./?pagina=catalogos&catalogo=prospecto_competencia">Prospecto competencia</a>';
            echo '     </li>';
-		       echo '     <li><a href="./?pagina=tarifa_cotizacion">Tarifas</a>';
+		   echo '     <li><a href="./?pagina=tarifa_cotizacion">Tarifas</a>';
            echo '     </li>';
-		     echo '     <li><a href="./?pagina=tarifa_cotizacion_adicional">Tarifas Adicionales</a>';
+		   echo '     <li><a href="./?pagina=tarifa_cotizacion_adicional">Tarifas Adicionales</a>';
            echo '     </li>';
         } 
         echo '   </ul>';
@@ -132,6 +134,7 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '      <li><a href="./?pagina=servicio_cliente_etapa">Clientes</a></li>';
             echo '      <li><a href="./?pagina=sg_tipos_auditoria">Tipos de ' . strtolower($str_auditoria) . '</a></li>';
             echo '      <li><a href="./?pagina=sg_status_auditoria">Status de ' .  strtolower($str_auditoria) . '</a></li>';
+            echo '      <li><a href="./?pagina=cursos_programados">Cursos Programados</a></li>';
             echo '  </ul>';
             echo '</li>';
           }
@@ -164,8 +167,7 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '  </a>';
             echo '</li>';
         ?>
-		
-			
+
         
       </div>
 

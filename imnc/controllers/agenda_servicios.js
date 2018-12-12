@@ -374,7 +374,7 @@ app.controller('tareas_controller',['$scope','$http',function($scope,$http){
                         $scope.fecha_inicio = dateText;
                     }
                 }).css("display", "inline-block");
-				
+
 				$('#fecha_fin').datepicker({
                     dateFormat: "mm/dd/yy",
                     minDate: "+0D",
@@ -394,7 +394,7 @@ app.controller('tareas_controller',['$scope','$http',function($scope,$http){
                     onSelect : function (dateText, ins) {
                     	$scope.hora_inicio = dateText;
                     }
-                    
+
                 }).css("display", "inline-block");
 
                 $('#hora_fin').timepicker({

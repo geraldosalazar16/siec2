@@ -66,22 +66,22 @@ if (!isset($_SESSION['CREATED'])) {
   
 
   <!-- Custom styling plus plugins -->
-  <link href="./diff/<?php echo $global_diffname; ?>/custom.css" rel="stylesheet">
-  <link href="./diff/<?php echo $global_diffname; ?>/this.css" rel="stylesheet">
+  <link href="./diff/<?php echo $global_diffname; ?>/custom.css" rel="stylesheet"/>
+  <link href="./diff/<?php echo $global_diffname; ?>/this.css" rel="stylesheet"/>
   <link rel="stylesheet" type="text/css" href="css/maps/jquery-jvectormap-2.0.3.css" />
   <link href="css/icheck/flat/green.css" rel="stylesheet" />
   <link href="css/floatexamples.css" rel="stylesheet" type="text/css" />
 
-  <link href="css/uploadfile.css" rel="stylesheet">
-  <link href="css/calendar/fullcalendar.css" rel="stylesheet">
-  <link href="css/calendar/fullcalendar.print.css" rel="stylesheet" media="print">
+  <link href="css/uploadfile.css" rel="stylesheet"/>
+  <link href="css/calendar/fullcalendar.css" rel="stylesheet"/>
+  <link href="css/calendar/fullcalendar.print.css" rel="stylesheet" media="print"/>
 
    <!-- select2 -->
-  <link href="css/select/select2.min.css" rel="stylesheet">
+  <link href="css/select/select2.min.css" rel="stylesheet"/>
   <!-- multiselect -->
-  <link href="css/multiselect/multiple-select.min.css" rel="stylesheet">	
+  <link href="css/multiselect/multiple-select.min.css" rel="stylesheet"/>
 <!-- datepicker -->
-  <link href="css/datepicker/angular-datepicker.css" rel="stylesheet">		
+  <link href="css/datepicker/angular-datepicker.css" rel="stylesheet"/>
   <link href="css/common.css" rel="stylesheet" type="text/css" />
   
   <script src="js/angular.min.js"></script>
@@ -100,7 +100,7 @@ if (!isset($_SESSION['CREATED'])) {
   <script type="text/javascript" src="js/MultiDatesPicker/lang-css.js"></script>
  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.1.0/jquery-confirm.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.1.0/jquery-confirm.min.js"></script>-->
-  <link rel="stylesheet" href="css/jquery-confirm.min.css">
+  <link rel="stylesheet" href="css/jquery-confirm.min.css"/>
   <script src="js/jquery-confirm.min.js"></script>
   <script src="js/modalStatic.js"></script>
   
