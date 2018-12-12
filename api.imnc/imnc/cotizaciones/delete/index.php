@@ -57,6 +57,13 @@ $data = $database->delete("COTIZACION_NORMAS",[
     ]
 ]); 
 valida_error_medoo_and_die();
+//Borrar de COTIZACION_DETALLES
+$data = $database->delete("COTIZACION_DETALLES",[
+    "AND"=>[
+        "ID_COTIZACION"=>$ID
+    ]
+]); 
+valida_error_medoo_and_die();
 
 $respuesta["resultado"]="ok";
 print_r(json_encode($respuesta)); 

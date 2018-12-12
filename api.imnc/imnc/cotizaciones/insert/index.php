@@ -61,6 +61,7 @@ valida_parametro_and_die($FOLIO_INICIALES,"Falta FOLIO INICIALES");
 $TARIFA = $objeto->TARIFA;
 valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
 $DESCUENTO = $objeto->DESCUENTO;
+$AUMENTO = $objeto->AUMENTO;
 $REFERENCIA = $objeto->REFERENCIA;
 if(!$REFERENCIA){
 	$REFERENCIA = "";
@@ -82,11 +83,25 @@ if($ID_TIPO_SERVICIO == 20){
 		$COMBINADA = 0;
 	}
 }
-
+$ACTIVIDAD_ECONOMICA = $objeto->ACTIVIDAD_ECONOMICA;
+//SOLO ES OBLIGATORIO PARA INTEGRAL
+if($ID_TIPO_SERVICIO == 16){
+	valida_parametro_and_die($ACTIVIDAD_ECONOMICA,"Falta la Actividad Economica");
+} else {
+	if(!$ACTIVIDAD_ECONOMICA){
+		$ACTIVIDAD_ECONOMICA = 0;
+	}
+}
 
 if ($DESCUENTO != "" && ($DESCUENTO < 0 || $DESCUENTO > 100)) {
 	$respuesta["resultado"] = "error";
 	$respuesta["mensaje"] = "El Descuento no puede ser menor al 0% ni mayor al 100%";
+	print_r(json_encode($respuesta));
+	die();
+}
+if ($AUMENTO != "" && ($AUMENTO < 0 || $AUMENTO > 100)) {
+	$respuesta["resultado"] = "error";
+	$respuesta["mensaje"] = "El Aumento no puede ser menor al 0% ni mayor al 100%";
 	print_r(json_encode($respuesta));
 	die();
 }
@@ -136,6 +151,7 @@ $id_cotizacion = $database->insert("COTIZACIONES", [
 	"FOLIO_YEAR" => $FOLIO_YEAR,
 	"TARIFA" => $TARIFA,
 	"DESCUENTO" => $DESCUENTO,
+	"AUMENTO" => $AUMENTO,
 	"REFERENCIA" => $REFERENCIA,
 	//"SG_INTEGRAL" => $SG_INTEGRAL,
 	"BANDERA" => $BANDERA,
@@ -169,6 +185,20 @@ if($id_cotizacion && $id_cotizacion !== 0 && $ID_PRODUCTO){
 	);
 	valida_error_medoo_and_die();
 }
+//Si la cotizacion tiene algun detalle que deba ser guardado en la tabla cotizacion detalles.
+switch($ID_TIPO_SERVICIO){
+	case 16:
+		$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+			"ID_COTIZACION" => $id_cotizacion,
+			"DETALLE" => "SECTOR",
+			"VALOR"	=>	$ACTIVIDAD_ECONOMICA
+		]);
+		valida_error_medoo_and_die();
+		break;
+	default: 
+		break;
+}
+
 $respuesta["resultado"]="ok";
 $respuesta["id"]=$id;
 
