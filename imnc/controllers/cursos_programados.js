@@ -406,8 +406,8 @@ var dateFinal =$('#fecha_fin').datepicker({
 }).css("display", "inline-block");
     if($scope.date_evento_select!="")
     {
-        dateInicial.datepicker("option", "minDate", $scope.date_evento_select)
-        dateFinal.datepicker("option", "minDate", $scope.date_evento_select)
+        dateInicial.datepicker("option", "minDate", $scope.date_evento_select);
+        dateFinal.datepicker("option", "minDate", $scope.date_evento_select);
     }
 }
 

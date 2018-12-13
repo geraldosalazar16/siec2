@@ -1,11 +1,8 @@
 <?php 
-include  '../../common/conn-apiserver.php'; 
 
+include  '../../common/conn-apiserver.php'; 
 include  '../../common/conn-medoo.php'; 
 include  '../../common/conn-sendgrid.php'; 
-
-
-
 
 function valida_parametro_and_die($parametro, $mensaje_error){
 	$parametro = "".$parametro;
@@ -27,13 +24,15 @@ function valida_error_medoo_and_die(){
 	}
 }
 
-$respuesta=array();
+$id = $_REQUEST["id"];
 
 
-$personal_tecnico_calificaciones = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*");
+$cursos = $database->select("CURSOS","*",["ID_TIPO_SERVICIO"=>$id,"ORDER"=>"NOMBRE"]);
 valida_error_medoo_and_die();
 
-print_r(json_encode($personal_tecnico_calificaciones));
+
+print_r(json_encode($cursos));
+//print_r(json_encode($cursos));
 
 
 //-------- FIN --------------

@@ -4,8 +4,11 @@
 */
 
 app.controller('auditor_perfil_controller',['$scope','$http',function($scope,$http){
-$scope.selectedList=[];
-$scope.optionsList=[];
+//$scope.optionsList=[];
+$scope.flag = "NORMAL";
+
+
+
 /*
 	Funcion para traer las normas que ya estan asociadas a ese servicio
 */
@@ -15,6 +18,7 @@ $scope.funcioncalificacionesnormas = function(id_calificacion){
 		url:global_apiserver+"/normas_calificaciones/getNormabyIdCalificacion/?id="+id_calificacion,
 		success:function(data){
 		data=JSON.parse(data);
+
 			$.each(data, function( index, data1 ) {
 				$scope.$apply(function(){
 				//$scope.selectedList.push(angular.fromJson(data));
@@ -27,12 +31,34 @@ $scope.funcioncalificacionesnormas = function(id_calificacion){
 		}
 	});
 }
+    /*
+     Funcion para traer los tipos de servicios de este servicio
+     */
+    $scope.funcionparalistatiposervicio = function(id_servicio){
+        $.ajax({
+            type:'GET',
+            url:global_apiserver+"/normas_tiposervicio/getNormabyIdTipoServicio/?id="+id_tipo_servicio,
+            success:function(data){
+                //	$scope.$apply(function(){
+                //		$scope.optionsList=angular.fromJson(data);
+                //
+                //	})
+                data=JSON.parse(data);
+                $.each(data, function( index, data1 ) {
+                    $scope.$apply(function(){
+                        //data1['ID']=data1['ID_NORMA'];
+                        $scope.optionsList.push(data1);
+                    })
+                })
+
+            }
+        });
+
+    }
 /*
 	Funcion para traer las normas de este servicio
 */
 $scope.funcionparalistanormas = function(id_tipo_servicio){
-	$scope.selectedList.splice(0);
-	$scope.optionsList.splice(0);
 	$.ajax({
 		type:'GET',
 		url:global_apiserver+"/normas_tiposervicio/getNormabyIdTipoServicio/?id="+id_tipo_servicio,
@@ -84,6 +110,7 @@ $scope.funcionGenerarRegistros = function(id_rol,id_tipo_servicio,id_pt){
   var mod = true;
   onCalendar();
   draw_calendario();
+
   draw_perfil();
   draw_domicilios_y_califs(); 
   listener_btn_nuevo_domicilio();
@@ -93,6 +120,7 @@ $scope.funcionGenerarRegistros = function(id_rol,id_tipo_servicio,id_pt){
   listener_btn_guardar_calif();
   listener_btn_guardar_calif_actualizar();
   listener_btn_guardar_calif_sector();
+  listener_btn_guardar_calif_curso();
   listener_tabs_change();
   listener_chk_sector_nace_na();
   listener_txt_nombre_domicilio();
@@ -100,6 +128,7 @@ $scope.funcionGenerarRegistros = function(id_rol,id_tipo_servicio,id_pt){
   listener_autocomplete_pais_change();
   listener_autocomplete_cp_change();
   listener_autocomplete_colonia_change();
+  onDatepickerClasif();
   if (tab_seleccionada == "domicilios") {
     $('#myTab li a[href="#tab_domicilios"]').tab("show");
   }
@@ -157,8 +186,10 @@ $scope.funcionGenerarRegistros = function(id_rol,id_tipo_servicio,id_pt){
         listener_btn_editar_domicilio();
         listener_btn_editar_calif();
         listener_btn_sectores();
+        listener_btn_cursos();
         listener_btn_nuevo_calif_sector();
-		listener_btn_actualiza_calif();
+        listener_btn_nuevo_calif_curso();
+		//listener_btn_actualiza_calif();
         $(".loading").hide();
      });
   }
@@ -591,10 +622,21 @@ $("#txtColonia").val($("#nuevaColonia").val());
       });
 	  $("#cmbNormaActualizacion").val(seleccionado);
     });
-  } 
+  }
 
-  function fill_cmb_tipo_servicio(seleccionado){
-    $.getJSON( global_apiserver + "/tipos_servicio/getAll/", function( response ) {
+    function fill_cmb_servicio(seleccionado){
+        $.getJSON( global_apiserver + "/servicios/getAll/", function( response ) {
+            $("#cmbServicio").html('<option value="elige" selected disabled>-elige una opción-</option>');
+            $.each(response, function( indice, objTserv ) {
+                $("#cmbServicio").append('<option value="'+objTserv.ID+'">'+objTserv.NOMBRE+'</option>');
+            });
+            $("#cmbServicio").val(seleccionado);
+
+        });
+    }
+
+  function fill_cmb_tipo_servicio(seleccionado,id_servicio){
+    $.getJSON( global_apiserver + "/tipos_servicio/getByService/?id="+id_servicio, function( response ) {
       $("#cmbTipoServicio").html('<option value="elige" selected disabled>-elige una opción-</option>');
       $.each(response, function( indice, objTserv ) {
         $("#cmbTipoServicio").append('<option value="'+objTserv.ID+'">'+objTserv.NOMBRE+'</option>'); 
@@ -622,21 +664,70 @@ $("#txtColonia").val($("#nuevaColonia").val());
     });
   }
 
+    $("#cmbServicio").change(function(){
+        $("#cmbTipoServicio").prop("disabled", false);
+        //fill_cmb_norma("elige",$("#cmbTipoServicio").val());
+        if(parseInt($("#cmbServicio").val())==3)
+        {
+            $("#txtTipoServicio").text("Módulo *");
+            $("#divNormal").hide();
+            $scope.flag = "CIFA";
+        }
+        else{
+            $("#txtTipoServicio").text( "Tipo de servicio *");
+            $("#divNormal").show();
+            $scope.flag = "NORMAL"
+            $scope.$apply(function(){
+                $scope.optionsList = [];
+                $scope.selectedList= [];
+
+            })
+        }
+
+
+        fill_cmb_tipo_servicio("elige",$("#cmbServicio").val());
+    });
+
+    $("#cmbTipoServicio").change(function(){
+        $("#cmbNorma").prop("disabled", false);
+        $scope.$apply(function(){
+            $scope.optionsList = [];
+            $scope.selectedList= [];
+
+        })
+        //fill_cmb_norma("elige",$("#cmbTipoServicio").val());
+        $scope.funcionparalistanormas($("#cmbTipoServicio").val());
+    });
+
+ // llamada click btn editar x funcion listener_btn_editar_calif()
   function fill_modal_insertar_actualizar_calif(id_personal_tecnico_calif){
     $.getJSON( global_apiserver + "/personal_tecnico_calificaciones/getById/?id="+id_personal_tecnico_calif, function( response ) {
-          var fec_ini = response.FECHA_INICIO;
+        var fec_ini = response.FECHA_INICIO;
           fec_ini = fec_ini.substring(6,8)+"/"+fec_ini.substring(4,6)+"/"+fec_ini.substring(0,4);
           var fec_fin = response.FECHA_FIN;
           fec_fin = fec_fin.substring(6,8)+"/"+fec_fin.substring(4,6)+"/"+fec_fin.substring(0,4);
           $("#txtRegistro").val(response.REGISTRO);
           $("#txtFecIniCalif").val(fec_ini);
           $("#txtFecFinCalif").val(fec_fin);
-          fill_cmb_tipo_servicio(response.ID_TIPO_SERVICIO);
+          fill_cmb_servicio(response.ID_SERVICIO);
+
+          fill_cmb_tipo_servicio(response.ID_TIPO_SERVICIO,response.ID_SERVICIO);
 		  //fill_cmb_norma(response.ID_NORMA,response.ID_TIPO_SERVICIO);
 		  $scope.funcionparalistanormas(response.ID_TIPO_SERVICIO);
 		  $scope.funcioncalificacionesnormas(id_personal_tecnico_calif);
           fill_cmb_rol(response.ID_ROL);
 		   $("#cmbTipoServicio").attr("disabled","true");
+		   if(parseInt(response.ID_SERVICIO)==3)
+           {
+               $("#txtTipoServicio").text("Módulo *");
+               $("#divNormal").hide();
+               $scope.flag = "CIFA";
+           }
+           else{
+               $("#txtTipoServicio").text( "Tipo de servicio *");
+               $("#divNormal").show();
+               $scope.flag = "NORMAL"
+           }
        });
   }
 
@@ -721,16 +812,22 @@ $("#txtColonia").val($("#nuevaColonia").val());
   		}
   	});
   }
-  
+
 function clear_modal_insertar_actualizar_calif(){
-	$scope.selectedList.splice(0);
-	$scope.optionsList.splice(0);
+    $scope.$apply(function(){
+        $scope.optionsList = [];
+        $scope.selectedList= [];
+
+    })
+
 	$("#txtRegistro").val("");
 	$("#txtFecIniCalif").val("");
 	$("#txtFecFinCalif").val("");
-	fill_cmb_tipo_servicio("elige");
+    fill_cmb_servicio("elige");
+    $("#cmbNorma").prop("disabled", true);
+    $("#cmbNorma").show();
+    $("#cmbTipoServicio").val("elige");
 	fill_cmb_rol("elige");
-	
 }
 
   function listener_btn_nuevo_calif(){
@@ -738,18 +835,12 @@ function clear_modal_insertar_actualizar_calif(){
       $("#btnGuardarCalif").attr("accion","insertar");
       $("#modalTituloCalif").html("Insertar nueva calificación");
 	  $("#cmbNorma").prop("disabled", true);
-	  $("#cmbTipoServicio").prop("disabled",false);
+	  $("#cmbTipoServicio").prop("disabled",true);
       clear_modal_insertar_actualizar_calif();
       $("#modalInsertarActualizarCalif").modal("show");
     });
   }
 
-  	$("#cmbTipoServicio").change(function(){
-		 $("#cmbNorma").prop("disabled", false);
-		 //fill_cmb_norma("elige",$("#cmbTipoServicio").val());
-		 
-		 $scope.funcionparalistanormas($("#cmbTipoServicio").val());
-	});
   
   function listener_btn_guardar_calif(){
     $( "#btnGuardarCalif" ).click(function() {
@@ -765,8 +856,6 @@ function clear_modal_insertar_actualizar_calif(){
   }
   
   function insertar_calif_anterior(){
-    
-	
     $.post(global_apiserver + "/personal_tecnico_calificaciones/updateCalificacionSectores/?id_calificacion="+$("#id_calificacion_input").val()+"&id_tipo_servicio="+$("#cmbTipoServicioActualizacion").val()+"&id_norma="+$("#cmbNormaActualizacion").val()+"&id_usuario="+sessionStorage.getItem("id_usuario"), function(respuesta){
         respuesta = JSON.parse(respuesta);
         if (respuesta.resultado == "ok") {
@@ -789,9 +878,7 @@ function clear_modal_insertar_actualizar_calif(){
       
     });
   }
-  
-  
-  
+
    function listener_btn_actualiza_calif(){
 
 	$(".btnActualizarAnterior").click(function() {
@@ -802,6 +889,7 @@ function clear_modal_insertar_actualizar_calif(){
       $("#modalInsertarActualizarCalifSectorAnterior").modal("show");
     });
   }
+
 	$("#cmbTipoServicioActualizacion").change(function(){
 		 $("#cmbNormaActualizacion").prop("disabled", false);
 		 fill_cmb_norma_actualizacion("elige",$("#cmbTipoServicioActualizacion").val());
@@ -835,6 +923,10 @@ function clear_modal_insertar_actualizar_calif(){
 	if (objCalif.ID_SERVICIO == 1) {
 		strHtml += '    <button type="button" class="btn btn-primary btn-xs btn-imnc btnSectores" id_tipo_servicio="'+objCalif.ID_TIPO_SERVICIO+'" id="'+objCalif.ID+'" style="float: right;"> <i class="fa fa-dot-circle-o" aria-hidden="true"></i> Ver sectores </button>';
 	}
+    if (objCalif.ID_SERVICIO == 3) {
+          strHtml += '    <button type="button" class="btn btn-primary btn-xs btn-imnc btnCursos" id_tipo_servicio="'+objCalif.ID_TIPO_SERVICIO+'" id="'+objCalif.ID+'" style="float: right;"> <i class="fa fa-dot-circle-o" aria-hidden="true"></i> Ver cursos </button>';
+    }
+
     strHtml += '  </td>';
 	strHtml += '  <td>';
     if (global_permisos["AUDITORES"]["editar"] == 1) {
@@ -848,12 +940,20 @@ function clear_modal_insertar_actualizar_calif(){
     strHtml += '  </td>';
     strHtml += '</tr>';
     strHtml += '<tr class="collapse out" id="collapse-'+objCalif.ID+'">';
-    strHtml += '  <td colspan="8">';
+    strHtml += '  <td colspan="10">';
     strHtml += '    <table class="table subtable">';
+    if (objCalif.ID_SERVICIO == 1)
     strHtml += '      <caption>Sectores ';
+    if (objCalif.ID_SERVICIO == 3)
+    strHtml += '      <caption>Cursos ';
     if (global_permisos["AUDITORES"]["registrar"] == 1) {
-      strHtml += '        <button type="button" class="btn btn-primary btn-xs btn-imnc btnInsertaCalifSector" id_calif="'+objCalif.ID+'" id_tipo_servicio="'+objCalif.ID_TIPO_SERVICIO+'" style="float: right;"> <i class="fa fa-plus"> </i> Agregar sector </button>';
-    }
+      if (objCalif.ID_SERVICIO == 1) {
+          strHtml += '        <button type="button" class="btn btn-primary btn-xs btn-imnc btnInsertaCalifSector" id_calif="' + objCalif.ID + '" id_tipo_servicio="' + objCalif.ID_TIPO_SERVICIO + '" style="float: right;"> <i class="fa fa-plus"> </i> Agregar sector </button>';
+      }
+      if (objCalif.ID_SERVICIO == 3) {
+          strHtml += '        <button type="button" class="btn btn-primary btn-xs btn-imnc btnInsertaCurso" id_calif="' + objCalif.ID + '" id_tipo_servicio="' + objCalif.ID_TIPO_SERVICIO + '" style="float: right;"> <i class="fa fa-plus"> </i> Agregar curso </button>';
+      }
+      }
     strHtml += '      </caption>';
     strHtml += '      <thead id="thead-'+objCalif.ID+'">';
     strHtml += '      </thead>';
@@ -866,6 +966,7 @@ function clear_modal_insertar_actualizar_calif(){
   }
 
   function insertar_calif(){
+
     var fec_ini = $("#txtFecIniCalif").val();
     fec_ini = fec_ini.substring(6,10)+fec_ini.substring(3,5)+fec_ini.substring(0,2);
     var fec_fin = $("#txtFecFinCalif").val();
@@ -878,7 +979,8 @@ function clear_modal_insertar_actualizar_calif(){
       REGISTRO:$("#txtRegistro").val(),
       FECHA_INICIO:fec_ini,
       FECHA_FIN:fec_fin,
-      ID_USUARIO:sessionStorage.getItem("id_usuario")
+      ID_USUARIO:sessionStorage.getItem("id_usuario"),
+      FLAG:$scope.flag
     };
     $.post(global_apiserver + "/personal_tecnico_calificaciones/insert/", JSON.stringify(personal_tecnico_calif), function(respuesta){
         respuesta = JSON.parse(respuesta);
@@ -907,7 +1009,8 @@ function clear_modal_insertar_actualizar_calif(){
       REGISTRO:$("#txtRegistro").val(),
       FECHA_INICIO:fec_ini,
       FECHA_FIN:fec_fin,
-      ID_USUARIO:sessionStorage.getItem("id_usuario")
+      ID_USUARIO:sessionStorage.getItem("id_usuario"),
+      FLAG:$scope.flag
     };
     $.post(global_apiserver + "/personal_tecnico_calificaciones/update/", JSON.stringify(personal_tecnico_calif), function(respuesta){
         respuesta = JSON.parse(respuesta);
@@ -922,6 +1025,31 @@ function clear_modal_insertar_actualizar_calif(){
         }
     });
   }
+// ===========================================================================
+// ***** 	    FUNCION PARA CARGAR LOS DATEPICKER DEL MODAL Calif       *****
+// ===========================================================================
+    function onDatepickerClasif() {
+
+        var dateInicial = $('.fecha-inicio').datepicker({
+            dateFormat: "dd/mm/yy",
+            //minDate: "+0D",
+            language: "es",
+            onSelect: function (dateText, ins) {
+                dateFinal.datepicker("option", "minDate", dateText)
+
+            }
+        }).css("display", "inline-block");
+
+        var dateFinal =$('.fecha-fin').datepicker({
+            dateFormat: "dd/mm/yy",
+            language: "es",
+            //minDate: "+0D",
+            onSelect: function (dateText, ins) {
+
+            }
+        }).css("display", "inline-block");
+
+    }
 
 
 // ================================================================================
@@ -1360,4 +1488,218 @@ function removeOptions(selectbox)
           }
       });
   });
+
+    // ================================================================================
+// ================================================================================
+// *****                       CRUD AGREGAR CURSO                             *****
+// =========================================================================bmyorth
+// ================================================================================
+
+// ================================================================================
+// *****           ACCION MOSTRAR MODAL INSERTAR                              *****
+// ================================================================================
+function listener_btn_nuevo_calif_curso(){
+    $( ".btnInsertaCurso" ).click(function() {
+        $("#btnGuardarCurso").attr("accion","insertar");
+        $("#btnGuardarCurso").attr("id_calif",$(this).attr("id_calif"));
+        $("#btnGuardarCurso").attr("id_tipo_servicio",$(this).attr("id_tipo_servicio"));
+        $("#modalTituloCurso").html("Agregar curso");
+        clear_modal_insertar_actualizar()
+        cargarCursos("elige",$(this).attr("id_tipo_servicio"));
+        $("#modalInsertarActualizarCusro").modal("show");
+
+    })
+
+
+
+    }
+// ================================================================================
+// *****           Limpiar modal Insertar/Actualizar Curso                   *****
+// ================================================================================
+    function clear_modal_insertar_actualizar() {
+
+        $("#selectCurso").val("");
+        $("#fechaInicioCurso").val("");
+        $("#fechaFinCurso").val("");
+
+    }
+// ===================================================================
+// ***** 			FUNCION PARA CARGAR LOS CURSOS				 *****
+// ===================================================================
+    function cargarCursos(seleccionado,id){
+        $.getJSON( global_apiserver + "/cursos/getByModulo/?id="+id, function( response ) {
+            $("#selectCurso").html('<option value="elige" selected disabled>-elige una opción-</option>');
+            $.each(response, function( indice, objCurso ) {
+
+                $("#selectCurso").append('<option value="'+objCurso.ID_CURSO+'">'+objCurso.NOMBRE+'</option>');
+            });
+            $("#selectCurso").val(seleccionado);
+        });
+    }
+
+// ===================================================================
+// ***** 			FUNCION GUARDAR DEL MODAL  				 *****
+// ===================================================================
+    function listener_btn_guardar_calif_curso(){
+        $( "#btnGuardarCurso" ).click(function() {
+            if ($("#btnGuardarCurso").attr("accion") == "insertar")
+            {
+                insertar_calif_curso($(this).attr("id_calif"),$(this).attr("id_tipo_servicio"));
+
+            }
+            else if ($("#btnGuardarCurso").attr("accion") == "editar")
+            {
+                editar_calif_curso($(this).attr("id_calif_curso"),$(this).attr("id_tipo_servicio"),$(this).attr("id_calif"));
+            }
+        });
+    }
+
+// ===================================================================
+// ***** 			FUNCION PARA INSERTAR CURSO  				 *****
+// ===================================================================
+    function insertar_calif_curso(id_calif,id_tipo_servicio){
+
+        var fec_ini = $("#fechaInicioCurso").val();
+        fec_ini = fec_ini.substring(6,10)+fec_ini.substring(3,5)+fec_ini.substring(0,2);
+        var fec_fin = $("#fechaFinCurso").val();
+        fec_fin = fec_fin.substring(6,10)+fec_fin.substring(3,5)+fec_fin.substring(0,2);
+        var curso_calif = {
+            ID_PERSONAL_TECNICO_CALIFICACION:parseInt(id_calif),
+            ID_CURSO:$("#selectCurso").val(),
+            FECHA_INICIO:fec_ini,
+            FECHA_FIN:fec_fin
+        };
+        $.post(global_apiserver + "/personal_tecnico_calif_curso/insert/", JSON.stringify(curso_calif), function(respuesta){
+            respuesta = JSON.parse(respuesta);
+            if (respuesta.resultado == "ok") {
+                $("#modalInsertarActualizarCusro").modal("hide");
+                notify("Éxito", "Se ha agregado un nuevo curso", "success");
+                show_cursos(id_calif,id_tipo_servicio,false);
+                //draw_domicilios_y_califs();
+            }
+            else
+            {
+                notify("Error", respuesta.mensaje, "error");
+            }
+        });
+    }
+// ===================================================================
+// ***** 			FUNCION PARA EDITAR CURSO  				 *****
+// ===================================================================
+    function editar_calif_curso(id_calif_curso,id_tipo_servicio,id_calif){
+
+        var fec_ini = $("#fechaInicioCurso").val();
+        fec_ini = fec_ini.substring(6,10)+fec_ini.substring(3,5)+fec_ini.substring(0,2);
+        var fec_fin = $("#fechaFinCurso").val();
+        fec_fin = fec_fin.substring(6,10)+fec_fin.substring(3,5)+fec_fin.substring(0,2);
+        var curso_calif = {
+            ID:parseInt(id_calif_curso),
+            ID_CURSO:$("#selectCurso").val(),
+            FECHA_INICIO:fec_ini,
+            FECHA_FIN:fec_fin
+        };
+        $.post(global_apiserver + "/personal_tecnico_calif_curso/update/", JSON.stringify(curso_calif), function(respuesta){
+            respuesta = JSON.parse(respuesta);
+            if (respuesta.resultado == "ok") {
+                $("#modalInsertarActualizarCusro").modal("hide");
+                notify("Éxito", "Se ha editado el curso", "success");
+                show_cursos(id_calif,id_tipo_servicio,false);
+               // draw_domicilios_y_califs();
+            }
+            else
+            {
+                notify("Error", respuesta.mensaje, "error");
+            }
+        });
+    }
+// ===================================================================
+// ***** 	ACCION VER CURSO - MUESTRA CURSOS AGREGADOR          *****
+// ===================================================================
+    function listener_btn_cursos(){
+        $( ".btnCursos" ).click(function() {
+            var id_calif = $(this).attr("id");
+            var id_tipo_servicio = $(this).attr("id_tipo_servicio");
+            show_cursos(id_calif,id_tipo_servicio,true);
+        });
+    }
+    function show_cursos(id_calif,id_tipo_servicio,flag)
+    {
+        $.getJSON( global_apiserver + "/personal_tecnico_calif_curso/getByPTCalif/?idCalif="+id_calif, function( response ) {
+            if (response.length > 0) {
+                $("#thead-"+id_calif).html(draw_head_row_calif_cursos());
+            }
+            $("#tbody-"+id_calif).html("");
+            $.each(response, function( index, objCalifCurso ) {
+                $("#tbody-"+id_calif).append(draw_row_calif_cursos(objCalifCurso,id_calif,id_tipo_servicio));
+            });
+            if(flag)
+            {$("#collapse-"+id_calif).collapse("toggle");}
+
+            listener_btn_editar_calif_curso();
+        });
+    }
+// ===================================================================
+// ***** 	MUESTRA LA CABECERA DE LA TABLA DONDE LOS CURSOS     *****
+// ===================================================================
+    function draw_head_row_calif_cursos(){
+        var strHtml = "";
+        strHtml += '        <tr>';
+        strHtml += '         <th style="width: 255px;">Curso</th>';
+        strHtml += '         <th>Fecha inicio</th>';
+        strHtml += '         <th>Fecha fin</th>';
+        strHtml += '         <th></th>';
+        strHtml += '        </tr>';
+        return strHtml;
+    }
+// ===================================================================
+// ***** 	MUESTRA LA CUERPO DE LA TABLA DONDE LOS CURSOS     *****
+// ===================================================================
+    function draw_row_calif_cursos(objCalifCurso,id_calif,id_tipo_servicio){
+        var fec_ini = objCalifCurso.FECHA_INICIO;
+        fec_ini = fec_ini.substring(6,8)+"/"+fec_ini.substring(4,6)+"/"+fec_ini.substring(0,4);
+        var fec_fin = objCalifCurso.FECHA_FIN;
+        fec_fin = fec_fin.substring(6,8)+"/"+fec_fin.substring(4,6)+"/"+fec_fin.substring(0,4);
+        var strHtml = "";
+        strHtml += '      <tr>';
+        strHtml += '        <td>' + objCalifCurso.NOMBRE_CURSO + ' </td>';
+        strHtml += '        <td>' + fec_ini+ '</td>';
+        strHtml += '        <td>' + fec_fin + '</td>';
+        strHtml += '  <td>'
+        if (global_permisos["AUDITORES"]["editar"] == 1) {
+            strHtml += '    <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditarCalifCurso" id_calif_curso="'+objCalifCurso.ID+'" id_tipo_servicio="'+id_tipo_servicio+'" id_calif="'+id_calif+'" style="float: right;"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar curso </button>';
+        }
+
+        strHtml += '  </td>';
+        strHtml += '      </tr>';
+        return strHtml;
+    }
+// ================================================================================
+// *****           ACCION MOSTRAR MODAL EDITAR                              *****
+// ================================================================================
+    function listener_btn_editar_calif_curso(){
+        $( ".btnEditarCalifCurso" ).click(function() {
+            $("#btnGuardarCurso").attr("accion","editar");
+            $("#btnGuardarCurso").attr("id_calif_curso",$(this).attr("id_calif_curso"));
+            $("#btnGuardarCurso").attr("id_tipo_servicio",$(this).attr("id_tipo_servicio"));
+            $("#btnGuardarCurso").attr("id_calif",$(this).attr("id_calif"));
+            $("#modalTituloCurso").html("Editar curso de calificación");
+            clear_modal_insertar_actualizar();
+            fill_modal_insertar_actualizar_calif_cursos($(this).attr("id_calif_curso"),$(this).attr("id_tipo_servicio"));
+            $("#modalInsertarActualizarCusro").modal("show");
+        });
+    }
+
+    function fill_modal_insertar_actualizar_calif_cursos(id_calif_curso,id_tipo_servicio){
+        $.getJSON( global_apiserver + "/personal_tecnico_calif_curso/getById/?id="+id_calif_curso, function( response ) {
+            var fec_ini = response.FECHA_INICIO;
+            fec_ini = fec_ini.substring(6,8)+"/"+fec_ini.substring(4,6)+"/"+fec_ini.substring(0,4);
+            var fec_fin = response.FECHA_FIN;
+            fec_fin = fec_fin.substring(6,8)+"/"+fec_fin.substring(4,6)+"/"+fec_fin.substring(0,4);
+            cargarCursos(response.ID_CURSO,id_tipo_servicio)
+            $("#fechaInicioCurso").val(fec_ini);
+            $("#fechaFinCurso").val(fec_fin);
+        });
+    }
+
   }]);
+

@@ -30,10 +30,10 @@ function valida_error_medoo_and_die(){
 $respuesta=array();
 
 
-$personal_tecnico_calificaciones = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*");
+$personal_tecnico_calif_sector = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "*");
 valida_error_medoo_and_die();
 
-print_r(json_encode($personal_tecnico_calificaciones));
+print_r(json_encode($personal_tecnico_calif_sector));
 
 
 //-------- FIN --------------
