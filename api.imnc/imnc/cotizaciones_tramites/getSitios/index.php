@@ -46,59 +46,6 @@ if (!in_array($complejidad, $complejidades_validas)) {
 }
 $complejidad = "_" . strtoupper($complejidad);
 
-//Buscar el nivel de integración para Integrales
-$cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"] = 0;
-if($cotizacion[0]["ID_TIPO_SERVICIO"] == 20){
-
-	//Necesito el id del producto
-	$id_producto = $database->get("PROSPECTO_PRODUCTO", "*", 
-	[
-		"AND" => [
-			"ID_PROSPECTO"=>$cotizacion[0]["ID_PROSPECTO"],
-			"ID_SERVICIO"=>$cotizacion[0]["ID_SERVICIO"],
-			"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
-		]
-	]);
-	valida_error_medoo_and_die();
-
-	//Con el id del producto busco la información de integración
-	$query = "SELECT 
-	PI.ID_PRODUCTO,
-	IP.PREGUNTA,
-	IPR.VALOR,
-	PI.ID_PREGUNTA,
-	PI.RESPUESTA
-	FROM PRODUCTO_INTEGRACION PI
-	INNER JOIN INTEGRACION_PREGUNTAS IP
-	ON IP.ID = PI.ID_PREGUNTA
-	INNER JOIN INTEGRACION_PREGUNTAS_RESPUESTAS IPR
-	ON IPR.ID_PREGUNTA = PI.ID_PREGUNTA
-	AND IPR.RESPUESTA = PI.RESPUESTA
-	WHERE PI.ID_PRODUCTO = ".$id_producto["ID"]; 
-	$producto_integracion = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
-	valida_error_medoo_and_die();
-
-	//Ahora necesito recorrer el arreglo obtenido para calcular la integración
-	$nivel_integracion = 0;
-	foreach ($producto_integracion as $key => $integracion) {
-		$nivel_integracion += $integracion["VALOR"];
-	}
-	$cotizacion[0]["NIVEL_INTEGRACION"] = $nivel_integracion;
-
-	//La capacidad de ejecución está en cotizacion[0]["COMBINADA"]
-	$capacidad = $cotizacion[0]["COMBINADA"];
-	//Con estos dos valores busco en la tabla COTIZACION_NIVEL_INTEGRACION
-	//DONDE X ES CAPACIDAD Y Y ES NIVEL DE INTEGRACION
-	$query = "SELECT
-	VALOR FROM COTIZACION_NIVEL_INTEGRACION
-	WHERE X_MIN_PORCENTAJE < ".$capacidad.
-	" AND X_MAX_PORCENTAJE >= ".$capacidad.
-	" AND Y_MIN_PORCENTAJE < ".$nivel_integracion.
-	" AND Y_MAX_PORCENTAJE >= ".$nivel_integracion;
-	$factor_reduccion = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
-	valida_error_medoo_and_die();
-	$cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"] = $factor_reduccion[0]["VALOR"];
-}
 
 
 $servicio = $database->get("SERVICIOS", "*", ["ID"=>$cotizacion[0]["ID_SERVICIO"]]);
@@ -116,7 +63,6 @@ $tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizacion[0]["TARIFA
 valida_error_medoo_and_die(); 
 $cantidad_de_sitios = $database->count("COTIZACION_SITIOS", ["ID_COTIZACION"=>$cotizacio_tramite["ID"]]);
 valida_error_medoo_and_die(); 
-
 
 
 $campos = [
@@ -141,12 +87,15 @@ if($cotizacion[0]["BANDERA"] == 0){
 	$total_domicilios = $database->count("PROSPECTO_DOMICILIO", ["ID_PROSPECTO"=>$cotizacion[0]["ID_PROSPECTO"]]); 
 	array_push($campos, "PROSPECTO_DOMICILIO.NOMBRE");
 	$tabla_entidad = "PROSPECTO_DOMICILIO";
+	$id_prospecto_asociado = $cotizacion[0]["ID_PROSPECTO"];
 }
 else if($cotizacion[0]["BANDERA"] != 0){
 	$total_domicilios = $database->count("CLIENTES_DOMICILIOS", ["ID_CLIENTE"=>$cotizacion[0]["ID_PROSPECTO"]]);
 	array_push($campos, "CLIENTES_DOMICILIOS.NOMBRE_DOMICILIO(NOMBRE)");
 	$tabla_entidad = "CLIENTES_DOMICILIOS";
+	$id_prospecto_asociado = $database->get("PROSPECTO", "ID", ["ID_CLIENTE"=>$cotizacion[0]["ID_PROSPECTO"]]);
 }
+
 
 $cotizacion_sitios = $database->select("COTIZACION_SITIOS", ["[>]".$tabla_entidad => ["ID_DOMICILIO_SITIO" => "ID"], 
 	"[>]SG_ACTIVIDAD" => ["ID_ACTIVIDAD" => "ID"] ], $campos, ["ID_COTIZACION"=>$cotizacio_tramite["ID"]]);
@@ -261,6 +210,61 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 		$total_dias_auditoria += $dias_subtotal;
 		$total_empleados += $obj_cotizacion["COTIZACION_SITIOS"][$i]["TOTAL_EMPLEADOS"];
 	}
+	
+	//Buscar el nivel de integración para Integrales
+$cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"] = 0;
+if($cotizacion[0]["ID_TIPO_SERVICIO"] == 20){
+
+	//Necesito el id del producto
+	$id_producto = $database->get("PROSPECTO_PRODUCTO", "*", 
+	[
+		"AND" => [
+			"ID_PROSPECTO"=>$id_prospecto_asociado,
+			"ID_SERVICIO"=>$cotizacion[0]["ID_SERVICIO"],
+			"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
+		]
+	]);
+	valida_error_medoo_and_die();
+
+	//Con el id del producto busco la información de integración
+	$query = "SELECT 
+	PI.ID_PRODUCTO,
+	IP.PREGUNTA,
+	IPR.VALOR,
+	PI.ID_PREGUNTA,
+	PI.RESPUESTA
+	FROM PRODUCTO_INTEGRACION PI
+	INNER JOIN INTEGRACION_PREGUNTAS IP
+	ON IP.ID = PI.ID_PREGUNTA
+	INNER JOIN INTEGRACION_PREGUNTAS_RESPUESTAS IPR
+	ON IPR.ID_PREGUNTA = PI.ID_PREGUNTA
+	AND IPR.RESPUESTA = PI.RESPUESTA
+	WHERE PI.ID_PRODUCTO = ".$id_producto["ID"]; 
+	$producto_integracion = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+	valida_error_medoo_and_die();
+
+	//Ahora necesito recorrer el arreglo obtenido para calcular la integración
+	$nivel_integracion = 0;
+	foreach ($producto_integracion as $key => $integracion) {
+		$nivel_integracion += $integracion["VALOR"];
+	}
+	$cotizacion[0]["NIVEL_INTEGRACION"] = $nivel_integracion;
+
+	//La capacidad de ejecución está en cotizacion[0]["COMBINADA"]
+	$capacidad = $cotizacion[0]["COMBINADA"];
+	//Con estos dos valores busco en la tabla COTIZACION_NIVEL_INTEGRACION
+	//DONDE X ES CAPACIDAD Y Y ES NIVEL DE INTEGRACION
+	$query = "SELECT
+	VALOR FROM COTIZACION_NIVEL_INTEGRACION
+	WHERE X_MIN_PORCENTAJE < ".$capacidad.
+	" AND X_MAX_PORCENTAJE >= ".$capacidad.
+	" AND Y_MIN_PORCENTAJE < ".$nivel_integracion.
+	" AND Y_MAX_PORCENTAJE >= ".$nivel_integracion;
+	$factor_reduccion = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+	valida_error_medoo_and_die();
+	$cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"] = $factor_reduccion[0]["VALOR"];
+}
+	
 	//Si es integral hay que aplicar el factor de reducción para integrales
 	if($cotizacion[0]["ID_TIPO_SERVICIO"] == 20){
 		//Primero calcular el factor de integración
