@@ -28,12 +28,19 @@ function valida_error_medoo_and_die(){
 }
 
 $respuesta=array();
+$id = $_REQUEST["idCalif"];
+valida_parametro_and_die($id,"Falta parametro idCalif");
 
-
-$personal_tecnico_calificaciones = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*");
+$personal_tecnico_calif_curso = $database->select("PERSONAL_TECNICO_CALIF_CURSOS", "*", ["ID_PERSONAL_TECNICO_CALIFICACION" => $id]);
 valida_error_medoo_and_die();
+for ($i=0; $i < count($personal_tecnico_calif_curso) ; $i++) {
+	$curso = $database->get("CURSOS", "*", ["ID_CURSO" => $personal_tecnico_calif_curso[$i]["ID_CURSO"]]);
+	valida_error_medoo_and_die();
+    $personal_tecnico_calif_curso[$i]["NOMBRE_CURSO"] = $curso["NOMBRE"];
+    //$personal_tecnico_calif_curso[$i]["NOMBRE_SECTOR_TRUNCADO"] = substr($sector["NOMBRE"], 0, 40);
+}
 
-print_r(json_encode($personal_tecnico_calificaciones));
+print_r(json_encode($personal_tecnico_calif_curso));
 
 
 //-------- FIN --------------

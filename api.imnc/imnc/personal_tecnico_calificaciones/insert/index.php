@@ -28,7 +28,6 @@ function valida_error_medoo_and_die(){
 		$respuesta['resultado']="error";
 		$respuesta['mensaje']="Error al ejecutar script: " . $database->error()[2];
 		print_r(json_encode($respuesta));
-		$mailerror->send("certificando", getcwd(), $database->error()[2], $database->last_query(), "leovardo.quintero@dhttecno.com");
 		die();
 	}
 }
@@ -37,19 +36,26 @@ $respuesta=array();
 $json = file_get_contents('php://input'); //Obtiene lo que se envía vía POST
 $objeto = json_decode($json); // Lo transforma de JSON a un objeto de PHP
 
+$FLAG = $objeto->FLAG;
+
 $ID_PERSONAL_TECNICO = $objeto->ID_PERSONAL_TECNICO;
 valida_parametro_and_die($ID_PERSONAL_TECNICO, "Falta ID_PERSONAL_TECNICO");
 
-$ID_ROL = $objeto->ID_ROL;
-valida_parametro_and_die($ID_ROL, "Es necesario seleccionar un rol");
 
 $ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO;
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
-
-$NORMA = $objeto->ID_NORMA;
-if(sizeof($NORMA) == 0){
-	imprime_error_and_die("Es necesario seleccionar una norma");
+$NORMA ="";
+if($FLAG=="NORMAL")
+{
+    $NORMA = $objeto->ID_NORMA;
+    if(sizeof($NORMA) == 0){
+        imprime_error_and_die("Es necesario seleccionar una norma");
 }
+
+}
+
+$ID_ROL = $objeto->ID_ROL;
+valida_parametro_and_die($ID_ROL, "Es necesario seleccionar un rol");
 $REGISTRO = $objeto->REGISTRO;
 valida_parametro_and_die($REGISTRO, "Es necesario capturar un registro");
 
@@ -101,21 +107,11 @@ if($database->count("PERSONAL_TECNICO_CALIFICACIONES","*",["AND"=>["ID_PERSONAL_
 				
 	
 }else{
-	insertar_personal_tecnico_calificacion($ID_PERSONAL_TECNICO,$ID_ROL,$ID_TIPO_SERVICIO,
-		$NORMA,$REGISTRO,$FECHA_INICIO,$FECHA_FIN,$FECHA_CREACION,
-		$HORA_CREACION,$ID_USUARIO_CREACION, $respuestas);
-}
-//Terminacion de la valicación
-function insertar_personal_tecnico_calificacion($ID_PERSONAL_TECNICO,$ID_ROL,$ID_TIPO_SERVICIO,
-	$NORMA,$REGISTRO,$FECHA_INICIO,$FECHA_FIN,$FECHA_CREACION,
-	$HORA_CREACION,$ID_USUARIO_CREACION, $respuesta){
-global $database;
-	
+
 	$IdPTC = $database->insert("PERSONAL_TECNICO_CALIFICACIONES", [
 		"ID_PERSONAL_TECNICO" => $ID_PERSONAL_TECNICO,
 		"ID_ROL" => $ID_ROL,
 		"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
-		//"ID_NORMA" => $ID_NORMA,
 		"REGISTRO" => $REGISTRO,
 		"FECHA_INICIO" => $FECHA_INICIO,
 		"FECHA_FIN" => $FECHA_FIN,
@@ -126,25 +122,27 @@ global $database;
 		valida_error_medoo_and_die();
 
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //				PARA INSERTAR LAS RELACIONES NORMAS CALIFICACIONES
 
-$id2	=	$database->delete("CALIFICACIONES_NORMAS",["ID_CALIFICACION"=>$IdPTC]);
+        $id2 = $database->delete("CALIFICACIONES_NORMAS", ["ID_CALIFICACION" => $IdPTC]);
+    if($FLAG=="NORMAL") {
+        for ($i = 0; $i < count($NORMA); $i++) {
+            $ID_NORMA = $NORMA[$i]->ID_NORMA;
 
-for($i=0;$i<count($NORMA);$i++){
-$ID_NORMA = $NORMA[$i]->ID_NORMA;
+            $id1 = $database->insert("CALIFICACIONES_NORMAS", [
 
-$id1 = $database->insert("CALIFICACIONES_NORMAS", [
-			
-		"ID_NORMA" => $ID_NORMA, 
-		"ID_CALIFICACION" => $IdPTC,
-		"FECHA_CREACION" => $FECHA_CREACION,
-		"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION		
-		
-	]); 
-	valida_error_medoo_and_die();
+                "ID_NORMA" => $ID_NORMA,
+                "ID_CALIFICACION" => $IdPTC,
+                "FECHA_CREACION" => $FECHA_CREACION,
+                "ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
 
-}
+            ]);
+            valida_error_medoo_and_die();
+
+        }
+    }
 
 $respuesta['resultado']="ok";
 $respuesta['id']=$IdPTC;

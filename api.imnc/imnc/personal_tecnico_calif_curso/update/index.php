@@ -1,9 +1,7 @@
 <?php 
 include  '../../common/conn-apiserver.php'; 
-
 include  '../../common/conn-medoo.php'; 
 include  '../../common/conn-sendgrid.php'; 
-
 
 function imprime_error_and_die($mensaje){
 	$respuesta['resultado'] = 'error';
@@ -36,27 +34,12 @@ $respuesta=array();
 $json = file_get_contents('php://input'); //Obtiene lo que se envía vía POST
 $objeto = json_decode($json); // Lo transforma de JSON a un objeto de PHP
 
-$FLAG = $objeto->FLAG;
-
 $ID = $objeto->ID;
 valida_parametro_and_die($ID, "Falta ID");
 
-$ID_ROL = $objeto->ID_ROL;
-valida_parametro_and_die($ID_ROL, "Es necesario seleccionar un rol");
+$ID_CURSO = $objeto->ID_CURSO;
+valida_parametro_and_die($ID_CURSO, "Es necesario seleccionar un curso");
 
-
-$ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO;
-valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
-
-$NORMA ="";
-if($FLAG=="NORMAL") {
-    $NORMA = $objeto->ID_NORMA;
-    if (!isset($NORMA)) {
-        valida_parametro_and_die($NORMA, "Es necesario seleccionar una norma");
-    }
-}
-$REGISTRO = $objeto->REGISTRO;
-valida_parametro_and_die($REGISTRO, "Es necesario capturar un registro");
 
 $FECHA_INICIO = $objeto->FECHA_INICIO;
 valida_parametro_and_die($FECHA_INICIO, "Es necesario capturar una fecha de inicio");
@@ -85,47 +68,14 @@ if ($FECHA_INICIO > $FECHA_FIN) {
 	imprime_error_and_die("La fecha de inicio no puede ser después de la fecha final");
 }
 
-$ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
-valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
 
-$FECHA_MODIFICACION = date("Ymd");
-$HORA_MODIFICACION = date("His");
-
-$id = $database->update("PERSONAL_TECNICO_CALIFICACIONES", [
-
-	"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
-    "ID_ROL" => $ID_ROL,
-	"REGISTRO" => $REGISTRO,
+$id = $database->update("PERSONAL_TECNICO_CALIF_CURSOS", [
+	"ID_CURSO" => $ID_CURSO,
 	"FECHA_INICIO" => $FECHA_INICIO,
 	"FECHA_FIN" => $FECHA_FIN,
-	"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
-	"HORA_MODIFICACION" => $HORA_MODIFICACION,
-	"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION
 ], ["ID"=>$ID]);
 
 valida_error_medoo_and_die();
-
-///////////////////////////////////////////////////////////////////////////////
-//				PARA INSERTAR LAS RELACIONES NORMAS CALIFICACIONES
-
-    $id2 = $database->delete("CALIFICACIONES_NORMAS", ["ID_CALIFICACION" => $ID]);
-if($FLAG=="NORMAL") {
-    for ($i = 0; $i < count($NORMA); $i++) {
-        $ID_NORMA = $NORMA[$i]->ID_NORMA;
-
-        $id1 = $database->insert("CALIFICACIONES_NORMAS", [
-
-            "ID_NORMA" => $ID_NORMA,
-            "ID_CALIFICACION" => $ID,
-            "FECHA_MODIFICACION" => $FECHA_MODIFICACION,
-            "ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION
-
-        ]);
-        valida_error_medoo_and_die();
-
-    }
-}
-
 
 $respuesta['resultado']="ok";
 print_r(json_encode($respuesta));

@@ -29,23 +29,10 @@ function valida_error_medoo_and_die(){
 
 $id = $_REQUEST["id"];
 
-$query = "SELECT 
-PERSONAL_TECNICO_CALIFICACIONES.ID as ID,
-PERSONAL_TECNICO_CALIFICACIONES.ID_TIPO_SERVICIO as ID_TIPO_SERVICIO,
-PERSONAL_TECNICO_CALIFICACIONES.ID_ROL as ID_ROL,
-PERSONAL_TECNICO_CALIFICACIONES.FECHA_INICIO as FECHA_INICIO,
-PERSONAL_TECNICO_CALIFICACIONES.FECHA_FIN as FECHA_FIN,
-PERSONAL_TECNICO_CALIFICACIONES.REGISTRO as REGISTRO,
-TIPOS_SERVICIO.ID_SERVICIO as ID_SERVICIO
-FROM PERSONAL_TECNICO_CALIFICACIONES LEFT JOIN TIPOS_SERVICIO ON PERSONAL_TECNICO_CALIFICACIONES.ID_TIPO_SERVICIO = TIPOS_SERVICIO.ID
-WHERE PERSONAL_TECNICO_CALIFICACIONES.ID = ".$id ."
-LIMIT 1";
-$personal_tecnico_calificaciones = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
-
-
+$personal_tecnico_calif_sector = $database->get("PERSONAL_TECNICO_CALIF_CURSOS", "*", ["ID"=>$id]);
 valida_error_medoo_and_die();
 
-print_r(json_encode($personal_tecnico_calificaciones[0]));
+print_r(json_encode($personal_tecnico_calif_sector));
 
 
 //-------- FIN --------------

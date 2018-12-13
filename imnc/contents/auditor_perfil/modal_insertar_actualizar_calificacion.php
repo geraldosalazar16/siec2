@@ -4,40 +4,40 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalTituloCalif">Insertar/Actualizar</h4>
+       <h4 class="modal-title" id="modalTituloCalif">Insertar/Actualizar</h4>
       </div>
       <div class="modal-body">
           <form id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
-           <div class="form-group">
-              <label class="control-label col-md-4 col-sm-4 col-xs-12" for="cmbTipoServicio">Tipo de servicio <span class="required">*</span>
+              <div class="form-group">
+                  <label class="control-label col-md-4 col-sm-4 col-xs-12" for="cmbServicio">Servicios <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                      <select class="form-control" id="cmbServicio">
+
+                      </select>
+                      <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
+                  </div>
+              </div>
+              <div class="form-group">
+              <label class="control-label col-md-4 col-sm-4 col-xs-12" id="txtTipoServicio" for="cmbTipoServicio">Tipo de servicio <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <select class="form-control" id="cmbTipoServicio">
+                <select class="form-control" id="cmbTipoServicio" >
                   
                 </select>
                 <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
               </div>
-            </div>	
-			<div class="form-group">
-				<label class="control-label col-md-4 col-sm-4 col-xs-12" for="txtRfc">Norma  
+            </div>
+			<div class="form-group" id="divNormal">
+				<label class="control-label col-md-4 col-sm-4 col-xs-12" for="selectedList">Norma
 				</label>
-				<div class="col-md-6 col-sm-6 col-xs-12">
-					<multiple-autocomplete ng-model="selectedList" 
+				<div class="col-md-6 col-sm-6 col-xs-12" >
+					<multiple-autocomplete ng-model="selectedList" id="selectedList"
 						object-property="ID_NORMA"
 						suggestions-arr="optionsList">
 					</multiple-autocomplete>
 				</div>
             </div>
-	<!--		<div class="form-group">
-              <label class="control-label col-md-4 col-sm-4 col-xs-12" for="cmbNorma">Norma <span class="required">*</span>
-              </label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <select class="form-control" id="cmbNorma">
-                  
-                </select>
-                <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
-              </div>
-            </div>	-->
             <div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12" for="cmbRol">Rol<span class="required">*</span>
               </label>
@@ -59,14 +59,14 @@
               <label class="control-label col-md-4 col-sm-4 col-xs-12">Fecha de inicio <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input id="txtFecIniCalif" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text" placeholder="Formato: dd/mm/aaaa" data-inputmask="'mask': '99/99/9999'" data-parsley-id="4827"><ul class="parsley-errors-list" id="parsley-id-4827"></ul>
+                <input id="txtFecIniCalif" class="date-picker form-control col-md-7 col-xs-12 fecha-inicio" required="required" type="text" placeholder="Formato: dd/mm/aaaa" data-inputmask="'mask': '99/99/9999'" data-parsley-id="4827"><ul class="parsley-errors-list" id="parsley-id-4827"></ul>
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12">Fecha de fin <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input id="txtFecFinCalif" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text" placeholder="Formato: dd/mm/aaaa" data-inputmask="'mask': '99/99/9999'" data-parsley-id="4827"><ul class="parsley-errors-list" id="parsley-id-4827"></ul>
+                <input id="txtFecFinCalif" class="date-picker form-control col-md-7 col-xs-12 fecha-fin" required="required" type="text" placeholder="Formato: dd/mm/aaaa" data-inputmask="'mask': '99/99/9999'" data-parsley-id="4827"><ul class="parsley-errors-list" id="parsley-id-4827"></ul>
               </div>
             </div>
           </form>

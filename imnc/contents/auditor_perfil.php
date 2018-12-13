@@ -154,6 +154,7 @@
   include "auditor_perfil/modal_insertar_actualizar_domicilio.php";
   include "auditor_perfil/modal_insertar_actualizar_calificacion.php";
   include "auditor_perfil/modal_insertar_actualizar_calif_sector.php";
+  include "auditor_perfil/modal_insertar_actualizar_curso.php";
   include "auditor_perfil/modal_insertar_actualizar_calificacion_anterior.php";
   include "auditor_perfil/modal_insertar_actualizar_evento.php";
 
