@@ -62,71 +62,140 @@ $id_servicio_cliente_etapa = $database->get("SERVICIO_CLIENTE_ETAPA","ID",["REFE
 
 //Buscar los eventos de la cotización
 if($id_servicio_cliente_etapa	!=	0){	
-    //Auditorías
-    //Para cargar una auditoría necesito
-    /*
-    TIPO_AUDITORIA: 
-    CICLO: Si es un prospecto es ciclo 1 
-    DURACION_DIAS: Se obtiene de cotizaciones/getById?id=x
-    STATUS_AUDITORIA: Pendiente
-    NO_USA_METODO: No
-    SITIOS_AUDITAR: Se obtienen de cotizacion_sitios
-    ID_SERVICIO_CLIENTE_ETAPA
-    */
-    $ruta = $global_apiserver.'/cotizaciones/getById?id='.$ID_COTIZACION;
-    $cotizacion = file_get_contents($ruta);
-    $cotizacion = json_decode($cotizacion);
+	//Si existe un id de servicio contratado pues me traigo todos los datos 
+	$servicio_cliente_etapa = $database->select("SERVICIO_CLIENTE_ETAPA","*",["ID" => $id_servicio_cliente_etapa]);
+	$ID_SERVICIO = $objeto->ID_SERVICIO; 
+	$ID_TIPO_SERVICIO	= $objeto->ID_TIPO_SERVICIO; 
+	if($ID_SERVICIO == 1){
+		//Auditorías
+		//Para cargar una auditoría necesito
+		/*
+		TIPO_AUDITORIA: 
+		CICLO: Si es un prospecto es ciclo 1 
+		DURACION_DIAS: Se obtiene de cotizaciones/getById?id=x
+		STATUS_AUDITORIA: Pendiente
+		NO_USA_METODO: No
+		SITIOS_AUDITAR: Se obtienen de cotizacion_sitios
+		ID_SERVICIO_CLIENTE_ETAPA
+		*/
+		$ruta = $global_apiserver.'/cotizaciones/getById?id='.$ID_COTIZACION;
+		$cotizacion = file_get_contents($ruta);
+		$cotizacion = json_decode($cotizacion);
 
-    $ciclo = 1;
-    /* Cuando no es renovación solamente agrego los eventos al
-    ciclo actual del servicio */
-    if($ES_RENOVACION == "S"){
-        /* Si es renovación debo agregar los eventos al siguiente ciclo*/
-        //Determinar el siguiente ciclo
-        $ciclo = substr($REFERENCIA,1,1);
-        $ciclo = (int)$ciclo+1;
-    }
+		$ciclo = 1;
+		/* Cuando no es renovación solamente agrego los eventos al
+		ciclo actual del servicio */
+		if($ES_RENOVACION == "S"){
+			/* Si es renovación debo agregar los eventos al siguiente ciclo*/
+			//Determinar el siguiente ciclo
+			$ciclo = substr($REFERENCIA,1,1);
+			$ciclo = (int)$ciclo+1;
+		}
 
-    //Recorro todos los trámites e inserto sus auditorías correspondientes
-    foreach ($cotizacion[0]->COTIZACION_TRAMITES as $tramite) {
-        //para cada trámite hay que agregar una auditoría en 
-        $dias_auditoria = $tramite->DIAS_AUDITORIA;
-        $tipo_auditoria = $tramite->ID_ETAPA_PROCESO;
+		//Recorro todos los trámites e inserto sus auditorías correspondientes
+		foreach ($cotizacion[0]->COTIZACION_TRAMITES as $tramite) {
+			//para cada trámite hay que agregar una auditoría en 
+			$dias_auditoria = $tramite->DIAS_AUDITORIA;
+			$tipo_auditoria = $tramite->ID_ETAPA_PROCESO;
         
-        //Buscar los sitios
-        $sitios = $database->select("COTIZACION_SITIOS", "*", ["ID_COTIZACION"=>$tramite->ID]);
-        valida_error_medoo_and_die();
+			//Buscar los sitios
+			$sitios = $database->select("COTIZACION_SITIOS", "*", ["ID_COTIZACION"=>$tramite->ID]);
+			valida_error_medoo_and_die();
         
-        //Insertar en I_SG_AAUDITORIAS
-        $id_sg_auditoria = $database->insert("I_SG_AUDITORIAS", [ 
-            "ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
-            "TIPO_AUDITORIA" => $tipo_auditoria,  
-            "CICLO" => $ciclo,
-            "DURACION_DIAS" => $dias_auditoria,
-            "STATUS_AUDITORIA" => "1",
-            "NO_USA_METODO" => 0,
-            "SITIOS_AUDITAR" => count($sitios),
-            "ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
-        ]); 
-        valida_error_medoo_and_die();
+			//Insertar en I_SG_AAUDITORIAS
+			$id_sg_auditoria = $database->insert("I_SG_AUDITORIAS", [ 
+				"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+				"TIPO_AUDITORIA" => $tipo_auditoria,  
+				"CICLO" => $ciclo,
+				"DURACION_DIAS" => $dias_auditoria,
+				"STATUS_AUDITORIA" => "1",
+				"NO_USA_METODO" => 0,
+				"SITIOS_AUDITAR" => count($sitios),
+				"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+			]); 
+			valida_error_medoo_and_die();
 
-        //Insertar los sitios en I_SG_AUDITORIA_SITIOS
-        foreach ($sitios as $key => $sitio) {
-            $id_cliente_domicilio = $sitio["ID_DOMICILIO_SITIO"];
-            $id_sg_auditoria_sitios = $database->insert("I_SG_AUDITORIA_SITIOS", [ 
-                "ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
-                "TIPO_AUDITORIA" => $tipo_auditoria,  
-                "CICLO" => 1,
-                "ID_CLIENTE_DOMICILIO" => $id_cliente_domicilio,
-                "FECHA_CREACION" => $FECHA_CREACION,
-                "HORA_CREACION" => $HORA_CREACION,
-                "ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
-            ]); 
-            valida_error_medoo_and_die();
-        }
-    }
+			//Insertar los sitios en I_SG_AUDITORIA_SITIOS
+			foreach ($sitios as $key => $sitio) {
+				$id_cliente_domicilio = $sitio["ID_DOMICILIO_SITIO"];
+				$id_sg_auditoria_sitios = $database->insert("I_SG_AUDITORIA_SITIOS", [ 
+					"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+					"TIPO_AUDITORIA" => $tipo_auditoria,  
+					"CICLO" => $ciclo,
+					"ID_CLIENTE_DOMICILIO" => $id_cliente_domicilio,
+					"FECHA_CREACION" => $FECHA_CREACION,
+					"HORA_CREACION" => $HORA_CREACION,
+					"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+				]); 
+				valida_error_medoo_and_die();
+			}
+		}
     
-	
+	}
+	if($ID_SERVICIO == 2){
+		if($ID_TIPO_SERVICIO == 16){
+			//Auditorías
+			//Para cargar una auditoría necesito
+			/*
+			TIPO_AUDITORIA: 
+			CICLO: Si es un prospecto es ciclo 1 
+			DURACION_DIAS: Se obtiene de cotizaciones/getById?id=x
+			STATUS_AUDITORIA: Pendiente
+			NO_USA_METODO: No
+			SITIOS_AUDITAR: Se obtienen de cotizacion_sitios
+			ID_SERVICIO_CLIENTE_ETAPA
+			*/
+			$ruta = $global_apiserver.'/cotizaciones/getById?id='.$ID_COTIZACION;
+			$cotizacion = file_get_contents($ruta);
+			$cotizacion = json_decode($cotizacion);
+
+			$ciclo = 1;
+			/* Cuando no es renovación solamente agrego los eventos al
+			ciclo actual del servicio */
+			if($ES_RENOVACION == "S"){
+				/* Si es renovación debo agregar los eventos al siguiente ciclo*/
+				//Determinar el siguiente ciclo
+				$ciclo = substr($REFERENCIA,1,1);
+				$ciclo = (int)$ciclo+1;
+			}
+			//Recorro todos los trámites e inserto sus auditorías correspondientes
+			foreach ($cotizacion[0]->COTIZACION_TRAMITES as $tramite) {
+				//para cada trámite hay que agregar una auditoría en 
+				$dias_auditoria = $tramite->DIAS_AUDITORIA;
+				$tipo_auditoria = $tramite->ID_TIPO_AUDITORIA;
+        
+				//Buscar los sitios
+				$sitios = $database->select("COTIZACION_SITIOS_CIL", "*", ["ID_COTIZACION"=>$tramite->ID]);
+				valida_error_medoo_and_die();
+        
+				//Insertar en I_EC_AUDITORIAS
+					$id_ec_auditoria = $database->insert("I_EC_AUDITORIAS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"TIPO_AUDITORIA" => $tipo_auditoria,  
+						"CICLO" => $ciclo,
+						"DURACION_DIAS" => $dias_auditoria,
+						"STATUS_AUDITORIA" => "1",
+						"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+					]); 
+					valida_error_medoo_and_die();
+
+				//Insertar los sitios en I_SG_AUDITORIA_SITIOS
+					foreach ($sitios as $key => $sitio) {
+						$id_cliente_domicilio = $sitio["ID_DOMICILIO_SITIO"];
+						$id_sg_auditoria_sitios = $database->insert("I_SG_AUDITORIA_SITIOS", [ 
+							"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+							"TIPO_AUDITORIA" => $tipo_auditoria,  
+							"CICLO" => $ciclo,
+							"ID_CLIENTE_DOMICILIO" => $id_cliente_domicilio,
+							"FECHA_CREACION" => $FECHA_CREACION,
+							"HORA_CREACION" => $HORA_CREACION,
+							"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+						]); 
+						valida_error_medoo_and_die();
+					}
+			}
+		}
+	}
 	$respuesta["resultado"]="ok"; 
 }
 print_r(json_encode($respuesta)); 

@@ -223,6 +223,13 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         if($scope.bandera != 0){
           $scope.cambioCliente(data[0].REFERENCIA);
         }
+		switch(parseInt($scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID)){
+			case 16:
+				$scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA = data[0].DETALLES[0].VALOR;
+				break;
+			default:
+				break;
+		}
 
       }
       else  {
@@ -262,10 +269,12 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         REFERENCIA : "",
         TARIFA : $scope.cotizacion_insertar_editar.TARIFA,
         DESCUENTO : $scope.cotizacion_insertar_editar.DESCUENTO,
+		AUMENTO : $scope.cotizacion_insertar_editar.AUMENTO,
         SG_INTEGRAL : $scope.cotizacion_insertar_editar.SG_INTEGRAL,
         BANDERA : $scope.bandera,
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
+		ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }else{
@@ -284,10 +293,12 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         REFERENCIA : $scope.cotizacion_insertar_editar.REFERENCIA.VALOR,
         TARIFA : $scope.cotizacion_insertar_editar.TARIFA,
         DESCUENTO : $scope.cotizacion_insertar_editar.DESCUENTO,
+		AUMENTO : $scope.cotizacion_insertar_editar.AUMENTO,
         SG_INTEGRAL : $scope.cotizacion_insertar_editar.SG_INTEGRAL,
         BANDERA : $scope.bandera,
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
+		ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }

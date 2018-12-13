@@ -541,11 +541,21 @@ $scope.eliminar_sitio = function(id_cliente_domicilio){
 						id_servicio_cliente_etapa: $scope.id_servicio_cliente_etapa,
 						id_cliente_domicilio: id_cliente_domicilio
 					}
-                    $http.post(global_apiserver + "/i_sg_sitios/delete/",datos).
+					var url="";
+					if($scope.DatosServicio.ID_SERVICIO == 1){
+						url = global_apiserver + "/i_sg_sitios/delete/";
+					}
+					if($scope.DatosServicio.ID_SERVICIO == 2){
+						url = global_apiserver + "/i_ec_sitios/delete/";
+					}
+					
+					
+                    $http.post(url,datos).
 					then(function(response){
 						if(response.data.resultado == 'ok'){
 							notify('&Eacutexito','El sitio ha sido eliminado','success');	
 							cargarSitiosECServicio($scope.id_servicio_cliente_etapa);
+							cargarSitiosSGServicio($scope.id_servicio_cliente_etapa);
 							cargarTodosSitiosECServicio($scope.id_servicio_cliente_etapa);					
 						}
 						else{

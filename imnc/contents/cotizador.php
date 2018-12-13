@@ -57,9 +57,16 @@
                   </button>
                 </td>
                 <td>
-                  <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion&id_cotizacion={{cotizacion.ID}}" style="float: right;">
-                    <i class="fa fa-bullseye"></i> Ver cotización
-                  </a>
+					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 1 || cotizacion.ID_TIPO_SERVICIO == 2 || cotizacion.ID_TIPO_SERVICIO == 12 || cotizacion.ID_TIPO_SERVICIO == 20">
+						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion&id_cotizacion={{cotizacion.ID}}" style="float: right;">
+							<i class="fa fa-bullseye"></i> Ver cotización
+						</a>	
+					</div>
+					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 16">
+						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_CIL&id_cotizacion={{cotizacion.ID}}" style="float: right;">
+							<i class="fa fa-bullseye"></i> Ver cotización
+						</a>	
+					</div>
                 </td>
 				        <td>
                   <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=registro_expediente&id={{cotizacion.ID}}&id_entidad=4" style="float: right;">
@@ -200,14 +207,14 @@
               </div>
             -->
             <div class="form-group form-vertical">
-						<label class="control-label col-md-12">Normas</label>
-            <div class="col-md-12">
+				<label class="control-label col-md-12">Normas</label>
+				<div class="col-md-12">
   						<multiple-autocomplete ng-model="normas_cotizacion"
   						object-property="ID_NORMA"
   						suggestions-arr="Normas">
   						</multiple-autocomplete>
-            </div>
-					</div>
+				</div>
+			</div>
               <!-- Esto se oculta con ng-show porque por el momento no se va a usar -->
               <div class="form-group form-vertical" ng-if='bandera==1' ng-show="false">
                 <label class="control-label col-md-12">Etapa<span class="required">*</span></label>
@@ -255,6 +262,13 @@
                   <input type="numeric" ng-model="cotizacion_insertar_editar.DESCUENTO" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
+			  <!-- Esta opción es solo para Certificacion de Igualdad Laboral -->
+			   <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID == 16">
+                <label class="control-label col-md-12">Aumento (%)</label>
+                <div class="col-md-12">
+                  <input type="numeric" ng-model="cotizacion_insertar_editar.AUMENTO" required="required" class="form-control col-md-7 col-xs-12">
+                </div>
+              </div>
               <!-- Esta opción es solo para integrales -->
               <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID == 20">
                 <label class="control-label col-md-12">Capacidad de realizar auditoría combinada (%)</label>
@@ -262,7 +276,18 @@
                   <input type="numeric" ng-model="cotizacion_insertar_editar.COMBINADA" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-
+			 <!-- Esta opción es solo para Certificacion de Igualdad Laboral -->
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID == 16">
+                <label class="control-label col-md-12">Actividad Econ&oacutemica </label>
+                <div class="col-md-12">
+                  <select id="complejidad" ng-model="cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA" class="form-control">
+                    <option value="" selected disabled>-- selecciona  la actividad económica --</option>
+                    <option value="Industria">Industria</option>
+                    <option value="Comercio" selected>Comercio</option>
+                    <option value="Servicios" selected>Servicios</option>
+                   </select>
+                </div>
+              </div>	
               <!-- Se oculta este control peus ya no se utiliza-->
               <div class="form-group form-vertical" ng-show="false">
                 <label class="control-label col-md-12">¿Es SG integral? <span class="required">*</span></label>
