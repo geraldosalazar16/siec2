@@ -145,7 +145,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                         <h4 class="modal-title" id="modalTituloInst">Seleccione un Instructor</h4>
                       </div>
                       <div class="modal-body" id="body-modalIns">
-                         <h2 style="color: #1c1c1c;">Curso seleccionado: {{ nombre_curso }}</h2>
+                         <h2 style="color: #1c1c1c;">Para Curso: {{ nombre_curso }}</h2>
                           <div class="input-group pull-right">
                           <span class="input-group-addon" >Buscar:</span>
                             <input class="form-control" type="search" ng-model="formData.searchText" style="width: 30%;">
@@ -155,14 +155,14 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                             <tr>
                                 <th>Datos del Instructor</th>
                                 <th>Roles</th>
-                                <th>Cursos</th>
+                                <th>Calif. Cursos</th>
                                 <th></th>
                             </tr>
                           </thead>
                           <tbody id="tbody-modal-explora-sitios">
                             <tr ng-repeat="instructor in instructoresCursos | filter:formData.searchText">
                                 <td td style="font-size: 12px;">
-                                    <strong>{{instructor.NOMBRE}}</strong><br>
+                                    <strong><label style="color: #1c1c1c;">{{instructor.NOMBRE}}</label></strong><br>
                                     <input type="text" id="lb-{{instructor.ID}}" value="{{instructor.NOMBRE}}" hidden>
                                     {{instructor.STATUS}}<br>
 

@@ -176,7 +176,7 @@ $scope.openModalMostarInst = function() {
         $("#txtinstructorerror").text("");
         if ($scope.formData.selectCurso.length != 0 && $scope.formData.fecha_inicio.length != 0 && $scope.formData.fecha_fin.length != 0) {
 
-            $scope.cargarInstructores($scope.formData.selectCurso);
+
             $.getJSON(global_apiserver + "/cursos/getById/?id=" + $scope.formData.selectCurso, function (response) {
                 $scope.id_curso = response.ID_CURSO;
                 $scope.nombre_curso = response.NOMBRE;
@@ -186,6 +186,7 @@ $scope.openModalMostarInst = function() {
 
             mytoggle("divInsertar");
             mytoggle("divInstructor");
+            $scope.cargarInstructores($scope.formData.selectCurso);
             $("#txtinstructorerror").text("");
         }
         else {
