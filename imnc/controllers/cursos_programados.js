@@ -141,6 +141,7 @@ $scope.openModalInsertarModificar = function(accion){
                 $scope.formData.minimo = response.PERSONAS_MINIMO;
                 $scope.id_instructor = response.ID_INSTRUCTOR;
                 $("#btnInstructor").attr("value",response.NOMBRE_AUDITOR.NOMBRE+" "+response.NOMBRE_AUDITOR.APELLIDO_PATERNO+" "+response.NOMBRE_AUDITOR.APELLIDO_MATERNO)
+                $("#btnInstructor").attr("class", "form-control btn btn-primary");
                 $scope.$apply();
                 ;
 
@@ -214,6 +215,7 @@ $scope.onSelectInstructor = function(instructor)
 
             $scope.id_instructor = instructor;
             $("#btnInstructor").attr("value", $("#lb-"+instructor).val());
+            $("#btnInstructor").attr("class", "form-control btn btn-primary");
             $("#btn-"+instructor).attr("disabled",false);
             $("#btn-"+instructor).text("seleccionar");
             $scope.cerrarInstructores();
@@ -253,6 +255,7 @@ function clear_modal_insertar_actualizar(){
     $scope.selectedInst = '';
     $scope.id_instructor = "";
     $("#btnInstructor").attr("value","Selecciona un Instructor");
+    $("#btnInstructor").attr("class", "form-control btn ");
 
     $("#txtcursoerror").text("");
     $("#txtinstructorerror").text("");
