@@ -30,6 +30,7 @@ app.controller('cursos_controller',['$scope',function($scope){
       $scope.formData.txtNombre = "";
       $scope.formData.tipoServicio = "";
       $scope.formData.selectNorma = "";
+      $scope.formData.checkActivo = true;
       $("#selectedListerror").text("");
       $("#tipoServicioerror").text("");
       $("#txtNombreerror").text("");
@@ -72,11 +73,16 @@ $scope.EditarCurso	=	function(curso_id){
      
 	
 	$.getJSON( global_apiserver + "/cursos/getById/?id="+curso_id, function( response ) {
-      
+
 	  $scope.formData.txtNombre = response.NOMBRE;
       $scope.formData.tipoServicio = response.ID_TIPO_SERVICIO;
       $scope.formData.selectNorma = response.ID_NORMA;
-      $scope.$apply(); 
+      if(response.ISACTIVO==1)
+      $scope.formData.checkActivo = true;
+      else
+      $scope.formData.checkActivo = false;
+
+      $scope.$apply();
       $scope.funcionTipoServicio();
 
       cargarNormastipoServicio(response.ID_TIPO_SERVICIO);
@@ -264,8 +270,11 @@ $scope.insertar	=	function(){
 	var curso = {
       NOMBRE:		          	$scope.formData.txtNombre,
 	  ID_TIPO_SERVICIO:			$scope.formData.tipoServicio,
-	  ID_NORMA:	                $scope.formData.selectNorma
+	  ID_NORMA:	                $scope.formData.selectNorma,
+      ISACTIVO:                 $scope.formData.checkActivo
+
   };
+	alert($scope.formData.checkActivo);
   $.post( global_apiserver + "/cursos/insert/", JSON.stringify(curso), function(respuesta){
       respuesta = JSON.parse(respuesta);
       if (respuesta.resultado == "ok") {
@@ -290,7 +299,8 @@ $scope.editar	=	function(){
       ID_CURSO:             $scope.id_curso,
       NOMBRE:		        $scope.formData.txtNombre,
 	  ID_TIPO_SERVICIO:		$scope.formData.tipoServicio,
-	  ID_NORMA:	            $scope.formData.selectNorma
+	  ID_NORMA:	            $scope.formData.selectNorma,
+      ISACTIVO:                 $scope.formData.checkActivo
   };
   $.post( global_apiserver + "/cursos/update/", JSON.stringify(curso), function(respuesta){
       respuesta = JSON.parse(respuesta);
