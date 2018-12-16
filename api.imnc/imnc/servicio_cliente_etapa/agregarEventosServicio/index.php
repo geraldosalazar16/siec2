@@ -82,13 +82,14 @@ if($id_servicio_cliente_etapa	!=	0){
 		$cotizacion = file_get_contents($ruta);
 		$cotizacion = json_decode($cotizacion);
 
-		$ciclo = 1;
+		//$ciclo = 1;
+		$ciclo = substr($REFERENCIA,1,1);
 		/* Cuando no es renovación solamente agrego los eventos al
 		ciclo actual del servicio */
 		if($ES_RENOVACION == "S"){
 			/* Si es renovación debo agregar los eventos al siguiente ciclo*/
 			//Determinar el siguiente ciclo
-			$ciclo = substr($REFERENCIA,1,1);
+			//$ciclo = substr($REFERENCIA,1,1);
 			$ciclo = (int)$ciclo+1;
 		}
 
@@ -97,7 +98,27 @@ if($id_servicio_cliente_etapa	!=	0){
 			//para cada trámite hay que agregar una auditoría en 
 			$dias_auditoria = $tramite->DIAS_AUDITORIA;
 			$tipo_auditoria = $tramite->ID_ETAPA_PROCESO;
-        
+			// Si el tipo servicio es Integral busco los dias para cada norma
+			if($ID_TIPO_SERVICIO == 20){
+				foreach($cotizacion[0]->NORMAS as $normasint){
+					if($tipo_auditoria == 2){
+						$dia_int_norm = 1;
+					}
+					else{
+						$dia_int_norm = $normasint->DIAS;
+					}
+					$id1 = $database->update("SCE_NORMAS", [ 
+						"DIAS_AUDITOR" => $dia_int_norm,
+						"ID_TIPO_AUDITORIA" => $tipo_auditoria,
+						"CICLO" => $ciclo],[
+					"AND"=>["ID_SCE" => $id_servicio_cliente_etapa,"ID_NORMA" => $normasint->ID_NORMA,"ID_TIPO_AUDITORIA" => 0,"CICLO" => 0]
+					]);
+					valida_error_medoo_and_die();
+				}
+				if($tipo_auditoria == 2){
+					$dias_auditoria = count($cotizacion[0]->NORMAS);
+				}
+			}
 			//Buscar los sitios
 			$sitios = $database->select("COTIZACION_SITIOS", "*", ["ID_COTIZACION"=>$tramite->ID]);
 			valida_error_medoo_and_die();
@@ -149,13 +170,14 @@ if($id_servicio_cliente_etapa	!=	0){
 			$cotizacion = file_get_contents($ruta);
 			$cotizacion = json_decode($cotizacion);
 
-			$ciclo = 1;
+			//$ciclo = 1;
+			$ciclo = substr($REFERENCIA,1,1);
 			/* Cuando no es renovación solamente agrego los eventos al
 			ciclo actual del servicio */
 			if($ES_RENOVACION == "S"){
 				/* Si es renovación debo agregar los eventos al siguiente ciclo*/
 				//Determinar el siguiente ciclo
-				$ciclo = substr($REFERENCIA,1,1);
+				//$ciclo = substr($REFERENCIA,1,1);
 				$ciclo = (int)$ciclo+1;
 			}
 			//Recorro todos los trámites e inserto sus auditorías correspondientes
