@@ -29,6 +29,9 @@
 			//
 			$COUNT_SITIOS["TOTAL_SITIOS"] = $database->count("COTIZACION_SITIOS_CIL", ["AND" => ["ID_COTIZACION"=>$ID_COTIZACION, "SELECCIONADO"=>1]]); 
 			valida_error_medoo_and_die(); 
+			if($COUNT_SITIOS["TOTAL_SITIOS"]>1){
+				$COUNT_SITIOS["SITIOS_ID"] = $database->select("COTIZACION_SITIOS_CIL","*", ["AND" => ["ID_COTIZACION"=>$ID_COTIZACION, "SELECCIONADO"=>1]]); 
+			}
 /*			
 			$SITIO_AUX_ACTIVIDAD = $database->query("
 				SELECT COUNT(*) AS COUNT_ACTIVIDAD, ID_ACTIVIDAD

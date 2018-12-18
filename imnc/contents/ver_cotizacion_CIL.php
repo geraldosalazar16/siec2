@@ -102,7 +102,8 @@
               <tr class="headings">
                 <th class="column-title">Tipo</th>
                 <th class="column-title">Días de Auditoría</th>
-                <th class="column-title">Descuento del Día Auditor</th>
+				<th class="column-title">Personas a encuestar</th>
+                <th class="column-title">Descuento</th>
 				<th class="column-title">Aumento</th>
 	<!--			<th class="column-title">Reduccion</th>	-->
                 <th class="column-title">Costo</th>
@@ -114,7 +115,13 @@
             <tbody>
               <tr class="even pointer" ng-repeat="tramites_cotizacion in arr_tramites_cotizacion">
                 <td>{{tramites_cotizacion.TIPO }}</td>
-                <td>{{tramites_cotizacion.DIAS_AUDITORIA }}</td>
+                <td>Días total: <b>{{tramites_cotizacion.DIAS_AUDITORIA }}</b><br>
+				Días base: <b>{{tramites_cotizacion.DIAS_BASE}}</b><br>
+				Días encuesta: <b>{{tramites_cotizacion.DIAS_ENCUESTA}}</b><br>
+				Días multisitio: <b>{{tramites_cotizacion.DIAS_MULTISITIO}}</b><br>
+				
+				</td>
+				<td>{{tramites_cotizacion.PERSONAS_ENCUESTA}} de {{tramites_cotizacion.TOTAL_EMPLEADOS_TRAMITE}}</td>
                 <td>{{tramites_cotizacion.DESCUENTO != null? tramites_cotizacion.DESCUENTO+"%" : "--" }}</td>
 				<td>{{tramites_cotizacion.AUMENTO != null? tramites_cotizacion.AUMENTO+"%" : "--" }}</td>
 	<!--			<td>{{tramites_cotizacion.REDUCCION != null? tramites_cotizacion.REDUCCION+"%" : "--" }}</td> -->
@@ -161,10 +168,48 @@
                     ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'>
                       <i class="fa fa-plus"> </i> Agregar sitio
                     </button>
+					<button type="button" id="btnInsertarTarifa" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_tarifa_adicional_insertar()'
+                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'>
+                      <i class="fa fa-plus"> </i> Agregar Tarifa Adicional
+                    </button>
                   </li>
               </ul>
             </div>
 
+          <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
+            <thead>
+              <tr class="headings">
+                <th class="column-title">#</th>
+                <th class="column-title">Descripción</th>
+                <th class="column-title">Tarifa Adicional</th>
+                <th class="column-title">Cantidad</th>
+                <th class="column-title">Subtotal Tarifa Adicional</th>
+                <th class="column-title"></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr class="even pointer" ng-repeat="tarifa_cotizacion in arr_tarifa_adicional_cotizacion">
+                <td>{{$index + 1}}</td>
+                <td>{{tarifa_cotizacion.DESCRIPCION}}</td>
+                <td>{{tarifa_cotizacion.TARIFA}}</td>
+                <td>{{tarifa_cotizacion.CANTIDAD}}</td>
+                <td>{{tarifa_cotizacion.SUBTOTAL}}</td>
+                <td>
+                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" ng-click="modal_tarifa_adicional_eliminar(tarifa_cotizacion.ID)"
+                    ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"
+                    ng-click='modal_tarifa_adicional_editar(tarifa_cotizacion.ID)' ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'>
+                    <i class="fa fa-edit"> </i> Editar Tarifa Adicional
+                  </button>
+                </td>
+
+              </tr>
+            </tbody>
+
+          </table>
 
           <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
             <thead>
@@ -242,7 +287,7 @@
                       Factor de Integración: {{obj_cotizacion_tramite.FACTOR_INTEGRACION}}%<br>
                       Total Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA_INTG}}<br>
                     </div>
-                    Tarifa de Día Auditor <span style="font-size: 12px;"> *c/ descuento</span>: {{obj_cotizacion_tramite.TARIFA_DES | currency}}<br>
+                    Tarifa de Día Auditor<!-- <span style="font-size: 12px;"> *c/ descuento</span>-->: {{obj_cotizacion_tramite.TARIFA | currency}}<br>
 					Costo Inicial: {{obj_cotizacion_tramite.COSTO_INICIAL | currency}}<br>
                     Costo de auditoría con descuento : {{obj_cotizacion_tramite.COSTO_DESCUENTO | currency}}<br>
                     Viáticos: {{obj_cotizacion_tramite.VIATICOS | currency}}<br>
@@ -387,6 +432,42 @@
     </div>
   </div>
 
+ <!-- Modal insertar/actualizar datos generales de la tarifa adicional-->
+  <div class="modal fade" id="modalInsertarActualizarTarifaAdicional" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="modalTituloTarifaAdicional">Insertar/Actualizar</h4>
+        </div>
+        <div class="modal-body">
+            <form id="demo-form2" style="margin-top: -20px;">
+              <div class="form-group">
+                <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa Adicional<span class="required">*</span></label>
+                <div class="col-md-12">
+                  <select ng-model="obj_tarifa_adicional.ID_TARIFA_ADICIONAL" required="required" class="form-control"
+                  ng-options="item_tarifa.ID as item_tarifa.DESCRIPCION for item_tarifa in arr_tarifa_adicional">
+                    <option value="" selected disabled>---Seleccione una tarifa---</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Cantidad<span class="required">*</span></label>
+                <div class="col-md-12">
+                  <input type="numeric" ng-model="obj_tarifa_adicional.CANTIDAD" required="required" class="form-control col-md-7 col-xs-12">
+                </div>
+              </div>
+
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" id="btnGuardarUsuario" ng-click="tarifa_adicional_guardar()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
   <!-- Modal insertar/actualizar datos generales de la cotización-->
@@ -488,7 +569,7 @@
               </div>
 
               <div class="form-group form-vertical">
-                <label class="control-label col-md-12">Descuento al Día Auditor(%)</label>
+                <label class="control-label col-md-12">Descuento(%)</label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="tramite_insertar_editar.DESCUENTO" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
@@ -824,7 +905,7 @@
         <h4 class="modal-title" id="modalTituloGenerarCotizacion">Generar Cotizacion</h4>
       </div>
       <div class="modal-body">
-		<form name="exampleFormGenCotizacion" >
+		<form name="exampleFormGenCotizacion" target="VentanaGenerarPDF_CIL" method="POST" action="./generar/pdf/cotizacion_propuesta_cil/index.php">
 				<div  class='form-group'>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<label class="control-label col-md-4 col-xs-4 col-sm-4">Trámite</label>
@@ -839,7 +920,7 @@
 
 				<div class='form-group' ng-repeat="x in arr_tramites_cotizacion" ng-init="tram_index = $index" >
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
-						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TIPO" required ng-class="{ error: exampleFormGenCotizacion.tramite.x.$error.required && !exampleForm.$pristine}"  >
+						<input type="text" class="form-control" id="formDataGenCotizacion.tramites[$index].TIPO"  ng-model="formDataGenCotizacion.tramites[$index].TIPO" required ng-class="{ error: exampleFormGenCotizacion.tramite.x.$error.required && !exampleForm.$pristine}"  >
 					</div>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TRAMITE_COSTO" required ng-class="{ error: exampleFormGenCotizacion.monto.x.$error.required && !exampleForm.$pristine}"  >

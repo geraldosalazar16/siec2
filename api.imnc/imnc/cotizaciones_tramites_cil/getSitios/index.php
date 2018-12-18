@@ -98,6 +98,18 @@ else if($cotizacion[0]["BANDERA"] != 0){
 $cotizacion_sitios = $database->select("COTIZACION_SITIOS_CIL", ["[>]".$tabla_entidad => ["ID_DOMICILIO_SITIO" => "ID"]], $campos, ["ID_COTIZACION"=>$cotizacio_tramite["ID"]]);
 valida_error_medoo_and_die();
 
+$campos_t = [
+	"COTIZACION_TARIFA_ADICIONAL.ID",
+	"COTIZACION_TARIFA_ADICIONAL.ID_TRAMITE",
+	"COTIZACION_TARIFA_ADICIONAL.ID_TARIFA_ADICIONAL",
+	"COTIZACION_TARIFA_ADICIONAL.CANTIDAD",
+	"TARIFA_COTIZACION_ADICIONAL.DESCRIPCION",
+	"TARIFA_COTIZACION_ADICIONAL.TARIFA"
+];
+
+$cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
+	$campos_t, ["ID_TRAMITE"=>$cotizacio_tramite["ID"]]);
+valida_error_medoo_and_die();
 
 
 //Multiplicador para el calculo de sitios
@@ -118,7 +130,7 @@ $obj_cotizacion["TARIFA_TOTAL"] = $tarifa;
 
 $obj_cotizacion["COUNT_SITIOS"] = count_sitios($id, $const_sitio);
 $obj_cotizacion["COTIZACION_SITIOS"] = $cotizacion_sitios;
-//$obj_cotizacion["COTIZACION_TARIFA_ADICIONAL"] = $cotizacion_tarifa_adicional;
+$obj_cotizacion["COTIZACION_TARIFA_ADICIONAL"] = $cotizacion_tarifa_adicional;
 
 //----- RESTRICCIONES -------
 $obj_cotizacion["RESTRICCIONES"] = array(); 
@@ -131,13 +143,13 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 	array_push($obj_cotizacion["RESTRICCIONES"], "Los sitios seleccionados deben ser por lo menos " . $obj_cotizacion["COUNT_SITIOS"]["SITIOS_A_VISITAR"]);
 }
 //---- FIN: RESTRICCIONES -------
-/*	$total_tarifa_adicional = 0;
+	$total_tarifa_adicional = 0;
 	for ($i=0; $i < count($obj_cotizacion["COTIZACION_TARIFA_ADICIONAL"]); $i++) { 
 		$subtotal = $obj_cotizacion["COTIZACION_TARIFA_ADICIONAL"][$i]["TARIFA"] * $obj_cotizacion["COTIZACION_TARIFA_ADICIONAL"][$i]["CANTIDAD"];
 		$obj_cotizacion["COTIZACION_TARIFA_ADICIONAL"][$i]["SUBTOTAL"] = $subtotal;
 		$total_tarifa_adicional += $subtotal;
 	}
-*/
+
 	$total_dias_auditoria = 0;
 	$total_empleados = 0;
 	$dias = 0;
@@ -235,18 +247,22 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 	$obj_cotizacion["TOTAL_EMPLEADOS"] = $total_empleados;
 	$obj_cotizacion["DIAS_BASE"] = $dias;
 	$obj_cotizacion["DIAS_ENCUESTA"] = $dias_encuesta;
+	$obj_cotizacion["PERSONAS_ENCUESTA"] = $tam_muestra;
 	$obj_cotizacion["DIAS_MULTISITIO"] = $cotizacio_tramite["DIAS_MULTISITIO"];
 	$obj_cotizacion["TOTAL_DIAS_AUDITORIA"] = $total_dias_auditoria;
+	$obj_cotizacion["TARIFA_ADICIONAL"] = $total_tarifa_adicional;
 	
 	$obj_cotizacion["VIATICOS"] = $cotizacio_tramite["VIATICOS"];
 	$obj_cotizacion["TARIFA_DES"] = (floatval($tarifa['TARIFA']) * (1-($cotizacio_tramite["DESCUENTO"]/100)+($cotizacio_tramite["AUMENTO"]/100)) );
-
-	$costo_inicial = ($total_dias_auditoria * floatval($tarifa['TARIFA']) );
+	$obj_cotizacion["TARIFA"] = $tarifa['TARIFA'];
+	
+	//$costo_inicial = ($total_dias_auditoria * floatval($tarifa['TARIFA']) );
+	$costo_inicial = (($total_dias_auditoria - $dias_encuesta)* floatval($tarifa['TARIFA']) +$dias_encuesta*2000);
 	$costo_desc = ($costo_inicial * (1-($cotizacio_tramite["DESCUENTO"]/100) + ($cotizacio_tramite["AUMENTO"]/100) ) );
 	//$costo_total_red_amp = $costo_desc*(1-($cotizacio_tramite["REDUCCION"]/100) + ($cotizacio_tramite["AUMENTO"]/100));
 	$obj_cotizacion["COSTO_INICIAL"] = $costo_inicial;
 	$obj_cotizacion["COSTO_DESCUENTO"] = $costo_desc;
-	$obj_cotizacion["COSTO_TOTAL"] = $costo_desc + $cotizacio_tramite["VIATICOS"];
+	$obj_cotizacion["COSTO_TOTAL"] = $costo_desc + $cotizacio_tramite["VIATICOS"] + $total_tarifa_adicional;
 	
 	$obj_cotizacion["NORMAS"] = $normas;
 print_r(json_encode($obj_cotizacion)); 
