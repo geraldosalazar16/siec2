@@ -45,6 +45,18 @@ $scope.formData = {};
       function (response){});
   }
 
+  function  fill_cmb_tarifa_adicional(){
+    $http.get(  global_apiserver + "/tarifa_cotizacion_adicional/getAll/").then(function( response ) {
+      $scope.arr_tarifa_adicional = response.data.map(function(item){
+          return {
+            ID : item.ID,
+            DESCRIPCION : item.DESCRIPCION + " - $" + item.TARIFA 
+          };
+      });
+      $scope.chkActv = false;
+    }
+    ,function (response){});
+  }
 
   $scope.fill_select_estatus = function(seleccionado){
     //recibe la url del php que se ejecutará
@@ -203,6 +215,7 @@ $scope.formData = {};
         fill_select_tipo_servicio();
         fill_checkbox_cambio();
         fill_select_clientes();
+		fill_cmb_tarifa_adicional();
 		
         if($scope.obj_cotizacion.ID_COTIZACION_ANT != null){
           if($scope.obj_cotizacion.TOTAL_COTIZACION_ANT == null){
@@ -414,6 +427,8 @@ $scope.formData = {};
 //GENERAR COTIZACION
   $scope.modal_cotizacion_generar = function(){
 		
+		$("#id_prospecto").val($scope.obj_cotizacion.ID_PROSPECTO);
+		$("#id_producto").val('');
 		Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
 		Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
 		Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
@@ -439,9 +454,12 @@ $scope.formData = {};
   }
   /*==========================================================================*/
 	$scope.submitFormGenCotizacion = function(formDataGenCotizacion){
+	
+		//window.open('', 'VentanaGenerarPDF_CIL');
+		//document.getElementById('formDataGenCotizacion').submit();
 		//var url = "./generar/pdf/cotizacion_propuesta/index.php?datos="+JSON.stringify(formDataGenCotizacion);
 		$scope.id_producto="";
-		var url = "./generar/pdf/cotizacion_propuesta/index.php?id_prospecto="+$scope.obj_cotizacion.ID_PROSPECTO+"&id_producto="+$scope.id_producto+"&id_contacto="+$scope.formDataGenCotizacion.contactoprospecto1+"&id_domicilio="+$scope.formDataGenCotizacion.domicilioprospecto1+"&id_cotizacion="+$scope.obj_cotizacion.ID+"&tramites="+JSON.stringify(formDataGenCotizacion.tramites)+"&descripcion="+JSON.stringify(formDataGenCotizacion.descripcion);
+		var url = "./generar/pdf/cotizacion_propuesta_cil/index.php?id_prospecto="+$scope.obj_cotizacion.ID_PROSPECTO+"&id_producto="+$scope.id_producto+"&id_contacto="+$scope.formDataGenCotizacion.contactoprospecto1+"&id_domicilio="+$scope.formDataGenCotizacion.domicilioprospecto1+"&id_cotizacion="+$scope.obj_cotizacion.ID+"&tramites="+JSON.stringify(formDataGenCotizacion.tramites)+"&descripcion="+JSON.stringify(formDataGenCotizacion.descripcion);
 		window.open(url,'_blank');
 		$("#modalGenerarCotizacion").modal("hide");
 	}
@@ -532,6 +550,43 @@ $scope.formData = {};
         accion_tarifa = "editar";
         $('#modalTituloTarifaAdicional').html("Editar tarifa adicional");
         $('#modalInsertarActualizarTarifaAdicional').modal('show');
+      } 
+      else  {
+        console.log("No hay datos");
+      }
+    }).error(function(response) {
+      console.log("Error al generar petición: " + response);
+    });
+  }
+
+   $scope.tarifa_adicional_guardar = function(){
+    $scope.obj_tarifa_adicional.ID_TRAMITE = current_tramite;
+    $scope.obj_tarifa_adicional.ID_USUARIO= sessionStorage.getItem("id_usuario");
+
+    if (accion_tarifa == 'insertar') {
+      var http_request = {
+        method: 'POST',
+        url: global_apiserver + "/cotizacion_tarifa_adicional/insert/",
+        data: angular.toJson($scope.obj_tarifa_adicional)
+      };
+    }
+    else if (accion_tarifa == 'editar'){
+      var http_request = {
+        method: 'POST',
+        url: global_apiserver + "/cotizacion_tarifa_adicional/update/",
+        data: angular.toJson($scope.obj_tarifa_adicional)
+      };
+    }
+    $http(http_request).success(function(data) {
+      if(data) { 
+        if (data.resultado == "ok") {
+           notify("Éxito", "Se han guardado los cambios", "success");
+           $('#modalInsertarActualizarTarifaAdicional').modal('hide');
+           $scope.despliega_cotizacion();
+        }
+        else{
+          notify("Error", data.mensaje, "error");
+        }
       } 
       else  {
         console.log("No hay datos");
@@ -752,6 +807,28 @@ $scope.formData = {};
     });
   }
 
+   $scope.modal_tarifa_adicional_eliminar = function(id){
+    var http_request = {
+    method: 'GET',
+    url: global_apiserver + "/cotizacion_tarifa_adicional/delete/?id="+id,
+    };
+    $http(http_request).success(function(data) {
+      if(data) { 
+        if (data.resultado == "ok") {
+           notify("Éxito", "Se han eliminado el registro", "success");
+           $scope.despliega_cotizacion();
+        }
+        else{
+          notify("Error", data.mensaje, "error");
+        }
+      } 
+      else  {
+        console.log("No hay datos");
+      }
+    }).error(function(response) {
+      console.log("Error al generar petición: " + response);
+    });
+  }
 
   $scope.modal_cotizacion_sitio_eliminar = function(id_cotizacion_sitio){
     var http_request = {

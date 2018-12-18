@@ -367,15 +367,27 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 				}
 				//AQUI VENDRIA LA PARTE DE CODIGO QUE TIENE Q VER CON TARIFA ADICIONAL PERO COMO NO LO HAN PEDIDO PUES LO DEJAMOS EN BLANCO
 				//{..........}		
+				
+				$cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
+						"*", ["ID_TRAMITE"=>$tramite_item["ID"]]);
+				valida_error_medoo_and_die();
+
+				$total_tarifa_adicional = 0;
+				for ($i=0; $i < count($cotizacion_tarifa_adicional); $i++) {
+					$subtotal = $cotizacion_tarifa_adicional[$i]["TARIFA"] * $cotizacion_tarifa_adicional[$i]["CANTIDAD"];
+					$total_tarifa_adicional += $subtotal;
+				}
 				//AQUI LA PARTE QUE TIENE QUE VER CON LA COTIZACION POR SITIOS
 				$cotizacion_sitios = $database->select("COTIZACION_SITIOS_CIL", "*", ["ID_COTIZACION"=>$tramite_item["ID"]]);
 				valida_error_medoo_and_die();
 
 				$total_dias_auditoria = 0;
 				$total_personas_tramite =0;
+				
 						for ($i=0; $i < count($cotizacion_sitios) ; $i++) {
 							if ($cotizacion_sitios[$i]["SELECCIONADO"] == 1) {
 								$total_personas_tramite +=$cotizacion_sitios[$i]["CANTIDAD_PERSONAS"];
+								
 							}
 					
 						}
@@ -406,19 +418,24 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 												"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$tam_muestra,
 											]
 									]);
-						valida_error_medoo_and_die();		
+						valida_error_medoo_and_die();	
 						
-						//AQUI LE APLICO EL FACTOR DE REDUCCION Y AMPLIACION QUE SE CALCULA PARA EL TRAMITE
 						$total_dias_auditoria=$dias_base+$dias_encuesta+$tramite_item["DIAS_MULTISITIO"];
 						//$total_dias_auditoria = round($total_dias_auditoria * (1 - ($tramite_item["REDUCCION"]/100) + ($tramite_item["AUMENTO"]/100) ));
-						$costo_inicial = ($total_dias_auditoria * floatval($tarifa['TARIFA']) );
+						$costo_inicial = (($total_dias_auditoria - $dias_encuesta)* floatval($tarifa['TARIFA']) +$dias_encuesta*2000);
 						//$costo_reducc = ($costo_inicial * (1 - ($tramite_item["REDUCCION"]/100) + ($tramite_item["AUMENTO"]/100) ));
 						$costo_desc = ($costo_inicial * (1-($tramite_item["DESCUENTO"]/100) + ($tramite_item["AUMENTO"]/100)));
 						//$costo_total_red_amp = $costo_desc*(1-($tramite_item["REDUCCION"]/100) + ($tramite_item["AUMENTO"]/100));
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_BASE"] = $dias_base;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_ENCUESTA"] = $dias_encuesta;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_MULTISITIO"] = $tramite_item["DIAS_MULTISITIO"];
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_AUDITORIA"] = $total_dias_auditoria;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["PERSONAS_ENCUESTA"] = $tam_muestra;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TOTAL_EMPLEADOS_TRAMITE"] = $total_personas_tramite;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_ADICIONAL"] = $total_tarifa_adicional;
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO"] = $costo_inicial;
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_DES"] = $costo_desc;
-						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"] = $costo_desc + $tramite_item["VIATICOS"];
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"] = $costo_desc + $tramite_item["VIATICOS"]+$total_tarifa_adicional;
 		
 						$total_dias_cotizacion += $total_dias_auditoria;
 						$total_cotizacion += $cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"];
