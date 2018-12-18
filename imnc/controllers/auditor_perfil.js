@@ -1594,6 +1594,7 @@ function listener_btn_nuevo_calif_curso(){
         fec_fin = fec_fin.substring(6,10)+fec_fin.substring(3,5)+fec_fin.substring(0,2);
         var curso_calif = {
             ID:parseInt(id_calif_curso),
+            ID_PERSONAL_TECNICO_CALIFICACION:parseInt(id_calif),
             ID_CURSO:$("#selectCurso").val(),
             FECHA_INICIO:fec_ini,
             FECHA_FIN:fec_fin

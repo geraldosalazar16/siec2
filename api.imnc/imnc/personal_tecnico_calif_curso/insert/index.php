@@ -52,6 +52,7 @@ if (!checkdate($mes , $dia, $anhio)){
 	imprime_error_and_die("La fecha de inicio no es válida");
 }
 
+
 $FECHA_FIN = $objeto->FECHA_FIN;
 valida_parametro_and_die($FECHA_FIN, "Es necesario capturar una fecha de fin");
 if (strlen($FECHA_FIN) != 8) {
@@ -66,18 +67,29 @@ if (!checkdate($mes , $dia, $anhio)){
 if ($FECHA_INICIO > $FECHA_FIN) {
 	imprime_error_and_die("La fecha de inicio no puede ser después de la fecha final");
 }
-
-
-$idPTCC = $database->insert("PERSONAL_TECNICO_CALIF_CURSOS", [
-	"ID_PERSONAL_TECNICO_CALIFICACION" => $ID_PERSONAL_TECNICO_CALIFICACION,
-	"ID_CURSO" => $ID_CURSO,
-	"FECHA_INICIO" => $FECHA_INICIO,
-	"FECHA_FIN" => $FECHA_FIN
-]);
+$count = $database->count("PERSONAL_TECNICO_CALIF_CURSOS","*",["AND"=>["ID_CURSO"=>$ID_CURSO,"ID_PERSONAL_TECNICO_CALIFICACION"=>$ID_PERSONAL_TECNICO_CALIFICACION]]);
 valida_error_medoo_and_die();
+if($count==0)
+{
+    $idPTCC = $database->insert("PERSONAL_TECNICO_CALIF_CURSOS", [
+        "ID_PERSONAL_TECNICO_CALIFICACION" => $ID_PERSONAL_TECNICO_CALIFICACION,
+        "ID_CURSO" => $ID_CURSO,
+        "FECHA_INICIO" => $FECHA_INICIO,
+        "FECHA_FIN" => $FECHA_FIN
+    ]);
+    valida_error_medoo_and_die();
+    $respuesta['resultado']="ok";
+}
+else{
+    $respuesta['resultado']="error";
+    $respuesta['mensaje']="Ese curso ya existe";
+}
 
-$respuesta['resultado']="ok";
-$respuesta['id']=$idPTCC;
+
+
+
+
+
 print_r(json_encode($respuesta));
 
 

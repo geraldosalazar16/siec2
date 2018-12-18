@@ -37,6 +37,10 @@ $objeto = json_decode($json); // Lo transforma de JSON a un objeto de PHP
 $ID = $objeto->ID;
 valida_parametro_and_die($ID, "Falta ID");
 
+
+$ID_PERSONAL_TECNICO_CALIFICACION = $objeto->ID_PERSONAL_TECNICO_CALIFICACION;
+valida_parametro_and_die($ID_PERSONAL_TECNICO_CALIFICACION, "Falta ID_PERSONAL_TECNICO_CALIFICACION");
+
 $ID_CURSO = $objeto->ID_CURSO;
 valida_parametro_and_die($ID_CURSO, "Es necesario seleccionar un curso");
 
@@ -68,15 +72,24 @@ if ($FECHA_INICIO > $FECHA_FIN) {
 	imprime_error_and_die("La fecha de inicio no puede ser después de la fecha final");
 }
 
-
-$id = $database->update("PERSONAL_TECNICO_CALIF_CURSOS", [
-	"ID_CURSO" => $ID_CURSO,
-	"FECHA_INICIO" => $FECHA_INICIO,
-	"FECHA_FIN" => $FECHA_FIN,
-], ["ID"=>$ID]);
-
+$count = $database->count("PERSONAL_TECNICO_CALIF_CURSOS","*",["AND"=>["ID_CURSO"=>$ID_CURSO,"ID_PERSONAL_TECNICO_CALIFICACION"=>$ID_PERSONAL_TECNICO_CALIFICACION]]);
 valida_error_medoo_and_die();
+if($count==0) {
+    $id = $database->update("PERSONAL_TECNICO_CALIF_CURSOS", [
+        "ID_CURSO" => $ID_CURSO,
+        "FECHA_INICIO" => $FECHA_INICIO,
+        "FECHA_FIN" => $FECHA_FIN,
+    ], ["ID" => $ID]);
 
+    valida_error_medoo_and_die();
+
+}
+else{
+    $id = $database->update("PERSONAL_TECNICO_CALIF_CURSOS", [
+        "FECHA_INICIO" => $FECHA_INICIO,
+        "FECHA_FIN" => $FECHA_FIN,
+    ], ["ID" => $ID]);
+}
 $respuesta['resultado']="ok";
 print_r(json_encode($respuesta));
 

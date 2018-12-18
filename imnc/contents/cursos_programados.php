@@ -49,7 +49,9 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                         <button type="button" class="btn btn-green btn-sm "> <span class="glyphicon glyphicon-time"></span>  Duración: {{txtDuracion}}</button>
                     </div>
                     <div class="modal-body" style="margin: 20px; border-radius:10px; background-color: rgba(255,250,49,0.23);">
-
+                            <div class="form-group">
+                                <label>Referencia: {{txtReferencia}}</label>
+                            </div>
                             <div class="form-group">
                                 <label>Curso: {{txtCurso}}</label>
                             </div>
@@ -84,9 +86,17 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                         <form name="exampleForm">
 
                             <div class="form-group">
+								<label for="referencia">Referencia<span class="required">*</span></label>
+								<div>
+									<input type="text" class="form-control" id="referencia" name="referencia" ng-model="formData.referencia"  required
+                                           disabled  ng-class="{ error: exampleForm.txtfechaI.$error.required && !exampleForm.$pristine}" >
+									<span id="referenciaerror" class="text-danger" ></span>
+								</div>
+							</div>
+                            <div class="form-group">
                                 <label for="select_curso">Curso<span class="required">*</span></label>
                                 <select ng-model="formData.selectCurso" ng-options="curso.ID_CURSO as curso.NOMBRE for curso in cursos"
-                                        class="form-control" id="selectCurso" name="selectCurso" ng-change='onSelectedCurso(formData.selectCurso)' required
+                                        class="form-control" id="selectCurso" name="selectCurso" ng-change='onSelectedCurso()' required
                                         ng-class="{ error: exampleForm.select_curso.$error.required && !exampleForm.$pristine}"  >
                                     <option value="">---Seleccione un Curso---</option>
                                 </select>
@@ -96,7 +106,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
 								<label for="txtfechaI">Fecha Inicio<span class="required">*</span></label>
 								<div>
 									<input type="text" class="form-control" id="fecha_inicio" name="fecha_inicio" ng-model="formData.fecha_inicio" placeholder="dia / mes / año"  required
-                                           ng-class="{ error: exampleForm.txtfechaI.$error.required && !exampleForm.$pristine}" >
+                                            ng-class="{ error: exampleForm.txtfechaI.$error.required && !exampleForm.$pristine}" >
 									<span id="fechainicioerror" class="text-danger"></span>
 								</div>
 							</div>
