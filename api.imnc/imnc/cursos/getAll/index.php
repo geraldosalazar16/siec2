@@ -39,6 +39,14 @@ for ($i=0; $i < count($cursos) ; $i++) {
 	$tipo= $database->get("TIPOS_SERVICIO", "NOMBRE", ["ID"=>$cursos[$i]["ID_TIPO_SERVICIO"]]);
 	valida_error_medoo_and_die();
 	$cursos[$i]["NOMBRE_TIPO_SEVICIO"] = $tipo;
+	if($cursos[$i]["ISACTIVO"])
+    {
+        $cursos[$i]["ISACTIVO"] = "habilitado";
+    }
+    else
+    {
+        $cursos[$i]["ISACTIVO"] = "deshabilitado";
+    }
 }
 
 print_r(json_encode($cursos));

@@ -37,11 +37,15 @@ valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un módulo
 $ID_NORMA	= $objeto->ID_NORMA; 
 valida_parametro_and_die($ID_NORMA, "Es necesario seleccionar una norma");
 
+$ISACTIVO = $objeto->ISACTIVO;
+
+
 
 $id_sce = $database->insert("CURSOS", [ 
 	"NOMBRE" => $NOMBRE, 
 	"ID_TIPO_SERVICIO"=>	$ID_TIPO_SERVICIO,
-	"ID_NORMA" => $ID_NORMA 
+	"ID_NORMA" => $ID_NORMA ,
+	"ISACTIVO" => $ISACTIVO
 //	
 ]); 
 valida_error_medoo_and_die(); 

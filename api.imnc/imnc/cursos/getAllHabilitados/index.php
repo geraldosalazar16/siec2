@@ -24,15 +24,32 @@ function valida_error_medoo_and_die(){
 	}
 }
 
-$id = $_REQUEST["id"];
+$respuesta = array();
 
-
-$cursos = $database->select("CURSOS","*",["AND"=>["ID_TIPO_SERVICIO"=>$id,"ISACTIVO"=>"1"]]);
+$cursos = $database->select("CURSOS", "*" , ["ISACTIVO"=>"1","ORDER"=>"NOMBRE"]);
 valida_error_medoo_and_die();
 
+for ($i=0; $i < count($cursos) ; $i++) { 
+	if (!is_null(cursos[$i]["ID_NORMA"])) {
+		$norma = $database->get("NORMAS", "NOMBRE", ["ID"=>$cursos[$i]["ID_NORMA"]]);
+		valida_error_medoo_and_die();
+
+		$cursos[$i]["NOMBRE_NORMA"] = $norma;
+	}
+	$tipo= $database->get("TIPOS_SERVICIO", "NOMBRE", ["ID"=>$cursos[$i]["ID_TIPO_SERVICIO"]]);
+	valida_error_medoo_and_die();
+	$cursos[$i]["NOMBRE_TIPO_SEVICIO"] = $tipo;
+	if($cursos[$i]["ISACTIVO"])
+    {
+        $cursos[$i]["ISACTIVO"] = "habilitado";
+    }
+    else
+    {
+        $cursos[$i]["ISACTIVO"] = "deshabilitado";
+    }
+}
 
 print_r(json_encode($cursos));
-//print_r(json_encode($cursos));
 
 
 //-------- FIN --------------

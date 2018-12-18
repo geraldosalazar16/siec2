@@ -13,15 +13,21 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
     $scope.global_calendar;
     $scope.id_evento_select = '';
     $scope.date_evento_select = '';
+    $scope.selectedInst = '';
+    $scope.instructoresCursos=[];
+    $scope.id_instructor = "";
+
 
 
 // ===================================================================
-// ***** 			FUNCION PARA CARGAR LOS CURSOS				 *****
+// ***** 			FUNCION PARA CARGAR LOS INSTRUCTORES    	 *****
 // ===================================================================
-    $scope.cargarInstructores= function(){
-		$http.get(  global_apiserver + "/personal_tecnico/getAll/")
+    $scope.cargarInstructores= function(seletcCurso){
+        $(".loading").show();
+		$http.get(global_apiserver + "/cursos_programados/getInstructores/?id="+seletcCurso)
 		.then(function( response ){
-			$scope.instructores = response.data;
+			$scope.instructoresCursos = response.data;
+            $(".loading").hide();
 		});
 	}
 
@@ -31,7 +37,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
 // ***** 			FUNCION PARA CARGAR LOS CURSOS				 *****
 // ===================================================================
     $scope.cargarCursos = function(){
-		$http.get(  global_apiserver + "/cursos/getAll/")
+		$http.get(  global_apiserver + "/cursos/getAllHabilitados/")
 		.then(function( response ){
 			$scope.cursos = response.data;
 		});
@@ -68,11 +74,11 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
 // =======================================================================================
     $scope.actualizaDatos = function() {
         $.getJSON(global_apiserver + "/cursos_programados/getById/?id=" + $scope.id_evento_select, function (response) {
-            var dias = "";
+            var dias = parseInt(response.DIAS)+1;
             if (response.DIAS == 0)
-                dias = ' 1 día ';
+                dias = dias+' día ';
             else
-                dias = ' ' + response.DIAS+1 + ' días ';
+                dias = dias + ' días ';
             $scope.txtDuracion = dias;
             $scope.txtCurso = response.NOMBRE_CURSO;
             $scope.txtInstructor = response.NOMBRE_AUDITOR.NOMBRE + " " + response.NOMBRE_AUDITOR.APELLIDO_PATERNO + " " + response.NOMBRE_AUDITOR.APELLIDO_MATERNO;
@@ -94,6 +100,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
         if ($scope.accion == "mostrar")
         {
             $("#divInsertar").hide();
+            $("#divInstructor").hide();
             $("#divMostrar").show();
         }
 
@@ -115,13 +122,11 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
 // ***** 			FUNCION PARA ABRIR MODAL INSERTAR/MODIFICAR		 *****
 // =======================================================================================
 $scope.openModalInsertarModificar = function(accion){
-
-
         $scope.modal_titulo = "Agregar Curso";
 		$scope.accion = accion;
 		clear_modal_insertar_actualizar()
         $scope.cargarCursos();
-        $scope.cargarInstructores();
+        //$scope.cargarInstructores();
         $scope.formData.fecha_inicio = $scope.date_evento_select;
 
         if(accion == 'editar')
@@ -134,7 +139,11 @@ $scope.openModalInsertarModificar = function(accion){
                 $scope.formData.fecha_inicio = response.FECHA_INICIO;
                 $scope.formData.fecha_fin = response.FECHA_FIN;
                 $scope.formData.minimo = response.PERSONAS_MINIMO;
+                $scope.id_instructor = response.ID_INSTRUCTOR;
+                $("#btnInstructor").attr("value",response.NOMBRE_AUDITOR.NOMBRE+" "+response.NOMBRE_AUDITOR.APELLIDO_PATERNO+" "+response.NOMBRE_AUDITOR.APELLIDO_MATERNO)
+                $("#btnInstructor").attr("class", "form-control btn btn-primary");
                 $scope.$apply();
+                ;
 
             });
 
@@ -149,6 +158,7 @@ $scope.openModalInsertarModificar = function(accion){
         {
             $("#divInsertar").show();
             $("#divMostrar").hide();
+            $("#divInstructor").hide();
             $("#modalMostrar").modal("show");
         }
 
@@ -157,7 +167,83 @@ $scope.openModalInsertarModificar = function(accion){
         onCalendario();
 	}
 
+// =======================================================================================
+// ***** 			FUNCION PARA ABRIR MODAL MOSTRAR INSTRUCTOR             		 *****
+// =======================================================================================
+$scope.openModalMostarInst = function() {
+    $scope.formData.searchText = "";
+    if (typeof $scope.formData.selectCurso !== "undefined") {
+        $("#txtinstructorerror").text("");
+        if ($scope.formData.selectCurso.length != 0 && $scope.formData.fecha_inicio.length != 0 && $scope.formData.fecha_fin.length != 0) {
 
+
+            $.getJSON(global_apiserver + "/cursos/getById/?id=" + $scope.formData.selectCurso, function (response) {
+                $scope.id_curso = response.ID_CURSO;
+                $scope.nombre_curso = response.NOMBRE;
+                $scope.apply();
+
+            })
+
+            mytoggle("divInsertar");
+            mytoggle("divInstructor");
+            $scope.cargarInstructores($scope.formData.selectCurso);
+            $("#txtinstructorerror").text("");
+        }
+        else {
+            $("#txtinstructorerror").text("Debe seleccionar un curso y las fechas");
+        }
+    }
+    else {
+        $("#txtinstructorerror").text("Debe seleccionar un curso");
+    }
+
+
+}
+// ===========================================================================
+// ***** 		      Funcion button select instructor 	            	 *****
+// ===========================================================================
+$scope.onSelectInstructor = function(instructor)
+{
+    var validar = {
+        ID:		          	        instructor,
+        FECHAS:			            $scope.formData.fecha_inicio+","+$scope.formData.fecha_fin
+    };
+    $("#btn-"+instructor).attr("disabled",true);
+    $("#btn-"+instructor).text("verificando...");
+    $.post( global_apiserver + "/personal_tecnico/isDisponible/", JSON.stringify(validar), function(respuesta){
+        respuesta = JSON.parse(respuesta);
+        if (respuesta.disponible == "si") {
+
+            $scope.id_instructor = instructor;
+            $("#btnInstructor").attr("value", $("#lb-"+instructor).val());
+            $("#btnInstructor").attr("class", "form-control btn btn-primary");
+            $("#btn-"+instructor).attr("disabled",false);
+            $("#btn-"+instructor).text("seleccionar");
+            $scope.cerrarInstructores();
+        }
+        else
+        {
+            if (respuesta.disponible == "no")
+            {
+                notify("Error", respuesta.razon, "error");
+                $("#btn-"+instructor).attr("disabled",true);
+                $("#btn-"+instructor).attr("title",respuesta.mensaje);
+                $("#btn-"+instructor).text("inactivo");
+            }else
+            {
+                notify("Error", respuesta.mensaje, "error");
+                $("#btn-"+instructor).attr("disabled",false);
+                $("#btn-"+instructor).text("seleccionar");
+            }
+
+        }
+    })
+}
+$scope.cerrarInstructores = function()
+{
+    mytoggle("divInsertar");
+    mytoggle("divInstructor");
+}
 // ===========================================================================
 // ***** 		Funcion para limpiar las variables del modal			 *****
 // ===========================================================================
@@ -167,6 +253,10 @@ function clear_modal_insertar_actualizar(){
     $scope.formData.minimo = '';
     $scope.formData.fecha_inicio = '';
     $scope.formData.fecha_fin = '';
+    $scope.selectedInst = '';
+    $scope.id_instructor = "";
+    $("#btnInstructor").attr("value","Selecciona un Instructor");
+    $("#btnInstructor").attr("class", "form-control btn ");
 
     $("#txtcursoerror").text("");
     $("#txtinstructorerror").text("");
@@ -240,18 +330,14 @@ if(typeof $scope.formData.selectCurso !== "undefined") {
     $("#txtcursoerror").text("No debe estar vacio");
 }
 
-if(typeof $scope.formData.instructor !== "undefined") {
-    $("#txtinstructorerror").text("");
-    if ($scope.formData.instructor.length == 0) {
+
+    if ($scope.id_instructor.length == 0) {
         $scope.respuesta = 0;
         $("#txtinstructorerror").text("No debe estar vacio");
     } else {
         $("#txtinstructorerror").text("");
     }
-}else {
-    $scope.respuesta = 0;
-    $("#txtinstructorerror").text("No debe estar vacio");
-}
+
 
  if(typeof $scope.formData.fecha_inicio !== "undefined")
     {
@@ -334,7 +420,7 @@ function insertar(formData) {
     var curso = {
         ID_CURSO:		          	formData.selectCurso,
         FECHAS:			            formData.fecha_inicio+"-"+formData.fecha_fin,
-        ID_INSTRUCTOR:	            formData.instructor,
+        ID_INSTRUCTOR:	            $scope.id_instructor,
         PERSONAS_MINIMO:	        formData.minimo
     };
     $.post( global_apiserver + "/cursos_programados/insert/", JSON.stringify(curso), function(respuesta){
@@ -363,14 +449,14 @@ function insertar(formData) {
             ID:                         $scope.id_evento_select,
             ID_CURSO:		          	formData.selectCurso,
             FECHAS:			            formData.fecha_inicio+"-"+formData.fecha_fin,
-            ID_INSTRUCTOR:	            formData.instructor,
+            ID_INSTRUCTOR:	            $scope.id_instructor,
             PERSONAS_MINIMO:	        formData.minimo
         };
         $.post( global_apiserver + "/cursos_programados/update/", JSON.stringify(curso), function(respuesta){
             respuesta = JSON.parse(respuesta);
             if (respuesta.resultado == "ok") {
                 //$("#modalMostrar").modal("hide");
-                $scope.actualizaDatos(2);
+                $scope.actualizaDatos();
                 notify("Éxito", "Se ha modificado el evento", "success");
                 $scope.onAgenda(formData.fecha_inicio);
                 //document.location = "./?pagina=auditores";
@@ -438,10 +524,14 @@ $scope.onAgenda = function(fecha) {
             var anhio_fin = array[2];
             var mes_fin = array[1]-1; //En js los meses comienzan en 0
             var dia_fin =array[0];
-
+            var dias = objEvento.DIAS;
+            if(objEvento.DIAS==1)
+                dias = dias +' día';
+            else
+                dias = dias +' días';
                 eventos.push(
                     {
-                        title: ' '+objEvento.DIAS+' días - ' + objEvento.NOMBRE_CURSO + " - Por: " + objEvento.NOMBRE_AUDITOR ,
+                        title: ' '+dias+' - ' + objEvento.NOMBRE_CURSO + " - Por: " + objEvento.NOMBRE_AUDITOR ,
                         start: new Date(anhio_ini, mes_ini, dia_ini, 07, 0),
                         end: new Date(anhio_fin, mes_fin, dia_fin, 18, 30),
                         allDay: false,
@@ -525,12 +615,20 @@ function mytoggle(id)
 
     });
 }
+// ================================================================================
+// *****           Funcion llamada cuando se selecciona un curso              *****
+// ================================================================================
+$scope.onSelectedCurso = function(selectCursos){
+     //$scope.cargarInstructores(selectCursos);
+    $scope.id_instructor = "";
+    $("#btnInstructor").attr("value","Selecciona un Instructor");
+    }
 
 $(document).ready(function () {
 $scope.onAgenda();
-   /* $("button.btn-default:contains('Cerrar') ,#btnCerrar, .close").click(function(){
-        $scope.global_calendar.fullCalendar('unselect');
-    })*/
+    $("button.btn-default:contains('Cerrar') ,#btnCerrar, .close").click(function(){
+        $scope.date_evento_select = '';
+    })
 });
 }]);
 

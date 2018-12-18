@@ -7,13 +7,12 @@
         <h4 class="modal-title" id="modalTituloExplorarGrupo">Seleccionar auditor</h4>
       </div>
       <div class="modal-body" id="body-modalExplorarGrupo">
-		<span ng-show="cant_auditores == 0">Actualmente el servicio no cuenta con auditores o los existentes ya están cargados en la auditoría.</span>
+		<span ng-show="cant_auditores == 0">Actualmente el servicio no cuenta con auditores o los existentes ya estï¿½n cargados en la auditorï¿½a.</span>
           <table class="table">
           <thead id="thead-modal-explora-sitios">
             <tr>
 				<th>Datos del Auditor</th>
 				<th>Sectores que cubre</th>
-				
 				<th></th>
 			</tr>
           </thead>

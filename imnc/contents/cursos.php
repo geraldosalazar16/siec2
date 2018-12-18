@@ -26,6 +26,7 @@
                 <th class="column-title" style="width:40%">Nombre Curso</th>
 				<th class="column-title" style="width:30%">Norma</th>
                 <th class="column-title" style="width:30%">Tipo de Servicio</th>
+                <th class="column-title" style="width:30%">Estado</th>
                 <th class="column-title"></th>
               </tr>
             </thead>
@@ -35,6 +36,7 @@
 					<td>{{x.NOMBRE}}</td>
 					<td>{{x.ID_NORMA}}</td>
 					<td>{{x.NOMBRE_TIPO_SEVICIO}}</td>					
+					<td>{{x.ISACTIVO}}</td>
 					<td >
 					<?php
 						if ($modulo_permisos["SERVICIOS"]["catalogos"] == 1 ) {
@@ -101,7 +103,16 @@
                       <span id="selectedListerror" class="text-danger"></span>
               </div>
       
-                  </div>
+            </div>
+            <div class="form-group">
+            <label class="control-label col-md-4 col-sm-4 col-xs-12" for="checkActivo">¿Habilitado? <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+               <input type="checkbox" id="checkActivo" ng-model="formData.checkActivo"   style="float: left;" ng-checked="true" data-parsley-id="4103"><ul class="parsley-errors-list" id="parsley-id-4103"></ul>
+                      <span id="checkActivoListerror" class="text-danger"></span>
+              </div>
+
+            </div>
            
           </form>
       </div>
