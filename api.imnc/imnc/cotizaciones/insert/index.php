@@ -71,7 +71,13 @@ $SG_INTEGRAL = $objeto->SG_INTEGRAL;
 valida_parametro_and_die($SG_INTEGRAL,"Falta INTEGRAL");
 */
 $COMPLEJIDAD = $objeto->COMPLEJIDAD;
-valida_parametro_and_die($COMPLEJIDAD,"Falta COMPLEJIDAD");
+if($ID_SERVICIO == 1){
+	valida_parametro_and_die($COMPLEJIDAD,"Falta COMPLEJIDAD");
+}else {
+	if(!$COMPLEJIDAD){
+		$COMPLEJIDAD = 0;
+	}
+}
 $BANDERA = $objeto->BANDERA;
 
 $COMBINADA = $objeto->COMBINADA;

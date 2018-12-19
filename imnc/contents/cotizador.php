@@ -225,7 +225,7 @@
                   </select>
                 </div>
               </div>
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical"  ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 1">
                 <label class="control-label col-md-12">Complejidad <span class="required">*</span></label>
                 <div class="col-md-12">
                   <select id="complejidad" ng-model="cotizacion_insertar_editar.COMPLEJIDAD" class="form-control">
