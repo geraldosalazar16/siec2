@@ -24,37 +24,34 @@ $ID_USUARIO = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO, "Falta el ID_USUARIO");
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
-
+$FECHA1 = substr($FECHA,6,2)."/".substr($FECHA,4,2)."/".substr($FECHA,0,4);
+$FECHAS = $FECHA1.",".$FECHA1;
 if($database->count("I_SG_AUDITORIA_GRUPO_FECHAS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO,"ID_PERSONAL_TECNICO_CALIF" => $ID_PERSONAL_TECNICO_CALIF,"FECHA"=>$FECHA]])==0){
+//*********************************************//
+/*
+$url = $global_apiserver . "/personal_tecnico/isDisponible/";
+$params = array( 'http' =>	array(
+				'method'	=>	'POST',
+				'content'	=>	'ID="1"&FECHAS="20181220"'//'ID='.$ID_PERSONAL_TECNICO_CALIF.'&FECHAS='.$FECHAS
+		)
+);
 
-	//Modificacion Geraldo agregar eventos a la validacion
-	$ID_PERSONAL_TECNICO	=	$database->get("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ID_PERSONAL_TECNICO_CALIF]);
-	valida_error_medoo_and_die();
-	$eventos	=	$database->select("PERSONAL_TECNICO_EVENTOS","*",["ID_PERSONAL_TECNICO"=>$ID_PERSONAL_TECNICO]);
-	valida_error_medoo_and_die();
-	
-	// Validar que la fecha no coincida con ningun evento
-	for($e=0; $e<count($eventos); $e++){
-		$f_ini = date("Ymd",strtotime($eventos[$e]["FECHA_INICIO"]));
-		$f_fin = date("Ymd",strtotime($eventos[$e]["FECHA_FIN"]));
-		if($FECHA >= $f_ini && $FECHA <= $f_fin){
-			imprime_error_and_die("La fecha " . $FECHA . " coincide con el evento ".$eventos[$e]["EVENTO"]);
-		}
-	}
-	// Validar que el auditor este libre para esta fecha
-	$consulta="SELECT COUNT(*) AS C
-
-					FROM    `I_SG_AUDITORIA_GRUPO_FECHAS` AS ISAGF
-					INNER JOIN 
-						`PERSONAL_TECNICO_CALIFICACIONES` AS PTC ON PTC.`ID` = ISAGF.`ID_PERSONAL_TECNICO_CALIF`
-					WHERE
-						PTC.`ID_PERSONAL_TECNICO` =".$ID_PERSONAL_TECNICO." AND  ISAGF.`FECHA` = ".$FECHA;
-	$ocupado = $database->query($consulta)->fetchAll();
-	valida_error_medoo_and_die();
-	if($ocupado[0]["C"] > 0){
-		imprime_error_and_die( "Este auditor tiene la fecha ". $FECHA . " asignada a otra auditoria.");
-	}
-$idd = $database->insert("I_SG_AUDITORIA_GRUPO_FECHAS",
+$ctx = stream_context_create($params);
+$fp = @fopen($url,'rb',false, $ctx);
+if(!$fp){
+	throw new Exception("Problem with $url, $php_errormsg");
+}
+$json_response = @stream_get_contents($fp);
+if($json_response === false){
+	throw new Exception("Problem reading data from $url, $php_errormsg");
+}	*/	
+$ID_PT = $database->get("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID" => $ID_PERSONAL_TECNICO_CALIF]);
+$context = "?ID=".$ID_PT."&FECHAS=".$FECHAS;
+$url = $global_apiserver . "/personal_tecnico/isDisponible/".$context;
+$json_response = file_get_contents($url);
+$json_response = json_decode($json_response);
+if($json_response->disponible == "si"){
+	$idd = $database->insert("I_SG_AUDITORIA_GRUPO_FECHAS",
 											
 											[
 												"ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,
@@ -72,8 +69,14 @@ $idd = $database->insert("I_SG_AUDITORIA_GRUPO_FECHAS",
 												
 												
 											]); 
-valida_error_medoo_and_die();
-$respuesta["resultado"]="ok";  
+	valida_error_medoo_and_die();
+	$respuesta["resultado"]="ok";  
+}
+else{
+	$respuesta["resultado"]="error"; 
+	$respuesta["mensaje"]="Este auditor no esta disponible en estas fechas"; 
+}
+
 }
 else{
 	$respuesta["resultado"]="error"; 

@@ -17,11 +17,18 @@ $razon = "";
 $respuesta=array(); 
 $json = file_get_contents("php://input"); 
 $objeto = json_decode($json); 
-
-$ID = $objeto->ID; //ID_PERSONAL_TECNICO a buscar si esta disponoble
-valida_parametro_and_die($ID, "Es necesario un ID_PERSONAL_TECNICO");
-$FECHAS = $objeto->FECHAS; // En formato dd/mm/yyyy separados por comas SIN ESPACIOS
-valida_parametro_and_die($FECHAS, "Es necesario asignarle fechas al auditor");
+if($objeto!=null){
+	$ID = $objeto->ID; //ID_PERSONAL_TECNICO a buscar si esta disponoble
+	valida_parametro_and_die($ID, "Es necesario un ID_PERSONAL_TECNICO");
+	$FECHAS = $objeto->FECHAS; // En formato dd/mm/yyyy separados por comas SIN ESPACIOS
+	valida_parametro_and_die($FECHAS, "Es necesario asignarle fechas al auditor");
+}
+else{
+	$ID = $_REQUEST["ID"]; //ID_PERSONAL_TECNICO a buscar si esta disponoble
+	valida_parametro_and_die($ID, "Es necesario un ID_PERSONAL_TECNICO");
+	$FECHAS = $_REQUEST["FECHAS"]; // En formato dd/mm/yyyy separados por comas SIN ESPACIOS
+	valida_parametro_and_die($FECHAS, "Es necesario asignarle fechas al auditor");
+}
 $FECHAS = explode(",", $FECHAS);
 $FECHA_INICIO = explode("/",$FECHAS[0]);
 $FECHA_INICIO = date("Ymd", strtotime($FECHA_INICIO[2].$FECHA_INICIO[1].$FECHA_INICIO[0]));
