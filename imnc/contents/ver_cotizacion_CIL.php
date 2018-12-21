@@ -67,15 +67,15 @@
                   <li id="lbCOt">
                     TOTAL COTIZACION: {{obj_cotizacion.TOTAL_COTIZACION | currency}}
                   </li>
-                  <li id="lbDesc">
+      <!--            <li id="lbDesc">
                     Descuento para la cotización: {{obj_cotizacion.DESCUENTO != null? obj_cotizacion.DESCUENTO : 0}}%
                   </li>
 				  <li id="lbAum">
                     Aumento para la cotización: {{obj_cotizacion.AUMENTO != null? obj_cotizacion.AUMENTO : 0}}%
-                  </li>
+                  </li> 
                   <li id="lbCotDes">
                     TOTAL COTIZACION c/descuento: {{obj_cotizacion.TOTAL_COTIZACION_DES | currency}}
-                  </li>
+                  </li> -->
                   <div ng-if="obj_cotizacion.ID_COTIZACION_ANT != null">
                     <li id="lbCotAnt">
                       TOTAL COTIZACION ANTERIOR: {{obj_cotizacion.TOTAL_COTIZACION_ANT | currency}}
@@ -920,20 +920,20 @@
 
 				<div class='form-group' ng-repeat="x in arr_tramites_cotizacion" ng-init="tram_index = $index" >
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
-						<input type="text" class="form-control" id="formDataGenCotizacion.tramites[$index].TIPO"  ng-model="formDataGenCotizacion.tramites[$index].TIPO" required ng-class="{ error: exampleFormGenCotizacion.tramite.x.$error.required && !exampleForm.$pristine}"  >
+						<input type="text" class="form-control" id="formDataGenCotizacion.tramites[$index].TIPO"  ng-model="formDataGenCotizacion.tramites[$index].TIPO" required ng-class="{ error: exampleFormGenCotizacion.tramite.x.$error.required && !exampleForm.$pristine}" disabled >
 					</div>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
-						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TRAMITE_COSTO" required ng-class="{ error: exampleFormGenCotizacion.monto.x.$error.required && !exampleForm.$pristine}"  >
+						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TRAMITE_COSTO" required ng-class="{ error: exampleFormGenCotizacion.monto.x.$error.required && !exampleForm.$pristine}" disabled >
 					</div>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
-						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].VIATICOS" required ng-class="{ error: exampleFormGenCotizacion.viaticos.x.$error.required && !exampleForm.$pristine}"  >
+						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].VIATICOS" required ng-class="{ error: exampleFormGenCotizacion.viaticos.x.$error.required && !exampleForm.$pristine}" disabled >
 					</div>
 					<div class='form-group' ng-repeat="y in tarifa_adicional_tramite_cotizacion_by_tramite[tram_index]" >
 						<div class='form-group  col-md-9 col-xs-9 col-sm-9'>
-							<input type="text" class="form-control"  ng-model="formDataGenCotizacion.descripcion[tram_index][$index].DESCRIPCION" required ng-class="{ error: exampleFormGenCotizacion.descipcion.$error.required && !exampleForm.$pristine}" ng-if="formDataGenCotizacion.descripcion[tram_index][$index].DESCRIPCION!=''" >
+							<input type="text" class="form-control"  ng-model="formDataGenCotizacion.descripcion[tram_index][$index].DESCRIPCION" required ng-class="{ error: exampleFormGenCotizacion.descipcion.$error.required && !exampleForm.$pristine}" ng-if="formDataGenCotizacion.descripcion[tram_index][$index].DESCRIPCION!=''" disabled > 
 						</div>
 						<div class='form-group  col-md-3 col-xs-3 col-sm-3'>
-							<input type="text" class="form-control"  ng-model="formDataGenCotizacion.descripcion[tram_index][$index].TARIFA" required ng-class="{ error: exampleFormGenCotizacion.tarifa.$error.required && !exampleForm.$pristine}"  >
+							<input type="text" class="form-control"  ng-model="formDataGenCotizacion.descripcion[tram_index][$index].TARIFA" required ng-class="{ error: exampleFormGenCotizacion.tarifa.$error.required && !exampleForm.$pristine}" disabled >
 						</div>
 
 					</div>

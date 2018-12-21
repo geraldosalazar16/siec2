@@ -420,11 +420,12 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 									]);
 						valida_error_medoo_and_die();	
 						
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_DES"] = (floatval($tarifa['TARIFA'])*(1-($tramite_item["DESCUENTO"]/100)+($tramite_item["AUMENTO"]/100)));
 						$total_dias_auditoria=$dias_base+$dias_encuesta+$tramite_item["DIAS_MULTISITIO"];
 						//$total_dias_auditoria = round($total_dias_auditoria * (1 - ($tramite_item["REDUCCION"]/100) + ($tramite_item["AUMENTO"]/100) ));
-						$costo_inicial = (($total_dias_auditoria - $dias_encuesta)* floatval($tarifa['TARIFA']) +$dias_encuesta*2000);
+						$costo_inicial = (($total_dias_auditoria - $dias_encuesta) * floatval($tarifa['TARIFA'])+$dias_encuesta*2000);
 						//$costo_reducc = ($costo_inicial * (1 - ($tramite_item["REDUCCION"]/100) + ($tramite_item["AUMENTO"]/100) ));
-						$costo_desc = ($costo_inicial * (1-($tramite_item["DESCUENTO"]/100) + ($tramite_item["AUMENTO"]/100)));
+						$costo_desc = (($total_dias_auditoria - $dias_encuesta)*  floatval($cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_DES"]) +$dias_encuesta*2000);
 						//$costo_total_red_amp = $costo_desc*(1-($tramite_item["REDUCCION"]/100) + ($tramite_item["AUMENTO"]/100));
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_BASE"] = $dias_base;
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_ENCUESTA"] = $dias_encuesta;

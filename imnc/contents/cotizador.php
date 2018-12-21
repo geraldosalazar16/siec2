@@ -256,14 +256,14 @@
                 </div>
               </div>
 
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical"  ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 1" >
                 <label class="control-label col-md-12">Descuento (%)</label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="cotizacion_insertar_editar.DESCUENTO" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
 			  <!-- Esta opción es solo para Certificacion de Igualdad Laboral -->
-			   <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID == 16">
+			   <div class="form-group form-vertical" ng-show="false">
                 <label class="control-label col-md-12">Aumento (%)</label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="cotizacion_insertar_editar.AUMENTO" required="required" class="form-control col-md-7 col-xs-12">
