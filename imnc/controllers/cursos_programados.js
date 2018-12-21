@@ -182,11 +182,6 @@ $scope.openModalMostarInst = function() {
             $.getJSON(global_apiserver + "/cursos/getById/?id=" + $scope.formData.selectCurso, function (response) {
                 $scope.id_curso = response.ID_CURSO;
                 $scope.nombre_curso = response.NOMBRE;
-<<<<<<< HEAD
-                //$scope.apply();
-=======
-                $scope.$apply();
->>>>>>> a501e9c6e964fae4e1ed00683803c8eccf3b4b6a
 
             })
             $("#modal-size").attr("class","modal-dialog modal-lg");
