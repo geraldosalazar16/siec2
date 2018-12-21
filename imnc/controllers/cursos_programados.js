@@ -28,7 +28,6 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
 		$http.get(global_apiserver + "/cursos_programados/getInstructores/?id="+seletcCurso)
 		.then(function( response ){
 			$scope.instructoresCursos = response.data;
-            $(".loading").hide();
 		});
 	}
 
@@ -146,7 +145,6 @@ $scope.openModalInsertarModificar = function(accion){
                 $scope.formData.referencia = response.REFERENCIA;
                 $("#btnInstructor").attr("value",response.NOMBRE_AUDITOR.NOMBRE+" "+response.NOMBRE_AUDITOR.APELLIDO_PATERNO+" "+response.NOMBRE_AUDITOR.APELLIDO_MATERNO)
                 $("#btnInstructor").attr("class", "form-control ");
-                $("#selectCurso").attr("disabled", true);
                 $scope.$apply();
                 ;
 
@@ -181,16 +179,16 @@ $scope.openModalMostarInst = function() {
     if (typeof $scope.formData.selectCurso !== "undefined") {
         $("#txtinstructorerror").text("");
         if ($scope.formData.selectCurso.length != 0 && $scope.formData.fecha_inicio.length != 0 && $scope.formData.fecha_fin.length != 0) {
-            $(".loading").show();
             $.getJSON(global_apiserver + "/cursos/getById/?id=" + $scope.formData.selectCurso, function (response) {
                 $scope.id_curso = response.ID_CURSO;
                 $scope.nombre_curso = response.NOMBRE;
-                $scope.apply();
+                //$scope.apply();
 
             })
-
+            $("#modal-size").attr("class","modal-dialog modal-lg");
+            mytoggle("divInstructor")
             mytoggle("divInsertar");
-            mytoggle("divInstructor");
+
             $scope.cargarInstructores($scope.formData.selectCurso);
             $("#txtinstructorerror").text("");
         }
@@ -246,6 +244,7 @@ $scope.onSelectInstructor = function(instructor)
 }
 $scope.cerrarInstructores = function()
 {
+    $("#modal-size").attr("class","modal-dialog");
     mytoggle("divInsertar");
     mytoggle("divInstructor");
 }
@@ -262,7 +261,6 @@ function clear_modal_insertar_actualizar(){
     $scope.selectedInst = '';
     $scope.id_instructor = "";
     $scope.formData.referencia ="";
-
     $("#btnInstructor").attr("value","Selecciona un Instructor");
     $("#btnInstructor").attr("class", "form-control btn ");
 
@@ -594,7 +592,6 @@ $scope.onAgenda = function(fecha) {
         date = new Date(partes[2],parseInt(partes[1])-1,partes[0]);
     }
     var eventos = [];
-    $(".loading").show();
     //Codigo que carga los cursos programador
     $.post(global_apiserver + "/cursos_programados/getAll/", function(response){
         response = JSON.parse(response);
@@ -675,7 +672,6 @@ $scope.onAgenda = function(fecha) {
 
         });
 
-        $(".loading").hide();
 
     });
 }
