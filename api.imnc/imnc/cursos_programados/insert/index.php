@@ -26,7 +26,10 @@ function valida_error_medoo_and_die(){
 
 $respuesta=array(); 
 $json = file_get_contents("php://input"); 
-$objeto = json_decode($json); 
+$objeto = json_decode($json);
+
+$REFERENCIA = $objeto->REFERENCIA;
+valida_parametro_and_die($REFERENCIA, "Es necesario introducir una referencia");
 
 $ID_CURSO = $objeto->ID_CURSO;
 valida_parametro_and_die($ID_CURSO, "Es necesario introducir un nombre de curso");
@@ -45,7 +48,8 @@ $id_sce = $database->insert("CURSOS_PROGRAMADOS", [
 	"ID_CURSO" => $ID_CURSO,
 	"FECHAS"=>	$FECHAS,
 	"ID_INSTRUCTOR" => $ID_INSTRUCTOR,
-	"PERSONAS_MINIMO" => $PERSONAS_MINIMO
+	"PERSONAS_MINIMO" => $PERSONAS_MINIMO,
+	"REFERENCIA"=>$REFERENCIA
 ]); 
 valida_error_medoo_and_die(); 
 

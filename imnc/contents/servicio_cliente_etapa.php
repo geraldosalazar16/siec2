@@ -135,7 +135,7 @@
                   Tipo de servicio: <strong>{{x.NOMBRE_TIPO_SERVICIO}}</strong><br>
 								</td>
                 <td>
-									<i ng-repeat-start="norma in x.NORMAS">{{norma.ID_NORMA}}</i><br ng-repeat-end>
+									<i ng-repeat-start="object in x.NORMAS">{{object.ID_NORMA}}</i><br ng-repeat-end>
 								</td>
 								<td>{{x.NOMBRE_ETAPA}}</td>
 								

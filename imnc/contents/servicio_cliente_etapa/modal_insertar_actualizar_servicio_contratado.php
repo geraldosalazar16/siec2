@@ -27,12 +27,18 @@
                                 ng-class="{ error: exampleForm.claveServicio.$error.required && !exampleForm.$pristine}" ng-disabled="accion=='editar'"></select>
                             </div>
 							<div class="form-group">
-                                <label for="sel_tipoServicio">Tipo de Servicio para generar Referencia<span class="required">*</span></label>
+                                <label id="txtsel_tipoServicio" for="sel_tipoServicio">Tipo de Servicio para generar Referencia<span class="required">*</span></label>
                                 <select ng-model="formData.sel_tipoServicio" ng-options="sel_tipoServicio.ID as sel_tipoServicio.NOMBRE for sel_tipoServicio in sel_tipoServicios" 
                                 class="form-control" id="sel_tipoServicio" name="sel_tipoServicio" ng-change='cambiosel_tipoServicio(formData.sel_tipoServicio)' required
                                 ng-class="{ error: exampleForm.sel_tipoServicio.$error.required && !exampleForm.$pristine}" ng-disabled="!formData.claveServicio || accion=='editar'" ></select>
                             </div>
-							<div class="form-group">
+                            <div class="form-group" id="divCursos" hidden>
+                                <label  for="sel_Cursos">Cursos<span class="required">*</span></label>
+                                <select ng-model="formData.sel_Cursos" ng-options="sel_Curso.ID_CURSO as sel_Curso.NOMBRE for sel_Curso in sel_Cursos"
+                                        class="form-control" id="sel_Cursos" name="sel_Cursos"  required
+                                        ng-class="{ error: exampleForm.sel_Cursos.$error.required && !exampleForm.$pristine}" ng-disabled="!formData.claveServicio " ></select>
+                            </div>
+							<div class="form-group" id="divNorma">
                                 <label for="Norma">Norma<span class="required">*</span></label>
                                 <multiple-autocomplete ng-model="formData.Normas" 
                                 object-property="ID_NORMA"
@@ -58,8 +64,11 @@
 								<select ng-model="formData.etapa" ng-options="etapa.ID_ETAPA as etapa.ETAPA for etapa in Etapas2" 
                                 class="form-control" id="etapa" name="etapa" ng-change='cambioEtapa()' required
                                 ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}" ng-if="accion == 'insertar' && formData.claveServicio==2" ng-disabled="!formData.claveServicio"></select>
+                                 <select ng-model="formData.etapa" ng-options="etapa.ID_ETAPA as etapa.ETAPA for etapa in Etapas"
+                                         class="form-control" id="etapa" name="etapa" ng-change='cambioEtapa()' required
+                                         ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}" ng-if="accion == 'insertar' && formData.claveServicio==3" ng-disabled="!formData.claveServicio"></select>
                             </div>
-							<div class="form-group" ng-show="accion=='editar'">
+							<div class="form-group" ng-show="accion=='editar' && formData.claveServicio!=3">
                                 <label for="cambio">¿Hay Cambio?</label>
                                 <select ng-model="formData.cambio"  
                                 class="form-control" id="cambio" name="cambio" ng-disabled='formData.cambio=="S"' 

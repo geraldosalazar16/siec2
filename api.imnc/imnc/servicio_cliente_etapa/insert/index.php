@@ -20,8 +20,7 @@ function valida_error_medoo_and_die(){
 	if ($database->error()[2]) { 
 		$respuesta["resultado"]="error"; 
 		$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
-		print_r(json_encode($respuesta)); 
-		$mailerror->send("SERVICIO_CLIENTE_ETAPA", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
+		print_r(json_encode($respuesta));
 		die(); 
 	} 
 } 
@@ -39,13 +38,21 @@ valida_parametro_and_die($ID_SERVICIO, "Es necesario seleccionar un servicio");
 $ID_TIPO_SERVICIO	= $objeto->ID_TIPO_SERVICIO; 
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
 
-$NORMAS= $objeto->NORMAS;
-	if(count($NORMAS) == 0){
-		$respuesta['resultado']="error";
-		$respuesta['mensaje']="Es necesario seleccionar una norma";
-		print_r(json_encode($respuesta));
-		die();
-	}
+$NORMAS= '';
+if($ID_SERVICIO == 3)
+{
+     $NORMAS = $objeto->NORMAS;
+}
+else{
+        $NORMAS= $objeto->NORMAS;
+        if(count($NORMAS) == 0){
+        $respuesta['resultado']="error";
+        $respuesta['mensaje']="Es necesario seleccionar una norma";
+        print_r(json_encode($respuesta));
+        die();
+    }
+}
+
 
 $ID_ETAPA_PROCESO = $objeto->ID_ETAPA_PROCESO; 
 valida_parametro_and_die($ID_ETAPA_PROCESO, "Es neceario seleccionar un trámite");
@@ -80,14 +87,23 @@ $id_sce = $database->insert("SERVICIO_CLIENTE_ETAPA", [
 ]); 
 valida_error_medoo_and_die(); 
 //Agregar las normas
-for ($i=0; $i < count($NORMAS); $i++) { 
-	$id_norma = $NORMAS[$i]->ID_NORMA;
-	$id_sce_normas = $database->insert("SCE_NORMAS", [ 
-		"ID_SCE" => $id_sce,
-		"ID_NORMA" => $id_norma
-	]); 
-	valida_error_medoo_and_die();
+if($ID_SERVICIO == 3)
+{
+    $id_sce_normas = $database->insert("SCE_CURSOS", [
+        "ID_SCE" => $id_sce,
+        "ID_CURSO" => $NORMAS
+    ]);
+}else{
+    for ($i=0; $i < count($NORMAS); $i++) {
+        $id_norma = $NORMAS[$i]->ID_NORMA;
+        $id_sce_normas = $database->insert("SCE_NORMAS", [
+            "ID_SCE" => $id_sce,
+            "ID_NORMA" => $id_norma
+        ]);
+        valida_error_medoo_and_die();
+    }
 }
+
 
 if($id_sce	!=	0){
 	$id1=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [ 

@@ -30,7 +30,22 @@ function valida_error_medoo_and_die(){
 
 $respuesta=array();
 
+$query = "SELECT C.*,
+TP.TIPO AS TIPO_PERSONA,
+TE.TIPO AS TIPO_ENTIDAD,
+C_FACTURARIO.NOMBRE AS NOMBRE_FACTURARIO 
+from CLIENTES C
+LEFT JOIN TIPOS_PERSONA TP
+ON C.ID_TIPO_PERSONA = TP.ID
+LEFT JOIN TIPOS_ENTIDAD TE
+ON C.ID_TIPO_ENTIDAD = TE.ID
+LEFT JOIN CLIENTES C_FACTURARIO
+ON C.ID_CLIENTE_FACTURARIO = C_FACTURARIO.ID";
 
+$clientes1 = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+valida_error_medoo_and_die();
+
+/*
 $clientes = $database->select("CLIENTES", "*", ["ORDER"=>"NOMBRE"]);
 valida_error_medoo_and_die();
 for ($i=0; $i < count($clientes) ; $i++) { 
@@ -48,9 +63,9 @@ for ($i=0; $i < count($clientes) ; $i++) {
 	valida_error_medoo_and_die();
 	$clientes[$i]["TIPO_ENTIDAD"] = $tipo_entidad;
 }
- 
+*/
 
-print_r(json_encode($clientes));
+print_r(json_encode($clientes1));
 
 
 //-------- FIN --------------

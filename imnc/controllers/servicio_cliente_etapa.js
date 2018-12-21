@@ -85,38 +85,56 @@ function llenar_modal_insertar_actualizar(){
         $scope.formData.claveServicio = servicio_obtenido.ID_SERVICIO;
 		cargartipoServicio($scope.formData.claveServicio);
 		cargarEtapas($scope.formData.claveServicio);
+
+		if(servicio_obtenido.ID_SERVICIO==3)
+		{
+            $('#txtsel_tipoServicio').text("Módulo");
+            $('#divNorma').hide();
+            $('#divCursos').show();
+            cargarCursos(servicio_obtenido.ID_TIPO_SERVICIO);
+            $scope.formData.sel_Cursos = servicio_obtenido.NORMAS[0].ID_CURSO;
+
+
+		}
+		else
+		{
+            $('#txtsel_tipoServicio').text("Tipo de Servicio para generar Referencia");
+            $('#divNorma').show();
+            $('#divCursos').hide();
+			cargarNormastipoServicio($scope.formData.sel_tipoServicio,servicio_obtenido.NORMAS);
+            $scope.formData.cambio	= servicio_obtenido.CAMBIO;
+
+            $scope.formData.chk		=	{};
+            $scope.formData.descripcion		=	{};
+            if(servicio_obtenido.CAMBIO=="S"){
+
+                TraerTodosCambios();
+                var cambios_obtenido ="";
+                var ciclo = ObtenerCicloDeReferencia(servicio_obtenido.REFERENCIA);
+
+                for(var i=0; i<$scope.Cambios.length; i++){
+                    //	for( var key in $scope.Cambios){
+                    cambios_obtenido	="";
+                    cambios_obtenido	=
+                        $scope.TodosCambios.find(function(element,index,array){
+                            return (element.ID_SERVICIO_CONTRATADO == $scope.id_servicio && element.ID_ETAPA == servicio_obtenido.ID_ETAPA_PROCESO && element.ID_TIPO_CAMBIO == $scope.Cambios[i].ID && element.CICLO == ciclo)
+                        });
+                    if(typeof cambios_obtenido != 'undefined'){
+                        $scope.formData.chk[$scope.Cambios[i].ID]	=	true;
+                        $scope.formData.descripcion[$scope.Cambios[i].ID]	=	cambios_obtenido.DESCRIPCION;
+                    }
+                    else{
+                        $scope.formData.chk[$scope.Cambios[i].ID]	=	false;
+                        $scope.formData.descripcion[$scope.Cambios[i].ID]	= "";
+                    }
+                }
+
+            }
+		}
         $scope.formData.sel_tipoServicio = servicio_obtenido.ID_TIPO_SERVICIO;
-		cargarNormastipoServicio($scope.formData.sel_tipoServicio,servicio_obtenido.NORMAS);
 		//$scope.formData.Norma	=	servicio_obtenido.ID_NORMA;
 		$scope.formData.etapa	=	servicio_obtenido.ID_ETAPA_PROCESO;
-		$scope.formData.cambio	= servicio_obtenido.CAMBIO;
-		
-		$scope.formData.chk		=	{};
-		$scope.formData.descripcion		=	{};
-		if(servicio_obtenido.CAMBIO=="S"){
-			
-			TraerTodosCambios();
-			var cambios_obtenido ="";
-			var ciclo = ObtenerCicloDeReferencia(servicio_obtenido.REFERENCIA);
-		
-			for(var i=0; i<$scope.Cambios.length; i++){
-		//	for( var key in $scope.Cambios){
-				cambios_obtenido	="";
-				cambios_obtenido	=
-									$scope.TodosCambios.find(function(element,index,array){
-									return (element.ID_SERVICIO_CONTRATADO == $scope.id_servicio && element.ID_ETAPA == servicio_obtenido.ID_ETAPA_PROCESO && element.ID_TIPO_CAMBIO == $scope.Cambios[i].ID && element.CICLO == ciclo)
-									});
-				if(typeof cambios_obtenido != 'undefined'){					
-					$scope.formData.chk[$scope.Cambios[i].ID]	=	true;
-					$scope.formData.descripcion[$scope.Cambios[i].ID]	=	cambios_obtenido.DESCRIPCION;
-				}
-				else{
-					$scope.formData.chk[$scope.Cambios[i].ID]	=	false;
-					$scope.formData.descripcion[$scope.Cambios[i].ID]	= "";
-				}
-			}
-			
-		}
+
 		
 		
 }	
@@ -132,6 +150,7 @@ function clear_modal_insertar_actualizar(){
         $scope.formData.claveCliente = "";
         $scope.formData.claveServicio = "";
         $scope.formData.sel_tipoServicio	=	"";
+        $scope.formData.sel_Cursos = "";
 		$scope.formData.Normas	=	[];
 		$scope.Normas = [];
 		$scope.formData.etapa	=	"";
@@ -143,16 +162,33 @@ function clear_modal_insertar_actualizar(){
 	$scope.submitForm = function (formData) {
         //alert('Form submitted with' + JSON.stringify(formData));
         if($scope.accion == 'insertar'){
-            var datos = {
-				ID_CLIENTE: formData.claveCliente,
-				ID_SERVICIO: $scope.formData.claveServicio,
-				ID_TIPO_SERVICIO: $scope.formData.sel_tipoServicio,
-				ID_ETAPA_PROCESO:	$scope.formData.etapa,
-				NORMAS: $scope.formData.Normas,
-                REFERENCIA: formData.txtReferencia,
-				CAMBIO	: "N",
-                ID_USUARIO:	sessionStorage.getItem("id_usuario")
-            };
+            var datos = [];
+            if($scope.formData.claveServicio == 3)
+			{
+                datos = {
+                    ID_CLIENTE: formData.claveCliente,
+                    ID_SERVICIO: $scope.formData.claveServicio,
+                    ID_TIPO_SERVICIO: $scope.formData.sel_tipoServicio,
+                    ID_ETAPA_PROCESO:	$scope.formData.etapa,
+                    NORMAS: $scope.formData.sel_Cursos,
+                    REFERENCIA: formData.txtReferencia,
+                    CAMBIO	: "N",
+                    ID_USUARIO:	sessionStorage.getItem("id_usuario")
+                };
+			}else {
+                datos = {
+                    ID_CLIENTE: formData.claveCliente,
+                    ID_SERVICIO: $scope.formData.claveServicio,
+                    ID_TIPO_SERVICIO: $scope.formData.sel_tipoServicio,
+                    ID_ETAPA_PROCESO:	$scope.formData.etapa,
+                    NORMAS: $scope.formData.Normas,
+                    REFERENCIA: formData.txtReferencia,
+                    CAMBIO	: "N",
+                    ID_USUARIO:	sessionStorage.getItem("id_usuario")
+                };
+			}
+
+
 			
             $http.post(global_apiserver + "/servicio_cliente_etapa/insert/",datos).
             then(function(response){
@@ -168,66 +204,84 @@ function clear_modal_insertar_actualizar(){
                 $("#modalInsertarActualizar").modal("hide");
             });
         }
-        else if($scope.accion == 'editar'){
-			
-			 
-			var chk1=$scope.formData.chk;
-			
-			var descripcion	=	$scope.formData.descripcion;	
-			var descripcion2	=	"";
-			var chk2="";
-			var cambios_obtenido	="";var cambios_obtenido1	="";
-			var ciclo = ObtenerCicloDeReferencia($scope.formData.txtReferencia);
+        else if($scope.accion == 'editar') {
+
+            if ($scope.formData.claveServicio == 3) {
+
+                var datos = {
+                    ID: $scope.id_servicio,
+                    ID_CLIENTE: $scope.formData.claveCliente,
+                    ID_SERVICIO: $scope.formData.claveServicio,
+                    ID_TIPO_SERVICIO: $scope.formData.sel_tipoServicio,
+                    NORMAS: $scope.formData.sel_Cursos,
+                    ID_ETAPA_PROCESO: $scope.formData.etapa,
+                    REFERENCIA: $scope.formData.txtReferencia,
+                    CAMBIO: $scope.formData.cambio,
+                    CHK: "",
+                    DESCRIPCION: "",
+                    ID_USUARIO: sessionStorage.getItem("id_usuario")
+                };
+
+			}else{
+
+                var chk1 = $scope.formData.chk;
+
+                var descripcion = $scope.formData.descripcion;
+                var descripcion2 = "";
+                var chk2 = "";
+                var cambios_obtenido = "";
+                var cambios_obtenido1 = "";
+                var ciclo = ObtenerCicloDeReferencia($scope.formData.txtReferencia);
 //			for(var i=1; i<=$scope.Cambios.length; i++){
-			for( var key in descripcion){
-			////////////////////////////////////////////////////////
-			cambios_obtenido	="";
-				cambios_obtenido	=
-									$scope.TodosCambios.find(function(element,index,array){
-									return (element.ID_SERVICIO_CONTRATADO == $scope.id_servicio && element.ID_ETAPA == $scope.formData.etapa && element.ID_TIPO_CAMBIO == key && element.CICLO == ciclo && element.DESCRIPCION != $scope.formData.descripcion[key])
-									});
-			cambios_obtenido1	="";
-				cambios_obtenido1	=
-									$scope.TodosCambios.find(function(element,index,array){
-									return (element.ID_SERVICIO_CONTRATADO == $scope.id_servicio && element.ID_ETAPA == $scope.formData.etapa && element.ID_TIPO_CAMBIO == key && element.CICLO == ciclo)
-									});	
-			////////////////////////////////////////////////////////
-				if(chk1[key]==true ){
-					if(typeof cambios_obtenido != 'undefined'){
-						chk2+=key+";";
-						descripcion2+=descripcion[key]+";";
-					}
-					else
-					if(typeof cambios_obtenido1 == 'undefined'){
-						chk2+=key+";";
-						descripcion2+=descripcion[key]+";";
-					}
-				}
-				
-			}
-            var datos = {
-				ID: $scope.id_servicio,
-                ID_CLIENTE: $scope.formData.claveCliente,
-				ID_SERVICIO: $scope.formData.claveServicio,
-				ID_TIPO_SERVICIO: $scope.formData.sel_tipoServicio,
-				NORMAS: $scope.formData.Normas,
-				ID_ETAPA_PROCESO:	$scope.formData.etapa,
-                REFERENCIA: $scope.formData.txtReferencia,
-				CAMBIO	: $scope.formData.cambio,
-				CHK	:	chk2,
-				DESCRIPCION	: descripcion2,
-                ID_USUARIO:	sessionStorage.getItem("id_usuario")
-            };
-            $http.post(global_apiserver + "/servicio_cliente_etapa/update/",datos).
-            then(function(response){
-                if(response){
-					notify('Éxito','Se han actualizado los datos','success');
-                    $scope.tabla_servicios();
-					TraerTodosCambios();
-				   
+                for (var key in descripcion) {
+                    ////////////////////////////////////////////////////////
+                    cambios_obtenido = "";
+                    cambios_obtenido =
+                        $scope.TodosCambios.find(function (element, index, array) {
+                            return (element.ID_SERVICIO_CONTRATADO == $scope.id_servicio && element.ID_ETAPA == $scope.formData.etapa && element.ID_TIPO_CAMBIO == key && element.CICLO == ciclo && element.DESCRIPCION != $scope.formData.descripcion[key])
+                        });
+                    cambios_obtenido1 = "";
+                    cambios_obtenido1 =
+                        $scope.TodosCambios.find(function (element, index, array) {
+                            return (element.ID_SERVICIO_CONTRATADO == $scope.id_servicio && element.ID_ETAPA == $scope.formData.etapa && element.ID_TIPO_CAMBIO == key && element.CICLO == ciclo)
+                        });
+                    ////////////////////////////////////////////////////////
+                    if (chk1[key] == true) {
+                        if (typeof cambios_obtenido != 'undefined') {
+                            chk2 += key + ";";
+                            descripcion2 += descripcion[key] + ";";
+                        }
+                        else if (typeof cambios_obtenido1 == 'undefined') {
+                            chk2 += key + ";";
+                            descripcion2 += descripcion[key] + ";";
+                        }
+                    }
+
                 }
-                else{
-                    notify('Error','No se pudo guardar los cambios','error');
+                var datos = {
+                    ID: $scope.id_servicio,
+                    ID_CLIENTE: $scope.formData.claveCliente,
+                    ID_SERVICIO: $scope.formData.claveServicio,
+                    ID_TIPO_SERVICIO: $scope.formData.sel_tipoServicio,
+                    NORMAS: $scope.formData.Normas,
+                    ID_ETAPA_PROCESO: $scope.formData.etapa,
+                    REFERENCIA: $scope.formData.txtReferencia,
+                    CAMBIO: $scope.formData.cambio,
+                    CHK: chk2,
+                    DESCRIPCION: descripcion2,
+                    ID_USUARIO: sessionStorage.getItem("id_usuario")
+                };
+
+            }
+            $http.post(global_apiserver + "/servicio_cliente_etapa/update/", datos).then(function (response) {
+                if (response) {
+                    notify('Éxito', 'Se han actualizado los datos', 'success');
+                    $scope.tabla_servicios();
+                    TraerTodosCambios();
+
+                }
+                else {
+                    notify('Error', 'No se pudo guardar los cambios', 'error');
                 }
                 $("#modalInsertarActualizar").modal("hide");
             });
@@ -267,18 +321,33 @@ function cargarServicios(){
 // ***** 				Cambio clave Servicio					*****
 // ==================================================================
 $scope.cambioclaveServicio	=	function(id_servicio){
-	
+
+    if(id_servicio==3)
+    {
+        $('#txtsel_tipoServicio').text("Módulo");
+        $('#divNorma').hide();
+        $('#divCursos').show();
+        generar_referencia_cifa(id_servicio);
+    }
+    else {
+        $('#txtsel_tipoServicio').text("Tipo de Servicio para generar Referencia");
+        $('#divNorma').show();
+        $('#divCursos').hide();
+        $scope.formData.etapa="";
+        var ref		=	$scope.formData.txtReferencia;
+        var etapa	=	"XX";
+        var	tipo_servicio	=	"XXX";
+        if($scope.formData.sel_tipoServicio)
+            tipo_servicio	=	$scope.formData.sel_tipoServicio;
+        if($scope.formData.etapa)
+            etapa	=	$scope.formData.etapa;
+        generar_referencia(ref,etapa,tipo_servicio);
+    }
 	cargartipoServicio(id_servicio);
 	cargarEtapas(id_servicio);
-	$scope.formData.etapa="";
-	var ref		=	$scope.formData.txtReferencia;
-	var etapa	=	"XX";
-	var	tipo_servicio	=	"XXX";
-	if($scope.formData.sel_tipoServicio)
-		tipo_servicio	=	$scope.formData.sel_tipoServicio;
-	if($scope.formData.etapa)
-		etapa	=	$scope.formData.etapa;
-	generar_referencia(ref,etapa,tipo_servicio);
+
+
+
 }
 // ==============================================================================
 // ***** 	Funcion para traer los tipos de Servicios para este Servicio	*****
@@ -293,15 +362,32 @@ function cargartipoServicio(id_servicio){
 // ***** 				Cambio Tipo Servicio					*****
 // ==================================================================
 $scope.cambiosel_tipoServicio	=	function(id_tipo_servicio){
-	cargarNormastipoServicio(id_tipo_servicio);
+	if($scope.formData.claveServicio==3)
+	{
+        cargarCursos(id_tipo_servicio);
+	}
+	else {
+        cargarNormastipoServicio(id_tipo_servicio);
+	}
+
 	
 	var ref		=	$scope.formData.txtReferencia;
 	var etapa	=	"XX";
 	var	tipo_servicio	=	$scope.formData.sel_tipoServicio;
 	if($scope.formData.etapa)
 		etapa	=	$scope.formData.etapa;
+    if($scope.formData.claveServicio!=3)
 	generar_referencia(ref,etapa,tipo_servicio);
-}	
+}
+// ==============================================================================
+// ***** 	Funcion para traer los Cursos de este tipo de Servicio			*****
+// ==============================================================================
+    function cargarCursos(id_tipo_servicio){
+        $http.get(  global_apiserver + "/cursos/getByModulo/?id="+id_tipo_servicio)
+            .then(function( response ){
+            	$scope.sel_Cursos = response.data;
+			})
+	}
 // ==============================================================================
 // ***** 	Funcion para traer las Normas de este tipo de Servicio			*****
 // ==============================================================================
@@ -352,6 +438,7 @@ $scope.cambioEtapa	=	function(){
 	var	tipo_servicio	=	"XXX";
 	if($scope.formData.sel_tipoServicio)
 		tipo_servicio	=	$scope.formData.sel_tipoServicio;
+	if($scope.formData.claveServicio!=3)
 	generar_referencia(ref,etapa,tipo_servicio);
 }	
 // ==============================================================================
@@ -410,10 +497,18 @@ function generar_referencia(ref,etapa,tipo_servicio){
 		});
 	
 
-}	
+}
+// ==============================================================================
+// ***** 		Funcion para generar referencia	para CIFA		*****
+// ==============================================================================
+    function generar_referencia_cifa(id_servicio){
+        $http.get(  global_apiserver + "/cursos/getReferencia/?id="+id_servicio+"&tipo=D")
+            .then(function( response ){
+                $scope.formData.txtReferencia	= response.data;
+            });
+    }
 
-
-$(document).ready(function () {
+    $(document).ready(function () {
 	cargarClientes();
 	cargarServicios();
 	//cargarEtapas();
