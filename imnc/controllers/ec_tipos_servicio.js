@@ -361,7 +361,7 @@ $scope.agregar_editar_sector	=	function(accion_sector,id_servicio_cliente_etapa,
 $scope.eliminar_sector = function(id_servicio_cliente_etapa,id_sector){
 	$.confirm({
         title: 'Eliminar registro',
-        content: 'Estas a punto de eliminar un sector, la operación es irreversible, estas seguro?',
+        content: 'Estas a punto de eliminar un sector, la operaciï¿½n es irreversible, estas seguro?',
         buttons: {
             cancel: {
                 text: 'Cancelar'

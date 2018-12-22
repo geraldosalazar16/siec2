@@ -35,23 +35,18 @@
                             <div class="form-group" id="divCursos" hidden>
                                 <label  for="sel_Cursos">Cursos<span class="required">*</span></label>
                                 <select ng-model="formData.sel_Cursos" ng-options="sel_Curso.ID_CURSO as sel_Curso.NOMBRE for sel_Curso in sel_Cursos"
-                                        class="form-control" id="sel_Cursos" name="sel_Cursos"  required
+                                        class="form-control" id="sel_Cursos" name="sel_Cursos"
                                         ng-class="{ error: exampleForm.sel_Cursos.$error.required && !exampleForm.$pristine}" ng-disabled="!formData.claveServicio " ></select>
                             </div>
 							<div class="form-group" id="divNorma">
-                                <label for="Norma">Norma<span class="required">*</span></label>
-                                <multiple-autocomplete ng-model="formData.Normas" 
-                                object-property="ID_NORMA"
-                                suggestions-arr="Normas"
-                                ng-class="{ error: exampleForm.Norma.$error.required && !exampleForm.$pristine}" 
-                                ng-disabled="!formData.sel_tipoServicio || accion=='editar'" >
-                                </multiple-autocomplete>
-                                <!--
-                                <select ng-model="formData.Norma" ng-options="Norma.ID_NORMA as Norma.ID_NORMA for Norma in Normas" 
-                                class="form-control" id="Norma" name="Norma" ng-change='cambioNorma()' required
-                                ng-class="{ error: exampleForm.Norma.$error.required && !exampleForm.$pristine}" 
-                                ng-disabled="!formData.sel_tipoServicio || accion=='editar'" ></select>
-                                -->
+                                <label for="Normas">Norma<span class="required">*</span></label>
+                                 <multiple-autocomplete ng-model="formData.Normas" id="Normas"
+                                 object-property="ID_NORMA"
+                                 suggestions-arr="Normas"
+                                 ng-class="{ error: exampleForm.Normas.$error.required && !exampleForm.$pristine}"
+                                 ng-disabled="!formData.sel_tipoServicio || accion=='editar'" >
+                                 </multiple-autocomplete>
+
                             </div>
 							 <div class="form-group">
                                 <label for="etapa">Etapa<span class="required">*</span></label>

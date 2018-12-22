@@ -121,8 +121,22 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
 							</div>
                             <div class="form-group">
                                 <label for="select_instructor">Instructor<span class="required">*</span></label>
-                                <input  id="btnInstructor" type="button" class="form-control btn btn-blue" ng-click="openModalMostarInst()" value="Selecciona un Instructor" >
-                            <span id="txtinstructorerror" class="text-danger"></span>
+                                <table class="table" >
+                                    <tr>
+                                        <td style="width: 70%;"><input  id="btnInstructor" type="button" class="form-control btn btn-blue" ng-click="openModalMostarInst()" value="Selecciona un Instructor" ></td>
+                                        <td style="width: 30%;">
+                                        <div class="checkbox-inline"  >
+                                        <label>
+                                          <input  id="chckVerTodos" type="checkbox" ng-model="formData.chckVerTodos" class="checkbox"  value="true" > Ver Todos
+                                        </label>
+                                      </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><span id="txtinstructorerror" class="text-danger"></span></td>
+                                    </tr>
+                                </table>
+
                             </div>
 
 
@@ -172,28 +186,40 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                           <tbody id="tbody-modal-explora-sitios">
                             <tr ng-repeat="instructor in instructoresCursos | filter:formData.searchText">
                                 <td td style="font-size: 12px;">
-                                    <strong><label style="color: #1c1c1c;">{{instructor.NOMBRE}}</label></strong><br>
+                                    <table>
+                                        <tr>
+                                        <td>
+                                             <strong><label ng-if="id_instructor == instructor.ID" style="color: #1c1c1c;">{{instructor.NOMBRE}} <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></label></strong>
+                                             <strong><label ng-if="id_instructor != instructor.ID" style="color: #1c1c1c;">{{instructor.NOMBRE}}</label></strong>
+                                        </td>
+                                        </tr>
+                                        <tr>
+                                        <td>
+                                             {{instructor.STATUS}}<br>
+                                        </td>
+                                        </tr>
+                                    </table>
+
                                     <input type="text" id="lb-{{instructor.ID}}" value="{{instructor.NOMBRE}}" hidden>
-                                    {{instructor.STATUS}}<br>
+
 
                                 </td>
                                 <td style="font-size: 11px;">
 
                                         <div ng-repeat="rol in instructor.ROLES">
-                                            <label class="badge badge-danger" ng-if="rol.ID_ROL == 7" > {{rol.ROL}}</label>
-                                            <label class="" ng-if="rol.ID_ROL != 7" >♦{{rol.ROL}}</label>
+                                            <label> {{rol.ROL}} <span ng-if="rol.ID_ROL == 7"  class="glyphicon glyphicon-ok" aria-hidden="true"></span></label>
                                         </div>
                                 </td>
                                 <td style="font-size: 11px;">
                                         <div ng-repeat="curso in instructor.CURSOS">
-                                            <label class="badge" ng-if="id_curso == curso.ID_CURSO" >{{curso.NOMBRE_CURSO}}</label>
-                                            <label class="" ng-if="id_curso != curso.ID_CURSO" >♦{{curso.NOMBRE_CURSO}}</label>
+                                            <label>{{curso.NOMBRE_CURSO}} <span  ng-if="id_curso == curso.ID_CURSO" class="glyphicon glyphicon-ok" aria-hidden="true"></span></label>
                                         </div>
                                 </td>
 
                                 <td>
-                                    <button  type="button"  class="btn btn-default btn-xs" style="float: right;" disabled  ng-if="instructor.STATUS=='inactivo' || instructor.ISROL==false || instructor.ISCURSO == false"> inactivo </button>
-                                    <button  id="btn-{{instructor.ID}}" type="button" class="btn btn-primary btn-xs btn-imnc " style="float: right;" ng-if="instructor.STATUS=='activo' && instructor.ISROL==true && instructor.ISCURSO == true" ng-click="onSelectInstructor(instructor.ID)"> seleccionar</button>
+                                    <button  type="button"  class="btn btn-default btn-xs" style="float: right;" disabled  ng-if="instructor.STATUS=='inactivo' || instructor.ISROL==false || instructor.ISCURSO == false"> seleccionar </button>
+                                    <button  id="btn-{{instructor.ID}}" type="button" class="btn btn-primary btn-xs btn-imnc " style="float: right;" ng-if="instructor.STATUS=='activo' && instructor.ISROL==true && instructor.ISCURSO == true" ng-click="onSelectInstructor(instructor.ID)" ng-disabled="id_instructor == instructor.ID"> seleccionar</button>
+                                    <span class="label label-danger" id="error-{{instructor.ID}}" hidden></span>
                                 </td>
                             </tr>
 

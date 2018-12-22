@@ -58,9 +58,19 @@
                           			Sitios</a>
 								</li>
 								
-								<li role="presentation" class="" > <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
 								<a href="#tab_auditorias" id="tab_auditorias-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
                           			Auditor&iacuteas </a>
+								</li>
+
+                                <li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 3"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<a href="#tab_tipos_cursos" id="tab_tipos_cursos-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
+                          			Tipos de Cursos </a>
+								</li>
+
+                                 <li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 3"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<a href="#tab_cursos" id="tab_cursos-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
+                          			Cursos </a>
 								</li>
 								
 							</ul>
@@ -216,9 +226,9 @@
 									</tbody>
 								</table>
 								</div>
-								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" --> 
+								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO ==2"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" -->
 									<div class="x_title">
-										<p><h2>Auditor&iacuteas </h2></p>
+										<p><h2>Auditor&iacuteas</h2></p>
 											<p ng-if='modulo_permisos["registrar"] == 1'>
 											<button type="button" ng-click="agregar_editar_auditorias('insertar')" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
 												<i class="fa fa-plus"> </i> Agregar auditor&iacuteas 
@@ -620,6 +630,27 @@
 								</div>
 													
 
+                                <div role="tabpanel" class="tab-pane fade" id="tab_tipos_cursos" aria-labelledby="profile-tab" ><!--ng-if="DatosServicio.ID_SERVICIO == 1" -->
+                                    <div class="x_title">
+                                        <p><h2>Tipos de Cursos</h2></p>
+                                        <p ng-if='modulo_permisos["registrar"] == 1'>
+											<button type="button" ng-click="" class="btn btn-primary btn-xs btn-imnc" style="float: right;">
+												<i class="fa fa-plus"> </i> Agregar Tipo
+											</button>
+										</p>
+										<div class="clearfix"></div></div>
+
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="tab_cursos" aria-labelledby="profile-tab" ><!--ng-if="DatosServicio.ID_SERVICIO == 1" -->
+                                    <div class="x_title">
+                                        <p><h2>Cursos</h2></p>
+                                        <p ng-if='modulo_permisos["registrar"] == 1'>
+											<button type="button" ng-click="" class="btn btn-primary btn-xs btn-imnc" style="float: right;">
+												<i class="fa fa-plus"> </i> Curso
+											</button>
+										</p>
+										<div class="clearfix"></div></div>
+                                </div>
 								
 				
         </div>
