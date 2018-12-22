@@ -258,8 +258,8 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 	
 	//$costo_inicial = ($total_dias_auditoria * floatval($tarifa['TARIFA']) );
 	$costo_inicial = (($total_dias_auditoria - $dias_encuesta)* floatval($tarifa['TARIFA']) +$dias_encuesta*2000);
-	$costo_desc = ($costo_inicial * (1-($cotizacio_tramite["DESCUENTO"]/100) + ($cotizacio_tramite["AUMENTO"]/100) ) );
-	//$costo_total_red_amp = $costo_desc*(1-($cotizacio_tramite["REDUCCION"]/100) + ($cotizacio_tramite["AUMENTO"]/100));
+	//$costo_desc = ($costo_inicial * (1-($cotizacio_tramite["DESCUENTO"]/100) + ($cotizacio_tramite["AUMENTO"]/100) ) );
+	$costo_desc = (($total_dias_auditoria - $dias_encuesta)* floatval($tarifa['TARIFA_DESC']) +$dias_encuesta*2000);
 	$obj_cotizacion["COSTO_INICIAL"] = $costo_inicial;
 	$obj_cotizacion["COSTO_DESCUENTO"] = $costo_desc;
 	$obj_cotizacion["COSTO_TOTAL"] = $costo_desc + $cotizacio_tramite["VIATICOS"] + $total_tarifa_adicional;
