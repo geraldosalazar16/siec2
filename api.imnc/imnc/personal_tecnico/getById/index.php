@@ -23,7 +23,6 @@ function valida_error_medoo_and_die(){
 		$respuesta['resultado']="error";
 		$respuesta['mensaje']="Error al ejecutar script: " . $database->error()[2];
 		print_r(json_encode($respuesta));
-		$mailerror->send("certificando", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx");
 		die();
 	}
 }

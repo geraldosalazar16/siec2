@@ -219,7 +219,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                                 <td>
                                     <button  type="button"  class="btn btn-default btn-xs" style="float: right;" disabled  ng-if="instructor.STATUS=='inactivo' || instructor.ISROL==false || instructor.ISCURSO == false"> seleccionar </button>
                                     <button  id="btn-{{instructor.ID}}" type="button" class="btn btn-primary btn-xs btn-imnc " style="float: right;" ng-if="instructor.STATUS=='activo' && instructor.ISROL==true && instructor.ISCURSO == true" ng-click="onSelectInstructor(instructor.ID)" ng-disabled="id_instructor == instructor.ID"> seleccionar</button>
-                                    <span class="label label-danger" id="error-{{instructor.ID}}" hidden></span>
+                                    <div  style="font-size: 9px;" id="error-{{instructor.ID}}" hidden></div>
                                 </td>
                             </tr>
 
