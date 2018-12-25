@@ -109,7 +109,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                                             ng-class="{ error: exampleForm.txtfechaI.$error.required && !exampleForm.$pristine}" >
 									<span id="fechainicioerror" class="text-danger"></span>
 								</div>
-							</div>
+							 </div>
 
                             <div class="form-group">
 								<label for="txtfechaF">Fecha Fin<span class="required">*</span></label>
@@ -174,7 +174,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                                 <label for="select_instructor">Buscar:</label>
                                 <input class="form-control" type="search" ng-model="formData.searchText">
                             </div>
-                          <table class="table table-hover">
+                          <table class="table table-hover" style="background-color: transparent">
                           <thead id="thead-modal-explora-sitios">
                             <tr>
                                 <th style="width: 40%;">Datos del Instructor</th>
@@ -186,7 +186,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                           <tbody id="tbody-modal-explora-sitios">
                             <tr ng-repeat="instructor in instructoresCursos | filter:formData.searchText">
                                 <td td style="font-size: 12px;">
-                                    <table>
+                                    <table style="background-color: transparent">
                                         <tr>
                                         <td>
                                              <strong><label ng-if="id_instructor == instructor.ID" style="color: #1c1c1c;">{{instructor.NOMBRE}} <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></label></strong>

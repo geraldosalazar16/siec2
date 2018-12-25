@@ -29,12 +29,28 @@ function valida_error_medoo_and_die(){
 $FLAG = "si";
 $razon = "";
 $respuesta=array();
-$id_cliente = $_REQUEST["id_cliente"];
-valida_parametro_and_die($id_cliente, "Es necesario un id cliente");
-$id_auditor = $_REQUEST["id_auditor"];
-valida_parametro_and_die($id_auditor, "Es necesario un id auditor");
-$fecha = $_REQUEST["fecha"]; ///format dd/mm/yyyy
-valida_parametro_and_die($fecha, "Es necesario una fecha");
+$json = file_get_contents("php://input");
+$objeto = json_decode($json);
+
+if($objeto!=null){
+    $id_cliente = $objeto->ID_CLIENTE;
+    valida_parametro_and_die($id_cliente, "Es necesario un id cliente");
+    $id_auditor = $objeto->ID_AUDITOR;
+    valida_parametro_and_die($id_auditor, "Es necesario un id auditor");
+    $fecha = $objeto->FECHA; ///format dd/mm/yyyy
+    valida_parametro_and_die($fecha, "Es necesario una fecha");
+
+}else{
+    $id_cliente = $_REQUEST["ID_CLIENTE"];
+    valida_parametro_and_die($id_cliente, "Es necesario un id cliente");
+    $id_auditor = $_REQUEST["ID_AUDITOR"];
+    valida_parametro_and_die($id_auditor, "Es necesario un id auditor");
+    $fecha = $_REQUEST["FECHA"]; ///format dd/mm/yyyy
+    valida_parametro_and_die($fecha, "Es necesario una fecha");
+}
+
+
+
 
 
 

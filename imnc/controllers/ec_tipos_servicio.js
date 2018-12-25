@@ -11,6 +11,8 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.formDataGrupoAuditor	=	{};
 	$scope.formDataGrupoAuditorFechaNorma	=	{};
 	$scope.formDataGeneraNotificacionPDF = {};
+    $scope.formDataParticipante = {};
+    $scope.formDataConfiguracion = {};
 	$scope.resp={};
 	$scope.resp1={};
 	$scope.DatosSitiosEC={};
@@ -24,6 +26,8 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.txtInsertarFechas = new Array();
 	$scope.txtFechasAuditoria={};
 	$scope.txtInsertarFechasGrupo = {};
+    $scope.id_instructor = "";
+
 // =======================================================================================
 // ***** 			FUNCION PARA EL BOTON AGREGAR INFORMACION AUDITORIA				 *****
 // =======================================================================================	
@@ -224,6 +228,10 @@ function clear_modal_agregar_informacion(){
 			$scope.DatosServicio = response.data;
 			$scope.DatosServicio.CICLO = ObtenerCicloDeReferencia($scope.DatosServicio.REFERENCIA);
 			$scope.titulo = $scope.DatosServicio.NOMBRE_SERVICIO;
+
+            if($scope.DatosServicio.ID_SERVICIO == 3)
+            $scope.cargarDatosConfiguracion($scope.DatosServicio.ID,$scope.DatosServicio.ID_CURSO);
+
 			if($scope.DatosServicio.ID_TIPO_SERVICIO == 17){
 				cargarMetaDatos($scope.DatosServicio.ID_TIPO_SERVICIO,$scope.DatosServicio.ID_NORMA);
 				
@@ -913,7 +921,7 @@ function InsertarActividad(newActiv){
             ID_CLIENTE_DOMICILIO:id_cliente_domicilio,
             ID_USUARIO:sessionStorage.getItem("id_usuario")
           };
-          $http.post(global_apiserver + "/i_sg_auditoria_sitios/delete/",sitio).
+          $http.post(global_apiserver + "/i_sg_auditoria_sitgflkfgios/delete/",sitio).
             then(function(response){
 			
                 if(response.data.resultado=="ok"){
@@ -1760,7 +1768,666 @@ $scope.get_domicilio_cliente	= function(id_cliente){
 		document.getElementById('formGeneraNotificacionPDF').submit();
  // submitFormGeneraNotificacionPDF(formGeneraNotificacionPDF)
   }
-  /*==========================================================================*/
+
+// ===========================================================================
+// ===========================================================================
+// ***** 	            INICIA SERVICIO CONTRATADO CIFA	            	 *****
+// ===========================================================================
+
+// =======================================================================================
+// ***** 			FUNCION PARA ABRIR MODAL INSERTAR/MODIFICAR PARTICIPANTES		 *****
+// =======================================================================================
+    $scope.openModalInsertarModificarParticipante = function(accion,id) {
+        $scope.modal_titulo_participante = "Agregar Participante";
+        $scope.accion = accion;
+        clear_modal_insertar_actualizar();
+
+        if(accion == 'editar') {
+            $scope.modal_titulo_participante = "Modificando Participante";
+
+            $.getJSON(global_apiserver + "/sce_cifa_participantes/getById/?id=" + id, function (response) {
+                $scope.formDataParticipante.razonSocial = response.RAZON_ENTIDAD;
+                $scope.formDataParticipante.emailParticipante = response.EMAIL;
+                $scope.formDataParticipante.telefonoParticipante = response.TELEFONO;
+                $scope.formDataParticipante.curpParticipante = response.CURP;
+                $scope.formDataParticipante.rfcParticipante = response.RFC;
+                $scope.formDataParticipante.estadoParticipante = parseInt(response.ID_ESTADO);
+                $scope.formDataParticipante.comercialParticipante = response.EJECUTIVO;
+                $scope.$apply();
+                $("#btnSaveParticipante").attr("id_participante",response.ID);
+            });
+
+        }
+        $scope.cargarEstados();
+        $("#modalInsertarActualizarParticipante").modal("show");
+    }
+
+// =======================================================================================================
+// *****   Funcion para limpiar las variables del MODAL INSERTAR/MODIFICAR PARTICIPANTES			 *****
+// =======================================================================================================
+    function clear_modal_insertar_actualizar(){
+        $scope.formDataParticipante.razonSocial = '';
+        $scope.formDataParticipante.emailParticipante = '';
+        $scope.formDataParticipante.telefonoParticipante = '';
+        $scope.formDataParticipante.curpParticipante = '';
+        $scope.formDataParticipante.rfcParticipante = '';
+        $scope.formDataParticipante.estadoParticipante = '';
+        $scope.formDataParticipante.comercialParticipante = "";
+
+       /* $("#btnInstructor").attr("value","Selecciona un Instructor");
+        $("#btnInstructor").attr("class", "form-control btn ");*/
+
+        $("#razonSocialerror").text("");
+        $("#emailParticipanteerror").text("");
+        $("#telefonoParticipanteerror").text("");
+        $("#curpParticipanteerror").text("");
+        $("#rfcParticipanteerror").text("");
+        $("#estadoParticipanteerror").text("");
+        $("#comercialParticipanteerror").text("");
+
+    }
+// =======================================================================================================
+// *****    Accion al presionar button Guardar  MODAL INSERTAR/MODIFICAR PARTICIPANTES			 *****
+// =======================================================================================================
+    $scope.submitFormParticipante = function (formDataParticipante) {
+        validar_formulario();
+        if($scope.respuesta == 1){
+            if($scope.accion == "insertar")
+            {
+                insertarParticipante(formDataParticipante);
+            }
+            if($scope.accion == "editar")
+            {
+                editarParticipante(formDataParticipante);
+            }
+
+
+        }
+    }
+
+// =======================================================================================
+// *****     Función para validar los campos del formulario antes de Guardar		 *****
+// =======================================================================================
+    function validar_formulario()
+    {
+        $scope.respuesta =  1;
+
+        if(typeof $scope.formDataParticipante.razonSocial !== "undefined") {
+        if ($scope.formDataParticipante.razonSocial.length == 0) {
+            $scope.respuesta = 0;
+            $("#razonSocialerror").text("No debe estar vacio");
+        } else {
+            $("#razonSocialerror").text("");
+        }
+        }else {
+            $scope.respuesta = 0;
+            $("#razonSocialerror").text("No debe estar vacio");
+        }
+
+        if(typeof $scope.formDataParticipante.emailParticipante !== "undefined") {
+        if ($scope.formDataParticipante.emailParticipante.length == 0) {
+            $scope.respuesta = 0;
+            $("#emailParticipanteerror").text("No debe estar vacio");
+        } else {
+        	if(validar_email($scope.formDataParticipante.emailParticipante))
+			{
+                $("#emailParticipanteerror").text("");
+			}
+        	else
+			{
+                $scope.respuesta = 0;
+                $("#emailParticipanteerror").text("Correo electrónico inválido");
+			}
+
+        }
+        }else {
+            $scope.respuesta = 0;
+            $("#emailParticipanteerror").text("No debe estar vacio");
+        }
+
+        if(typeof $scope.formDataParticipante.telefonoParticipante !== "undefined") {
+        if ($scope.formDataParticipante.telefonoParticipante.length == 0) {
+            $scope.respuesta = 0;
+            $("#telefonoParticipanteerror").text("No debe estar vacio");
+        } else {
+            if(validar_telefono($scope.formDataParticipante.telefonoParticipante))
+            {
+                $("#telefonoParticipanteerror").text("");
+            }
+            else
+            {
+                $scope.respuesta = 0;
+                $("#telefonoParticipanteerror").text("Número de telefono inválido");
+            }
+
+        }
+        }else {
+            $scope.respuesta = 0;
+            $("#telefonoParticipanteerror").text("No debe estar vacio");
+        }
+
+        if(typeof $scope.formDataParticipante.curpParticipante !== "undefined") {
+            if ($scope.formDataParticipante.curpParticipante.length == 0) {
+                $scope.respuesta = 0;
+                $("#curpParticipanteerror").text("No debe estar vacio");
+            } else {
+                    $("#curpParticipanteerror").text("");
+            }
+        }else {
+            $scope.respuesta = 0;
+            $("#curpParticipanteerror").text("No debe estar vacio");
+        }
+
+        if(typeof $scope.formDataParticipante.rfcParticipante !== "undefined") {
+            if ($scope.formDataParticipante.rfcParticipante.length == 0) {
+                $scope.respuesta = 0;
+                $("#rfcParticipanteerror").text("No debe estar vacio");
+            } else {
+                if($scope.validar_rfc())
+                {
+                    $("#rfcParticipanteerror").text("");
+                }
+                else
+                {
+                    $scope.respuesta = 0;
+                    $("#rfcParticipanteerror").text("RFC inválido");
+                }
+
+            }
+        }else {
+            $scope.respuesta = 0;
+            $("#rfcParticipanteerror").text("No debe estar vacio");
+        }
+
+        if(typeof $scope.formDataParticipante.estadoParticipante !== "undefined") {
+            if ($scope.formDataParticipante.estadoParticipante.length == 0) {
+                $scope.respuesta = 0;
+                $("#estadoParticipanteerror").text("No debe estar vacio");
+            } else {
+                $("#estadoParticipanteerror").text("");
+            }
+        }else {
+            $scope.respuesta = 0;
+            $("#estadoParticipanteerror").text("No debe estar vacio");
+        }
+
+        if(typeof $scope.formDataParticipante.comercialParticipante !== "undefined") {
+            if ($scope.formDataParticipante.comercialParticipante.length == 0) {
+                $scope.respuesta = 0;
+                $("#comercialParticipanteerror").text("No debe estar vacio");
+            } else {
+                $("#comercialParticipanteerror").text("");
+            }
+        }else {
+            $scope.respuesta = 0;
+            $("#comercialParticipanteerror").text("No debe estar vacio");
+        }
+
+
+
+
+    }
+
+// =======================================================================================
+// *****               Función para validar que entren solo numeros         		 *****
+// =======================================================================================
+    $scope.validar_rfc = function()
+    {
+        var valor = $scope.formDataParticipante.rfcParticipante;
+        valor = eliminaEspacios(valor);
+            reg=/^(([A-Z]|[a-z]){3})([0-9]{6})((([A-Z]|[a-z]|[0-9]){3}))/;
+        if(valor.length == 13)
+        	reg=/^(([A-Z]|[a-z]|\s){1})(([A-Z]|[a-z]){3})([0-9]{6})((([A-Z]|[a-z]|[0-9]){3}))/;
+        if(!reg.test(valor))
+        {
+            $scope.formDataParticipante.rfcParticipante = "";
+            $("#rfcParticipante").focus();
+            return false;
+        }
+        else
+            return true;
+    }
+// =======================================================================================
+// *****               Función para validar que entren solo numeros         		 *****
+// =======================================================================================
+    $scope.validar_numeros = function()
+    {
+        var valor = $scope.formDataParticipante.telefonoParticipante;
+        valor = eliminaEspacios(valor);
+        reg=/(^[0-9]{1,12}$)/;
+        if(!reg.test(valor))
+        {
+            $scope.formDataParticipante.telefonoParticipante = "";
+        	$("#telefonoParticipante").focus();
+            return false;
+        }
+        else
+            return true;
+    }
+// =======================================================================================
+// *****               Función para eliminar espacios a una cadena          		 *****
+// =======================================================================================
+    function eliminaEspacios(cadena)
+    {
+        // Funcion equivalente a trim en PHP
+        var x=0, y=cadena.length-1;
+        while(cadena.charAt(x)==" ") x++;
+        while(cadena.charAt(y)==" ") y--;
+        return cadena.substr(x, y-x+1);
+    }
+// =======================================================================================
+// *****               Función para observar el campo del formulario         		 *****
+// =======================================================================================
+    $scope.$watch('formDataParticipante.rfcParticipante',function(nuevo, anterior) {
+        if(!nuevo)return;
+        if($scope.formDataParticipante.rfcParticipante.length > 13)
+            $scope.formDataParticipante.rfcParticipante = anterior;
+    })
+
+// =======================================================================================
+// *****               Función para observar el campo del formulario         		 *****
+// =======================================================================================
+    $scope.$watch('formDataParticipante.telefonoParticipante',function(nuevo, anterior) {
+        if(!nuevo)return;
+        if(!$scope.validar_numeros())
+            $scope.formDataParticipante.telefonoParticipante = anterior;
+    })
+
+// =======================================================================================
+// *****               Función para validar que entren solo numeros         		 *****
+// =======================================================================================
+    function validar_telefono(telefono)
+    {
+        var caract = new RegExp(/(^[0-9]{1,10}$)/);
+
+        if (caract.test(telefono) == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
+// =======================================================================================
+// *****               Función para validar que entren solo numeros         		 *****
+// =======================================================================================
+    function validar_email(email)
+    {
+        var caract = new RegExp(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/);
+
+        if (caract.test(email) == false){
+          return false;
+        }else{
+		  return true;
+        }
+    }
+
+// ===========================================================================
+// ***** 			FUNCION PARA INSERTAR UNA PROGRAMACION				 *****
+// ===========================================================================
+    function insertarParticipante(formData) {
+
+
+                var participante = {
+                    ID_SERVICIO_CLIENTE_ETAPA: $scope.DatosServicio.ID,
+                    RAZON_ENTIDAD: formData.razonSocial,
+                    EMAIL: formData.emailParticipante,
+                    TELEFONO: formData.telefonoParticipante,
+                    CURP: formData.curpParticipante,
+                    RFC:formData.rfcParticipante,
+                    ESTADO:formData.estadoParticipante,
+                    EJECUTIVO:formData.comercialParticipante
+                };
+                $.post(global_apiserver + "/sce_cifa_participantes/insert/", JSON.stringify(participante), function (respuesta) {
+                    respuesta = JSON.parse(respuesta);
+                    if (respuesta.resultado == "ok") {
+                        $("#modalInsertarActualizarParticipante").modal("hide");
+                        notify("Éxito", "Se ha insertado un nuevo Participante", "success");
+                        $scope.cargarParticipantes($scope.DatosServicio.ID);
+                    }
+                    else {
+                        notify("Error", respuesta.mensaje, "error");
+                    }
+
+                });
+
+
+    }
+
+// ===========================================================================
+// ***** 			FUNCION PARA EDITAR UNA PROGRAMACION				 *****
+// ===========================================================================
+    function editarParticipante(formData) {
+        var participante = {
+            ID: $("#btnSaveParticipante").attr("id_participante"),
+            RAZON_ENTIDAD: formData.razonSocial,
+            EMAIL: formData.emailParticipante,
+            TELEFONO: formData.telefonoParticipante,
+            CURP: formData.curpParticipante,
+            RFC:formData.rfcParticipante,
+            ESTADO:formData.estadoParticipante,
+            EJECUTIVO:formData.comercialParticipante
+        };
+        $.post(global_apiserver + "/sce_cifa_participantes/update/", JSON.stringify(participante), function (respuesta) {
+            respuesta = JSON.parse(respuesta);
+            if (respuesta.resultado == "ok") {
+                $("#modalInsertarActualizarParticipante").modal("hide");
+                notify("Éxito", "Se ha editado el Participante", "success");
+                $scope.cargarParticipantes($scope.DatosServicio.ID);
+            }
+            else {
+                notify("Error", respuesta.mensaje, "error");
+            }
+
+        });
+
+
+    }
+// ===================================================================
+// ***** 	  FUNCION PARA CARGAR LOS ESTADOSS		 *****
+// ===================================================================
+    $scope.cargarEstados = function(){
+
+        $scope.estados	=	{0:{ID:1,NOMBRE:"Mexico"},1:{ID:2,NOMBRE:"CANCUN"}};
+        /*$http.get(  global_apiserver + "/sce_cifa_participantes/getAll/?id="+id)
+            .then(function( response ){
+                $scope.participantes = response.data;
+            });*/
+    }
+
+// ===================================================================
+// ***** 	  FUNCION PARA CARGAR LOS DATOS PARTICIPANTES		 *****
+// ===================================================================
+    $scope.cargarParticipantes = function(id){
+        $http.get(  global_apiserver + "/sce_cifa_participantes/getAll/?id="+id)
+            .then(function( response ){
+                $scope.participantes = response.data;
+            });
+    }
+// ===================================================================
+// ***** 	  FUNCION PARA CARGAR LOS SITIOS DEL CLIENTE		 *****
+// ===================================================================
+    $scope.cargarSitios = function(){
+        $http.get(  global_apiserver + "/sce_cifa_participantes/getSitiosByIdCliente/?id="+$scope.DatosServicio.ID_CLIENTE)
+            .then(function( response ){
+                $scope.sitios = response.data;
+            });
+    }
+
+// ===================================================================
+// ***** 	  FUNCION PARA CARGAR DATOS CONFIGURACION		 *****
+// ===================================================================
+    $scope.cargarDatosConfiguracion = function(id_sce,id_curso){
+        onCalendario();
+        clear_form_configuracion();
+        $scope.cargarSitios();
+        $.getJSON( global_apiserver + "/sce_cifa_participantes/getSCECurso/?ID_SCE="+$scope.DatosServicio.ID+"&ID_CURSO="+$scope.DatosServicio.ID_CURSO, function( response ) {
+            	if(response)
+				{
+                    $scope.configuracion = response;
+                    $scope.formDataConfiguracion.selectSitio = $scope.configuracion.ID_SITIO;
+                    $scope.formDataConfiguracion.fecha_inicio_participante = $scope.configuracion.FECHA_INICIO;
+                    $scope.formDataConfiguracion.fecha_fin_participante = $scope.configuracion.FECHA_FIN;
+                    $scope.id_instructor =  $scope.configuracion.ID_INSTRUCTOR;
+                    $("#btnInstructor").attr("value",response.NOMBRE_INSTRUCTOR);
+                    $("#btnInstructor").attr("class", "form-control btn btn-primary");
+                    $scope.$apply();
+				}
+
+
+            });
+    }
+// =======================================================================================================
+// *****            Funcion para limpiar las variables del form Configuracion                 		 *****
+// =======================================================================================================
+    function clear_form_configuracion(){
+        $scope.formDataConfiguracion.selectSitio = '';
+        $scope.formDataConfiguracion.fecha_inicio_participante = '';
+        $scope.formDataConfiguracion.fecha_fin_participante = '';
+        $scope.id_instructor = "";
+        $scope.formDataConfiguracion.chckVerTodos = "";
+        $("#btnInstructor").attr("value","Selecciona un Instructor");
+        $("#btnInstructor").attr("class", "form-control btn ");
+
+		/* $("#btnInstructor").attr("value","Selecciona un Instructor");
+		 $("#btnInstructor").attr("class", "form-control btn ");*/
+
+        $("#selectSitioerror").text("");
+        $("#fechainicioerror").text("");
+        $("#fechafinerror").text("");
+        $("#instructorerror").text("");
+
+    }
+// =======================================================================================================
+// *****                 Accion al presionar button Guardar  form Configuracion                		 *****
+// =======================================================================================================
+    $scope.submitFormConfiguracion = function (formDataConfiguracion) {
+        validar_formulario_configuracion();
+        if($scope.respuesta == 1){
+                editarConfiguracion(formDataConfiguracion);
+        }
+    }
+// =======================================================================================================
+// *****                 Validar formulario configuracion                     		 *****
+// =======================================================================================================
+    function validar_formulario_configuracion() {
+        $scope.respuesta =  1;
+
+        if(typeof $scope.formDataConfiguracion.selectSitio !== "undefined") {
+            if ($scope.formDataConfiguracion.selectSitio.length == 0) {
+                $scope.respuesta = 0;
+                $("#selectSitioerror").text("No debe estar vacio");
+            } else {
+                $("#selectSitioerror").text("");
+            }
+        }else {
+            $scope.respuesta = 0;
+            $("#selectSitioerror").text("No debe estar vacio");
+        }
+
+        if(typeof $scope.formDataConfiguracion.fecha_inicio_participante !== "undefined") {
+            if ($scope.formDataConfiguracion.fecha_inicio_participante.length == 0) {
+                $scope.respuesta = 0;
+                $("#fechainicioerror").text("No debe estar vacio");
+            } else {
+                $("#fechainicioerror").text("");
+            }
+        }else {
+            $scope.respuesta = 0;
+            $("#fechainicioerror").text("No debe estar vacio");
+        }
+
+        if(typeof $scope.formDataConfiguracion.fecha_fin_participante !== "undefined") {
+            if ($scope.formDataConfiguracion.fecha_fin_participante.length == 0) {
+                $scope.respuesta = 0;
+                $("#fechafinerror").text("No debe estar vacio");
+            } else {
+                $("#fechafinerror").text("");
+            }
+        }else {
+            $scope.respuesta = 0;
+            $("#fechafinerror").text("No debe estar vacio");
+        }
+
+        if(typeof $scope.id_instructor !== "undefined") {
+            if ($scope.id_instructor.length == 0) {
+                $scope.respuesta = 0;
+                $("#instructorerror").text("No debe estar vacio");
+            } else {
+                $("#instructorerror").text("");
+            }
+        }else {
+            $scope.respuesta = 0;
+            $("#instructorerror").text("No debe estar vacio");
+        }
+    }
+
+// ===========================================================================
+// ***** 			FUNCION PARA EDITAR CONFIGURACION				 *****
+// ===========================================================================
+    function editarConfiguracion(formData) {
+        var configuracion = {
+            ID_SCE:$scope.DatosServicio.ID,
+            ID_CURSO:$scope.DatosServicio.ID_CURSO,
+            ID_SITIO: formData.selectSitio,
+            FECHA_INICIO: formData.fecha_inicio_participante,
+            FECHA_FIN: formData.fecha_fin_participante,
+            ID_INSTRUCTOR: $scope.id_instructor
+        };
+        $.post(global_apiserver + "/sce_cifa_participantes/updateConfiguracion/", JSON.stringify(configuracion), function (respuesta) {
+            respuesta = JSON.parse(respuesta);
+
+            if (respuesta.resultado == "ok") {
+                notify("Éxito", "Se ha guardado la Configuracion", "success");
+            }
+            else {
+                notify("Error", respuesta.mensaje, "error");
+            }
+
+        });
+
+
+    }
+
+
+// ===========================================================================
+// ***** 	    FUNCION PARA CARGAR LOS DATEPICKER DEL MODAL			 *****
+// ===========================================================================
+    function onCalendario() {
+
+        var dateInicial = $('#fecha_inicio_participante').datepicker({
+            dateFormat: "dd/mm/yy",
+            minDate: "+0D",
+            language: "es",
+            onSelect: function (dateText, ins) {
+                $scope.formDataConfiguracion.fecha_inicio_participante = dateText;
+                dateFinal.datepicker("option", "minDate", dateText)
+            }
+        }).css("display", "inline-block");
+
+        var dateFinal =$('#fecha_fin_participante').datepicker({
+            dateFormat: "dd/mm/yy",
+            language: "es",
+            minDate: "+0D",
+            onSelect: function (dateText, ins) {
+                $scope.formDataConfiguracion.fecha_fin_participante = dateText;
+            }
+        }).css("display", "inline-block");
+    }
+
+// =======================================================================================
+// ***** 			FUNCION PARA ABRIR MODAL MOSTRAR INSTRUCTOR             		 *****
+// =======================================================================================
+    $scope.openModalMostarInst = function() {
+        $scope.formDataConfiguracion.searchText = "";
+            $("#instructorerror").text("");
+            if ( $scope.formDataConfiguracion.fecha_inicio_participante.length != 0 && $scope.formDataConfiguracion.fecha_fin_participante.length != 0) {
+                $("#modal-size").attr("class","modal-dialog modal-lg");
+
+
+                $scope.cargarInstructores($scope.DatosServicio.ID_CURSO);
+                $("#instructorerror").text("");
+
+
+                $("#modalSelectInstructor").modal("show");
+
+            }
+            else {
+                $("#instructorerror").text("Debe seleccionar las fechas");
+            }
+
+
+
+    }
+
+// ===========================================================================
+// ***** 		      Funcion button select instructor 	            	 *****
+// ===========================================================================
+    $scope.onSelectInstructor = function(instructor)
+    {
+        var validar = {
+            ID:		          	        instructor,
+            FECHAS:			            $scope.formDataConfiguracion.fecha_inicio_participante+","+$scope.formDataConfiguracion.fecha_fin_participante
+        };
+        $("#btn-"+instructor).attr("disabled",true);
+        $("#btn-"+instructor).text("verificando...");
+        $.post( global_apiserver + "/personal_tecnico/isDisponible/", JSON.stringify(validar), function(respuesta){
+            respuesta = JSON.parse(respuesta);
+            if (respuesta.disponible == "si") {
+            	var validar_2 = {
+            		ID_CLIENTE:$scope.DatosServicio.ID_CLIENTE,
+            		ID_AUDITOR:instructor,
+				    FECHA:$scope.formDataConfiguracion.fecha_fin_participante
+				}
+                $.post( global_apiserver + "/personal_tecnico/getAuditotiasClienteEn2Annos/", JSON.stringify(validar_2), function(response){
+                	response = JSON.parse(response);
+                    if (response.disponible == "si") {
+                        $scope.id_instructor = instructor;
+                        $("#btnInstructor").attr("value", $("#lb-"+instructor).val());
+                        $("#btnInstructor").attr("class", "form-control btn btn-primary");
+                        $("#btn-"+instructor).attr("disabled",false);
+                        $("#btn-"+instructor).text("seleccionar");
+                        $("#modalSelectInstructor").modal("hide");
+					}else
+                    {
+                        if (response.disponible == "no")
+                        {
+                            notify("Error", respuesta.razon, "error");
+                            $("#btn-"+instructor).attr("disabled",true);
+                            $("#error-"+instructor).text(respuesta.razon);
+                            $("#error-"+instructor).show();
+                            $("#btn-"+instructor).text("seleccionar");
+                        }else
+                        {
+                            notify("Error", respuesta.mensaje, "error");
+                            $("#btn-"+instructor).attr("disabled",false);
+                            $("#btn-"+instructor).text("seleccionar");
+                        }
+
+                    }
+
+
+                })
+
+
+            }
+            else
+            {
+                if (respuesta.disponible == "no")
+                {
+                    notify("Error", respuesta.razon, "error");
+                    $("#btn-"+instructor).attr("disabled",true);
+                    $("#error-"+instructor).text(respuesta.razon);
+                    $("#error-"+instructor).show();
+                    $("#btn-"+instructor).text("seleccionar");
+                }else
+                {
+                    notify("Error", respuesta.mensaje, "error");
+                    $("#btn-"+instructor).attr("disabled",false);
+                    $("#btn-"+instructor).text("seleccionar");
+                }
+
+            }
+        })
+    }
+
+// ===================================================================
+// ***** 			FUNCION PARA CARGAR LOS INSTRUCTORES    	 *****
+// ===================================================================
+    $scope.cargarInstructores= function(seletcCurso){
+        var option = "no";
+        if($scope.formDataConfiguracion.chckVerTodos)
+            option = "si";
+        $http.get(global_apiserver + "/cursos_programados/getInstructores/?id="+seletcCurso+"&option="+option)
+            .then(function( response ){
+                $scope.instructoresCursos = response.data;
+            });
+    }
+
+
+// ===========================================================================
+// ***** 	            TERMINA  SERVICIO CONTRATADO CIFA	           	 *****
+// ===========================================================================
+// ===========================================================================
+
 
 DatosServicioContratado($scope.id_servicio_cliente_etapa);
 cargarValoresMetaDatosServicio($scope.id_servicio_cliente_etapa);
@@ -1770,6 +2437,7 @@ cargarSitiosSGServicio($scope.id_servicio_cliente_etapa);
 cargarTodosSitiosECServicio($scope.id_servicio_cliente_etapa);
 cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+$scope.cargarParticipantes($scope.id_servicio_cliente_etapa);
 //cargarRolesAuditor();
 //cargarOpcionesSelectMetaDatos();
 

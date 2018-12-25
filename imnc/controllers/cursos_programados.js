@@ -149,7 +149,7 @@ $scope.openModalInsertarModificar = function(accion){
                 $("#btnInstructor").attr("value",response.NOMBRE_AUDITOR.NOMBRE+" "+response.NOMBRE_AUDITOR.APELLIDO_PATERNO+" "+response.NOMBRE_AUDITOR.APELLIDO_MATERNO)
                 $("#btnInstructor").attr("class", "form-control ");
                 $scope.$apply();
-                ;
+
 
             });
 
@@ -312,7 +312,7 @@ function clear_modal_insertar_actualizar(){
 {
     var valor = $scope.formData.minimo;
     valor = eliminaEspacios(valor);
-    reg=/(^[0-9,0-9]{1,10}$)/;
+    reg=/(^[0-9]{1,4}$)/;
     if(!reg.test(valor))
     {
         $scope.formData.minimo = "";
