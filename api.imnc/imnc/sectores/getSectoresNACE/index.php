@@ -27,7 +27,7 @@ function valida_error_medoo_and_die(){
 
 $id = $_REQUEST["id"];
 
-$sectores = $database->select("SECTOR_NACE", "*", ["ID_SECTOR"=>$id]);
+$sectores = $database->select("SECTOR_NACE", "*", ["ID"=>$id]);
 valida_error_medoo_and_die();
 
 print_r(json_encode($sectores));
