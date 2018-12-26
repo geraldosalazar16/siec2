@@ -901,6 +901,23 @@ $scope.eliminar = function(id){
 	$scope.productos_cambio = function(){
 		//Ya no es necesaria eta función
 	}
+
+	$scope.CursosLista = function(seleccionado){
+		//recibe la url del php que se ejecutará
+		$http.get(  global_apiserver + "/cursos/getAll/")
+	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
+	  			$scope.Cursos = response.data.map(function(item){
+	  				return{
+	  					id : item.ID_CURSO,
+	  					nombre : item.NOMBRE
+	  				}
+	  			});
+	  			if(seleccionado){
+					$scope.cursos = seleccionado;  
+				}
+			},
+			function (response){});
+	}
 	/*
 		Función para limpiar la información del módelo y que no se quede guardada
 		después de realizar alguna transacción.
@@ -1854,6 +1871,7 @@ $scope.cotizacion_guardar = function(){
 	$scope.DepartamentosLista();
 	$scope.ProductosLista();
 	$scope.ActualizarAreas();
+	$scope.CursosLista();
 
 	/*
 	Cargar información necesara para insertar una cotización
@@ -1874,6 +1892,8 @@ $scope.cotizacion_guardar = function(){
 	onCalendar();
 	
 }]);
+
+//********* Funciones JS legacy ***********/
 function notify(titulo, texto, tipo) {
     new PNotify({
         title: titulo,
