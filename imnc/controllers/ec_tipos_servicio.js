@@ -27,6 +27,7 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.txtFechasAuditoria={};
 	$scope.txtInsertarFechasGrupo = {};
     $scope.id_instructor = "";
+    $scope.flag = true;
 
 // =======================================================================================
 // ***** 			FUNCION PARA EL BOTON AGREGAR INFORMACION AUDITORIA				 *****
@@ -1791,7 +1792,7 @@ $scope.get_domicilio_cliente	= function(id_cliente){
                 $scope.formDataParticipante.telefonoParticipante = response.TELEFONO;
                 $scope.formDataParticipante.curpParticipante = response.CURP;
                 $scope.formDataParticipante.rfcParticipante = response.RFC;
-                $scope.formDataParticipante.estadoParticipante = parseInt(response.ID_ESTADO);
+                $scope.formDataParticipante.estadoParticipante = response.ID_ESTADO;
                 $scope.formDataParticipante.comercialParticipante = response.EJECUTIVO;
                 $scope.$apply();
                 $("#btnSaveParticipante").attr("id_participante",response.ID);
@@ -1911,7 +1912,16 @@ $scope.get_domicilio_cliente	= function(id_cliente){
                 $scope.respuesta = 0;
                 $("#curpParticipanteerror").text("No debe estar vacio");
             } else {
+
+                if($scope.curpValida())
+                {
                     $("#curpParticipanteerror").text("");
+                }
+                else
+                {
+                    $scope.respuesta = 0;
+                    $("#curpParticipanteerror").text("CURP inválido");
+                }
             }
         }else {
             $scope.respuesta = 0;
@@ -1969,7 +1979,36 @@ $scope.get_domicilio_cliente	= function(id_cliente){
     }
 
 // =======================================================================================
-// *****               Función para validar que entren solo numeros         		 *****
+// *****                       Función para validar CURP                    		 *****
+// =======================================================================================
+     $scope.curpValida = function() {
+    	var curp = $scope.formDataParticipante.curpParticipante;
+        var re = /^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0\d|1[0-2])(?:[0-2]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/,
+            validado = curp.match(re);
+
+        if (!validado)  //Coincide con el formato general?
+            return false;
+
+        //Validar que coincida el dígito verificador
+        function digitoVerificador(curp17) {
+            //Fuente https://consultas.curp.gob.mx/CurpSP/
+            var diccionario  = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
+                lngSuma      = 0.0,
+                lngDigito    = 0.0;
+            for(var i=0; i<17; i++)
+                lngSuma= lngSuma + diccionario.indexOf(curp17.charAt(i)) * (18 - i);
+            lngDigito = 10 - lngSuma % 10;
+            if(lngDigito == 10)
+                return 0;
+            return lngDigito;
+        }
+        if (validado[2] != digitoVerificador(validado[1]))
+            return false;
+
+        return true; //Validado
+    }
+// =======================================================================================
+// *****               Función para validar RFC        		 *****
 // =======================================================================================
     $scope.validar_rfc = function()
     {
@@ -2061,7 +2100,7 @@ $scope.get_domicilio_cliente	= function(id_cliente){
     }
 
 // ===========================================================================
-// ***** 			FUNCION PARA INSERTAR UNA PROGRAMACION				 *****
+// ***** 			FUNCION PARA INSERTAR UN PARTICIPANTE				 *****
 // ===========================================================================
     function insertarParticipante(formData) {
 
@@ -2093,7 +2132,7 @@ $scope.get_domicilio_cliente	= function(id_cliente){
     }
 
 // ===========================================================================
-// ***** 			FUNCION PARA EDITAR UNA PROGRAMACION				 *****
+// ***** 			FUNCION PARA EDITAR UN PARTICIPANTE				 *****
 // ===========================================================================
     function editarParticipante(formData) {
         var participante = {
@@ -2125,14 +2164,11 @@ $scope.get_domicilio_cliente	= function(id_cliente){
 // ***** 	  FUNCION PARA CARGAR LOS ESTADOSS		 *****
 // ===================================================================
     $scope.cargarEstados = function(){
-
-        $scope.estados	=	{0:{ID:1,NOMBRE:"Mexico"},1:{ID:2,NOMBRE:"CANCUN"}};
-        /*$http.get(  global_apiserver + "/sce_cifa_participantes/getAll/?id="+id)
+        $http.get(  global_apiserver + "/sce_cifa_participantes/getAllEstados")
             .then(function( response ){
-                $scope.participantes = response.data;
-            });*/
+                $scope.estados= response.data;
+            });
     }
-
 // ===================================================================
 // ***** 	  FUNCION PARA CARGAR LOS DATOS PARTICIPANTES		 *****
 // ===================================================================
@@ -2151,29 +2187,44 @@ $scope.get_domicilio_cliente	= function(id_cliente){
                 $scope.sitios = response.data;
             });
     }
+// ===================================================================
+// ***** 	  FUNCION PARA TRAER DATOS FORM CONFIG		 *****
+// ===================================================================
+    $scope.traerConfiguracion = function(){
+        $.getJSON( global_apiserver + "/sce_cifa_participantes/getSCECurso/?ID_SCE="+$scope.DatosServicio.ID+"&ID_CURSO="+$scope.DatosServicio.ID_CURSO, function( response ) {
+
+            $scope.configuracion = response;
+            $scope.formDataConfiguracion.selectSitio = $scope.configuracion.ID_SITIO;
+            $scope.formDataConfiguracion.fecha_inicio_participante = $scope.configuracion.FECHA_INICIO;
+            $scope.formDataConfiguracion.fecha_fin_participante = $scope.configuracion.FECHA_FIN;
+            $scope.id_instructor =  $scope.configuracion.ID_INSTRUCTOR;
+
+			if($scope.configuracion.ID_SITIO !== null)
+			{
+                $scope.flag = false;
+
+			}
+			else
+                $scope.flag = true;
+
+            $("#btnInstructor").attr("value",response.NOMBRE_INSTRUCTOR);
+            $("#btnInstructor").attr("class", "form-control btn btn-primary");
+            $scope.$apply();
+
+
+
+        });
+    }
 
 // ===================================================================
 // ***** 	  FUNCION PARA CARGAR DATOS CONFIGURACION		 *****
 // ===================================================================
-    $scope.cargarDatosConfiguracion = function(id_sce,id_curso){
+    $scope.cargarDatosConfiguracion = function(){
         onCalendario();
         clear_form_configuracion();
         $scope.cargarSitios();
-        $.getJSON( global_apiserver + "/sce_cifa_participantes/getSCECurso/?ID_SCE="+$scope.DatosServicio.ID+"&ID_CURSO="+$scope.DatosServicio.ID_CURSO, function( response ) {
-            	if(response)
-				{
-                    $scope.configuracion = response;
-                    $scope.formDataConfiguracion.selectSitio = $scope.configuracion.ID_SITIO;
-                    $scope.formDataConfiguracion.fecha_inicio_participante = $scope.configuracion.FECHA_INICIO;
-                    $scope.formDataConfiguracion.fecha_fin_participante = $scope.configuracion.FECHA_FIN;
-                    $scope.id_instructor =  $scope.configuracion.ID_INSTRUCTOR;
-                    $("#btnInstructor").attr("value",response.NOMBRE_INSTRUCTOR);
-                    $("#btnInstructor").attr("class", "form-control btn btn-primary");
-                    $scope.$apply();
-				}
+        $scope.traerConfiguracion();
 
-
-            });
     }
 // =======================================================================================================
 // *****            Funcion para limpiar las variables del form Configuracion                 		 *****
@@ -2277,6 +2328,8 @@ $scope.get_domicilio_cliente	= function(id_cliente){
 
             if (respuesta.resultado == "ok") {
                 notify("Éxito", "Se ha guardado la Configuracion", "success");
+                $scope.traerConfiguracion();
+                $scope.flag = false;
             }
             else {
                 notify("Error", respuesta.mensaje, "error");
@@ -2422,7 +2475,9 @@ $scope.get_domicilio_cliente	= function(id_cliente){
             });
     }
 
-
+$scope.showFormConfiguracion = function () {
+	$scope.flag = true;
+}
 // ===========================================================================
 // ***** 	            TERMINA  SERVICIO CONTRATADO CIFA	           	 *****
 // ===========================================================================

@@ -691,7 +691,8 @@
                                 <div role="tabpanel" class="tab-pane fade" id="tab_configuracion" aria-labelledby="profile-tab" ><!--ng-if="DatosServicio.ID_SERVICIO == 1" -->
                                     <div class="x_title">
                                         <p><h2>Agregar datos adicionales del Curso</h2></p>
-                                        <button type="submit"  class="btn btn-default pull-right" ng-click="submitFormConfiguracion(formDataConfiguracion)">Guardar</button>
+                                        <button type="submit"  class="btn btn-primary pull-right" ng-click="submitFormConfiguracion(formDataConfiguracion)" ng-if="flag==true">Guardar</button>
+                                        <button type="submit"  class="btn btn-primary pull-right" ng-click="showFormConfiguracion()" ng-if="flag==false">Editar</button>
 
 										<div class="clearfix"></div>
                                     </div>
@@ -702,34 +703,37 @@
                                                 <div class="col-xs-6 col-md-4">
                                                   <select ng-model="formDataConfiguracion.selectSitio" ng-options="sitio.ID as sitio.NOMBRE_DOMICILIO+'  CALLE: '+sitio.CALLE  for sitio in sitios"
                                                           class="form-control" id="selectSitio" name="selectSitio" required
-                                                          ng-class="{ error: formConfiguracion.select_curso.$error.required && !formConfiguracion.$pristine}" ng-disabled="accion=='editar'" >
+                                                          ng-class="{ error: formConfiguracion.select_curso.$error.required && !formConfiguracion.$pristine}" ng-show="flag==true" >
                                                         <option value="">---Seleccione un Sitio---</option>
                                                     </select>
                                                     <span id="selectSitioerror" class="text-danger"></span>
+                                                    <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false">{{configuracion.NOMBRE_SITIO}}</label>
                                                 </div>
                                               </div>
                                               <div class="form-group">
                                                 <label for="fecha_inicio_participante" class="col-sm-2 control-label">Fecha Inicio*</label>
                                                 <div class="col-xs-6 col-md-4">
                                                   <input type="text" class="form-control" id="fecha_inicio_participante" name="fecha_inicio_participante" ng-model="formDataConfiguracion.fecha_inicio_participante" placeholder="dia / mes / año"  required
-                                                         ng-class="{ error: formConfiguracion.fecha_inicio_participante.$error.required && !formConfiguracion.$pristine}" >
+                                                         ng-class="{ error: formConfiguracion.fecha_inicio_participante.$error.required && !formConfiguracion.$pristine}" ng-show="flag==true">
 									              <span id="fechainicioerror" class="text-danger"></span>
+                                                  <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false">{{configuracion.FECHA_INICIO}}</label>
                                                 </div>
                                               </div>
                                              <div class="form-group">
                                                 <label for="fecha_fin_participante" class="col-sm-2 control-label">Fecha Fin*</label>
                                                 <div class="col-xs-6 col-md-4">
                                                   <input type="text" class="form-control" id="fecha_fin_participante"  name="fecha_fin_participante"  ng-model="formDataConfiguracion.fecha_fin_participante" placeholder="dia / mes / año" required
-                                                         ng-class="{ error: formConfiguracion.fecha_fin_participante.$error.required && !formConfiguracion.$pristine}" >
+                                                         ng-class="{ error: formConfiguracion.fecha_fin_participante.$error.required && !formConfiguracion.$pristine}" ng-show="flag==true">
 									              <span id="fechafinerror" class="text-danger"></span>
+                                                    <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false">{{configuracion.FECHA_FIN}}</label>
                                                 </div>
                                               </div>
                                              <div class="form-group">
                                                 <label  class="col-sm-2 control-label">Instructor*</label>
                                                 <div class="col-xs-12 col-md-8">
-                                                  <table class="table" style="background-color: transparent" >
+                                                  <table class="table" style="background-color: transparent" ng-show="flag==true" >
                                                         <tr>
-                                                            <td style="width: 70%;"><input  id="btnInstructor" type="button" class="form-control btn btn-blue" ng-click="openModalMostarInst()" value="Selecciona un Instructor" ></td>
+                                                            <td style="width: 70%;"><input  id="btnInstructor" type="button" class="form-control btn" ng-click="openModalMostarInst()" value="Selecciona un Instructor" ></td>
                                                             <td style="width: 30%;">
                                                             <div class="checkbox-inline"  >
                                                             <label>
@@ -742,16 +746,11 @@
                                                             <td colspan="2"><span id="instructorerror" class="text-danger"></span></td>
                                                         </tr>
                                                     </table>
+                                                    <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false">{{configuracion.NOMBRE_INSTRUCTOR}}</label>
                                                 </div>
                                               </div>
-
-
-
                                          </form>
-
-
 										</div>
-
                                 </div>
 								
 				

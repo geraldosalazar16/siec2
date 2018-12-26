@@ -39,7 +39,8 @@
                 <label>CURP del participante<span class="required">*</span></label>
                 <div>
                     <input type="text" class="form-control" id="curpParticipante" name="curpParticipante" ng-model="formDataParticipante.curpParticipante"  required
-                           ng-class="{ error: formParticipante.curpParticipante.$error.required && !formParticipante.$pristine}" >
+                           ng-class="{ error: formParticipante.curpParticipante.$error.required && !formParticipante.$pristine}"
+                          >
                     <span id="curpParticipanteerror" class="text-danger" ></span>
                 </div>
             </div>
@@ -53,7 +54,7 @@
             </div>
             <div class="form-group">
                 <label>Estado del que nos visita<span class="required">*</span></label>
-                <select ng-model="formDataParticipante.estadoParticipante" ng-options="estado.ID as estado.NOMBRE for estado in estados"
+                <select ng-model="formDataParticipante.estadoParticipante" ng-options="estado.ENTIDAD_FEDERATIVA as estado.ENTIDAD_FEDERATIVA for estado in estados"
                         class="form-control" id="estadoParticipante" name="estadoParticipante"  required
                         ng-class="{ error: formParticipante.estadoParticipante.$error.required && !formParticipante.$pristine}" >
                     <option value="">---Seleccione un Estado---</option>
