@@ -27,7 +27,10 @@ function valida_error_medoo_and_die(){
 
 $id = $_REQUEST["id"];
 
-$sectores = $database->select("SECTOR_NACE", "*", ["ID_SECTOR"=>$id]);
+//Este id es la columna ID_SECTOR de la tabla SECTORES, 
+//sin embargo en la tabla sectores_nace se usa la columna ID
+$sector = $database->get("SECTORES", "*", ["ID_SECTOR"=>$id]);
+$sectores = $database->select("SECTOR_NACE", "*", ["ID_SECTOR"=>$sector["ID"]]);
 valida_error_medoo_and_die();
 
 print_r(json_encode($sectores));
