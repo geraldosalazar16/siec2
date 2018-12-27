@@ -54,6 +54,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       $scope.cotizacion_insertar_editar.NORMAS.push($scope.Normas[0]);
     }
   }
+
   $scope.fill_select_estatus = function(seleccionado){
     //recibe la url del php que se ejecutará
     $http.get(  global_apiserver + "/prospecto_estatus_seguimiento/getAll/")
@@ -227,6 +228,9 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 			case 16:
 				$scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA = data[0].DETALLES[0].VALOR;
 				break;
+			case 17:
+				
+				break;
 			default:
 				break;
 		}
@@ -275,7 +279,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
 		ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
-        ID_USUARIO : sessionStorage.getItem("id_usuario")
+		ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }else{
       id_entidad = $scope.cotizacion_insertar_editar.CLIENTE.ID;
@@ -299,7 +303,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
 		ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
-        ID_USUARIO : sessionStorage.getItem("id_usuario")
+		ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }
 

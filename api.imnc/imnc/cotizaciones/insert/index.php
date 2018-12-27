@@ -90,7 +90,7 @@ if($ID_TIPO_SERVICIO == 20){
 	}
 }
 $ACTIVIDAD_ECONOMICA = $objeto->ACTIVIDAD_ECONOMICA;
-//SOLO ES OBLIGATORIO PARA INTEGRAL
+//SOLO ES OBLIGATORIO PARA IGUALDAD LABORAL
 if($ID_TIPO_SERVICIO == 16){
 	valida_parametro_and_die($ACTIVIDAD_ECONOMICA,"Falta la Actividad Economica");
 } else {
@@ -129,14 +129,19 @@ $HORA_CREACION = date("His");
 
 //Verificar que el servicio no exista
 $id_cotizacion = $database->get("COTIZACIONES",
-"*",
-[
-	"AND" => [
-		"ID_PROSPECTO" => $ID_PROSPECTO,
-		"ID_SERVICIO" => $ID_SERVICIO,
-		"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO
-	]
+		"*",
+		[
+			"AND" => [
+				"ID_PROSPECTO" => $ID_PROSPECTO,
+				"ID_SERVICIO" => $ID_SERVICIO,
+				"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO
+		]
 ]);
+if( $ID_TIPO_SERVICIO == 17 && ($database->count("COTIZACION_NORMAS",["AND" =>["ID_NORMA" => $NORMAS[0]->ID_NORMA ,"ID_COTIZACION"=> $id_cotizacion["ID"] ]]) ==0)){
+	$id_cotizacion = 0;
+}
+
+
 valida_error_medoo_and_die();
 if($id_cotizacion != 0){
 	$respuesta["resultado"] = "error";
@@ -200,6 +205,9 @@ switch($ID_TIPO_SERVICIO){
 			"VALOR"	=>	$ACTIVIDAD_ECONOMICA
 		]);
 		valida_error_medoo_and_die();
+		break;
+	case 17:
+		
 		break;
 	default: 
 		break;

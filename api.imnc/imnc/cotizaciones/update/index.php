@@ -144,6 +144,9 @@ switch($ID_TIPO_SERVICIO){
 		],["AND"=>["ID_COTIZACION" => $ID,"DETALLE" => "SECTOR",]]);
 		valida_error_medoo_and_die();
 		break;
+	case 17:
+		
+		break;	
 	default: 
 		break;
 }

@@ -39,7 +39,7 @@
                 <td>
                   <strong>{{cotizacion.NOMBRE_VISTA}}</strong><br>
                   {{cotizacion.TIPOS_SERVICIO.NOMBRE}}<br>
-                  <i>{{cotizacion.NORMA.ID}}</i>
+                  <i ng-show="cotizacion.TIPOS_SERVICIO.ID==17">{{cotizacion.NORMA[0].ID_NORMA}}</i>
                 </td>
                 <td>{{cotizacion.FOLIO}}</td>
                 <td>{{cotizacion.ESTADO.ESTATUS_SEGUIMIENTO}}</td>
@@ -64,6 +64,11 @@
 					</div>
 					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 16">
 						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_CIL&id_cotizacion={{cotizacion.ID}}" style="float: right;">
+							<i class="fa fa-bullseye"></i> Ver cotización
+						</a>	
+					</div>
+					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 17">
+						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_TUR&id_cotizacion={{cotizacion.ID}}" style="float: right;">
 							<i class="fa fa-bullseye"></i> Ver cotización
 						</a>	
 					</div>
@@ -162,16 +167,6 @@
                 </div>
               </div>
 
-              <!--
-              <div class="form-group form-vertical"
-                ng-if='cotizacion_insertar_editar.ESTADO_SEG.DESCRIPCION == "Cotizado" || cotizacion_insertar_editar.ESTADO_SEG.DESCRIPCION == "Firmado"'>
-                <label class="control-label col-md-12">Referencia</label>
-                <div class="col-md-12">
-                  <input type="text" ng-model="cotizacion_insertar_editar.REFERENCIA" required="required" class="form-control col-md-7 col-xs-12"
-                  ng-change="cotizacion_insertar_editar.REFERENCIA = cotizacion_insertar_editar.REFERENCIA.toUpperCase()">
-                </div>
-              </div>
-              -->
               <div class="form-group form-vertical">
                 <label class="control-label col-md-12">Servicio <span class="required">*</span></label>
                 <div class="col-md-12">
@@ -194,23 +189,29 @@
                   </select>
                 </div>
               </div>
-              <!--
-              <div class="form-group form-vertical">
+             
+             <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID == 17">
                 <label class="control-label col-md-12">Norma <span class="required">*</span></label>
-                <div class="col-md-12">
-                  <select id="selectNorma" ng-model="cotizacion_insertar_editar.ID_NORMA" class="form-control"
+                <div class="col-md-12" ng-show="opcion_guardar_cotizacion=='insertar'">
+                  <select id="selectNorma" ng-model="normas_cotizacion[0]" class="form-control"
                   ng-options="norma as norma.ID_NORMA for norma in Normas"
-                  ng-disabled="bandera==1">
+				  ng-disabled="opcion_guardar_cotizacion=='editar'">
                      <option value="" selected disabled>-- selecciona una norma --</option>
                   </select>
                 </div>
-              </div>
-            -->
-            <div class="form-group form-vertical">
+				<div class="col-md-12" ng-show="opcion_guardar_cotizacion=='editar'">
+                  
+				   <input type="numeric" ng-model="normas_cotizacion[0].ID_NORMA"
+					 ng-disabled="opcion_guardar_cotizacion=='editar'"
+				   required="required" class="form-control col-md-7 col-xs-12">
+                </div>
+             </div>
+           
+            <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID != 17" >
 				<label class="control-label col-md-12">Normas</label>
 				<div class="col-md-12">
   						<multiple-autocomplete ng-model="normas_cotizacion"
-  						object-property="ID_NORMA"
+						object-property="ID_NORMA"
   						suggestions-arr="Normas">
   						</multiple-autocomplete>
 				</div>
@@ -238,14 +239,7 @@
                 </div>
               </div>
 
-              <!--
-              <div class="form-group" ng-if="opcion_guardar_cotizacion == 'editar'">
-                <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa Actual</label>
-                <div class="col-md-12">
-                  <input type="text" ng-model="cotizacion_insertar_editar.TARIFA"  required="required" class="form-control col-md-7 col-xs-12" readonly>
-                </div>
-              </div>
-              -->
+            
               <div class="form-group form-vertical">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa por Día Auditor<span class="required">*</span></label>
                 <div class="col-md-12">
@@ -287,18 +281,16 @@
                     <option value="Servicios" selected>Servicios</option>
                    </select>
                 </div>
-              </div>	
-              <!-- Se oculta este control peus ya no se utiliza-->
-              <div class="form-group form-vertical" ng-show="false">
-                <label class="control-label col-md-12">¿Es SG integral? <span class="required">*</span></label>
-                <div class="col-md-12">
-                  <select id="selectSGIntegral" ng-model="cotizacion_insertar_editar.SG_INTEGRAL" class="form-control">
-                     <option value="" selected disabled>-- selecciona una opción --</option>
-                     <option value="si">Si</option>
-                     <option value="no">No</option>
-                  </select>
-                </div>
               </div>
+			<!-- Esta opción es solo para Certificacion de Calidad de Playas -->
+          <!--    <div class="form-group form-vertical" ng-show="normas_cotizacion[0].ID_NORMA == 'NMX-AA-120-SCFI-2006'">
+                <label class="control-label col-md-12">Longitud de la Playa </label>
+                <div class="col-md-12">
+                 <input type="numeric" ng-model="cotizacion_insertar_editar.LONGITUD" required="required" class="form-control col-md-7 col-xs-12">
+                </div>
+              </div> -->			  
+              <!-- Se oculta este control pues ya no se utiliza-->
+  
               
             </form>
         </div>
