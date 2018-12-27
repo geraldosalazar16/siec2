@@ -763,7 +763,7 @@ $html = <<<EOT
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
-$pdf1->Image('formula1.jpg', 50, 95, 100, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+$pdf1->Image('Formula1.jpg', 50, 95, 100, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 $pdf1->AddPage();
 $html = <<<EOT
 <table cellpadding="8" border="0" width="500">
