@@ -274,7 +274,6 @@ $scope.insertar	=	function(){
       ISACTIVO:                 $scope.formData.checkActivo
 
   };
-	alert($scope.formData.checkActivo);
   $.post( global_apiserver + "/cursos/insert/", JSON.stringify(curso), function(respuesta){
       respuesta = JSON.parse(respuesta);
       if (respuesta.resultado == "ok") {

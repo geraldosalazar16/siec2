@@ -25,7 +25,10 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
 // ===================================================================
     $scope.cargarInstructores= function(seletcCurso){
 
-		$http.get(global_apiserver + "/cursos_programados/getInstructores/?id="+seletcCurso)
+        var option = "no";
+        if($scope.formData.chckVerTodos)
+            option = "si";
+		$http.get(global_apiserver + "/cursos_programados/getInstructores/?id="+seletcCurso+"&option="+option)
 		.then(function( response ){
 			$scope.instructoresCursos = response.data;
 		});
@@ -146,7 +149,7 @@ $scope.openModalInsertarModificar = function(accion){
                 $("#btnInstructor").attr("value",response.NOMBRE_AUDITOR.NOMBRE+" "+response.NOMBRE_AUDITOR.APELLIDO_PATERNO+" "+response.NOMBRE_AUDITOR.APELLIDO_MATERNO)
                 $("#btnInstructor").attr("class", "form-control ");
                 $scope.$apply();
-                ;
+
 
             });
 
@@ -179,7 +182,7 @@ $scope.openModalMostarInst = function() {
     if (typeof $scope.formData.selectCurso !== "undefined") {
         $("#txtinstructorerror").text("");
         if ($scope.formData.selectCurso.length != 0 && $scope.formData.fecha_inicio.length != 0 && $scope.formData.fecha_fin.length != 0) {
-            $.getJSON(global_apiserver + "/cursos/getById/?id=" + $scope.formData.selectCurso, function (response) {
+            $.getJSON(global_apiserver + "/cursos/getById/?id="+ $scope.formData.selectCurso, function (response) {
                 $scope.id_curso = response.ID_CURSO;
                 $scope.nombre_curso = response.NOMBRE;
 
@@ -229,8 +232,9 @@ $scope.onSelectInstructor = function(instructor)
             {
                 notify("Error", respuesta.razon, "error");
                 $("#btn-"+instructor).attr("disabled",true);
-                $("#btn-"+instructor).attr("title",respuesta.mensaje);
-                $("#btn-"+instructor).text("inactivo");
+                $("#error-"+instructor).text(respuesta.razon);
+                $("#error-"+instructor).show();
+                $("#btn-"+instructor).text("seleccionar");
             }else
             {
                 notify("Error", respuesta.mensaje, "error");
@@ -260,12 +264,16 @@ function clear_modal_insertar_actualizar(){
     $scope.selectedInst = '';
     $scope.id_instructor = "";
     $scope.formData.referencia ="";
+    $scope.formData.chckVerTodos = "";
     $("#btnInstructor").attr("value","Selecciona un Instructor");
     $("#btnInstructor").attr("class", "form-control btn ");
 
     $("#txtcursoerror").text("");
     $("#txtinstructorerror").text("");
     $("#txtminimoerror").text("");
+    $("#referenciaerror").text("");
+    $("#fechainicioerror").text("");
+    $("#fechafinerror").text("");
 
 	}
 
@@ -304,7 +312,7 @@ function clear_modal_insertar_actualizar(){
 {
     var valor = $scope.formData.minimo;
     valor = eliminaEspacios(valor);
-    reg=/(^[0-9,0-9]{1,10}$)/;
+    reg=/(^[0-9]{1,4}$)/;
     if(!reg.test(valor))
     {
         $scope.formData.minimo = "";
@@ -682,7 +690,7 @@ function esDespuesHoy(fecha) {
 
     var hoy = new Date();
     var partes = fecha.split("/");
-    var select = new Date(partes[2],parseInt(partes[1])-1,partes[0]);
+    var select = new Date(partes[2],parseInt(partes[1])-1,partes[0],hoy.getHours(),hoy.getMinutes(),hoy.getSeconds(),hoy.getMilliseconds());
     if(hoy<=select){return true;}else {return false;}
 }
 // ================================================================================

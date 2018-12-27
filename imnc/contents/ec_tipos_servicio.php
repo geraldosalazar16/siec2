@@ -7,7 +7,7 @@
         <p><h2>{{titulo}}</h2></p>
        
          
-              <p ng-if='modulo_permisos["catalogos"] == 1'>
+              <p ng-if='modulo_permisos["catalogos"] == 1 && DatosServicio.ID_SERVICIO != 3'>
 				<button type="button" id="btnNuevo" ng-click="agregar_info_auditoria()" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
 					<i class="fa fa-plus"> </i> {{titulo_boton_info_auditoria}}
 				</button>
@@ -29,6 +29,10 @@
 					Servicio: <i> {{DatosServicio.NOMBRE_SERVICIO}}</i></b>
 					</li>
 
+                    <li ng-if="DatosServicio.ID_SERVICIO == 3" ><b>
+					Curso: <i> {{DatosServicio.NOMBRE_CURSO}}</i></b>
+					</li>
+
 					<li ><b>
 					Tr&aacutemite: <i> {{DatosServicio.NOMBRE_ETAPA}}</i></b>
 					</li>
@@ -43,7 +47,7 @@
 				
 				<div class="" role="tabpanel" data-example-id="togglable-tabs">
 							<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-								<li role="presentation" class="active">
+								<li role="presentation" class="active"  ng-if="DatosServicio.ID_SERVICIO != 3">
 									<a href="#tab_informacion" id="tab_informacion-tab"  role="tab" data-toggle="tab" aria-expanded="true" ng-click="DatosInformacion()">
                           			Informaci&oacuten </a>
 								</li>
@@ -53,14 +57,24 @@
 									Sectores</a>
 								</li>						
 								
-								<li role="presentation" class=""> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO != 3"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
 								<a href="#tab_sitios" id="tab_sitios-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
                           			Sitios</a>
 								</li>
 								
-								<li role="presentation" class="" > <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
 								<a href="#tab_auditorias" id="tab_auditorias-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
                           			Auditor&iacuteas </a>
+								</li>
+
+                                <li role="presentation" class="active" ng-if="DatosServicio.ID_SERVICIO == 3"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<a href="#tab_participantes" id="tab_participantes-tab"  role="tab" data-toggle="tab" aria-expanded="true"  >
+                          			Participantes </a>
+								</li>
+
+                                 <li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 3"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<a href="#tab_configuracion" id="tab_configuracion-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
+                          			Configuración </a>
 								</li>
 								
 							</ul>
@@ -216,9 +230,9 @@
 									</tbody>
 								</table>
 								</div>
-								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" --> 
+								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO ==2"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" -->
 									<div class="x_title">
-										<p><h2>Auditor&iacuteas </h2></p>
+										<p><h2>Auditor&iacuteas</h2></p>
 											<p ng-if='modulo_permisos["registrar"] == 1'>
 											<button type="button" ng-click="agregar_editar_auditorias('insertar')" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
 												<i class="fa fa-plus"> </i> Agregar auditor&iacuteas 
@@ -620,6 +634,124 @@
 								</div>
 													
 
+                                <div role="tabpanel" class="tab-pane fade active in" id="tab_participantes" aria-labelledby="home-tab" ng-if="DatosServicio.ID_SERVICIO == 3" ><!--ng-if="DatosServicio.ID_SERVICIO == 1" -->
+                                    <div class="x_title">
+                                        <p><h2>Participantes</h2></p>
+                                        <p ng-if='modulo_permisos["registrar"] == 1'>
+											<button type="button" ng-click="openModalInsertarModificarParticipante('insertar')" class="btn btn-primary btn-xs btn-imnc" style="float: right;">
+												<i class="fa fa-plus"> </i> Agregar Participante
+											</button>
+										</p>
+										<div class="clearfix"></div></div>
+
+                                    <table class="table table-striped responsive-utilities jambo_table bulk_action">
+									<thead>
+										<tr class="headings">
+											<th class="column-title">Información del Participante</th>
+											<th class="column-title"></th>
+										</tr>
+									</thead>
+									<tbody>
+                                        <tr ng-repeat="x in participantes" class="ng-scope  even pointer" ng-if="DatosServicio.ID_SERVICIO == 3">
+                                            <td>
+                                                <table  style="background-color: transparent">
+                                                    <tr>
+                                                        <td>Razón Social: <strong>{{x.RAZON_ENTIDAD}}</strong> </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Correo electrónico: <strong>{{x.EMAIL}}</strong></td>
+                                                     </tr>
+                                                    <tr>
+                                                        <td>Teléfono: <strong>{{x.TELEFONO}}</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>CURP del participante: <strong>{{x.CURP}}</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>RFC de su organización: <strong>{{x.RFC}}</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Estado del que nos visita: <strong>{{x.ID_ESTADO}}</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Ejecutivo comercial que le atendió: <strong>{{x.EJECUTIVO}}</strong></td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <button type="button"  ng-click="openModalInsertarModificarParticipante('editar',x.ID)"  class="btn btn-primary btn-xs btn-imnc" style="float: right;">
+												<i class="glyphicon glyphicon-edit"> </i> Editar Participante
+											</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    </table>
+
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="tab_configuracion" aria-labelledby="profile-tab" ><!--ng-if="DatosServicio.ID_SERVICIO == 1" -->
+                                    <div class="x_title">
+                                        <p><h2>Agregar datos adicionales del Curso</h2></p>
+                                        <button type="submit"  class="btn btn-primary pull-right" ng-click="submitFormConfiguracion(formDataConfiguracion)" ng-if="flag==true">Guardar</button>
+                                        <button type="submit"  class="btn btn-primary pull-right" ng-click="showFormConfiguracion()" ng-if="flag==false">Editar</button>
+
+										<div class="clearfix"></div>
+                                    </div>
+                                     <div ng-if='modulo_permisos["registrar"] == 1'>
+                                         <form  name="formConfiguracion" class="form-horizontal" role="form">
+                                             <div class="form-group">
+                                                <label for="fecha_fin" class="col-sm-2 control-label">Sitio*</label>
+                                                <div class="col-xs-6 col-md-4">
+                                                  <select ng-model="formDataConfiguracion.selectSitio" ng-options="sitio.ID as sitio.NOMBRE_DOMICILIO+'  CALLE: '+sitio.CALLE  for sitio in sitios"
+                                                          class="form-control" id="selectSitio" name="selectSitio" required
+                                                          ng-class="{ error: formConfiguracion.select_curso.$error.required && !formConfiguracion.$pristine}" ng-show="flag==true" >
+                                                        <option value="">---Seleccione un Sitio---</option>
+                                                    </select>
+                                                    <span id="selectSitioerror" class="text-danger"></span>
+                                                    <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false">{{configuracion.NOMBRE_SITIO}}</label>
+                                                </div>
+                                              </div>
+                                              <div class="form-group">
+                                                <label for="fecha_inicio_participante" class="col-sm-2 control-label">Fecha Inicio*</label>
+                                                <div class="col-xs-6 col-md-4">
+                                                  <input type="text" class="form-control" id="fecha_inicio_participante" name="fecha_inicio_participante" ng-model="formDataConfiguracion.fecha_inicio_participante" placeholder="dia / mes / año"  required
+                                                         ng-class="{ error: formConfiguracion.fecha_inicio_participante.$error.required && !formConfiguracion.$pristine}" ng-show="flag==true">
+									              <span id="fechainicioerror" class="text-danger"></span>
+                                                  <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false">{{configuracion.FECHA_INICIO}}</label>
+                                                </div>
+                                              </div>
+                                             <div class="form-group">
+                                                <label for="fecha_fin_participante" class="col-sm-2 control-label">Fecha Fin*</label>
+                                                <div class="col-xs-6 col-md-4">
+                                                  <input type="text" class="form-control" id="fecha_fin_participante"  name="fecha_fin_participante"  ng-model="formDataConfiguracion.fecha_fin_participante" placeholder="dia / mes / año" required
+                                                         ng-class="{ error: formConfiguracion.fecha_fin_participante.$error.required && !formConfiguracion.$pristine}" ng-show="flag==true">
+									              <span id="fechafinerror" class="text-danger"></span>
+                                                    <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false">{{configuracion.FECHA_FIN}}</label>
+                                                </div>
+                                              </div>
+                                             <div class="form-group">
+                                                <label  class="col-sm-2 control-label">Instructor*</label>
+                                                <div class="col-xs-12 col-md-8">
+                                                  <table class="table" style="background-color: transparent" ng-show="flag==true" >
+                                                        <tr>
+                                                            <td style="width: 70%;"><input  id="btnInstructor" type="button" class="form-control btn" ng-click="openModalMostarInst()" value="Selecciona un Instructor" ></td>
+                                                            <td style="width: 30%;">
+                                                            <div class="checkbox-inline"  >
+                                                            <label>
+                                                              <input  id="chckVerTodos" type="checkbox" ng-model="formDataConfiguracion.chckVerTodos" class="checkbox"  value="true" > Ver Todos
+                                                            </label>
+                                                          </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2"><span id="instructorerror" class="text-danger"></span></td>
+                                                        </tr>
+                                                    </table>
+                                                    <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false">{{configuracion.NOMBRE_INSTRUCTOR}}</label>
+                                                </div>
+                                              </div>
+                                         </form>
+										</div>
+                                </div>
 								
 				
         </div>
@@ -644,6 +776,8 @@
   include "ec_tipos_servicio/modal_fecha_norma_tipo_servicio_integral.php";
   include "ec_tipos_servicio/modal_genera_notificacion.php";
   include "ec_tipos_servicio/modal_confirmacion.php";
-  
+  include "ec_tipos_servicio/modal_inserta_actualiza_participante.php";
+  include "ec_tipos_servicio/modal_select_instructor.php";
+
   ?>
 </span>

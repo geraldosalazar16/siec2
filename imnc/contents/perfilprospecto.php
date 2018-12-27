@@ -71,7 +71,7 @@
 
 									<li role="presentation" class="">
 									<a href="#tab_areas" id="tab_areas-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
-										Servicio, Tipo de servicio y norma</a>
+										Servicios</a>
 									</li>				
 								</ul>
 								<div id="myTabContent" class="tab-content">

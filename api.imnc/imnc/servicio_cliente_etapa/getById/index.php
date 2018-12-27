@@ -32,6 +32,17 @@ $servicio_cliente_etapa["CLAVE_SERVICIO"] =  $servicio_nombre["ID"];
 $cliente_nombre = $database->get("CLIENTES", "NOMBRE", ["ID"=>$servicio_cliente_etapa["ID_CLIENTE"]]);
 $servicio_cliente_etapa["NOMBRE_CLIENTE"] = $cliente_nombre;
 
+if($servicio_cliente_etapa["ID_SERVICIO"] == 3)
+{
+    $sce_curso = $database->get("SCE_CURSOS", "ID_CURSO", ["ID_SCE"=>$servicio_cliente_etapa["ID"]]);
+    $curso = $database->get("CURSOS", ["ID_CURSO","NOMBRE"], ["ID_CURSO"=>$sce_curso["ID_CURSO"]]);
+    $servicio_cliente_etapa["NOMBRE_CURSO"] = $curso["NOMBRE"];
+    $servicio_cliente_etapa["ID_CURSO"] = $curso["ID_CURSO"];
+
+}
+
+
+
 //$id_tipo_servicio = $database->get("SG_TIPOS_SERVICIO", "ID_TIPO_SERVICIO", ["ID_SERVICIO_CLIENTE_ETAPA"=>$id]);
 //$servicio_cliente_etapa["ID_TIPO_SERVICIO"] = $id_tipo_servicio;
 /*
