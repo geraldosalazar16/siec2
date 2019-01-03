@@ -419,7 +419,7 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 											]
 									]);
 						valida_error_medoo_and_die();	
-						
+						$dias_encuesta = round($dias_encuesta * $const_dias);
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_DES"] = (floatval($tarifa['TARIFA'])*(1-($tramite_item["DESCUENTO"]/100)+($tramite_item["AUMENTO"]/100)));
 						$total_dias_auditoria=$dias_base+$dias_encuesta+$tramite_item["DIAS_MULTISITIO"];
 						//$total_dias_auditoria = round($total_dias_auditoria * (1 - ($tramite_item["REDUCCION"]/100) + ($tramite_item["AUMENTO"]/100) ));
@@ -446,6 +446,150 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 				$cotizacion[0]["TOTAL_COTIZACION_DES"] = $total_cotizacion * (1-($cotizacion[0]["DESCUENTO"]/100)+($cotizacion[0]["AUMENTO"]/100));
 	
 			
+			break;
+		case 17:
+			
+			
+			$campos_tramite = [
+				"COTIZACIONES_TRAMITES_TUR.ID",
+				"COTIZACIONES_TRAMITES_TUR.VIATICOS",
+				"COTIZACIONES_TRAMITES_TUR.DESCUENTO",
+				"COTIZACIONES_TRAMITES_TUR.ID_TIPO_AUDITORIA",
+				"COTIZACIONES_TRAMITES_TUR.AUMENTO",
+			//	"COTIZACIONES_TRAMITES_CIL.REDUCCION",
+			//	"COTIZACIONES_TRAMITES_TUR.DIAS_MULTISITIO",
+				"I_SG_AUDITORIAS_TIPOS.TIPO"
+			];
+			$tramites =  $database->select("COTIZACIONES_TRAMITES_TUR", 
+				["[>]I_SG_AUDITORIAS_TIPOS" => ["ID_TIPO_AUDITORIA" => "ID"]], $campos_tramite,
+				["ID_COTIZACION"=>$cotizacion[0]["ID"]]);
+				valida_error_medoo_and_die();
+			$cotizacion[0]["COTIZACION_TRAMITES"] = $tramites;
+			
+			$total_cotizacion = 0;
+			$total_dias_cotizacion = 0;
+			foreach ($tramites as $key => $tramite_item) {
+				//En vez de usar la etapa usar el tipo de auditoria
+				//$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$tramite_item["ID_ETAPA_PROCESO"]]);
+				$etapa = $database->get("I_SG_AUDITORIAS_TIPOS", "*", ["ID"=>$tramite_item["ID_TIPO_AUDITORIA"]]);
+				//Sustituyo $etapa["ETAPA"] por nombre_auditoria
+				$nombre_auditoria = $etapa["TIPO"];
+				valida_error_medoo_and_die();
+				$etapa_para_sgen = "VIGILANCIA";
+				//Multiplicador para el calculo de sitios
+				$const_dias = 1; //Default - Etapa certificacion
+				if(strpos($nombre_auditoria, 'Vigilancia') !== false || strpos($nombre_auditoria, 'VIGILANCIA')){ // Vigilancia
+					//$const_dias = 0.33;
+					//$etapa_para_sgen = "VIGILANCIA";
+				}
+				else if(strpos($nombre_auditoria, 'Renovación') !== false || strpos($nombre_auditoria, 'Renovacion') !== false || strpos($nombre_auditoria, 'RENOVACIÓN')){ 
+						// 		Renovacion
+					//$const_dias = 0.66;
+					//$etapa_para_sgen = "RENOVACION";
+				}
+				//AQUI VENDRIA LA PARTE DE CODIGO QUE TIENE Q VER CON TARIFA ADICIONAL PERO COMO NO LO HAN PEDIDO PUES LO DEJAMOS EN BLANCO
+				//{..........}		
+				
+				$cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
+						"*", ["ID_TRAMITE"=>$tramite_item["ID"]]);
+				valida_error_medoo_and_die();
+
+				$total_tarifa_adicional = 0;
+				for ($i=0; $i < count($cotizacion_tarifa_adicional); $i++) {
+					$subtotal = $cotizacion_tarifa_adicional[$i]["TARIFA"] * $cotizacion_tarifa_adicional[$i]["CANTIDAD"];
+					$total_tarifa_adicional += $subtotal;
+				}
+				//AQUI LA PARTE QUE TIENE QUE VER CON LA COTIZACION POR SITIOS
+				$cotizacion_sitios = $database->select("COTIZACION_SITIOS_TUR", "*", ["ID_COTIZACION"=>$tramite_item["ID"]]);
+				valida_error_medoo_and_die();
+
+				$total_dias_auditoria = 0;
+				if($normas[0]["ID_NORMA"]=='NMX-AA-120-SCFI-2006' || $normas[0]["ID_NORMA"]=='NMX-AA-120-SCFI-2016'){
+					$dias = 0;
+						//AQUI SE DEBE CALCULAR LA CANTIDAD DE DIAS BASE SEGUN LAS TABLAS QUE NOS DIERON
+						$dias = $database->get("COTIZACION_LONGITUD_PLAYA_DIAS_TUR", ["DIAS","AUDITORES"],
+							[
+									"AND"=>[
+												"LONGITUD_PLAYA_MIN[<=]"=>$cotizacion_sitios[0]["LONGITUD_PLAYA"],
+												"LONGITUD_PLAYA_MAX[>=]"=>$cotizacion_sitios[0]["LONGITUD_PLAYA"],
+											]
+									]);
+						valida_error_medoo_and_die();
+						if ($cotizacion_sitios[0]["SELECCIONADO"] == 1) {
+							$dias_base = $dias["DIAS"]*$dias["AUDITORES"];
+						}
+						else{
+							$dias_base=0;
+						}	
+						
+				}
+				if($normas[0]["ID_NORMA"]=='NMX-AA-133-SCFI-2013'){
+					if($etapa["ID"]>=17 && $etapa["ID"]<=23 ){
+						if ($cotizacion_sitios[0]["SELECCIONADO"] == 1) {
+							$dias_base = 2;
+						}
+						else{
+							$dias_base=0;
+						}	
+					}
+					else{
+						if($etapa["ID"]==15 ){
+							if ($cotizacion_sitios[0]["SELECCIONADO"] == 1) {
+								$dias_base = 1;
+							}
+							else{
+								$dias_base=0;
+							}	
+						}
+						else{
+							if ($cotizacion_sitios[0]["SELECCIONADO"] == 1) {
+								$dias_base = 3;
+							}
+							else{
+								$dias_base=0;
+							}
+						}
+					}
+				}
+				if($normas[0]["ID_NORMA"]=='NMX-TT-009-IMNC-2004'){
+					if($etapa["ID"]>=17 && $etapa["ID"]<=23 ){
+						if ($cotizacion_sitios[0]["SELECCIONADO"] == 1) {
+							$dias_base = 1;
+						}
+						else{
+							$dias_base=0;
+						}	
+					}
+					else{
+						if ($cotizacion_sitios[0]["SELECCIONADO"] == 1) {
+							$dias_base = 1;
+						}
+						else{
+							$dias_base=0;
+						}	
+					}
+				}	
+						
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_DES"] = (floatval($tarifa['TARIFA'])*(1-($tramite_item["DESCUENTO"]/100)+($tramite_item["AUMENTO"]/100)));
+						$total_dias_auditoria=$dias_base;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_BASE"] = $dias_base;
+						$costo_inicial = (($total_dias_auditoria) * floatval($tarifa['TARIFA']));
+						$costo_desc = (($total_dias_auditoria) *  floatval($cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_DES"]));
+						
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_AUDITORIA"] = $total_dias_auditoria;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["LONGITUD_PLAYA"] = $cotizacion_sitios[0]["LONGITUD_PLAYA"];
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_ADICIONAL"] = $total_tarifa_adicional;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO"] = $costo_inicial;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_DES"] = $costo_desc;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"] = $costo_desc + $tramite_item["VIATICOS"]+$total_tarifa_adicional;
+		
+						$total_dias_cotizacion += $total_dias_auditoria;
+						$total_cotizacion += $cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"];
+				}
+				$cotizacion[0]["TOTAL_DIAS_COTIZACION"] = $total_dias_cotizacion;
+				$cotizacion[0]["TOTAL_COTIZACION"] = $total_cotizacion;
+				$cotizacion[0]["TOTAL_COTIZACION_DES"] = $total_cotizacion * (1-($cotizacion[0]["DESCUENTO"]/100)+($cotizacion[0]["AUMENTO"]/100));
+	
 			break;
 		default: 
 			break;

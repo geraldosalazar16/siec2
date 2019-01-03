@@ -35,7 +35,8 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	valida_error_medoo_and_die(); 
 	$tipos_servicio = $database->get("TIPOS_SERVICIO", "*", ["ID"=>$cotizaciones[$i]["ID_TIPO_SERVICIO"]]);
 	valida_error_medoo_and_die(); 
-	$norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
+	//$norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
+	$norma = $database->select("COTIZACION_NORMAS", "*", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
 	valida_error_medoo_and_die(); 
 	$desc_tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizaciones[$i]["TARIFA"]]);
 	valida_error_medoo_and_die();

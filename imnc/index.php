@@ -386,7 +386,7 @@ if (!isset($_SESSION['CREATED'])) {
 
   <footer>
     <div class="copyright-info">
-      <p class="pull-right version"> Versión 2.0 </p>
+      <p class="pull-right version"> Versión Desarrollo </p>
     </div>
     <div class="clearfix"></div>
   </footer>
