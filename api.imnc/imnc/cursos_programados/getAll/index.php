@@ -50,6 +50,11 @@ for ($i=0; $i < count($eventos) ; $i++) {
 	$auditor= $database->get("PERSONAL_TECNICO", ["NOMBRE","APELLIDO_PATERNO","APELLIDO_MATERNO"], ["ID"=>$eventos[$i]["ID_INSTRUCTOR"]]);
 	valida_error_medoo_and_die();
     $eventos[$i]["NOMBRE_AUDITOR"] = $auditor["NOMBRE"]." ".$auditor["APELLIDO_PATERNO"]." ".$auditor["APELLIDO_MATERNO"];
+
+    $canttidad_perticipantes = $database->count("CURSOS_PROGRAMADOS_PARTICIPANTES",["ID_CURSO_PROGRAMADO"],["ID_CURSO_PROGRAMADO"=>$eventos[$i]["ID"]]);
+    valida_error_medoo_and_die();
+
+    $eventos[$i]["CANTIDAD_PARTICIPANTES"] = $canttidad_perticipantes;
 }
 
 print_r(json_encode($eventos));

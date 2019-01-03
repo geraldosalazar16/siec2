@@ -219,7 +219,7 @@
 																	<tr>
 																		<th>Servicio</th>
 																		<th>Tipo de servicio</th>
-																		<th>Normas</th>
+																		<th>Normas/Cursos</th>
 																		<th></th>
 																		<th></th>
 																		<th></th>
@@ -230,9 +230,11 @@
 																		<td>{{producto.nombre_servicio}}</td>
 																		<td>{{producto.nombre_tipo_servicio}}</td>
 																		<td>
-																			<div class="row" ng-repeat="norma in producto.normas">
+                                                                            <span ng-if="producto.id_servicio==3">{{producto.nombre_curso}}</span>
+																			<div class="row" ng-repeat="norma in producto.normas" ng-if="producto.id_servicio!=3">
 																				<span>{{$index+1}}- {{norma.ID_NORMA}}</span>
 																			</div>
+
 																		</td>
 																		<td>
 																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 

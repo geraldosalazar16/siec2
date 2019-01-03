@@ -39,6 +39,12 @@ function valida_error_medoo_and_die(){
 	valida_parametro_and_die($ID_SERVICIO,"Es necesario seleccionar un servicio");
 	$ID_TIPO_SERVICIO = $objeto->departamento; 
 	valida_parametro_and_die($ID_TIPO_SERVICIO,"Es necesario seleccionar un tipo de servicio");
+    $NORMAS= "";
+    $MODALIDAD = "";
+    $CURSO = "";
+    $CANTIDAD = "";
+    if($ID_SERVICIO!=3)
+	{
 	$NORMAS= $objeto->producto;
 	if(count($NORMAS) == 0){
 		$respuesta['resultado']="error";
@@ -46,27 +52,42 @@ function valida_error_medoo_and_die(){
 		print_r(json_encode($respuesta));
 		die();
 	}
+    }
+    else
+	{
+        $MODALIDAD = $objeto->modalidad;
+        valida_parametro_and_die($MODALIDAD,"Es necesario seleccionar una modalidad");
+        $CURSO = $objeto->curso;
+        valida_parametro_and_die($CURSO,"Es necesario seleccionar un curso");
+        $CANTIDAD = $objeto->cantidad;
+        if($MODALIDAD == 'insitu')
+        valida_parametro_and_die($CANTIDAD,"Es necesario intruducir la cantidad de personas");
+	}
 	$ALCANCE= $objeto->alcance;
 	if(!$ALCANCE){
 		$ALCANCE = "";
 	}
-    $existe = $database->select(
-		"PROSPECTO_PRODUCTO",
-		"*",
-		[
-			"AND" => [
-				"ID_PROSPECTO" => $ID_PROSPECTO,
-				"ID_SERVICIO" => $ID_SERVICIO,
-				"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO
-			]
-		]
-	);
-	if(count($existe) > 0){
-		$respuesta['resultado']="error";
-		$respuesta['mensaje']="El registro que intenta ingresar ya existe";
-		print_r(json_encode($respuesta));
-		die();
-	}	
+	$TIPO_PERSONA = $objeto->tipo_persona;
+
+	if($ID_SERVICIO!=3) {
+        $existe = $database->select(
+            "PROSPECTO_PRODUCTO",
+            "*",
+            [
+                "AND" => [
+                    "ID_PROSPECTO" => $ID_PROSPECTO,
+                    "ID_SERVICIO" => $ID_SERVICIO,
+                    "ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO
+                ]
+            ]
+        );
+        if (count($existe) > 0) {
+            $respuesta['resultado'] = "error";
+            $respuesta['mensaje'] = "El registro que intenta ingresar ya existe";
+            print_r(json_encode($respuesta));
+            die();
+        }
+    }
 	$id_producto = $database->insert("PROSPECTO_PRODUCTO", [ 
 	    "ID_PROSPECTO" => $ID_PROSPECTO,
 		"ID_SERVICIO" => $ID_SERVICIO, 
@@ -75,14 +96,24 @@ function valida_error_medoo_and_die(){
 	]); 
 	valida_error_medoo_and_die();
 	//iNSERTAR LAS NORMAS
-	for ($i=0; $i < count($NORMAS); $i++) { 
-		$id_norma = $NORMAS[$i]->ID_NORMA;
-		$id_producto_normas = $database->insert("PROSPECTO_PRODUCTO_NORMAS", [ 
-			"ID_PRODUCTO" => $id_producto,
-			"ID_NORMA" => $id_norma
-		]); 
-		valida_error_medoo_and_die();
-	}	 
+	if($ID_SERVICIO!=3) {
+        for ($i = 0; $i < count($NORMAS); $i++) {
+            $id_norma = $NORMAS[$i]->ID_NORMA;
+            $id_producto_normas = $database->insert("PROSPECTO_PRODUCTO_NORMAS", [
+                "ID_PRODUCTO" => $id_producto,
+                "ID_NORMA" => $id_norma
+            ]);
+            valida_error_medoo_and_die();
+        }
+    }
+    else
+	{
+        if($MODALIDAD == "programado")
+		$id_producto_curso = $database->insert("PROSPECTO_PRODUCTO_CURSO", ["ID_PRODUCTO" => $id_producto,"ID_CURSO_PROGRAMADO" => $CURSO,"MODALIDAD"=> $MODALIDAD,"CANTIDAD_PARTICIPANTES"=>0]);
+        if($MODALIDAD == "insitu")
+            $id_producto_curso = $database->insert("PROSPECTO_PRODUCTO_CURSO", ["ID_PRODUCTO" => $id_producto,"ID_CURSO" => $CURSO,"MODALIDAD"=> $MODALIDAD,"CANTIDAD_PARTICIPANTES"=>$CANTIDAD]);
+        valida_error_medoo_and_die();
+	}
 
 	//Insertar integración (si es integral)
 	if( $ID_TIPO_SERVICIO == 20){ //Id de integral
@@ -97,6 +128,12 @@ function valida_error_medoo_and_die(){
 			valida_error_medoo_and_die();
 		}
 	}
+    if($TIPO_PERSONA!="")
+	{
+        $id_prospecto= $database->update("PROSPECTO", [
+            "TIPO_PERSONA" => $TIPO_PERSONA
+        ], ["ID" => $ID_PROSPECTO]);
+    }
 	$respuesta["resultado"]="ok"; 
 	print_r(json_encode($respuesta)); 
 ?> 

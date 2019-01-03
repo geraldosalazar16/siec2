@@ -27,11 +27,12 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 	valida_error_medoo_and_die("PROSPECTO_SECTORES",$correo); 
 	//Borrar de prospecto_producto_normas
 	$id_producto = $database->delete("PROSPECTO_PRODUCTO_NORMAS", ["ID_PRODUCTO"=>$ID]); 
-	valida_error_medoo_and_die($nombre_tabla,$correo); 
+	valida_error_medoo_and_die($nombre_tabla,$correo);
 	
-	valida_error_medoo_and_die("PROSPECTO_PRODUCTO_NORMAS",$correo); 
+	valida_error_medoo_and_die("PROSPECTO_PRODUCTO_NORMAS",$correo);
 
-	//Borrar de PRODUCTO_INTEGRACION
+    $id_producto = $database->delete("PROSPECTO_PRODUCTO_CURSO", ["ID_PRODUCTO"=>$ID]);
+//Borrar de PRODUCTO_INTEGRACION
 	$id_producto = $database->delete("PRODUCTO_INTEGRACION", ["ID_PRODUCTO"=>$ID]); 
 	valida_error_medoo_and_die($nombre_tabla,$correo);
 	$respuesta["resultado"]="ok"; 

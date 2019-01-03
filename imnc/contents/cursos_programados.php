@@ -64,14 +64,40 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                            <div class="form-group">
                                 <label>Mínimo de Personas: {{txtMinimo}}</label>
                            </div>
+                           <div class="form-group">
+                                <label>Etapa: {{txtEtapa}}</label>
+                           </div>
 
 
                 </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-default" ng-click="eliminaEvento()" id="btnEliminar">Eliminar</button>
-                        <button type="button" class="btn btn-primary" ng-click="openModalInsertarModificar('editar')" id="btnEditar">&nbsp;&nbsp;&nbsp;&nbsp;Editar&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cerrar</button>
+                      <!--  <button type="button" class="btn btn-default" ng-click="eliminaEvento()" id="btnEliminar">Eliminar</button>
+                        <button type="button" class="btn btn-primary" ng-click="openModalInsertarModificar('editar')" id="btnEditar">&nbsp;&nbsp;&nbsp;&nbsp;Editar&nbsp;&nbsp;&nbsp;&nbsp;</button> -->
+                         <div class="btn-group">
 
+										<button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" > Opciones
+											<span class="caret"></span>
+											<span class="sr-only">Toggle Dropdown</span>
+										</button>
+										<ul class="dropdown-menu pull-right">
+											<li>
+												<a ng-click="openModalInsertarModificar('editar')">
+												<span class="labelAcordeon"	>Editar Curso Programado</span></a>
+
+											</li>
+                                            <li>
+												<a ng-click="openModalHistorico()">
+												<span class="labelAcordeon"	>Ver Histórico</span></a>
+
+											</li>
+                                            <li>
+												<a ng-click="eliminaEvento()">
+												<span class="labelAcordeon"	>Eliminar</span></a>
+
+											</li>
+                                        </ul>
+                                    </div>
 
                     </div>
             </div>
@@ -138,15 +164,23 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                                 </table>
 
                             </div>
-
-
-
                             <div class='form-group'>
                                 <label for="txt_minimo">Mínimo de Personas<span class="required">*</span></label>
                                 <input type="text" class="form-control" name="minimo" id="minimo" ng-model="formData.minimo"   required
                                        ng-class="{ error: exampleForm.txt_minimo.$error.required && !exampleForm.$pristine}" >
                             <span id="txtminimoerror" class="text-danger"></span>
                             </div>
+                            <div class="form-group" >
+                                <label for="selectEtapa">Etapa<span class="required">*</span></label>
+                                <select ng-model="formData.selectEtapa" id="selectEtapa" name="selectEtapa" class="form-control" ng-disabled="enVerde == false">
+                                    <option ng-value="INSCRITO" ng-selected="true" ng-disabled="enVerde == true"  >INSCRITO</option>
+                                    <option ng-value="PROGRAMADO">PROGRAMADO</option>
+                                    <option ng-value="SUSPENDIDO">SUSPENDIDO</option>
+                                    <option ng-value="CANCELADO">CANCELADO</option>
+                                    <option ng-value="EJECUTADO">EJECUTADO</option>
+                                    <option ng-value="COMPLETO">COMPLETO</option>
+						       </select>
+		                     </div>
 
 
 
@@ -227,6 +261,32 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                         </table>
                       </div>
                     </div>
+                </div>
+                <!-- Ver Historico -->
+                <div id="divVerHistorico">
+                <div class="modal-content">
+                    <div class="modal-header">
+					<button type="button" ng-click="cerrarHistorico()" style="float:right;font-size:21px;font-weight:700;line-height:1;color:#000;text-shadow:0 1px 0 #fff;filter:alpha(opacity=20);opacity:.2">&times;</button>
+                    <h4 class="modal-title" id="modalTitulo">Histórico</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped responsive-utilities jambo_table bulk_action">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Descripción</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="x in Historial" class="ng-scope  even pointer">
+                                <td>{{x.ID}}</td>
+                                <td ng-if="x.MODIFICACION == 'NUEVO CURSO'">El d&iacutea {{FuncionFecha(x.FECHA)}} el usuario {{x.NOMBRE_USUARIO}} agregó un nuevo curso programado con los datos: {{x.ESTADO_ACTUAL}}</td>
+                                <td ng-if="x.MODIFICACION == 'MODIFICANDO CURSO'">El d&iacutea {{FuncionFecha(x.FECHA)}} el usuario {{x.NOMBRE_USUARIO}} modificó el curso programado con los datos: <ul class="list-unstyled" style="font-size: 10px;"><li style="color: #919191;"><strong>Estado anterior:</strong> [ {{x.ESTADO_ANTERIOR}} ]</li><li><strong>Estado actual:</strong> [ {{x.ESTADO_ACTUAL}} ]</li></ul> </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 </div>
         </div>
   </div>

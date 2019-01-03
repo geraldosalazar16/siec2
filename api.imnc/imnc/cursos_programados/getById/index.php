@@ -49,6 +49,11 @@ valida_error_medoo_and_die();
     valida_error_medoo_and_die();
     $eventos["NOMBRE_AUDITOR"] = $auditor;
 
+    $canttidad_perticipantes = $database->count("CURSOS_PROGRAMADOS_PARTICIPANTES",["ID_CURSO_PROGRAMADO"],["ID_CURSO_PROGRAMADO"=>$eventos["ID"]]);
+    valida_error_medoo_and_die();
+
+    $eventos["CANTIDAD_PARTICIPANTES"] = $canttidad_perticipantes;
+
 
 
 print_r(json_encode($eventos, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
