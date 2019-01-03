@@ -36,11 +36,11 @@ valida_parametro_and_die($ID_SERVICIO,"Falta ID de SERVICIO");
 $ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO; 
 valida_parametro_and_die($ID_TIPO_SERVICIO,"Falta ID de TIPO DE SERVICIO");
 $NORMAS = $objeto->NORMAS;
-if(count($NORMAS) == 0){
-		$respuesta['resultado']="error";
-		$respuesta['mensaje']="Es necesario seleccionar una norma";
-		print_r(json_encode($respuesta));
-		die();
+if(count($NORMAS) == 0 && $ID_SERVICIO != 3){ // No se usan normas en CIFA
+	$respuesta['resultado']="error";
+	$respuesta['mensaje']="Es necesario seleccionar una norma";
+	print_r(json_encode($respuesta));
+	die();
 }
 $ETAPA = $objeto->ETAPA; 
 valida_parametro_and_die($ETAPA,"Falta la etapa");
@@ -52,7 +52,13 @@ $FOLIO_INICIALES = $objeto->FOLIO_INICIALES;
 valida_parametro_and_die($FOLIO_INICIALES,"Falta FOLIO INICIALES");
 $REFERENCIA = $objeto->REFERENCIA;
 $TARIFA = $objeto->TARIFA;
-valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
+if($ID_SERVICIO != 3){
+	valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
+} else {
+	if(!$TARIFA){
+		$TARIFA = "";
+	}
+}
 $DESCUENTO = $objeto->DESCUENTO;
 $AUMENTO = $objeto->AUMENTO;
 $COMPLEJIDAD = $objeto->COMPLEJIDAD;

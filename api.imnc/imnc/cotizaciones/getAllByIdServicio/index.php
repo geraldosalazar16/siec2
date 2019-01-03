@@ -25,7 +25,8 @@ function valida_error_medoo_and_die(){
 } 
 
 $respuesta=array(); 
-$query = "SELECT * FROM TABLA_ENTIDADES,COTIZACIONES WHERE ID_PROSPECTO = ID_VISTA AND BANDERA_VISTA = BANDERA";
+$ID_SERVICIO = $_REQUEST["id_servicio"];
+$query = "SELECT * FROM TABLA_ENTIDADES,COTIZACIONES WHERE ID_PROSPECTO = ID_VISTA AND BANDERA_VISTA = BANDERA AND COTIZACIONES.ID_SERVICIO = ".$ID_SERVICIO;
 $cotizaciones = $database->query($query)->fetchAll(PDO::FETCH_ASSOC); 
 
 valida_error_medoo_and_die(); 
@@ -35,10 +36,9 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	valida_error_medoo_and_die(); 
 	$tipos_servicio = $database->get("TIPOS_SERVICIO", "*", ["ID"=>$cotizaciones[$i]["ID_TIPO_SERVICIO"]]);
 	valida_error_medoo_and_die(); 
-	//$norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
 	$norma = $database->select("COTIZACION_NORMAS", "*", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
-	valida_error_medoo_and_die(); 
-	//Info de cursos
+    valida_error_medoo_and_die(); 
+    //Info de cursos
     $desc_curso = array();
     if($servicio["ID"] == 3){
         //Buscar el id del producto con el ID de la cotización
@@ -65,8 +65,8 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	$cotizaciones[$i]["TIPOS_SERVICIO"] = $tipos_servicio;
 	$cotizaciones[$i]["NORMA"] = $norma;
 	$cotizaciones[$i]["ESTADO"] = $estado;
-	$cotizaciones[$i]["VALOR_TARIFA"] = $desc_tarifa['TARIFA'];
-	$cotizaciones[$i]["CURSO"] = $desc_curso;
+    $cotizaciones[$i]["VALOR_TARIFA"] = $desc_tarifa['TARIFA'];
+    $cotizaciones[$i]["CURSO"] = $desc_curso;
 
 	$CONSECUTIVO = str_pad("".$cotizaciones[$i]["FOLIO_CONSECUTIVO"], 5, "0", STR_PAD_LEFT);
 	$FOLIO = $cotizaciones[$i]["FOLIO_INICIALES"].$cotizaciones[$i]["FOLIO_SERVICIO"].$CONSECUTIVO

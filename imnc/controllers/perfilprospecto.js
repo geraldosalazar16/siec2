@@ -1879,7 +1879,8 @@ $scope.cotizacion_guardar = function(){
         TARIFA : $scope.cotizacion_insertar_editar.TARIFA,
         DESCUENTO : $scope.cotizacion_insertar_editar.DESCUENTO,
         BANDERA : 0,
-        COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
+		COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
+		ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
 	};
 	$http.post(global_apiserver + "/cotizaciones/insert/",datos).
