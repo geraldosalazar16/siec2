@@ -156,6 +156,7 @@ switch($ID_TIPO_SERVICIO){
 	default: 
 		break;
 }
+
 $respuesta["resultado"]="ok"; 
 print_r(json_encode($respuesta)); 
 ?> 

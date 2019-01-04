@@ -134,8 +134,9 @@ else
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
 
-//Verificar que el servicio no exista
-$id_cotizacion = $database->get("COTIZACIONES",
+//Verificar que el servicio no exista, excepto para CIFA
+if($ID_SERVICIO != 3){
+	$id_cotizacion = $database->get("COTIZACIONES",
 		"*",
 		[
 			"AND" => [
@@ -143,19 +144,20 @@ $id_cotizacion = $database->get("COTIZACIONES",
 				"ID_SERVICIO" => $ID_SERVICIO,
 				"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO
 		]
-]);
-if( $ID_TIPO_SERVICIO == 17 && ($database->count("COTIZACION_NORMAS",["AND" =>["ID_NORMA" => $NORMAS[0]->ID_NORMA ,"ID_COTIZACION"=> $id_cotizacion["ID"] ]]) ==0)){
-	$id_cotizacion = 0;
+	]);
+	if( $ID_TIPO_SERVICIO == 17 && ($database->count("COTIZACION_NORMAS",["AND" =>["ID_NORMA" => $NORMAS[0]->ID_NORMA ,"ID_COTIZACION"=> $id_cotizacion["ID"] ]]) ==0)){
+		$id_cotizacion = 0;
+	}
+	valida_error_medoo_and_die();
+
+	if($id_cotizacion != 0){
+		$respuesta["resultado"] = "error";
+		$respuesta["mensaje"] = "La cotización que intenta ingresar ya existe";
+		print_r(json_encode($respuesta));
+		die();
+	}
 }
 
-
-valida_error_medoo_and_die();
-if($id_cotizacion != 0){
-	$respuesta["resultado"] = "error";
-	$respuesta["mensaje"] = "La cotización que intenta ingresar ya existe";
-	print_r(json_encode($respuesta));
-	die();
-}
 $id_cotizacion = $database->insert("COTIZACIONES", [
 	"ID_PROSPECTO" => $ID_PROSPECTO,
 	"ID_SERVICIO" => $ID_SERVICIO,

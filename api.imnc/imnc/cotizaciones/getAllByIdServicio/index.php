@@ -48,15 +48,18 @@ for ($i=0; $i < count($cotizaciones); $i++) {
         $desc_curso["MODALIDAD"] = "";
         if($modalidad == 'programado'){
             $desc_curso["MODALIDAD"] = "programado";
-            $query = "SELECT C.NOMBRE FROM CURSOS C INNER JOIN CURSOS_PROGRAMADOS CP ON C.ID_CURSO = CP.ID_CURSO WHERE CP.ID =" . $PROSPECTO_PROD_CURSO["ID_CURSO_PROGRAMADO"];
+            $query = "SELECT C.ID_CURSO,C.NOMBRE FROM CURSOS C INNER JOIN CURSOS_PROGRAMADOS CP ON C.ID_CURSO = CP.ID_CURSO WHERE CP.ID =" . $PROSPECTO_PROD_CURSO["ID_CURSO_PROGRAMADO"];
             $NOMBRE_CURSO = $database->query($query)->fetchAll(PDO::FETCH_ASSOC); 
             $desc_curso["NOMBRE_CURSO"] = $NOMBRE_CURSO[0]["NOMBRE"];
-            
+			$desc_curso["ID_CURSO_PROGRAMADO"] = $PROSPECTO_PROD_CURSO["ID_CURSO_PROGRAMADO"];
+			$desc_curso["ID_CURSO"] = $NOMBRE_CURSO[0]["ID_CURSO"];
         } else if($modalidad == 'insitu'){
             $desc_curso["MODALIDAD"] = "insitu";
-            $desc_curso["NOMBRE_CURSO"] = $database->get("CURSOS", "NOMBRE", ["ID_CURSO"=>$PROSPECTO_PROD_CURSO["ID_CURSO"]]);
+			$data = $database->get("CURSOS", ["ID","NOMBRE"], ["ID_CURSO"=>$PROSPECTO_PROD_CURSO["ID_CURSO"]]);
+			$desc_curso["NOMBRE_CURSO"] = $data["NOMBRE"];
+			$desc_curso["ID_CURSO"] = $data["ID_CURSO"];
         }
-    }     
+    }      
 	$desc_tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizaciones[$i]["TARIFA"]]);
 	valida_error_medoo_and_die();
 	$estado = $database->get("PROSPECTO_ESTATUS_SEGUIMIENTO", "*", ["ID"=>$cotizaciones[$i]["ESTADO_COTIZACION"]]);
@@ -65,8 +68,19 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	$cotizaciones[$i]["TIPOS_SERVICIO"] = $tipos_servicio;
 	$cotizaciones[$i]["NORMA"] = $norma;
 	$cotizaciones[$i]["ESTADO"] = $estado;
-    $cotizaciones[$i]["VALOR_TARIFA"] = $desc_tarifa['TARIFA'];
-    $cotizaciones[$i]["CURSO"] = $desc_curso;
+	$cotizaciones[$i]["VALOR_TARIFA"] = $desc_tarifa['TARIFA'];
+	
+	//Si es CIFA y está firmado buscar el url para la carga de participantes
+	if($servicio["ID"] == 3 && $estado == "Firmado"){
+		$url = $database->get("COTIZACION_DETALLES", "*", [
+			"AND" => [
+				"ID_COTIZACION"=>$cotizaciones[$i]["ID"],
+				"DETALLE" => "URL_PARTICIPANTES"
+			]			
+		]);
+		$desc_curso["URL_PARTICIPANTES"] = $url;
+	}
+	$cotizaciones[$i]["CURSO"] = $desc_curso;
 
 	$CONSECUTIVO = str_pad("".$cotizaciones[$i]["FOLIO_CONSECUTIVO"], 5, "0", STR_PAD_LEFT);
 	$FOLIO = $cotizaciones[$i]["FOLIO_INICIALES"].$cotizaciones[$i]["FOLIO_SERVICIO"].$CONSECUTIVO
