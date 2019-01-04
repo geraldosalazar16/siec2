@@ -38,13 +38,14 @@
 						</textarea>	
 					</div>
 					<!-- Solo mostrar para CIFA-->
-					<div class="form-group" ng-show="areas == 3">	
+					<div class="form-group" ng-show="areas == 3">
 						<label class="control-label">Tipo de persona</label>
-						<select ng-model="tipo_persona" style="margin-top:10px" class="form-control" ng-disabled="tipoPersona!=''">
+						<select ng-model="tipo_persona" style="margin-top:10px" class="form-control" ng-show="tipoPersona==''" ng-change="onChangeTipoPeresona(tipo_persona)">
 							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
 							<option value="Física" >Física</option>
 							<option value="Moral" >Moral</option>
 						</select>
+                        <input type="text" class="form-control" ng-model="tipo_persona" ng-show="tipoPersona!=''" ng-disabled="true" required>
 		            </div>
 					<!-- Solo mostrar para CIFA-->
 					<div class="form-group" ng-show="areas == 3">	
