@@ -38,11 +38,14 @@ $query = "SELECT *,(SELECT C.NOMBRE FROM CURSOS C WHERE C.ID_CURSO = CP.ID_CURSO
 $anterior = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
 valida_error_medoo_and_die();
 
+
+
 $id_cp = $database->delete("CURSOS_PROGRAMADOS", ["ID"=>$ID]);
 valida_error_medoo_and_die();
 
 if($id_cp	!=	0) {
-    $estado_anterior =  " Referencia: " . $anterior[0]["REFERENCIA"] . ", Curso: " . $anterior[0]["NOMBRE_CURSO"] . ", Fecha: " . $anterior[0]["FECHAS"] . ", Instructor: " . strtoupper($anterior[0]["NOMBRE_INSTRUCTOR"]) . ", Mínimo: " . $anterior[0]["PERSONAS_MINIMO"] . ", Etapa: " . $anterior[0]["ETAPA"];
+    $etapa_antes = $database->get("ETAPAS_PROCESO","ETAPA",["ID_ETAPA"=>$anterior[0]["ETAPA"]]);
+    $estado_anterior =  " Referencia: " . $anterior[0]["REFERENCIA"] . ", Curso: " . $anterior[0]["NOMBRE_CURSO"] . ", Fecha: " . $anterior[0]["FECHAS"] . ", Instructor: " . strtoupper($anterior[0]["NOMBRE_INSTRUCTOR"]) . ", Mínimo: " . $anterior[0]["PERSONAS_MINIMO"] . ", Etapa: " . $etapa_antes;
     $id1 = $database->insert("CURSOS_PROGRAMADOS_HISTORICO", [
         "ID_CURSO_PROGRAMADO" => $ID,
         "MODIFICACION" => "ELIMINO CURSO",

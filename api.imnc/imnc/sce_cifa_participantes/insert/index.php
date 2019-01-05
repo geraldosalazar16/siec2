@@ -52,6 +52,9 @@ valida_parametro_and_die($ESTADO, "Es introducir el Estado del que nos visita");
 $EJECUTIVO	= $objeto->EJECUTIVO;
 valida_parametro_and_die($EJECUTIVO, "Es introducir el Nombre del ejecutivo comercial que le atendió");
 
+$ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
+valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
+
 
 $id_participante = $database->insert("PARTICIPANTES", [
 	"RAZON_ENTIDAD" => $RAZON_ENTIDAD,
@@ -72,6 +75,15 @@ if($id_participante!=0)
 
     ]);
     valida_error_medoo_and_die();
+    $estado_actual = "Razón Social: ".$RAZON_ENTIDAD.", Correo:".$EMAIL.", Teléfono: ".$TELEFONO.", CURP: ".$CURP.", RFC: ".$RFC.", Estado:".$ESTADO.", le atendió:".$EJECUTIVO;
+    $id2=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [
+        "ID_SERVICIO_CONTRATADO" => $ID_SCE,
+        "MODIFICACION" => "NUEVO PARTICIPANTE",
+        "ESTADO_ANTERIOR"=>	"",
+        "ESTADO_ACTUAL"=>$estado_actual,
+        "USUARIO" => $ID_USUARIO_MODIFICACION,
+        "FECHA_USUARIO" => date("Ymd"),
+        "FECHA_MODIFICACION" => date("Ymd")]);
 }
 
 $respuesta["resultado"]="ok"; 

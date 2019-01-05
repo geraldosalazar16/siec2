@@ -51,6 +51,13 @@ valida_parametro_and_die($ESTADO, "Es necesario introducir el Estado del que nos
 $EJECUTIVO	= $objeto->EJECUTIVO;
 valida_parametro_and_die($EJECUTIVO, "Es necesario introducir el Nombre del ejecutivo comercial que le atendió");
 
+$ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
+valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
+
+$ID_SCE = $objeto->ID_SERVICIO_CLIENTE_ETAPA;
+valida_parametro_and_die($ID_SCE, "Es necesario introducir el ID SCE");
+
+$participante = $database->get("PARTICIPANTES","*",["ID"=>$ID]);
 
 $id_participante = $database->update("PARTICIPANTES", [
     "RAZON_ENTIDAD" => $RAZON_ENTIDAD,
@@ -61,7 +68,22 @@ $id_participante = $database->update("PARTICIPANTES", [
     "ID_ESTADO"=>$ESTADO,
     "EJECUTIVO"=>$EJECUTIVO
 ],["ID"=>$ID]);
+
 valida_error_medoo_and_die();
+
+if($id_participante !=0)
+{
+    $estado_anterior = "Razón Social: ".$participante["RAZON_ENTIDAD"].", Correo:".$participante["EMAIL"].", Teléfono: ".$participante["TELEFONO"].", CURP: ".$participante["CURP"].", RFC: ".$participante["RFC"].", Estado:".$participante["ESTADO"].", le atendió:".$participante["EJECUTIVO"];
+    $estado_actual = "Razón Social: ".$RAZON_ENTIDAD.", Correo:".$EMAIL.", Teléfono: ".$TELEFONO.", CURP: ".$CURP.", RFC: ".$RFC.", Estado:".$ESTADO.", le atendió:".$EJECUTIVO;
+    $id2=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [
+        "ID_SERVICIO_CONTRATADO" => $ID_SCE,
+        "MODIFICACION" => "MODIFICANDO PARTICIPANTE",
+        "ESTADO_ANTERIOR"=>	$estado_anterior,
+        "ESTADO_ACTUAL"=>$estado_actual,
+        "USUARIO" => $ID_USUARIO_MODIFICACION,
+        "FECHA_USUARIO" => date("Ymd"),
+        "FECHA_MODIFICACION" => date("Ymd")]);
+}
 
 $respuesta["resultado"]="ok";
 
