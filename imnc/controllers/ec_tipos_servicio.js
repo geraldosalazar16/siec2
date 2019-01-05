@@ -2113,7 +2113,9 @@ $scope.get_domicilio_cliente	= function(id_cliente){
                     CURP: formData.curpParticipante,
                     RFC:formData.rfcParticipante,
                     ESTADO:formData.estadoParticipante,
-                    EJECUTIVO:formData.comercialParticipante
+                    EJECUTIVO:formData.comercialParticipante,
+                    ID_USUARIO:	sessionStorage.getItem("id_usuario")
+
                 };
                 $.post(global_apiserver + "/sce_cifa_participantes/insert/", JSON.stringify(participante), function (respuesta) {
                     respuesta = JSON.parse(respuesta);
@@ -2143,7 +2145,9 @@ $scope.get_domicilio_cliente	= function(id_cliente){
             CURP: formData.curpParticipante,
             RFC:formData.rfcParticipante,
             ESTADO:formData.estadoParticipante,
-            EJECUTIVO:formData.comercialParticipante
+            EJECUTIVO:formData.comercialParticipante,
+            ID_USUARIO:	sessionStorage.getItem("id_usuario"),
+            ID_SERVICIO_CLIENTE_ETAPA: $scope.DatosServicio.ID
         };
         $.post(global_apiserver + "/sce_cifa_participantes/update/", JSON.stringify(participante), function (respuesta) {
             respuesta = JSON.parse(respuesta);
@@ -2352,7 +2356,8 @@ $scope.get_domicilio_cliente	= function(id_cliente){
             ID_SITIO: formData.selectSitio,
             FECHA_INICIO: formData.fecha_inicio_participante,
             FECHA_FIN: formData.fecha_fin_participante,
-            ID_INSTRUCTOR: $scope.id_instructor
+            ID_INSTRUCTOR: $scope.id_instructor,
+            ID_USUARIO:	sessionStorage.getItem("id_usuario"),
         };
         $.post(global_apiserver + "/sce_cifa_participantes/updateConfiguracion/", JSON.stringify(configuracion), function (respuesta) {
             respuesta = JSON.parse(respuesta);

@@ -18,16 +18,8 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
 			<div class="">
 				<div class="x_title">
 					<p><h2>Cursos Programados</h2></p>
-                   <?php
-                        echo '<p>';
-                        echo '  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-click="openModalInsertarModificar('."'insertar'".')"> ';
-                        echo '    <i class="fa fa-plus"> </i> Agregar Curso ';
-                        echo '  </button>';
-                        echo '</p>';
-
-                    ?>
 					<div class="clearfix"></div>
-                    <div class="x_content">
+                    <div class="x_content" style="margin-top: 20px;">
                        <div id='calendar'></div>
                     </div>
 
@@ -277,8 +269,9 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                             <tbody>
                             <tr ng-repeat="x in Historial" class="ng-scope  even pointer">
                                 <td>{{x.ID}}</td>
-                                <td ng-if="x.MODIFICACION == 'NUEVO CURSO'">El d&iacutea {{FuncionFecha(x.FECHA)}} el usuario {{x.NOMBRE_USUARIO}} agregó un nuevo curso programado con los datos: <ul class="list-unstyled" style="font-size: 10px;"><li style="color: #919191;"><strong>{{x.ESTADO_ACTUAL}}</strong></li></ul></td>
-                                <td ng-if="x.MODIFICACION == 'MODIFICANDO CURSO'">El d&iacutea {{FuncionFecha(x.FECHA)}} el usuario {{x.NOMBRE_USUARIO}} modificó el curso programado con los datos: <ul class="list-unstyled" style="font-size: 10px;"><li style="color: #919191;"><strong>Estado anterior:</strong> [ {{x.ESTADO_ANTERIOR}} ]</li><li><strong>Estado actual:</strong> [ {{x.ESTADO_ACTUAL}} ]</li></ul> </td>
+                                <td ng-if="x.MODIFICACION == 'MODIFICANDO CURSO'">El d&iacutea {{FuncionFecha(x.FECHA)}} el usuario {{x.NOMBRE_USUARIO}} modificó el curso programado con los datos: <ul class="list-unstyled" style="font-size: 10px;"><li><strong>Estado actual:</strong> [ {{x.ESTADO_ACTUAL}} ]</li><li style="color: #919191;"><strong>Estado anterior:</strong> [ {{x.ESTADO_ANTERIOR}} ]</li></ul> </td>
+                                <td ng-if="x.MODIFICACION == 'NUEVO CURSO'">El d&iacutea {{FuncionFecha(x.FECHA)}} el usuario {{x.NOMBRE_USUARIO}} agregó un nuevo curso programado con los datos: <ul class="list-unstyled" style="font-size: 10px;"><li><strong>{{x.ESTADO_ACTUAL}}</strong></li></ul></td>
+                                <td ng-if="x.MODIFICACION == 'ELIMINO CURSO'">El d&iacutea {{FuncionFecha(x.FECHA)}} el usuario {{x.NOMBRE_USUARIO}} eliminó el curso programado con los datos: <ul class="list-unstyled" style="font-size: 10px;"><li><strong>{{x.ESTADO_ANTERIOR}}</strong></li></ul></td>
                             </tr>
                             </tbody>
                         </table>

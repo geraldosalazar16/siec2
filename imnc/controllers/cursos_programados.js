@@ -17,6 +17,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
     $scope.instructoresCursos=[];
     $scope.id_instructor = "";
     $scope.objCursoProgramado = [];
+    $scope.salir = false;
 
 
 
@@ -49,11 +50,21 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
 // ***** 			FUNCION PARA CARGAR HISTORICO    	 *****
 // ===================================================================
     $scope.cargarHistorico= function(id){
+        if(id)
+        {
+            $http.get(global_apiserver + "/cursos_programados/getHistoricoById/?id="+id)
+                .then(function( response ){
+                    $scope.Historial = response.data;
+                });
+        }
+        else
+        {
+            $http.get(global_apiserver + "/cursos_programados/getHistoricoEliminados/")
+                .then(function( response ){
+                    $scope.Historial = response.data;
+                });
+        }
 
-        $http.get(global_apiserver + "/cursos_programados/getHistoricoById/?id="+id)
-            .then(function( response ){
-                $scope.Historial = response.data;
-            });
     }
 // ==============================================================================
 // ***** 	Funcion para traer las etapas	*****
@@ -169,6 +180,7 @@ $scope.openModalInsertarModificar = function(accion){
         if(accion == 'insertar')
         {
             $scope.cargarEtapas(3);
+            onCalendario();
         }
         if(accion == 'editar')
         {
@@ -188,6 +200,7 @@ $scope.openModalInsertarModificar = function(accion){
                 if(parseInt(response.CANTIDAD_PARTICIPANTES) == parseInt(response.PERSONAS_MINIMO))
                 $scope.enVerde = true;
                 $scope.cargarEtapas(3,response.ETAPA);
+                onCalendario(response.FECHA_INICIO);
                 // $scope.formData.selectEtapa = parseInt(response.ETAPA);
                 $scope.$apply();
 
@@ -213,7 +226,7 @@ $scope.openModalInsertarModificar = function(accion){
 
 
 
-        onCalendario();
+
 	}
 
 // =======================================================================================
@@ -247,13 +260,26 @@ $scope.openModalMostarInst = function() {
 
 }
 // =======================================================================================
-// ***** 			FUNCION PARA ABRIR MODAL MOSTRAR INSTRUCTOR             		 *****
+// ***** 			FUNCION PARA ABRIR MODAL MOSTRAR HISTORICOS             		 *****
 // =======================================================================================
     $scope.openModalHistorico = function() {
         $("#modal-size").attr("class","modal-dialog modal-lg");
         mytoggle("divMostrar");
         mytoggle("divVerHistorico");
         $scope.cargarHistorico($scope.id_evento_select);
+    }
+// =======================================================================================
+// ***** 			FUNCION PARA ABRIR MODAL MOSTRAR HISTORICOS             		 *****
+// =======================================================================================
+    $scope.openModalHistoricoEliminados = function() {
+        $("#modal-size").attr("class","modal-dialog modal-lg");
+        $("#divInsertar").hide();
+        $("#divMostrar").hide();
+        $("#divInstructor").hide();
+        $("#divVerHistorico").show();
+        $("#modalMostrar").modal("show");
+        $scope.cargarHistorico();
+        $scope.salir = true;
     }
 // ===========================================================================
 // ***** 		      Funcion button select instructor 	            	 *****
@@ -307,8 +333,17 @@ $scope.cerrarInstructores = function()
 $scope.cerrarHistorico = function()
 {
     $("#modal-size").attr("class","modal-dialog");
-    mytoggle("divVerHistorico");
-    mytoggle("divMostrar");
+    if(!$scope.salir)
+    {
+
+        mytoggle("divVerHistorico");
+        mytoggle("divMostrar");
+    }
+    else {
+        $scope.salir = false;
+        $("#modalMostrar").modal("hide");
+    }
+
 }
 
 // ===========================================================================
@@ -637,7 +672,7 @@ function insertar(formData) {
 // ===========================================================================
 // ***** 	    FUNCION PARA CARGAR LOS DATEPICKER DEL MODAL			 *****
 // ===========================================================================
-function onCalendario() {
+function onCalendario(inicio) {
 
  var dateInicial = $('#fecha_inicio').datepicker({
     dateFormat: "dd/mm/yy",
@@ -657,6 +692,16 @@ var dateFinal =$('#fecha_fin').datepicker({
         $scope.formData.fecha_fin = dateText;
     }
 }).css("display", "inline-block");
+
+    if(inicio)
+    {
+        dateInicial.datepicker("option", "minDate", inicio);
+    }
+    else {
+        dateInicial.datepicker("option", "minDate", "+0D");
+    }
+
+
     if($scope.date_evento_select!="")
     {
         dateInicial.datepicker("option", "minDate", $scope.date_evento_select);
@@ -729,17 +774,35 @@ $scope.onAgenda = function(fecha) {
         }
 
         $scope.global_calendar = $('#calendar').fullCalendar({
+            customButtons: {
+                historico: {
+                    text: '- Histórico',
+                    click: function() {
+
+                        $scope.openModalHistoricoEliminados();
+                    }
+                },
+                newEvent: {
+                    text: '+ Agregar Curso',
+                    click: function() {
+
+                        $scope.openModalInsertarModificar('insertar');
+                    }
+                }
+
+            },
             header: {
-                left: 'prev,next today',
+                left: 'newEvent prev,next today ',
                 center: 'title',
-                right: 'month,agendaWeek,agendaDay'
+                right: 'month,agendaWeek,agendaDay,historico'
             },
             minTime:"07:00:00",
             selectable: false,
-            editable: false,
+            navLinks: true,
+            editable: true,
+            eventLimit: true,
             eventTextColor:"#141414",
             locale: 'es',
-            navLinks: true,
             defaultDate:date,
             events: eventos,
             eventClick: function (calEvent, jsEvent, view) {

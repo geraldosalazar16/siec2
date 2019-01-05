@@ -70,8 +70,9 @@ valida_error_medoo_and_die();
 if($id_cp	!=	0) {
     $etapa_antes = $database->get("ETAPAS_PROCESO","ETAPA",["ID_ETAPA"=>$anterior[0]["ETAPA"]]);
     $etapa_despues = $database->get("ETAPAS_PROCESO","ETAPA",["ID_ETAPA"=>$ETAPA]);
-    $estado_anterior =  " Referencia: " . $anterior[0]["REFERENCIA"] . ", Curso: " . $anterior[0]["NOMBRE_CURSO"] . ", Fecha: " . $anterior[0]["FECHAS"] . ", Instructor: " . strtoupper($anterior[0]["NOMBRE_INSTRUCTOR"]) . ", Mínimo: " . $anterior[0]["PERSONAS_MINIMO"] . ", Etapa: " . $etapa_antes["ETAPA"];
-    $estado_actual = " Referencia: " . $anterior[0]["REFERENCIA"] . ", Curso: " . $NOMBRE_CURSO . ", Fecha: " . $FECHAS . ", Instructor: " . strtoupper($NOMBRE_INSTRUCTOR) . ", Mínimo: " . $PERSONAS_MINIMO . ", Etapa: " . $etapa_despues["ETAPA"];
+
+    $estado_anterior =  " Referencia: " . $anterior[0]["REFERENCIA"] . ", Curso: " . $anterior[0]["NOMBRE_CURSO"] . ", Fecha: " . $anterior[0]["FECHAS"] . ", Instructor: " . strtoupper($anterior[0]["NOMBRE_INSTRUCTOR"]) . ", Mínimo: " . $anterior[0]["PERSONAS_MINIMO"] . ", Etapa: " . $etapa_antes;
+    $estado_actual = " Referencia: " . $anterior[0]["REFERENCIA"] . ", Curso: " . $NOMBRE_CURSO . ", Fecha: " . $FECHAS . ", Instructor: " . strtoupper($NOMBRE_INSTRUCTOR) . ", Mínimo: " . $PERSONAS_MINIMO . ", Etapa: " . $etapa_despues;
         $id1 = $database->insert("CURSOS_PROGRAMADOS_HISTORICO", [
             "ID_CURSO_PROGRAMADO" => $ID,
             "MODIFICACION" => "MODIFICANDO CURSO",
