@@ -498,8 +498,8 @@ if(typeof $scope.formData.minimo !== "undefined") {
 }
 
  if(Boolean($scope.formData.fecha_inicio) && Boolean($scope.formData.fecha_fin)){
-  var aux_fechainicio = Date.parse($scope.formData.fecha_inicio);
-  var aux_fechafin = Date.parse($scope.formData.fecha_fin);
+  var aux_fechainicio = stringToDate($scope.formData.fecha_inicio,"dd/mm/yyyy","/");
+  var aux_fechafin = stringToDate($scope.formData.fecha_fin,"dd/mm/yyyy","/");
   if(aux_fechainicio>aux_fechafin)
   {
    $scope.respuesta =  0;
@@ -510,7 +510,19 @@ if(typeof $scope.formData.minimo !== "undefined") {
   }
 
 }
-
+    function stringToDate(_date,_format,_delimiter)
+    {
+        var formatLowerCase=_format.toLowerCase();
+        var formatItems=formatLowerCase.split(_delimiter);
+        var dateItems=_date.split(_delimiter);
+        var monthIndex=formatItems.indexOf("mm");
+        var dayIndex=formatItems.indexOf("dd");
+        var yearIndex=formatItems.indexOf("yyyy");
+        var month=parseInt(dateItems[monthIndex]);
+        month-=1;
+        var formatedDate = new Date(dateItems[yearIndex],month,dateItems[dayIndex]);
+        return formatedDate;
+    }
 // ===========================================================================
 // ***** 			FUNCION PARA EL BOTON GUARDAR DEL MODAL				 *****
 // ===========================================================================
