@@ -693,6 +693,7 @@ function onCalendario(inicio) {
     onSelect: function (dateText, ins) {
         $scope.formData.fecha_inicio = dateText;
         dateFinal.datepicker("option", "minDate", dateText)
+        $scope.formData.fecha_fin = dateText;
     }
 }).css("display", "inline-block");
 
@@ -705,18 +706,19 @@ var dateFinal =$('#fecha_fin').datepicker({
     }
 }).css("display", "inline-block");
 
-    if(inicio)
+   /* if(inicio)
     {
         dateInicial.datepicker("option", "minDate", inicio);
     }
     else {
         dateInicial.datepicker("option", "minDate", "+0D");
-    }
+    }*/
 
 
     if($scope.date_evento_select!="")
     {
-        dateInicial.datepicker("option", "minDate", $scope.date_evento_select);
+        $scope.formData.fecha_inicio = $scope.date_evento_select;
+        // dateInicial.datepicker("option", "minDate", $scope.date_evento_select);
         dateFinal.datepicker("option", "minDate", $scope.date_evento_select);
     }
 }
