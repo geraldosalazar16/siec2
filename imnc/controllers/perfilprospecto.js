@@ -975,10 +975,15 @@ $scope.eliminar = function(id){
         $http.get(  global_apiserver + "/cursos_programados/getByModulo/?id="+id)
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
 	  			$scope.Cursos = response.data.map(function(item){
-	  				return{
-	  					id : item.ID,
-	  					nombre : item.NOMBRE +" ["+item.FECHAS+"]",
-	  				}
+	  				if(item!=null)
+					{
+                        return{
+                            id : item.ID,
+                            nombre : item.NOMBRE +" ["+item.FECHAS+"]",
+                        }
+					}
+
+
 	  			});
 	  			if(seleccionado){
 					$scope.cursos_programados = seleccionado;
@@ -1894,8 +1899,19 @@ $scope.cotizacion_guardar = function(){
 	});
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    $scope.onChangeTipoPeresona = function(tipo_persona){
+
+        if(tipo_persona == "Física")
+        {
+            $scope.modalidades = "programado";
+            $("#labelCurso").text("Cursos Programados");
+            $scope.CursosProgramadoLista($scope.departamentos);
+		}
+	}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     $scope.onChangeModalidades = function(id_tipo_servicio,seleccionado)
     {
+
         if($scope.modalidades == "programado")
         {
             $("#labelCurso").text("Cursos Programados");

@@ -172,14 +172,11 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                             </div>
                             <div class="form-group" >
                                 <label for="selectEtapa">Etapa<span class="required">*</span></label>
-                                <select ng-model="formData.selectEtapa" id="selectEtapa" name="selectEtapa" class="form-control" ng-disabled="enVerde == false">
-                                    <option ng-value="INSCRITO" ng-selected="true" ng-disabled="enVerde == true"  >INSCRITO</option>
-                                    <option ng-value="PROGRAMADO">PROGRAMADO</option>
-                                    <option ng-value="SUSPENDIDO">SUSPENDIDO</option>
-                                    <option ng-value="CANCELADO">CANCELADO</option>
-                                    <option ng-value="EJECUTADO">EJECUTADO</option>
-                                    <option ng-value="COMPLETO">COMPLETO</option>
-						       </select>
+                              <select ng-model="formData.selectEtapa" id="selectEtapa" name="selectEtapa" ng-disabled="enVerde == false"
+                                         ng-options="etapa.ID as etapa.NOMBRE for etapa in Etapas"
+                                        class="form-control">
+                                </select>
+
 		                     </div>
 
 
@@ -280,7 +277,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                             <tbody>
                             <tr ng-repeat="x in Historial" class="ng-scope  even pointer">
                                 <td>{{x.ID}}</td>
-                                <td ng-if="x.MODIFICACION == 'NUEVO CURSO'">El d&iacutea {{FuncionFecha(x.FECHA)}} el usuario {{x.NOMBRE_USUARIO}} agregó un nuevo curso programado con los datos: {{x.ESTADO_ACTUAL}}</td>
+                                <td ng-if="x.MODIFICACION == 'NUEVO CURSO'">El d&iacutea {{FuncionFecha(x.FECHA)}} el usuario {{x.NOMBRE_USUARIO}} agregó un nuevo curso programado con los datos: <ul class="list-unstyled" style="font-size: 10px;"><li style="color: #919191;"><strong>{{x.ESTADO_ACTUAL}}</strong></li></ul></td>
                                 <td ng-if="x.MODIFICACION == 'MODIFICANDO CURSO'">El d&iacutea {{FuncionFecha(x.FECHA)}} el usuario {{x.NOMBRE_USUARIO}} modificó el curso programado con los datos: <ul class="list-unstyled" style="font-size: 10px;"><li style="color: #919191;"><strong>Estado anterior:</strong> [ {{x.ESTADO_ANTERIOR}} ]</li><li><strong>Estado actual:</strong> [ {{x.ESTADO_ACTUAL}} ]</li></ul> </td>
                             </tr>
                             </tbody>

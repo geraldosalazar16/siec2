@@ -55,6 +55,28 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
                 $scope.Historial = response.data;
             });
     }
+// ==============================================================================
+// ***** 	Funcion para traer las etapas	*****
+// ==============================================================================
+    $scope.cargarEtapas =function (id_servicio,seleccion ){
+        var inicial = null;
+        $http.get(  global_apiserver + "/etapas_proceso/getByIdServicio/?id="+id_servicio)
+            .then(function( response ) {//se ejecuta cuando la petición fue correcta
+                    $scope.Etapas = response.data.map(function(item){
+                        if(item.ETAPA=="INSCRITO")
+                            inicial = item.ID_ETAPA;
+                        return{
+                            ID : item.ID_ETAPA,
+                            NOMBRE : item.ETAPA
+                        }
+                    });
+
+                    if(inicial){
+                        $scope.formData.selectEtapa = seleccion ? seleccion: inicial;
+                    }
+                },
+                function (response){});
+    }
 // ===================================================================
 // ***** 			FUNCION PARA ELIMINAR EVENTO				 *****
 // ===================================================================
@@ -100,7 +122,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
                 fechas = response.FECHA_INICIO;
             $scope.txtFechas = fechas;
             $scope.txtMinimo = response.PERSONAS_MINIMO;
-            $scope.txtEtapa = response.ETAPA;
+            $scope.txtEtapa = response.NOMBRE_ETAPA;
             $scope.$apply();
 
         });
@@ -141,10 +163,13 @@ $scope.openModalInsertarModificar = function(accion){
 		$scope.accion = accion;
         clear_modal_insertar_actualizar()
         $scope.cargarCursos();
-        //$scope.cargarInstructores();
+
         $scope.formData.fecha_inicio = $scope.date_evento_select;
         $scope.enVerde = false;
-
+        if(accion == 'insertar')
+        {
+            $scope.cargarEtapas(3);
+        }
         if(accion == 'editar')
         {
 
@@ -161,8 +186,9 @@ $scope.openModalInsertarModificar = function(accion){
                 $("#btnInstructor").attr("value",response.NOMBRE_AUDITOR.NOMBRE+" "+response.NOMBRE_AUDITOR.APELLIDO_PATERNO+" "+response.NOMBRE_AUDITOR.APELLIDO_MATERNO)
                 $("#btnInstructor").attr("class", "form-control ");
                 if(parseInt(response.CANTIDAD_PARTICIPANTES) == parseInt(response.PERSONAS_MINIMO))
-                    $scope.enVerde = true;
-                $scope.formData.selectEtapa = response.ETAPA;
+                $scope.enVerde = true;
+                $scope.cargarEtapas(3,response.ETAPA);
+                // $scope.formData.selectEtapa = parseInt(response.ETAPA);
                 $scope.$apply();
 
 
@@ -255,11 +281,12 @@ $scope.onSelectInstructor = function(instructor)
         {
             if (respuesta.disponible == "no")
             {
-                notify("Error", respuesta.razon, "error");
-                $("#btn-"+instructor).attr("disabled",true);
-                $("#error-"+instructor).text(respuesta.razon);
-                $("#error-"+instructor).show();
-                $("#btn-"+instructor).text("seleccionar");
+                    notify("Error", respuesta.razon, "error");
+                    $("#btn-"+instructor).attr("disabled",true);
+                    $("#error-"+instructor).text(respuesta.razon);
+                    $("#error-"+instructor).show();
+                    $("#btn-"+instructor).text("seleccionar");
+
             }else
             {
                 notify("Error", respuesta.mensaje, "error");
@@ -297,7 +324,7 @@ function clear_modal_insertar_actualizar(){
     $scope.id_instructor = "";
     $scope.formData.referencia ="";
     $scope.formData.chckVerTodos = "";
-    $scope.formData.selectEtapa = "INSCRITO";
+    //$scope.formData.selectEtapa = "INSCRITO";
     $("#btnInstructor").attr("value","Selecciona un Instructor");
     $("#btnInstructor").attr("class", "form-control btn ");
 
@@ -488,16 +515,17 @@ function insertar(formData) {
                 NOMBRE_INSTRUCTOR:$("#btnInstructor").val(),
                 PERSONAS_MINIMO: formData.minimo,
                 REFERENCIA:formData.referencia,
-                ETAPA:$("#selectEtapa").val(),
+                ETAPA: formData.selectEtapa,
                 ID_USUARIO:sessionStorage.getItem("id_usuario")
             };
+
             $.post(global_apiserver + "/cursos_programados/insert/", JSON.stringify(curso), function (respuesta) {
                 respuesta = JSON.parse(respuesta);
                 if (respuesta.resultado == "ok") {
                     $("#modalMostrar").modal("hide");
                     notify("Éxito", "Se ha insertado un nuevo evento", "success");
                     $scope.onAgenda(formData.fecha_inicio);
-                    irFechaCalendario(formData.fecha_inicio);
+                   // irFechaCalendario(formData.fecha_inicio);
                     //document.location = "./?pagina=auditores";
                 }
                 else {
@@ -538,7 +566,8 @@ function insertar(formData) {
         }else {
         var validar = {
             ID:		          	        $scope.id_instructor,
-            FECHAS:			            formData.fecha_inicio+","+formData.fecha_fin
+            FECHAS:			            formData.fecha_inicio+","+formData.fecha_fin,
+            ID_CURSO_PROGRAMADO:        $scope.id_evento_select
         };
         $.post( global_apiserver + "/personal_tecnico/isDisponible/", JSON.stringify(validar), function(respuesta){
             respuesta = JSON.parse(respuesta);
@@ -550,9 +579,15 @@ function insertar(formData) {
             {
                 if (respuesta.disponible == "no")
                 {
+                    if(respuesta.id == $scope.id_evento_select)
+                    {
+                        editar(formData);
+                    }
+                    else {
+                        notify("Error", respuesta.razon, "error");
+                        return false;
+                    }
 
-                    notify("Error", respuesta.razon, "error");
-                    return false;
 
                 }else
                 {
@@ -579,7 +614,7 @@ function insertar(formData) {
                 ID_INSTRUCTOR: $scope.id_instructor,
                 NOMBRE_INSTRUCTOR:$("#btnInstructor").val(),
                 PERSONAS_MINIMO: formData.minimo,
-                ETAPA:$("#selectEtapa").val(),
+                ETAPA:formData.selectEtapa,
                 ID_USUARIO:sessionStorage.getItem("id_usuario")
             };
             $.post(global_apiserver + "/cursos_programados/update/", JSON.stringify(curso), function (respuesta) {

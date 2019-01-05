@@ -61,7 +61,7 @@
                                 ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}" ng-if="accion == 'insertar' && formData.claveServicio==2" ng-disabled="!formData.claveServicio"></select>
                                  <select ng-model="formData.etapa" ng-options="etapa.ID_ETAPA as etapa.ETAPA for etapa in Etapas"
                                          class="form-control" id="etapa" name="etapa" ng-change='cambioEtapa()' required
-                                         ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}" ng-if="accion == 'insertar' && formData.claveServicio==3" ng-disabled="!formData.claveServicio"></select>
+                                         ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}" ng-if="accion == 'insertar' && formData.claveServicio==3" ng-disabled="!formData.claveServicio || accion == 'insertar'"></select>
                             </div>
 							<div class="form-group" ng-show="accion=='editar' && formData.claveServicio!=3">
                                 <label for="cambio">¿Hay Cambio?</label>
@@ -84,7 +84,7 @@
 									</div>	
 								</div>
 							</div>	-->
-						  	<div class="form-group" ng-show="accion=='editar' && formData.cambio=='S'" ng-repeat="y in Cambios" >
+						  	<div class="form-group" ng-show="accion=='editar' && formData.cambio=='S' && formData.claveServicio!=3" ng-repeat="y in Cambios" >
 								
                               <label >
 									<input type='checkbox' id="formData.chk{{y.ID}}" ng-model="formData.chk[y.ID]"  ng-disabled="formData.chk[y.ID]"/>

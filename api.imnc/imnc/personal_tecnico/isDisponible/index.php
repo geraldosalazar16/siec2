@@ -9,6 +9,8 @@ Se pasa por parametro ID de PERSONAL_TECNICO y FECHAS separadas por comas ejempl
  ESTO RESPONDE: disponible: si | no
               razon: para el caso de que sea no
               error: en caso de algun error
+
+
 */
 
 
@@ -22,12 +24,16 @@ if($objeto!=null){
 	valida_parametro_and_die($ID, "Es necesario un ID_PERSONAL_TECNICO");
 	$FECHAS = $objeto->FECHAS; // En formato dd/mm/yyyy separados por comas SIN ESPACIOS
 	valida_parametro_and_die($FECHAS, "Es necesario asignarle fechas al auditor");
+	$ID_CURSO_PROGRAMADO = $objeto->ID_CURSO_PROGRAMADO;
+	$ID_CURSO_INSITUS = $objeto->ID_CURSO_INSITUS;
 }
 else{
 	$ID = $_REQUEST["ID"]; //ID_PERSONAL_TECNICO a buscar si esta disponoble
 	valida_parametro_and_die($ID, "Es necesario un ID_PERSONAL_TECNICO");
 	$FECHAS = $_REQUEST["FECHAS"]; // En formato dd/mm/yyyy separados por comas SIN ESPACIOS
 	valida_parametro_and_die($FECHAS, "Es necesario asignarle fechas al auditor");
+    $ID_CURSO_PROGRAMADO = $_REQUEST["ID_CURSO_PROGRAMADO"];
+    $ID_CURSO_INSITUS = $_REQUEST["ID_CURSO_INSITUS"];
 }
 $FECHAS = explode(",", $FECHAS);
 $FECHA_INICIO = explode("/",$FECHAS[0]);
@@ -63,6 +69,8 @@ for ($i=0; $i < count($I_SG_AUDITORIA_GRUPO_FECHAS) ; $i++) {
 		{
             $FLAG = "no";
             $razon = "Ese auditor tiene auditoría para esta fecha: ".substr($FECHA,6,8)."-".substr($FECHA,-4,2)."-".substr($FECHA,0,4);
+            $id_encontrado = null;
+            $tipo_encontrado = null;
             goto handle_errors;
 			break;
 
@@ -91,7 +99,10 @@ for ($e=0; $e < count($PERSONAL_TECNICO_EVENTOS) ; $e++) {
 // ===================================================================
 // ***** 			  VERIFICA SI TIENE CURSOS PROG 		     *****
 // ===================================================================
-$CURSOS_PROGRAMADOS= $database->select("CURSOS_PROGRAMADOS", ["FECHAS"] , ["ID_INSTRUCTOR"=>$ID]);
+if(isset($ID_CURSO_PROGRAMADO))
+    $CURSOS_PROGRAMADOS= $database->select("CURSOS_PROGRAMADOS", ["FECHAS"] ,["AND"=>["ID_INSTRUCTOR"=>$ID,"ID[!]"=>$ID_CURSO_PROGRAMADO]]);
+    else
+    $CURSOS_PROGRAMADOS= $database->select("CURSOS_PROGRAMADOS", ["FECHAS"] , ["ID_INSTRUCTOR"=>$ID]);
 for ($c=0; $c < count($CURSOS_PROGRAMADOS) ; $c++) {
     $FECHAS = explode("-",$CURSOS_PROGRAMADOS[$c]["FECHAS"]);
     $FECHA_I = explode("/",$FECHAS[0]);
@@ -102,6 +113,27 @@ for ($c=0; $c < count($CURSOS_PROGRAMADOS) ; $c++) {
     {
         $FLAG = "no";
         $razon = "Ese auditor tiene curso programado fecha: ".substr($FECHA_I,6,8)."-".substr($FECHA_I,-4,2)."-".substr($FECHA_I,0,4)." a ".substr($FECHA_F,6,8)."-".substr($FECHA_F,-4,2)."-".substr($FECHA_F,0,4);
+        goto handle_errors;
+        break;
+
+    }
+}
+
+// ===================================================================
+// ***** 			  VERIFICA SI TIENE CURSOS INSITUS		     *****
+// ===================================================================
+if(isset($ID_CURSO_INSITUS))
+    $CURSOS_INSITUS= $database->select("SCE_CURSOS", ["FECHA_INICIO","FECHA_FIN"] ,["AND"=>["ID_INSTRUCTOR"=>$ID,"ID_SCE[!]"=>$ID_CURSO_INSITUS]]);
+else
+    $CURSOS_INSITUS= $database->select("SCE_CURSOS", ["FECHA_INICIO","FECHA_FIN"] , ["ID_INSTRUCTOR"=>$ID]);
+for ($c=0; $c < count($CURSOS_INSITUS) ; $c++) {
+    $FECHA_I = date("Ymd", strtotime($CURSOS_INSITUS[$c]["FECHA_INICIO"]));
+    $FECHA_F = date("Ymd", strtotime($CURSOS_INSITUS[$c]["FECHA_FIN"]));
+    if(($FECHA_I>=$FECHA_INICIO && $FECHA_I<=$FECHA_FIN)||($FECHA_F>=$FECHA_INICIO && $FECHA_F<=$FECHA_FIN))
+    {
+
+        $FLAG = "no";
+        $razon = "Ese auditor tiene curso insitus fecha: ".substr($FECHA_I,6,8)."-".substr($FECHA_I,-4,2)."-".substr($FECHA_I,0,4)." a ".substr($FECHA_F,6,8)."-".substr($FECHA_F,-4,2)."-".substr($FECHA_F,0,4);
         goto handle_errors;
         break;
 
@@ -121,7 +153,7 @@ else{
 
 
 
-print_r(json_encode($respuesta)); 	
+print_r(json_encode($respuesta));
 
 
 

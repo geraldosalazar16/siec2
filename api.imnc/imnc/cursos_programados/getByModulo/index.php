@@ -29,7 +29,7 @@ $id = $_REQUEST["id"];
 
 $cursos = $database->select("CURSOS",["[><]CURSOS_PROGRAMADOS"=>["CURSOS.ID_CURSO"=>"ID_CURSO"]],["CURSOS.NOMBRE","CURSOS_PROGRAMADOS.ID","CURSOS_PROGRAMADOS.FECHAS"],["AND"=>["CURSOS.ID_TIPO_SERVICIO"=>$id,"CURSOS.ISACTIVO"=>"1"]]);
 valida_error_medoo_and_die();
-$aux =  null;
+$aux =  [];
 $HOY = date("Ymd");
 for ($c=0; $c < count($cursos) ; $c++) {
     $FECHAS = explode("-", $cursos[$c]["FECHAS"]);

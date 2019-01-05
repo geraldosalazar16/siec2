@@ -54,6 +54,9 @@ valida_error_medoo_and_die();
 
     $eventos["CANTIDAD_PARTICIPANTES"] = $canttidad_perticipantes;
 
+    $etapa = $database->get("ETAPAS_PROCESO", ["ETAPA"], ["ID_ETAPA"=>$eventos["ETAPA"]]);
+
+    $eventos["NOMBRE_ETAPA"] = $etapa["ETAPA"];
 
 
 print_r(json_encode($eventos, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));

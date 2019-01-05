@@ -2253,7 +2253,7 @@ $scope.get_domicilio_cliente	= function(id_cliente){
     $scope.submitFormConfiguracion = function (formDataConfiguracion) {
         validar_formulario_configuracion();
         if($scope.respuesta == 1){
-                editarConfiguracion(formDataConfiguracion);
+                validaEditarConfiguracion(formDataConfiguracion);
         }
     }
 // =======================================================================================================
@@ -2312,7 +2312,38 @@ $scope.get_domicilio_cliente	= function(id_cliente){
     }
 
 // ===========================================================================
-// ***** 			FUNCION PARA EDITAR CONFIGURACION				 *****
+// ***** 			FUNCION PARA VALIDAR EDITAR CONFIGURACION				 *****
+// ===========================================================================
+    function validaEditarConfiguracion(formData) {
+
+        var validar = {
+            ID:		          	        $scope.id_instructor,
+            FECHAS:			            formData.fecha_inicio_participante+","+formData.fecha_fin_participante,
+            ID_CURSO_INSITUS:           $scope.DatosServicio.ID
+        };
+
+        $.post( global_apiserver + "/personal_tecnico/isDisponible/", JSON.stringify(validar), function(respuesta){
+            respuesta = JSON.parse(respuesta);
+            if (respuesta.disponible == "si") {
+                editarConfiguracion(formData);
+            }
+            else
+            {
+                if (respuesta.disponible == "no") {
+                    notify("Error", respuesta.razon, "error");
+                    return false;
+
+                }
+
+            }
+        })
+
+
+
+
+    }
+// ===========================================================================
+// ***** 			FUNCION PARA VALIDAR EDITAR CONFIGURACION				 *****
 // ===========================================================================
     function editarConfiguracion(formData) {
         var configuracion = {
@@ -2336,10 +2367,7 @@ $scope.get_domicilio_cliente	= function(id_cliente){
             }
 
         });
-
-
-    }
-
+	}
 
 // ===========================================================================
 // ***** 	    FUNCION PARA CARGAR LOS DATEPICKER DEL MODAL			 *****
