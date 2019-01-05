@@ -56,6 +56,7 @@
                   <i ng-if="cotizacion.SERVICIO.ID!=3">Tarifa día auditor: {{cotizacion.VALOR_TARIFA | currency}}</i><br ng-if="cotizacion.SERVICIO.ID!=3">
                   <i ng-if="cotizacion.SERVICIO.ID==3"><strong>Modalidad:</strong> {{cotizacion.CURSO.MODALIDAD}}</i><br ng-if="cotizacion.SERVICIO.ID==3">
                   <i ng-if="cotizacion.SERVICIO.ID==3"><strong>Curso:</strong> {{cotizacion.CURSO.NOMBRE_CURSO}}</i><br ng-if="cotizacion.SERVICIO.ID==3">
+                  <i ng-if="cotizacion.SERVICIO.ID==3 && cotizacion.CURSO.URL_PARTICIPANTES"><strong>URL para cargar participantes:</strong> {{cotizacion.CURSO.URL_PARTICIPANTES}}</i><br ng-if="cotizacion.SERVICIO.ID==3 && cotizacion.CURSO.URL_PARTICIPANTES">
                 </td>
                 <td>{{cotizacion.FOLIO}}</td>
                 <td>{{cotizacion.ESTADO.ESTATUS_SEGUIMIENTO}}</td>
@@ -73,9 +74,15 @@
                   </button>
                 </td>
                 <td>
-                <div ng-show = "cotizacion.SERVICIO.ID == 3 && cotizacion.ESTADO.ESTATUS_SEGUIMIENTO == 'Firmado'">
+                  <div ng-show = "cotizacion.SERVICIO.ID == 3">
                     <a type="button" class="btn btn-primary btn-xs btn-success btnGenerarCotizacion" style="float: right;">
                       <i class="fa fa-bullseye"></i> Generar cotización
+                    </a>	
+                  </div>
+                  <div ng-show = "cotizacion.SERVICIO.ID == 3 && cotizacion.ESTADO.ESTATUS_SEGUIMIENTO == 'Firmado'">
+                    <a type="button" class="btn btn-primary btn-xs btn-success btnGenerarServicio" 
+                    style="float: right;" ng-click="generar_servicio(cotizacion)">
+                      <i class="fa fa-plus"></i> Crear servicio
                     </a>	
                   </div>
                   <div ng-show = "cotizacion.ID_TIPO_SERVICIO == 1 || cotizacion.ID_TIPO_SERVICIO == 2 || cotizacion.ID_TIPO_SERVICIO == 12 || cotizacion.ID_TIPO_SERVICIO == 20">

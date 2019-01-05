@@ -57,6 +57,12 @@
 
 
         //Determinar si el producto tiene una cotizacion asociada
+        /*Validar contra la columna ID_COTIZACION de la tabla PROSPECTO_PRODUCTO
+        porque con esta consulta puede darse el caso de que de error, debido a CIFA.
+        Para CIFA se puede repetir la combinación Servicio, Tipo de Servicio y Norma
+        ya que se pueden tener tanto cursos programados como insitu con estas características 
+        */
+        /*
         $query = "SELECT 
         COTIZACIONES.ID AS ID_COTIZACION
         FROM COTIZACIONES
@@ -65,7 +71,18 @@
         " AND COTIZACIONES.ID_TIPO_SERVICIO = ".$prospecto_productos[$i]["ID_TIPO_SERVICIO"];
         $cotizaciones = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
         valida_error_medoo_and_die("COTIZACIONES" ,$correo );
-        $prospecto_productos[$i]['TIENE_COTIZACION'] = count($cotizaciones);
+        */
+        $query = "SELECT ID_COTIZACION 
+        FROM PROSPECTO_PRODUCTO
+        WHERE ID = " . $prospecto_productos[$i]["ID"];
+        $cotizaciones = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        valida_error_medoo_and_die("COTIZACIONES" ,$correo );
+        if($cotizaciones[0]["ID_COTIZACION"] != 0){
+            $prospecto_productos[$i]['TIENE_COTIZACION'] = 1;
+        } else {
+            $prospecto_productos[$i]['TIENE_COTIZACION'] = 0;
+        }
+        
 
     }
 	print_r(json_encode($prospecto_productos)); 

@@ -2,6 +2,9 @@
 include  '../../common/conn-apiserver.php';  
 include  '../../common/conn-medoo.php';  
 include  '../../common/conn-sendgrid.php';  
+include  '../../common/jwt.php'; 
+
+use \Firebase\JWT\JWT;
 
 function valida_parametro_and_die($parametro, $mensaje_error){ 
 	$parametro = "" . $parametro; 
@@ -45,7 +48,8 @@ $ID_TIPO_SERVICIO	= $objeto->ID_TIPO_SERVICIO;
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
 
 $NORMAS= $objeto->NORMAS;
-if(count($NORMAS) == 0){
+//ESTA VALIDACION NO ES NECESARIA EN CIFA
+if(count($NORMAS) == 0 && $ID_SERVICIO != 3){
 	$respuesta['resultado']="error";
 	$respuesta['mensaje']="Es necesario seleccionar una norma";
 	print_r(json_encode($respuesta));
@@ -58,7 +62,15 @@ valida_parametro_and_die($ID_ETAPA_PROCESO, "Es neceario seleccionar un trámite
 //$SG_INTEGRAL = $objeto->SG_INTEGRAL; // opcional
 
 $REFERENCIA = $objeto->REFERENCIA;
-valida_parametro_and_die($REFERENCIA, "Es necesario capturar la referencia");
+//ESTA VALIDACION NO ES NECESARIA EN CIFA
+if($ID_SERVICIO != 3){
+	valida_parametro_and_die($REFERENCIA, "Es necesario capturar la referencia");
+} else {
+	if(!$REFERENCIA){
+		$REFERENCIA = "";
+	}
+}
+
 
 $ID_USUARIO_CREACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_CREACION,"Falta ID de USUARIO");
@@ -68,6 +80,18 @@ $CAMBIO= $objeto->CAMBIO;
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
 
+//parametros solo para cifa
+$MODALIDAD = $objeto->MODALIDAD; 
+$ID_CURSO = $objeto->ID_CURSO; 
+$ID_CURSO_PROGRAMADO = $objeto->ID_CURSO_PROGRAMADO; 
+if($ID_SERVICIO == 3){
+	valida_parametro_and_die($MODALIDAD,"Falta MODALIDAD");
+	if($MODALIDAD == "programado"){
+		valida_parametro_and_die($ID_CURSO_PROGRAMADO,"Falta ID_CURSO_PROGRAMADO");
+	} else {
+		valida_parametro_and_die($ID_CURSO,"Falta ID_CURSO");
+	}	
+}
 //Insertar en SERVICIO_CLIENTE_ETAPA
 $ID_FINAL = 0;
 if($CLIENTE_PROSPECTO == 'prospecto'){
@@ -96,18 +120,21 @@ $id_servicio_cliente_etapa = $database->insert("SERVICIO_CLIENTE_ETAPA", [
 	"CAMBIO"=>$CAMBIO,
 ]); 
 valida_error_medoo_and_die(); 
-//Agregar las normas
-for ($i=0; $i < count($NORMAS); $i++) { 
-	$id_norma = $NORMAS[$i]->ID_NORMA;
-	$id_sce_normas = $database->insert("SCE_NORMAS", [ 
-		"ID_SCE" => $id_servicio_cliente_etapa,
-		"ID_NORMA" => $id_norma
-	]); 
-	valida_error_medoo_and_die();
+//Agregar las normas, para todos menos para CIFA
+if($ID_SERVICIO != 3){
+	for ($i=0; $i < count($NORMAS); $i++) { 
+		$id_norma = $NORMAS[$i]->ID_NORMA;
+		$id_sce_normas = $database->insert("SCE_NORMAS", [ 
+			"ID_SCE" => $id_servicio_cliente_etapa,
+			"ID_NORMA" => $id_norma
+		]); 
+		valida_error_medoo_and_die();
+	}
 }
 
-//Insertar en SERVICIO_CLIENTE_ETAPA_HISTÓRICO
+//SI LA OPERACIÓN FUE EXITOSA
 if($id_servicio_cliente_etapa	!=	0){
+	//Insertar en SERVICIO_CLIENTE_ETAPA_HISTÓRICO
 	$id1=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [ 
 			"ID_SERVICIO_CONTRATADO" => $id_servicio_cliente_etapa, 
 			"MODIFICACION" => "NUEVO SERVICIO", 
@@ -384,6 +411,7 @@ if($id_servicio_cliente_etapa	!=	0){
 			}
 		}
 	}
+	//Para Servicios de Evaluación de la Conformidad
 	if($ID_SERVICIO == 2){
 		if($ID_TIPO_SERVICIO == 16){
 			//Sitios
@@ -586,6 +614,50 @@ if($id_servicio_cliente_etapa	!=	0){
 	
 		}
 
+	}
+	//Para servicios de CIFA
+	if($ID_SERVICIO == 3){
+		if($MODALIDAD == "programado"){
+
+		} else {
+			//INSERTAR EN SCE_CURSOS
+			$id_sce_cursos = $database->insert("SCE_CURSOS", [
+				"ID_SCE" => $id_servicio_cliente_etapa,
+				"ID_CURSO" => $ID_CURSO
+			]);
+			//GENERAR TOKEN PARA EL CLIENTE
+			$respuesta = array();
+
+			//payload
+			$data = [
+				'ID_CLIENTE' => $ID_FINAL,
+				'MODALIDAD' => $MODALIDAD,
+				'ID_CURSO' => $ID_CURSO,
+				'ID_PROGRAMACION' => $id_servicio_cliente_etapa
+			];
+			/*
+			iss = issuer, servidor que genera el token
+			data = payload del JWT
+			*/
+			$token = array(
+			"iss" => $global_apiserver,
+			"data" => $data
+			);
+
+			//Codifica la información usando el $key definido en jwt.php
+			$jwt = JWT::encode($token, $key);
+
+			//GUARDAR EL URL EN COTIZACIÓN DETALLE
+			$url = $insertar_participantes . "?token=" . $jwt;
+			$cot_detalle = $database->insert("COTIZACION_DETALLES", [
+				"ID_COTIZACION" => $ID_COTIZACION,
+				"DETALLE" => "URL_PARTICIPANTES",
+				"VALOR" => $url
+			]);
+			valida_error_medoo_and_die();
+
+			//TODO: Enviar notificación al cliente de que su servicio está listo para cargar participantes
+		}		
 	}
 	$respuesta["resultado"]="ok"; 
 }
