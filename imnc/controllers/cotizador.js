@@ -24,6 +24,11 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   $scope.cambio_servicio = function () {
     const servicio = $scope.cotizacion_insertar_editar.ID_SERVICIO;
     fill_select_etapa(servicio.ID);
+    if(servicio == 3){
+      $scope.lblTipoServicio = "Módulo";
+    } else {
+      $scope.lblTipoServicio = "Tipo de servicio";
+    }
     const tipos_servicio = $scope.Tipos_Servicio_Total;
     $scope.Tipos_Servicio = [];
     tipos_servicio.forEach(tipo_servicio => {
@@ -205,6 +210,9 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $scope.Normas = [];
     //Limpiar el control de normas
     $scope.normas_cotizacion = [];
+
+    //Inicial para auditorias
+    $scope.lblTipoServicio = "Tipo de servicio";
 
     $('#modalTituloCotizacion').html("Agregar cotización");
     //$('#btnGuardarUsuario').attr("opcion", "insertar");
@@ -445,7 +453,14 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
           }
       },
       function (response){});
+    //Determinar si es persona fisica o moral
+    $scope.tipo_persona = $scope.cotizacion_insertar_editar.CLIENTE.TIPO_PERSONA;
  }
+
+ $scope.cambioProspecto = function(prospecto){
+  $scope.tipo_persona = prospecto.TIPO_PERSONA;
+ }
+
  $scope.cambioReferencia = function(){
    $scope.Servicios.forEach(servicio => {
       if(servicio.ID == $scope.cotizacion_insertar_editar.REFERENCIA.ID_SERVICIO){
@@ -528,5 +543,12 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
           notify('Error',response.data.mensaje,'error');
         }
       });
+  }
+  $scope.mostrar_enlace = function(url){
+    $.dialog({
+      title: 'Enlace para cargar participantes',
+      content: url,
+      columnClass: 'col-md-8 col-md-offset-2'
+    });    
   }
 }]);

@@ -1835,12 +1835,18 @@ $scope.eliminar_sector = function(){
 // ***** 	CREAR COTIZACION A PARTIR DE PRODUCTO				*****
 // ==============================================================================
 $scope.ver_cotizacion = function(producto){
-	if(producto.id_cotizacion != 0 && producto.id_cotizacion){
-		var url = "./?pagina=ver_cotizacion&id_cotizacion="+producto.id_cotizacion;
-		$window.location.href = url;
+	//Si no es CIFA
+	if(producto.id_servicio != 3){
+		if(producto.id_cotizacion != 0 && producto.id_cotizacion){
+			var url = "./?pagina=ver_cotizacion&id_cotizacion="+producto.id_cotizacion;
+			$window.location.href = url;
+		} else {
+			notify("Error", "El producto no tiene una cotización asociada" , "error");
+		}
 	} else {
-		notify("Error", "El producto no tiene una cotización asociada" , "error");
-	}
+		var url = "./?pagina=cotizador";
+		$window.location.href = url;
+	}	
 }
 $scope.mostrar_modal_crear_cotizacion = function(producto){
 	$scope.producto_actual = producto;

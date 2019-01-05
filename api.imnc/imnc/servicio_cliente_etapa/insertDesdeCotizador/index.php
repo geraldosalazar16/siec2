@@ -61,17 +61,6 @@ valida_parametro_and_die($ID_ETAPA_PROCESO, "Es neceario seleccionar un trámite
 
 //$SG_INTEGRAL = $objeto->SG_INTEGRAL; // opcional
 
-$REFERENCIA = $objeto->REFERENCIA;
-//ESTA VALIDACION NO ES NECESARIA EN CIFA
-if($ID_SERVICIO != 3){
-	valida_parametro_and_die($REFERENCIA, "Es necesario capturar la referencia");
-} else {
-	if(!$REFERENCIA){
-		$REFERENCIA = "";
-	}
-}
-
-
 $ID_USUARIO_CREACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_CREACION,"Falta ID de USUARIO");
 
@@ -84,14 +73,26 @@ $HORA_CREACION = date("His");
 $MODALIDAD = $objeto->MODALIDAD; 
 $ID_CURSO = $objeto->ID_CURSO; 
 $ID_CURSO_PROGRAMADO = $objeto->ID_CURSO_PROGRAMADO; 
+$tipo = ""; //Esto se usa para generar la referencia
 if($ID_SERVICIO == 3){
 	valida_parametro_and_die($MODALIDAD,"Falta MODALIDAD");
 	if($MODALIDAD == "programado"){
 		valida_parametro_and_die($ID_CURSO_PROGRAMADO,"Falta ID_CURSO_PROGRAMADO");
+		$tipo = "P";
 	} else {
 		valida_parametro_and_die($ID_CURSO,"Falta ID_CURSO");
+		$tipo = "D";
 	}	
 }
+
+$REFERENCIA = $objeto->REFERENCIA;
+if($ID_SERVICIO != 3){
+	valida_parametro_and_die($REFERENCIA, "Es necesario capturar la referencia");
+} else {
+	//Generar la referencia para CIFA
+	$REFERENCIA = file_get_contents($global_apiserver . '/cursos/getReferencia/?id=' .$ID_SERVICIO . '&tipo=' . $tipo);
+}
+
 //Insertar en SERVICIO_CLIENTE_ETAPA
 $ID_FINAL = 0;
 if($CLIENTE_PROSPECTO == 'prospecto'){
