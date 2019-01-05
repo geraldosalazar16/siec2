@@ -122,6 +122,23 @@ if ($AUMENTO != "" && ($AUMENTO < 0 || $AUMENTO > 100)) {
 $ID_USUARIO_CREACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_CREACION,"Falta ID de USUARIO");
 
+//Solo para CIFA
+$MODALIDAD = "";
+$ID_CURSO = "";
+$CANT_PARTICIPANTES = 0;
+if($ID_SERVICIO == 3){
+	$MODALIDAD = $objeto->MODALIDAD;
+	valida_parametro_and_die($MODALIDAD,"Falta MODALIDAD");
+	$ID_CURSO = $objeto->ID_CURSO;
+	valida_parametro_and_die($ID_CURSO,"Falta ID CURSO");
+	//Para los cursos in situ validar que tenga cantidad de participantes
+	if($MODALIDAD == "insitu"){
+		$CANT_PARTICIPANTES = $objeto->CANT_PARTICIPANTES;
+		valida_parametro_and_die($CANT_PARTICIPANTES,"Falta CANT_PARTICIPANTES");
+	}
+}
+
+
 $FOLIO_MES = date("m");
 $FOLIO_YEAR = date("y");
 
@@ -184,6 +201,7 @@ $id_cotizacion = $database->insert("COTIZACIONES", [
 valida_error_medoo_and_die();
 
 //iNSERTAR LAS NORMAS
+if($ID_SERVICIO != 3){
 	for ($i=0; $i < count($NORMAS); $i++) {
 		$id_norma = $NORMAS[$i]->ID_NORMA;
 		$id_cotizacion_normas = $database->insert("COTIZACION_NORMAS", [
@@ -192,6 +210,50 @@ valida_error_medoo_and_die();
 		]);
 		valida_error_medoo_and_die();
 	}
+
+	//Si la cotizacion tiene algun detalle que deba ser guardado en la tabla cotizacion detalles.
+	switch($ID_TIPO_SERVICIO){
+		case 16:
+			$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+				"ID_COTIZACION" => $id_cotizacion,
+				"DETALLE" => "SECTOR",
+				"VALOR"	=>	$ACTIVIDAD_ECONOMICA
+			]);
+			valida_error_medoo_and_die();
+		break;
+		case 17:
+			
+		break;
+		default: 
+		break;
+	}
+
+	
+} else if($ID_SERVICIO == 3) {
+	//para CIFA insertar los detalles MODALIDAD y ID_CURSO
+	//Si MODALIDAD = programado ID_CURSO => columna ID_CURSO en CURSOS_PROGRAMADOS
+	//Si MODALIDAD = insitu ID_CURSO => columna ID_CURSO en CURSOS
+	$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+		"ID_COTIZACION" => $id_cotizacion,
+		"DETALLE" => "MODALIDAD",
+		"VALOR"	=>	$MODALIDAD
+	]);
+	valida_error_medoo_and_die();
+	$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+		"ID_COTIZACION" => $id_cotizacion,
+		"DETALLE" => "ID_CURSO",
+		"VALOR"	=>	$ID_CURSO
+	]);
+	valida_error_medoo_and_die();
+	if($MODALIDAD == "insitu"){
+		$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+			"ID_COTIZACION" => $id_cotizacion,
+			"DETALLE" => "CANT_PARTICIPANTES",
+			"VALOR"	=>	$CANT_PARTICIPANTES
+		]);
+		valida_error_medoo_and_die();
+	}
+}
 
 //Si todo salio bien agregar el id de la cotizacion al producto
 if($id_cotizacion && $id_cotizacion !== 0 && $ID_PRODUCTO){
@@ -203,23 +265,7 @@ if($id_cotizacion && $id_cotizacion !== 0 && $ID_PRODUCTO){
 			"ID" => $ID_PRODUCTO
 		]
 	);
-	valida_error_medoo_and_die();
-}
-//Si la cotizacion tiene algun detalle que deba ser guardado en la tabla cotizacion detalles.
-switch($ID_TIPO_SERVICIO){
-	case 16:
-		$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
-			"ID_COTIZACION" => $id_cotizacion,
-			"DETALLE" => "SECTOR",
-			"VALOR"	=>	$ACTIVIDAD_ECONOMICA
-		]);
-		valida_error_medoo_and_die();
-		break;
-	case 17:
-		
-		break;
-	default: 
-		break;
+	valida_error_medoo_and_die();		
 }
 
 $respuesta["resultado"]="ok";

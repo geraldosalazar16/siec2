@@ -1892,6 +1892,9 @@ $scope.cotizacion_guardar = function(){
         BANDERA : 0,
 		COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
 		ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
+		MODALIDAD: $scope.producto_actual.modalidad,
+		ID_CURSO: $scope.producto_actual.id_curso,
+		CANT_PARTICIPANTES: $scope.producto_actual.cantidad,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
 	};
 	$http.post(global_apiserver + "/cotizaciones/insert/",datos).

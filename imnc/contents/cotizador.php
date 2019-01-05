@@ -340,7 +340,8 @@
               <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3">
                 <label class="control-label col-md-12">Modalidad del curso </label>
                 <div class="col-md-12">
-                  <select ng-model="modalidades" class="form-control">
+                  <select ng-model="modalidades" class="form-control" 
+                  ng-change="onChangeModalidades(cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID)">
                     <option  value="" ng-selected="tipo_persona == 'Moral'" disabled>Seleccione una opción</option>
                     <option value="programado" ng-selected="tipo_persona == 'Física' || modalidades=='programado'">Programado</option>
                     <option value="insitu" ng-selected="modalidades == 'insitu'" ng-disabled="tipo_persona == 'Física'">In Situ</option>
@@ -350,10 +351,10 @@
               </div>              
 
 					    <!-- Solo mostrar para CIFA-->
-              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && modalidades == 'programado' ">
-                <label class="control-label col-md-12">Cursos Programados </label>
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 ">
+                <label class="control-label col-md-12" id="labelCurso">Cursos Programados </label>
                 <div class="col-md-12">
-                <select ng-model="cursos_programados" style="margin-top:10px" class="form-control"
+                <select ng-model="cursos_programados" class="form-control"
                   ng-options="curso.id as curso.nombre  for curso in Cursos">
                     <option value="" ng-selected="true" disabled>Seleccione una opción</option>
                   </select>
