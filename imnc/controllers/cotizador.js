@@ -32,6 +32,10 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       }
     });
   }
+  $scope.servicioFiltroChange = function () {
+    const id_servicio = $scope.selectFiltroServicio;
+    $scope.despliega_cotizaciones_filtradas(id_servicio);
+  }
   function fill_select_tipo_servicio(){
     //recibe la url del php que se ejecutará
     $http.get(  global_apiserver + "/tipos_servicio/getList")
@@ -151,9 +155,36 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $scope.fill_select_tarifa();
     fill_select_servicio();
     fill_select_tipo_servicio();
+    $scope.titulo_columna_tarifa = 'Tarifa día auditor';
+    $scope.titulo_columna_info = 'Prospecto, tipo de servicio y norma';
     var http_request = {
       method: 'GET',
       url: global_apiserver + "/cotizaciones/getAll/",
+    };
+
+    $http(http_request).success(function(data) {
+      if(data) {
+        $scope.arr_cotizaciones = data;
+      }
+      else  {
+        console.log("No hay datos");
+      }
+    }).error(function(response) {
+      console.log("Error al generar petición: " + response);
+    });
+  }
+
+  // Cotizaciones filtradas
+  $scope.despliega_cotizaciones_filtradas = function (id_servicio) {
+    if(id_servicio != 3){
+      $scope.titulo_columna_tarifa = 'Tarifa';
+    } else {
+      $scope.titulo_columna_tarifa = 'Tarifa día auditor';
+      $scope.titulo_columna_info = 'Prospecto, módulo y curso';
+    }
+    var http_request = {
+      method: 'GET',
+      url: global_apiserver + "/cotizaciones/getAllByIdServicio/?id_servicio="+id_servicio,
     };
 
     $http(http_request).success(function(data) {
@@ -302,8 +333,8 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         BANDERA : $scope.bandera,
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
-		ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
-		ID_USUARIO : sessionStorage.getItem("id_usuario")
+        ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
+        ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }
 

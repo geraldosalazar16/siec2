@@ -18,8 +18,7 @@ function valida_error_medoo_and_die(){
 	if ($database->error()[2]) { 
 		$respuesta["resultado"]="error"; 
 		$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
-		print_r(json_encode($respuesta)); 
-		$mailerror->send("I_SG_AUDITORIA_GRUPOS", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
+		print_r(json_encode($respuesta));  
 		die(); 
 	} 
 } 

@@ -3,17 +3,30 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
       <div class="x_panel">
         <div class="x_title">
-        <p><h2>Cotizaciones</h2></p>
-        <p>
-          <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  
-          ng-click='modal_cotizacion_insertar()'
-          ng-if='modulo_permisos["registrar"] == 1'>
-            <i class="fa fa-plus"> </i> Agregar cotización
-          </button>
-        </p>
-          <div class="clearfix"></div>
+          <div class="row">
+            <p><h2>Cotizaciones</h2></p>
+            <p>
+              <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"  
+              ng-click='modal_cotizacion_insertar()'
+              ng-if='modulo_permisos["registrar"] == 1'>
+                <i class="fa fa-plus"> </i> Agregar cotización
+              </button>
+            </p>
+          </div>
         </div>
-
+        <div class="x-title">
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label class="control-label" for="selectFiltroServicio">Filtrar por Servicio</label>
+              <select id="selectFiltroServicio" ng-model="selectFiltroServicio"
+                  ng-change="servicioFiltroChange()"
+                  ng-options="servicio.ID as servicio.NOMBRE for servicio in Servicios" class="form-control">
+                     <option value="" selected disabled>-- selecciona un servicio --</option>
+                  </select>
+            </div>
+          </div>          
+        </div>
+        <div class="clearfix"></div>
         <div class="x_content">
 
           <table class="table table-striped responsive-utilities jambo_table bulk_action">
@@ -21,11 +34,11 @@
               <tr class="headings">
                 <th class="column-title">ID</th>
                 <th class="column-title">
-                  Prospecto, tipo de servicio y norma
+                  Descripci&oacuten
                 </th>
                 <th class="column-title">Folio</th>
                 <th class="column-title">Estado</th>
-                <th class="column-title">Tarifa día auditor</th>
+                <!--<th class="column-title">{{titulo_columna_tarifa}}</th>-->
                 <th class="column-title"></th>
                 <th class="column-title"></th>
                 <th class="column-title"></th>
@@ -38,12 +51,15 @@
                 <td>{{$index + 1}}</td>
                 <td>
                   <strong>{{cotizacion.NOMBRE_VISTA}}</strong><br>
-                  {{cotizacion.TIPOS_SERVICIO.NOMBRE}}<br>
-                  <i ng-show="cotizacion.TIPOS_SERVICIO.ID==17">{{cotizacion.NORMA[0].ID_NORMA}}</i>
+                  Tipo de servicio: <strong>{{cotizacion.TIPOS_SERVICIO.NOMBRE}}</strong><br ng-if="cotizacion.TIPOS_SERVICIO.ID==17">
+                  <i ng-if="cotizacion.SERVICIO.ID!=3">{{cotizacion.NORMA[0].ID_NORMA}}</i><br>                  
+                  <i ng-if="cotizacion.SERVICIO.ID!=3">Tarifa día auditor: {{cotizacion.VALOR_TARIFA | currency}}</i><br ng-if="cotizacion.SERVICIO.ID!=3">
+                  <i ng-if="cotizacion.SERVICIO.ID==3"><strong>Modalidad:</strong> {{cotizacion.CURSO.MODALIDAD}}</i><br ng-if="cotizacion.SERVICIO.ID==3">
+                  <i ng-if="cotizacion.SERVICIO.ID==3"><strong>Curso:</strong> {{cotizacion.CURSO.NOMBRE_CURSO}}</i><br ng-if="cotizacion.SERVICIO.ID==3">
                 </td>
                 <td>{{cotizacion.FOLIO}}</td>
                 <td>{{cotizacion.ESTADO.ESTATUS_SEGUIMIENTO}}</td>
-                <td>{{cotizacion.VALOR_TARIFA | currency}}</td>
+                <!--<td>{{cotizacion.VALOR_TARIFA | currency}}</td>-->
                 <td>
                   <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="modal_cotizacion_editar(cotizacion.ID)"
                   ng-if='modulo_permisos["editar"] == 1 && cotizacion.ESTADO.ESTATUS_SEGUIMIENTO != "Firmado"' style="float: right;">
@@ -57,21 +73,26 @@
                   </button>
                 </td>
                 <td>
-					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 1 || cotizacion.ID_TIPO_SERVICIO == 2 || cotizacion.ID_TIPO_SERVICIO == 12 || cotizacion.ID_TIPO_SERVICIO == 20">
-						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion&id_cotizacion={{cotizacion.ID}}" style="float: right;">
-							<i class="fa fa-bullseye"></i> Ver cotización
-						</a>	
-					</div>
-					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 16">
-						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_CIL&id_cotizacion={{cotizacion.ID}}" style="float: right;">
-							<i class="fa fa-bullseye"></i> Ver cotización
-						</a>	
-					</div>
-					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 17">
-						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_TUR&id_cotizacion={{cotizacion.ID}}" style="float: right;">
-							<i class="fa fa-bullseye"></i> Ver cotización
-						</a>	
-					</div>
+                <div ng-show = "cotizacion.SERVICIO.ID == 3 && cotizacion.ESTADO.ESTATUS_SEGUIMIENTO == 'Firmado'">
+                    <a type="button" class="btn btn-primary btn-xs btn-success btnGenerarCotizacion" style="float: right;">
+                      <i class="fa fa-bullseye"></i> Generar cotización
+                    </a>	
+                  </div>
+                  <div ng-show = "cotizacion.ID_TIPO_SERVICIO == 1 || cotizacion.ID_TIPO_SERVICIO == 2 || cotizacion.ID_TIPO_SERVICIO == 12 || cotizacion.ID_TIPO_SERVICIO == 20">
+                    <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion&id_cotizacion={{cotizacion.ID}}" style="float: right;">
+                      <i class="fa fa-bullseye"></i> Ver cotización
+                    </a>	
+                  </div>
+                  <div ng-show = "cotizacion.ID_TIPO_SERVICIO == 16">
+                    <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_CIL&id_cotizacion={{cotizacion.ID}}" style="float: right;">
+                      <i class="fa fa-bullseye"></i> Ver cotización
+                    </a>	
+                  </div>
+                  <div ng-show = "cotizacion.ID_TIPO_SERVICIO == 17">
+                    <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_TUR&id_cotizacion={{cotizacion.ID}}" style="float: right;">
+                      <i class="fa fa-bullseye"></i> Ver cotización
+                    </a>	
+                  </div>
                 </td>
 				        <td>
                   <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=registro_expediente&id={{cotizacion.ID}}&id_entidad=4" style="float: right;">
@@ -190,7 +211,7 @@
                 </div>
               </div>
              
-             <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID == 17">
+             <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID == 17 && cotizacion_insertar_editar.ID_SERVICIO.ID != 3">
                 <label class="control-label col-md-12">Norma <span class="required">*</span></label>
                 <div class="col-md-12" ng-show="opcion_guardar_cotizacion=='insertar'">
                   <select id="selectNorma" ng-model="normas_cotizacion[0]" class="form-control"
@@ -207,7 +228,7 @@
                 </div>
              </div>
            
-            <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID != 17" >
+            <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID != 17 && cotizacion_insertar_editar.ID_SERVICIO.ID != 3" >
 				<label class="control-label col-md-12">Normas</label>
 				<div class="col-md-12">
   						<multiple-autocomplete ng-model="normas_cotizacion"
@@ -240,7 +261,7 @@
               </div>
 
             
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID != 3">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa por Día Auditor<span class="required">*</span></label>
                 <div class="col-md-12">
                   <select ng-model="cotizacion_insertar_editar.TARIFA" required="required" class="form-control"

@@ -454,13 +454,13 @@ $scope.formData = {};
   }
   /*==========================================================================*/
 	$scope.submitFormGenCotizacion = function(formDataGenCotizacion){
-	
+    
 		//window.open('', 'VentanaGenerarPDF_CIL');
 		//document.getElementById('formDataGenCotizacion').submit();
 		//var url = "./generar/pdf/cotizacion_propuesta/index.php?datos="+JSON.stringify(formDataGenCotizacion);
 		$scope.id_producto="";
 		var url = "./generar/pdf/cotizacion_propuesta_cil/index.php?id_prospecto="+$scope.obj_cotizacion.ID_PROSPECTO+"&id_producto="+$scope.id_producto+"&id_contacto="+$scope.formDataGenCotizacion.contactoprospecto1+"&id_domicilio="+$scope.formDataGenCotizacion.domicilioprospecto1+"&id_cotizacion="+$scope.obj_cotizacion.ID+"&tramites="+JSON.stringify(formDataGenCotizacion.tramites)+"&descripcion="+JSON.stringify(formDataGenCotizacion.descripcion);
-		window.open(url,'_blank');
+    window.open(url,'_blank');
 		$("#modalGenerarCotizacion").modal("hide");
 	}
 	 /*===================================================================================================*/
