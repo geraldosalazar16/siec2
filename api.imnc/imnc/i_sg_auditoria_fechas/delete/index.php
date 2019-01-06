@@ -32,9 +32,15 @@ $objeto = json_decode($json);
 $ID = $objeto->ID; 
 valida_parametro_and_die($ID, "Falta el ID");
 
+$datos = $database->get("I_SG_AUDITORIA_FECHAS","*", ["ID" => $ID]);
+
+//Aqui borro la fecha de la auditoria
 $id1 = $database->delete("I_SG_AUDITORIA_FECHAS", ["ID" => $ID]);
 valida_error_medoo_and_die();
 
+//Ahora borro esta fecha si esta cargada a algun auditor
+$id2=$database->delete("I_SG_AUDITORIA_GRUPO_FECHAS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$datos['ID_SERVICIO_CLIENTE_ETAPA'],"TIPO_AUDITORIA"=>$datos['TIPO_AUDITORIA'],"CICLO"=>$datos['CICLO'],"FECHA"=>$datos['FECHA']]]);
+valida_error_medoo_and_die();
 $respuesta['resultado']="ok";
 $respuesta['id']=$id1;
 
