@@ -30,7 +30,7 @@
                                 <label id="txtsel_tipoServicio" for="sel_tipoServicio">Tipo de Servicio para generar Referencia<span class="required">*</span></label>
                                 <select ng-model="formData.sel_tipoServicio" ng-options="sel_tipoServicio.ID as sel_tipoServicio.NOMBRE for sel_tipoServicio in sel_tipoServicios" 
                                 class="form-control" id="sel_tipoServicio" name="sel_tipoServicio" ng-change='cambiosel_tipoServicio(formData.sel_tipoServicio)' required
-                                ng-class="{ error: exampleForm.sel_tipoServicio.$error.required && !exampleForm.$pristine}" ng-disabled="!formData.claveServicio || accion=='editar'" ></select>
+                                ng-class="{ error: exampleForm.sel_tipoServicio.$error.required && !exampleForm.$pristine}" ></select>
                             </div>
                             <!-- Deshabilitar la regla de bloqueo por inconsistencia de datos
 							              <div class="form-group">
