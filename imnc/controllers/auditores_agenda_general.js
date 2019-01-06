@@ -18,11 +18,15 @@ app.controller('auditores_agenda_general_controller',['$scope','$http' ,function
                     notify('Evento',calEvent.descripcion,'info');
                 }
                 if (calEvent.tipo == 'Auditoria') {
+                    
                     var datos = {
-                        ID_AUDITORIA: calEvent.id_auditoria,
-                        FECHA: calEvent.fecha
-                    }
-                    $http.post(  global_apiserver + "/sg_auditorias/getPersonalTecnicoByFecha/",JSON.stringify(datos))
+                        TIPO_AUDITORIA: calEvent.tipo_auditoria,
+                        CICLO: calEvent.ciclo,
+                        FECHA: calEvent.fecha,
+                        ID_SCE: calEvent.id_sce
+                    }                    
+                   
+                    $http.post(  global_apiserver + '/i_sg_auditorias/getPersonalTecnicoByFecha/',datos)
                     .then(function( response ) {//se ejecuta cuando la petición fue correcta
                         if(response.data.resultado == 'ok'){
                             var texto = '<p>Auditores: </p><br>';
@@ -96,11 +100,13 @@ app.controller('auditores_agenda_general_controller',['$scope','$http' ,function
                                 allDay: false,
                                 color: color,
                                 textColor: 'black',
-                                evento_url: './?pagina=sg_tipos_servicio&id_serv_cli_et='+objAuditoria.ID_SERVICIO_CLIENTE_ETAPA +'&sg_tipo_servicio='+objAuditoria.ID_SG_TIPO_SERVICIO,
+                                evento_url: './?pagina=ec_tipos_servicio&id_serv_cli_et='+objAuditoria.ID_SERVICIO_CLIENTE_ETAPA,
                                 tipo: 'Auditoria',
                                 descripcion: descripcion,
                                 fecha: objAuditoria.FECHA_AUDITORIA,
-                                id_auditoria: objAuditoria.ID_AUDITORIA
+                                id_sce: objAuditoria.ID_SERVICIO_CLIENTE_ETAPA,
+                                tipo_auditoria: objAuditoria.TIPO_AUDITORIA,
+                                ciclo: objAuditoria.CICLO
                             }
                         )
                     }
