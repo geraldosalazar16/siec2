@@ -51,8 +51,9 @@ app.controller('auditores_agenda_general_controller',['$scope','$http' ,function
 			SECTOR:"",
 			REFERENCIA:"",
 			CLIENTE:""
-		};
-        $http.post(  global_apiserver + "/sg_auditorias/getFechas/",JSON.stringify(filtros))
+        };
+        //$http.post(  global_apiserver + "/sg_auditorias/getFechas/",JSON.stringify(filtros))
+        $http.post(  global_apiserver + "/i_sg_auditorias/getFechas")
             .then(function( response ) {//se ejecuta cuando la petición fue correcta
                 $.each(response.data.FECHAS, function( indice, objAuditoria ) {
                     if (objAuditoria.FECHA_AUDITORIA !== null) {
