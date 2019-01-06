@@ -64,22 +64,22 @@ app.controller('auditores_agenda_general_controller',['$scope','$http' ,function
                         var color = '#3e5a23';
                         const id_tipo_servicio = objAuditoria.ID_TIPO_SERVICIO;
                         switch (id_tipo_servicio) {
-                            case 'CSGC':
+                            case '1':
                                 color = "#FBFB32";
                                 break;
-                            case 'CSGA':
+                            case '2':
                                 color = '#B2F84C';
                                 break;
-                            case 'CSGC15':
+                            case '1':
                                 color = "#FBFB32";
                                 break;
-                            case 'CSGA15':
+                            case '2':
                                 color = '#B2F84C';
                                 break;
-                            case 'CSAST':
+                            case '12':
                                 color = '#D790FC';
                                 break;
-                            case 'CSGEN':
+                            case '21':
                                 color = '#F96888';
                                 break;
                             default:
