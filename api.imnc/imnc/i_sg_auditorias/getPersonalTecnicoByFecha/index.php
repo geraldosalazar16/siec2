@@ -40,7 +40,7 @@ $FECHA = $objeto->FECHA;
 valida_parametro_and_die($FECHA, "Falta la FECHA");
 
 
-$query = "SELECT 
+$query = "SELECT DISTINCT
 PT.NOMBRE,
 PT.APELLIDO_PATERNO
 FROM 
