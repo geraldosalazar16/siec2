@@ -114,6 +114,7 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '      <li><a href="./?pagina=prospecto">Prospectos</a></li>';
             echo '      <li><a href="./?pagina=agenda_prospectos">Agenda de Prospectos</a></li>';
             echo '     <li><a href="./?pagina=reporte_prospecto">Reporte de Prospectos</a></li>';
+            echo '     <li><a href="./?pagina=ventas_objetivos">Objetivos de ventas</a></li>';
             echo '     <li><a href="./?pagina=tipo_asunto">Tipo Asunto</a></li>';
             echo '  </ul>';
             echo '</li>';
