@@ -21,7 +21,7 @@ function valida_error_medoo_and_die(){
 	} 
 } 
 $respuesta=array(); 
-$servicio_cliente_etapa = $database->select("SERVICIO_CLIENTE_ETAPA", "*"); 
+$servicio_cliente_etapa = $database->select("SERVICIO_CLIENTE_ETAPA", "*", ["LIMIT" => 10]); 
 for ($i=0; $i < count($servicio_cliente_etapa) ; $i++) { 
 	$servicio_nombre = $database->get("SERVICIOS", "NOMBRE", ["ID"=>$servicio_cliente_etapa[$i]["ID_SERVICIO"]]);
 	$servicio_cliente_etapa[$i]["NOMBRE_SERVICIO"] = $servicio_nombre;

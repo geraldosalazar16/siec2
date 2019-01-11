@@ -37,6 +37,18 @@
             </div>
           </div>
           <div class="row">
+            <div class="col-sm-12">	
+              <label class="control-label col-md-12 col-sm-12 col-xs-12">Filtrar por estatus</label>
+              <select id="cmbEstatus" 
+              ng-model="filtroEstatus" 
+              class="form-control col-md-7 col-xs-12"
+              ng-change="cambioFiltroStatus()" 
+              ng-options="estatus.id_estatus_seguimiento as estatus.estatus_seguimiento for estatus in Estatus_seguimiento"> 
+                <option value="elige" ng-selected="true" disabled>Seleccione un estaus</option>
+              </select>	
+            </div>
+          </div>
+          <div class="row">
             <div class="col-sm-12">
               <p>
                 Cantidad de prospectos asignados al comercial: {{cantidad_prospectos}}
