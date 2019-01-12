@@ -692,7 +692,39 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 	
 
 }
-
+//Codigo si el tipo de servicio pertenece a CIFA
+if($cotizacion[0]["ID_SERVICIO"] == 3){
+	//Necesito de COTIZACION_DETALLE
+	//MODALIDAD, ID_CURSO
+	$modalidad = "";
+	$id_curso = 0;
+	$cantidad_participantes = 0;
+	$meta = $database->select("COTIZACION_DETALLES","*",["ID_COTIZACION" => $id]);
+	foreach($meta as $data){
+		if($data["DETALLE"] == "MODALIDAD"){
+			$modalidad = $data["VALOR"];
+		}
+		if($data["DETALLE"] == "ID_CURSO"){
+			$id_curso = $data["VALOR"];
+		}
+		if($data["DETALLE"] == "CANT_PARTICIPANTES"){
+			$cantidad_participantes = $data["VALOR"];
+		}
+	}
+	$cotizacion[0]["MODALIDAD"] = $modalidad;
+	if($modalidad == 'programado'){		
+		$query = "SELECT C.ID_CURSO,C.NOMBRE FROM CURSOS C INNER JOIN CURSOS_PROGRAMADOS CP ON C.ID_CURSO = CP.ID_CURSO WHERE CP.ID =" . $id_curso;
+		$NOMBRE_CURSO = $database->query($query)->fetchAll(PDO::FETCH_ASSOC); 
+		$cotizacion[0]["NOMBRE_CURSO"] = $NOMBRE_CURSO[0]["NOMBRE"];
+		$cotizacion[0]["ID_CURSO_PROGRAMADO"] = $id_curso;
+		$cotizacion[0]["ID_CURSO"] = $NOMBRE_CURSO[0]["ID"];
+	} else if($modalidad == 'insitu'){
+		$data = $database->get("CURSOS", ["ID_CURSO","NOMBRE"], ["ID_CURSO"=>$id_curso]);
+		$cotizacion[0]["NOMBRE_CURSO"] = $data["NOMBRE"];
+		$cotizacion[0]["ID_CURSO"] = $id_curso;
+		$cotizacion[0]["CANT_PARTICIPANTES"] = $cantidad_participantes;
+	}
+}
 $cotizacion[0]["SERVICIO"] = $servicio;
 $cotizacion[0]["TIPOS_SERVICIO"] = $tipos_servicio;
 $cotizacion[0]["NORMAS"] = $normas;

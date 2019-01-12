@@ -49,7 +49,7 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 	valida_parametro_and_die1($ID_USUARIO_SECUNDARIO, "Es necesario seleccionar un usuario secundario");
 	$ID_USUARIO_PRINCIPAL = $objeto->ID_USUARIO;
 	valida_parametro_and_die1($ID_USUARIO_PRINCIPAL, "Es necesario seleccionar un usuario principal");
-
+    $TIPO_PERSONA = $objeto->TIPO_PERSONA;
       
 	$id = $database->update($nombre_tabla, [ 
 		"NOMBRE" => $NOMBRE, 
@@ -64,7 +64,8 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 		"ID_TIPO_CONTRATO" => $TIPO_CONTRATO,
 		"ID_USUARIO_SECUNDARIO" => $ID_USUARIO_SECUNDARIO,
 		"ID_USUARIO_PRINCIPAL" => $ID_USUARIO_PRINCIPAL,
-	], ["ID"=>$ID]); 
+		"TIPO_PERSONA" => $TIPO_PERSONA,
+	], ["ID"=>$ID]);
 	
 	valida_error_medoo_and_die($nombre_tabla,$correo); 
 	$respuesta["resultado"]="ok"; 

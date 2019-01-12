@@ -36,11 +36,11 @@ valida_parametro_and_die($ID_SERVICIO,"Falta ID de SERVICIO");
 $ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO; 
 valida_parametro_and_die($ID_TIPO_SERVICIO,"Falta ID de TIPO DE SERVICIO");
 $NORMAS = $objeto->NORMAS;
-if(count($NORMAS) == 0){
-		$respuesta['resultado']="error";
-		$respuesta['mensaje']="Es necesario seleccionar una norma";
-		print_r(json_encode($respuesta));
-		die();
+if(count($NORMAS) == 0 && $ID_SERVICIO != 3){ // No se usan normas en CIFA
+	$respuesta['resultado']="error";
+	$respuesta['mensaje']="Es necesario seleccionar una norma";
+	print_r(json_encode($respuesta));
+	die();
 }
 $ETAPA = $objeto->ETAPA; 
 valida_parametro_and_die($ETAPA,"Falta la etapa");
@@ -52,12 +52,20 @@ $FOLIO_INICIALES = $objeto->FOLIO_INICIALES;
 valida_parametro_and_die($FOLIO_INICIALES,"Falta FOLIO INICIALES");
 $REFERENCIA = $objeto->REFERENCIA;
 $TARIFA = $objeto->TARIFA;
-//No se necesita para Certificacion Personas
-if($ID_TIPO_SERVICIO != 19){
-	valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
+if($ID_SERVICIO != 3){
+	//No se necesita para Certificacion Personas
+	if($ID_TIPO_SERVICIO != 19){
+		valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
+	} else {
+		if(!$TARIFA){
+			$TARIFA = 0;
+		}
+	}
+	
 } else {
 	if(!$TARIFA){
-		$TARIFA = 0;
+		$TARIFA = "";
+
 	}
 }
 $DESCUENTO = $objeto->DESCUENTO;
@@ -98,6 +106,22 @@ if($ID_TIPO_SERVICIO == 16){
 	}
 }
 
+//Solo para CIFA
+$MODALIDAD = "";
+$ID_CURSO = "";
+$CANT_PARTICIPANTES = 0;
+if($ID_SERVICIO == 3){
+	$MODALIDAD = $objeto->MODALIDAD;
+	valida_parametro_and_die($MODALIDAD,"Falta MODALIDAD");
+	$ID_CURSO = $objeto->ID_CURSO;
+	valida_parametro_and_die($ID_CURSO,"Falta ID CURSO");
+	//Para los cursos in situ validar que tenga cantidad de participantes
+	if($MODALIDAD == "insitu"){
+		$CANT_PARTICIPANTES = $objeto->CANT_PARTICIPANTES;
+		valida_parametro_and_die($CANT_PARTICIPANTES,"Falta CANT_PARTICIPANTES");
+	}
+}
+
 $ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
 
@@ -126,21 +150,54 @@ $id = $database->update("COTIZACIONES", [
 ], ["ID"=>$ID]); 
 
 valida_error_medoo_and_die(); 
-//Borrar todas las normas
-$id = $database->delete("COTIZACION_NORMAS", 
-	[
-		"AND" => [
-			"ID_COTIZACION" => $ID
-		]		
-	]);
-//iNSERTAR LAS NORMAS
-for ($i=0; $i < count($NORMAS); $i++) {
-	$id_norma = $NORMAS[$i]->ID_NORMA;
-	$id_cotizacion_normas = $database->insert("COTIZACION_NORMAS", [
-		"ID_COTIZACION" => $ID,
-		"ID_NORMA" => $id_norma
+
+if($ID_SERVICIO != 3){
+	//Borrar todas las normas
+	$id = $database->delete("COTIZACION_NORMAS", 
+		[
+			"AND" => [
+				"ID_COTIZACION" => $ID
+			]		
+		]);
+	//iNSERTAR LAS NORMAS
+	for ($i=0; $i < count($NORMAS); $i++) {
+		$id_norma = $NORMAS[$i]->ID_NORMA;
+		$id_cotizacion_normas = $database->insert("COTIZACION_NORMAS", [
+			"ID_COTIZACION" => $ID,
+			"ID_NORMA" => $id_norma
+		]);
+		valida_error_medoo_and_die();
+	}
+} else { //CIFA
+	//para CIFA insertar los detalles MODALIDAD y ID_CURSO
+	//Si MODALIDAD = programado ID_CURSO => columna ID_CURSO en CURSOS_PROGRAMADOS
+	//Si MODALIDAD = insitu ID_CURSO => columna ID_CURSO en CURSOS
+	$id_cotizacion_detalles = $database->update("COTIZACION_DETALLES", [
+		"VALOR"	=>	$MODALIDAD
+	],["AND" => [
+			"ID_COTIZACION" => $ID,
+			"DETALLE" => "MODALIDAD"
+		]
 	]);
 	valida_error_medoo_and_die();
+	$id_cotizacion_detalles = $database->update("COTIZACION_DETALLES", [
+		"VALOR"	=>	$ID_CURSO
+	],["AND"=>[
+			"ID_COTIZACION" => $ID,
+			"DETALLE" => "ID_CURSO"
+		]
+	]);
+	valida_error_medoo_and_die();
+	if($MODALIDAD == "insitu"){
+		$id_cotizacion_detalles = $database->update("COTIZACION_DETALLES", [
+			"VALOR"	=>	$CANT_PARTICIPANTES
+		],["AND"=>[
+				"ID_COTIZACION" => $ID,
+				"DETALLE" => "CANT_PARTICIPANTES"
+			]
+		]);
+		valida_error_medoo_and_die();
+	}
 }
 
 //Si la cotizacion tiene algun detalle que deba ser guardado en la tabla cotizacion detalles.
@@ -157,6 +214,7 @@ switch($ID_TIPO_SERVICIO){
 	default: 
 		break;
 }
+
 $respuesta["resultado"]="ok"; 
 print_r(json_encode($respuesta)); 
 ?> 

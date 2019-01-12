@@ -24,6 +24,11 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   $scope.cambio_servicio = function () {
     const servicio = $scope.cotizacion_insertar_editar.ID_SERVICIO;
     fill_select_etapa(servicio.ID);
+    if(servicio.ID == 3){
+      $scope.lblTipoServicio = "Módulo";
+    } else {
+      $scope.lblTipoServicio = "Tipo de servicio";
+    }
     const tipos_servicio = $scope.Tipos_Servicio_Total;
     $scope.Tipos_Servicio = [];
     tipos_servicio.forEach(tipo_servicio => {
@@ -31,6 +36,10 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         $scope.Tipos_Servicio.push(tipo_servicio);
       }
     });
+  }
+  $scope.servicioFiltroChange = function () {
+    const id_servicio = $scope.selectFiltroServicio;
+    $scope.despliega_cotizaciones_filtradas(id_servicio);
   }
   function fill_select_tipo_servicio(){
     //recibe la url del php que se ejecutará
@@ -53,6 +62,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     if ($scope.Normas.length == 1) {
       $scope.cotizacion_insertar_editar.NORMAS.push($scope.Normas[0]);
     }
+    $scope.onChangeModalidades($scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID);
   }
 
   $scope.fill_select_estatus = function(seleccionado){
@@ -151,9 +161,36 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $scope.fill_select_tarifa();
     fill_select_servicio();
     fill_select_tipo_servicio();
+    $scope.titulo_columna_tarifa = 'Tarifa día auditor';
+    $scope.titulo_columna_info = 'Prospecto, tipo de servicio y norma';
     var http_request = {
       method: 'GET',
       url: global_apiserver + "/cotizaciones/getAll/",
+    };
+
+    $http(http_request).success(function(data) {
+      if(data) {
+        $scope.arr_cotizaciones = data;
+      }
+      else  {
+        console.log("No hay datos");
+      }
+    }).error(function(response) {
+      console.log("Error al generar petición: " + response);
+    });
+  }
+
+  // Cotizaciones filtradas
+  $scope.despliega_cotizaciones_filtradas = function (id_servicio) {
+    if(id_servicio != 3){
+      $scope.titulo_columna_tarifa = 'Tarifa';
+    } else {
+      $scope.titulo_columna_tarifa = 'Tarifa día auditor';
+      $scope.titulo_columna_info = 'Prospecto, módulo y curso';
+    }
+    var http_request = {
+      method: 'GET',
+      url: global_apiserver + "/cotizaciones/getAllByIdServicio/?id_servicio="+id_servicio,
     };
 
     $http(http_request).success(function(data) {
@@ -174,6 +211,9 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $scope.Normas = [];
     //Limpiar el control de normas
     $scope.normas_cotizacion = [];
+
+    //Inicial para auditorias
+    $scope.lblTipoServicio = "Tipo de servicio";
 
     $('#modalTituloCotizacion').html("Agregar cotización");
     //$('#btnGuardarUsuario').attr("opcion", "insertar");
@@ -224,17 +264,25 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         if($scope.bandera != 0){
           $scope.cambioCliente(data[0].REFERENCIA);
         }
-		switch(parseInt($scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID)){
-			case 16:
-				$scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA = data[0].DETALLES[0].VALOR;
-				break;
-			case 17:
-				
-				break;
-			default:
-				break;
-		}
-
+        switch(parseInt($scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID)){
+          case 16:
+            $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA = data[0].DETALLES[0].VALOR;
+            break;
+          case 17:
+            
+            break;
+          default:
+            break;
+        }
+        //Cotización CIFA
+        if($scope.cotizacion_insertar_editar.ID_SERVICIO.ID == 3){          
+          $scope.tipo_persona = "";
+          $scope.modalidades = $scope.cotizacion_insertar_editar.MODALIDAD;          
+          validar_cursos_cargados($scope.modalidades,$scope.cotizacion_insertar_editar.ID_CURSO);
+          if($scope.modalidades == 'insitu'){
+            $scope.cantidad_participantes = $scope.cotizacion_insertar_editar.CANT_PARTICIPANTES;
+          }
+        }
       }
       else  {
         console.log("No hay datos");
@@ -255,6 +303,25 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     });
   }
 
+  function validar_cursos_cargados(modalidad,id_curso){
+    if($scope.Cursos){
+      if($scope.Cursos.length > 0){
+        $scope.cursos_programados = id_curso;        
+      } else {
+        if(modalidad == 'programado'){
+          $scope.CursosProgramadoLista(3,id_curso);
+        } else {
+          $scope.CursosLista(3,id_curso);
+        }
+      }              
+    } else {
+      if(modalidad == 'programado'){
+        $scope.CursosProgramadoLista(3,id_curso);
+      } else {
+        $scope.CursosLista(3,id_curso);
+      }
+    }
+  }
   $scope.cotizacion_guardar = function(){
     var cotizacion;
 	  var id_entidad = 0;
@@ -273,13 +340,16 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         REFERENCIA : "",
         TARIFA : $scope.cotizacion_insertar_editar.TARIFA,
         DESCUENTO : $scope.cotizacion_insertar_editar.DESCUENTO,
-		AUMENTO : $scope.cotizacion_insertar_editar.AUMENTO,
+		    AUMENTO : $scope.cotizacion_insertar_editar.AUMENTO,
         SG_INTEGRAL : $scope.cotizacion_insertar_editar.SG_INTEGRAL,
         BANDERA : $scope.bandera,
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
-		ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
-		ID_USUARIO : sessionStorage.getItem("id_usuario")
+        ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
+        MODALIDAD: $scope.modalidades,
+        ID_CURSO: $scope.cursos_programados,
+        CANT_PARTICIPANTES: $scope.cantidad_participantes,
+        ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }else{
       id_entidad = $scope.cotizacion_insertar_editar.CLIENTE.ID;
@@ -297,13 +367,16 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         REFERENCIA : $scope.cotizacion_insertar_editar.REFERENCIA.VALOR,
         TARIFA : $scope.cotizacion_insertar_editar.TARIFA,
         DESCUENTO : $scope.cotizacion_insertar_editar.DESCUENTO,
-		AUMENTO : $scope.cotizacion_insertar_editar.AUMENTO,
+		    AUMENTO : $scope.cotizacion_insertar_editar.AUMENTO,
         SG_INTEGRAL : $scope.cotizacion_insertar_editar.SG_INTEGRAL,
         BANDERA : $scope.bandera,
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
-		ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
-		ID_USUARIO : sessionStorage.getItem("id_usuario")
+        ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
+        MODALIDAD: $scope.modalidades,
+        ID_CURSO: $scope.cursos_programados,
+        CANT_PARTICIPANTES: $scope.cantidad_participantes,
+        ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }
 
@@ -414,7 +487,70 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
           }
       },
       function (response){});
+    //Determinar si es persona fisica o moral
+    $scope.tipo_persona = $scope.cotizacion_insertar_editar.CLIENTE.TIPO_PERSONA;
  }
+
+ $scope.cambioProspecto = function(prospecto){
+  $scope.tipo_persona = prospecto.TIPO_PERSONA;
+ }
+
+ $scope.onChangeModalidades = function(id_tipo_servicio,seleccionado)
+    {
+
+        if($scope.modalidades == "programado")
+        {
+          $("#labelCurso").text("Cursos Programados");
+        	$scope.CursosProgramadoLista(id_tipo_servicio,seleccionado);
+        }
+
+        if($scope.modalidades == "insitu")
+        {
+            $("#labelCurso").text("Cursos");
+        	$scope.CursosLista(id_tipo_servicio,seleccionado);
+        }
+
+    }
+    $scope.CursosProgramadoLista = function(id,seleccionado){
+		//recibe la url del php que se ejecutará
+        $scope.Cursos = {};
+        $http.get(  global_apiserver + "/cursos_programados/getByModulo/?id="+id)
+	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
+	  			$scope.Cursos = response.data.map(function(item){
+	  				if(item!=null)
+					{
+                        return{
+                            id : item.ID,
+                            nombre : item.NOMBRE +" ["+item.FECHAS+"]",
+                        }
+					}
+
+
+	  			});
+	  			if(seleccionado){
+					$scope.cursos_programados = seleccionado;
+				}
+			},
+			function (response){});
+	}
+    $scope.CursosLista = function(id,seleccionado){
+        //recibe la url del php que se ejecutará
+        $scope.Cursos = {};
+        $http.get(  global_apiserver + "/cursos/getByModulo/?id="+id)
+            .then(function( response ) {//se ejecuta cuando la petición fue correcta
+                    $scope.Cursos = response.data.map(function(item){
+                        return{
+                            id : item.ID_CURSO,
+                            nombre : item.NOMBRE,
+                        }
+                    });
+                    if(seleccionado){
+                        $scope.cursos_programados = seleccionado;
+                    }
+                },
+                function (response){});
+    }
+
  $scope.cambioReferencia = function(){
    $scope.Servicios.forEach(servicio => {
       if(servicio.ID == $scope.cotizacion_insertar_editar.REFERENCIA.ID_SERVICIO){
@@ -440,8 +576,9 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         });
       }
    });
+  }
 
-}
+
   // Funcion que recarga la pagina
   $scope.reload = function(){
     $window.location.reload();
@@ -458,5 +595,50 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         },
         delay: 2500
     });
+  }
+
+  $scope.generar_servicio = function(cotizacion){
+    console.log(cotizacion);
+
+    var id_cliente = cotizacion.ID_PROSPECTO;
+    var cliente_prospecto = '';
+    //Determinar si la cotización es para un prospecto o cliente
+    if(cotizacion.BANDERA != 0) {
+      cliente_prospecto = 'cliente';
+    } else {
+      cliente_prospecto = 'prospecto';
+    }
+
+    const id_servicio = cotizacion.ID_SERVICIO;
+    const id_tipo_servicio = cotizacion.ID_TIPO_SERVICIO;
+    //Información del servicio a insertar para prospecto
+    var datos = {
+      ID_COTIZACION: cotizacion.ID,
+      CLIENTE_PROSPECTO: cliente_prospecto,
+      ID_CLIENTE: id_cliente,
+      ID_SERVICIO: id_servicio,
+      ID_TIPO_SERVICIO: id_tipo_servicio,
+      ID_ETAPA_PROCESO:	31, //confirmado
+      CAMBIO	: "N",
+      MODALIDAD: cotizacion.CURSO.MODALIDAD, 
+      ID_CURSO: cotizacion.CURSO.ID_CURSO,
+      ID_CURSO_PROGRAMADO: cotizacion.CURSO.ID_CURSO_PROGRAMADO,
+      ID_USUARIO:	sessionStorage.getItem("id_usuario")
+    };
+    $http.post(global_apiserver + "/servicio_cliente_etapa/insertDesdeCotizador/",datos).
+      then(function(response){
+        if(response.data.resultado == 'ok'){
+          notify('Éxito','Se ha insertado un nuevo registro','success');        
+        } else {
+          notify('Error',response.data.mensaje,'error');
+        }
+      });
+  }
+  $scope.mostrar_enlace = function(url){
+    $.dialog({
+      title: 'Enlace para cargar participantes',
+      content: url,
+      columnClass: 'col-md-8 col-md-offset-2'
+    });    
   }
 }]);

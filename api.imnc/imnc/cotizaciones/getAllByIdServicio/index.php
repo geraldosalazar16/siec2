@@ -25,7 +25,8 @@ function valida_error_medoo_and_die(){
 } 
 
 $respuesta=array(); 
-$query = "SELECT * FROM TABLA_ENTIDADES,COTIZACIONES WHERE ID_PROSPECTO = ID_VISTA AND BANDERA_VISTA = BANDERA";
+$ID_SERVICIO = $_REQUEST["id_servicio"];
+$query = "SELECT * FROM TABLA_ENTIDADES,COTIZACIONES WHERE ID_PROSPECTO = ID_VISTA AND BANDERA_VISTA = BANDERA AND COTIZACIONES.ID_SERVICIO = ".$ID_SERVICIO;
 $cotizaciones = $database->query($query)->fetchAll(PDO::FETCH_ASSOC); 
 
 valida_error_medoo_and_die(); 
@@ -35,10 +36,9 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	valida_error_medoo_and_die(); 
 	$tipos_servicio = $database->get("TIPOS_SERVICIO", "*", ["ID"=>$cotizaciones[$i]["ID_TIPO_SERVICIO"]]);
 	valida_error_medoo_and_die(); 
-	//$norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
 	$norma = $database->select("COTIZACION_NORMAS", "*", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
-	valida_error_medoo_and_die(); 
-	//Info de cursos
+    valida_error_medoo_and_die(); 
+    //Info de cursos
     $desc_curso = array();
     if($servicio["ID"] == 3){
 		/*
@@ -78,7 +78,7 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 			$desc_curso["ID_CURSO"] = $id_curso;
 			$desc_curso["CANT_PARTICIPANTES"] = $cantidad_participantes;
         }
-    }     
+    }       
 	$desc_tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizaciones[$i]["TARIFA"]]);
 	valida_error_medoo_and_die();
 	$estado = $database->get("PROSPECTO_ESTATUS_SEGUIMIENTO", "*", ["ID"=>$cotizaciones[$i]["ESTADO_COTIZACION"]]);
@@ -90,8 +90,8 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	$cotizaciones[$i]["VALOR_TARIFA"] = $desc_tarifa['TARIFA'];
 	
 	//Si es CIFA y está firmado buscar el url para la carga de participantes
-	if($servicio["ID"] == 3 && $estado["ESTATUS_SEGUIMIENTO"] == "Firmado"){
-		$url = $database->get("COTIZACION_DETALLES", "VALOR", [
+	if($servicio["ID"] == 3 && $estado == "Firmado"){
+		$url = $database->get("COTIZACION_DETALLES", "*", [
 			"AND" => [
 				"ID_COTIZACION"=>$cotizaciones[$i]["ID"],
 				"DETALLE" => "URL_PARTICIPANTES"

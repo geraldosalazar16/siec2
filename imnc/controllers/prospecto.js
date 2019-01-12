@@ -409,6 +409,15 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 		if ($("#btnGuardar").attr("accion") == "insertar")
 		{
 			$scope.valida_agregar();
+            var value_rfc = $("#rfc").val();
+            value_rfc = value_rfc.replace("_","");
+            value_rfc = value_rfc.trim();
+            var tipo_persona = "";
+            if(value_rfc.length == 12)
+                tipo_persona = "Moral";
+            if(value_rfc.length == 13)
+                tipo_persona = "Física";
+
 			if($scope.respuesta == 1){
 				var prospecto = {
 					RFC:$("#rfc").val(),
@@ -426,7 +435,8 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 					ID_USUARIO:$scope.usuariosP,
 					//ID_USUARIO:sessionStorage.getItem("id_usuario"),
 					ID_USUARIO_SECUNDARIO:$scope.usuarios,
-					DEPARTAMENTO:$scope.departamentos
+					DEPARTAMENTO:$scope.departamentos,
+                    TIPO_PERSONA:tipo_persona
 				};
 				console.log(prospecto);
 				$.post(global_apiserver + "/prospecto/insert/", JSON.stringify(prospecto), function(respuesta){
@@ -446,6 +456,14 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 		else if ($("#btnGuardar").attr("accion") == "editar")
 		{
 			$scope.valida_editar();
+            var value_rfc = $("#rfc").val();
+            value_rfc = value_rfc.replace("_","");
+            value_rfc = value_rfc.trim();
+            var tipo_persona = "";
+            if(value_rfc.length == 12)
+                tipo_persona = "Moral";
+            if(value_rfc.length == 13)
+                tipo_persona = "Física";
 			if($scope.respuesta == 1){
 				var prospecto = {
 					ID:$scope.id,
@@ -459,7 +477,8 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 					ESTATUS_SEGUIMIENTO : $scope.estatus_seguimiento,
 					TIPO_CONTRATO : $scope.tipo_contrato,
 					ID_USUARIO:$scope.usuariosP,
-					USUARIO_SECUNDARIO: $scope.usuarios
+					USUARIO_SECUNDARIO: $scope.usuarios,
+                    TIPO_PERSONA:tipo_persona
 				};
 				$.post( global_apiserver + "/prospecto/update/", JSON.stringify(prospecto), function(respuesta){
 					respuesta = JSON.parse(respuesta);

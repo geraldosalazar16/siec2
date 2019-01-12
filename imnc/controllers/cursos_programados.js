@@ -17,6 +17,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
     $scope.instructoresCursos=[];
     $scope.id_instructor = "";
     $scope.objCursoProgramado = [];
+    $scope.salir = false;
 
 
 
@@ -45,7 +46,48 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
 			$scope.cursos = response.data;
 		});
 	}
+// ===================================================================
+// ***** 			FUNCION PARA CARGAR HISTORICO    	 *****
+// ===================================================================
+    $scope.cargarHistorico= function(id){
+        if(id)
+        {
+            $http.get(global_apiserver + "/cursos_programados/getHistoricoById/?id="+id)
+                .then(function( response ){
+                    $scope.Historial = response.data;
+                });
+        }
+        else
+        {
+            $http.get(global_apiserver + "/cursos_programados/getHistoricoEliminados/")
+                .then(function( response ){
+                    $scope.Historial = response.data;
+                });
+        }
 
+    }
+// ==============================================================================
+// ***** 	Funcion para traer las etapas	*****
+// ==============================================================================
+    $scope.cargarEtapas =function (id_servicio,seleccion ){
+        var inicial = null;
+        $http.get(  global_apiserver + "/etapas_proceso/getByIdServicio/?id="+id_servicio)
+            .then(function( response ) {//se ejecuta cuando la petición fue correcta
+                    $scope.Etapas = response.data.map(function(item){
+                        if(item.ETAPA=="INSCRITO")
+                            inicial = item.ID_ETAPA;
+                        return{
+                            ID : item.ID_ETAPA,
+                            NOMBRE : item.ETAPA
+                        }
+                    });
+
+                    if(inicial){
+                        $scope.formData.selectEtapa = seleccion ? seleccion: inicial;
+                    }
+                },
+                function (response){});
+    }
 // ===================================================================
 // ***** 			FUNCION PARA ELIMINAR EVENTO				 *****
 // ===================================================================
@@ -53,7 +95,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
         if(confirm("¿Estás seguro que desea eliminar este evento?"))
         {
 
-            var curso = { ID: $scope.id_evento_select}
+            var curso = { ID: $scope.id_evento_select, ID_USUARIO:sessionStorage.getItem("id_usuario")}
             $.post( global_apiserver + "/cursos_programados/delete/", JSON.stringify(curso), function(respuesta){
                 respuesta = JSON.parse(respuesta);
                 if (respuesta.resultado == "ok") {
@@ -91,6 +133,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
                 fechas = response.FECHA_INICIO;
             $scope.txtFechas = fechas;
             $scope.txtMinimo = response.PERSONAS_MINIMO;
+            $scope.txtEtapa = response.NOMBRE_ETAPA;
             $scope.$apply();
 
         });
@@ -105,6 +148,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
         {
             $("#divInsertar").hide();
             $("#divInstructor").hide();
+            $("#divVerHistorico").hide();
             $("#divMostrar").show();
         }
 
@@ -130,9 +174,14 @@ $scope.openModalInsertarModificar = function(accion){
 		$scope.accion = accion;
         clear_modal_insertar_actualizar()
         $scope.cargarCursos();
-        //$scope.cargarInstructores();
-        $scope.formData.fecha_inicio = $scope.date_evento_select;
 
+        $scope.formData.fecha_inicio = $scope.date_evento_select;
+        $scope.enVerde = false;
+        if(accion == 'insertar')
+        {
+            $scope.cargarEtapas(3);
+            onCalendario();
+        }
         if(accion == 'editar')
         {
 
@@ -148,6 +197,11 @@ $scope.openModalInsertarModificar = function(accion){
                 $scope.formData.referencia = response.REFERENCIA;
                 $("#btnInstructor").attr("value",response.NOMBRE_AUDITOR.NOMBRE+" "+response.NOMBRE_AUDITOR.APELLIDO_PATERNO+" "+response.NOMBRE_AUDITOR.APELLIDO_MATERNO)
                 $("#btnInstructor").attr("class", "form-control ");
+                if(parseInt(response.CANTIDAD_PARTICIPANTES) == parseInt(response.PERSONAS_MINIMO))
+                $scope.enVerde = true;
+                $scope.cargarEtapas(3,response.ETAPA);
+                onCalendario(response.FECHA_INICIO);
+                // $scope.formData.selectEtapa = parseInt(response.ETAPA);
                 $scope.$apply();
 
 
@@ -166,12 +220,13 @@ $scope.openModalInsertarModificar = function(accion){
             $("#divInsertar").show();
             $("#divMostrar").hide();
             $("#divInstructor").hide();
+            $("#divVerHistorico").hide();
             $("#modalMostrar").modal("show");
         }
 
 
 
-        onCalendario();
+
 	}
 
 // =======================================================================================
@@ -204,6 +259,28 @@ $scope.openModalMostarInst = function() {
 
 
 }
+// =======================================================================================
+// ***** 			FUNCION PARA ABRIR MODAL MOSTRAR HISTORICOS             		 *****
+// =======================================================================================
+    $scope.openModalHistorico = function() {
+        $("#modal-size").attr("class","modal-dialog modal-lg");
+        mytoggle("divMostrar");
+        mytoggle("divVerHistorico");
+        $scope.cargarHistorico($scope.id_evento_select);
+    }
+// =======================================================================================
+// ***** 			FUNCION PARA ABRIR MODAL MOSTRAR HISTORICOS             		 *****
+// =======================================================================================
+    $scope.openModalHistoricoEliminados = function() {
+        $("#modal-size").attr("class","modal-dialog modal-lg");
+        $("#divInsertar").hide();
+        $("#divMostrar").hide();
+        $("#divInstructor").hide();
+        $("#divVerHistorico").show();
+        $("#modalMostrar").modal("show");
+        $scope.cargarHistorico();
+        $scope.salir = true;
+    }
 // ===========================================================================
 // ***** 		      Funcion button select instructor 	            	 *****
 // ===========================================================================
@@ -230,11 +307,12 @@ $scope.onSelectInstructor = function(instructor)
         {
             if (respuesta.disponible == "no")
             {
-                notify("Error", respuesta.razon, "error");
-                $("#btn-"+instructor).attr("disabled",true);
-                $("#error-"+instructor).text(respuesta.razon);
-                $("#error-"+instructor).show();
-                $("#btn-"+instructor).text("seleccionar");
+                    notify("Error", respuesta.razon, "error");
+                    $("#btn-"+instructor).attr("disabled",true);
+                    $("#error-"+instructor).text(respuesta.razon);
+                    $("#error-"+instructor).show();
+                    $("#btn-"+instructor).text("seleccionar");
+
             }else
             {
                 notify("Error", respuesta.mensaje, "error");
@@ -252,6 +330,22 @@ $scope.cerrarInstructores = function()
     mytoggle("divInstructor");
 }
 
+$scope.cerrarHistorico = function()
+{
+    $("#modal-size").attr("class","modal-dialog");
+    if(!$scope.salir)
+    {
+
+        mytoggle("divVerHistorico");
+        mytoggle("divMostrar");
+    }
+    else {
+        $scope.salir = false;
+        $("#modalMostrar").modal("hide");
+    }
+
+}
+
 // ===========================================================================
 // ***** 		Funcion para limpiar las variables del modal			 *****
 // ===========================================================================
@@ -265,6 +359,7 @@ function clear_modal_insertar_actualizar(){
     $scope.id_instructor = "";
     $scope.formData.referencia ="";
     $scope.formData.chckVerTodos = "";
+    //$scope.formData.selectEtapa = "INSCRITO";
     $("#btnInstructor").attr("value","Selecciona un Instructor");
     $("#btnInstructor").attr("class", "form-control btn ");
 
@@ -403,8 +498,8 @@ if(typeof $scope.formData.minimo !== "undefined") {
 }
 
  if(Boolean($scope.formData.fecha_inicio) && Boolean($scope.formData.fecha_fin)){
-  var aux_fechainicio = Date.parse($scope.formData.fecha_inicio);
-  var aux_fechafin = Date.parse($scope.formData.fecha_fin);
+  var aux_fechainicio = stringToDate($scope.formData.fecha_inicio,"dd/mm/yyyy","/");
+  var aux_fechafin = stringToDate($scope.formData.fecha_fin,"dd/mm/yyyy","/");
   if(aux_fechainicio>aux_fechafin)
   {
    $scope.respuesta =  0;
@@ -415,7 +510,19 @@ if(typeof $scope.formData.minimo !== "undefined") {
   }
 
 }
-
+    function stringToDate(_date,_format,_delimiter)
+    {
+        var formatLowerCase=_format.toLowerCase();
+        var formatItems=formatLowerCase.split(_delimiter);
+        var dateItems=_date.split(_delimiter);
+        var monthIndex=formatItems.indexOf("mm");
+        var dayIndex=formatItems.indexOf("dd");
+        var yearIndex=formatItems.indexOf("yyyy");
+        var month=parseInt(dateItems[monthIndex]);
+        month-=1;
+        var formatedDate = new Date(dateItems[yearIndex],month,dateItems[dayIndex]);
+        return formatedDate;
+    }
 // ===========================================================================
 // ***** 			FUNCION PARA EL BOTON GUARDAR DEL MODAL				 *****
 // ===========================================================================
@@ -449,18 +556,23 @@ function insertar(formData) {
         if (respuesta.disponible == "si") {
             var curso = {
                 ID_CURSO: formData.selectCurso,
+                NOMBRE_CURSO:$scope.NombreCurso(formData.selectCurso),
                 FECHAS: formData.fecha_inicio + "-" + formData.fecha_fin,
                 ID_INSTRUCTOR: $scope.id_instructor,
+                NOMBRE_INSTRUCTOR:$("#btnInstructor").val(),
                 PERSONAS_MINIMO: formData.minimo,
-                REFERENCIA:formData.referencia
+                REFERENCIA:formData.referencia,
+                ETAPA: formData.selectEtapa,
+                ID_USUARIO:sessionStorage.getItem("id_usuario")
             };
+
             $.post(global_apiserver + "/cursos_programados/insert/", JSON.stringify(curso), function (respuesta) {
                 respuesta = JSON.parse(respuesta);
                 if (respuesta.resultado == "ok") {
                     $("#modalMostrar").modal("hide");
                     notify("Éxito", "Se ha insertado un nuevo evento", "success");
                     $scope.onAgenda(formData.fecha_inicio);
-                    irFechaCalendario(formData.fecha_inicio);
+                   // irFechaCalendario(formData.fecha_inicio);
                     //document.location = "./?pagina=auditores";
                 }
                 else {
@@ -501,7 +613,8 @@ function insertar(formData) {
         }else {
         var validar = {
             ID:		          	        $scope.id_instructor,
-            FECHAS:			            formData.fecha_inicio+","+formData.fecha_fin
+            FECHAS:			            formData.fecha_inicio+","+formData.fecha_fin,
+            ID_CURSO_PROGRAMADO:        $scope.id_evento_select
         };
         $.post( global_apiserver + "/personal_tecnico/isDisponible/", JSON.stringify(validar), function(respuesta){
             respuesta = JSON.parse(respuesta);
@@ -513,9 +626,15 @@ function insertar(formData) {
             {
                 if (respuesta.disponible == "no")
                 {
+                    if(respuesta.id == $scope.id_evento_select)
+                    {
+                        editar(formData);
+                    }
+                    else {
+                        notify("Error", respuesta.razon, "error");
+                        return false;
+                    }
 
-                    notify("Error", respuesta.razon, "error");
-                    return false;
 
                 }else
                 {
@@ -537,9 +656,13 @@ function insertar(formData) {
             var curso = {
                 ID: $scope.id_evento_select,
                 ID_CURSO: formData.selectCurso,
+                NOMBRE_CURSO:$scope.NombreCurso(formData.selectCurso),
                 FECHAS: formData.fecha_inicio + "-" + formData.fecha_fin,
                 ID_INSTRUCTOR: $scope.id_instructor,
+                NOMBRE_INSTRUCTOR:$("#btnInstructor").val(),
                 PERSONAS_MINIMO: formData.minimo,
+                ETAPA:formData.selectEtapa,
+                ID_USUARIO:sessionStorage.getItem("id_usuario")
             };
             $.post(global_apiserver + "/cursos_programados/update/", JSON.stringify(curso), function (respuesta) {
                 respuesta = JSON.parse(respuesta);
@@ -561,7 +684,7 @@ function insertar(formData) {
 // ===========================================================================
 // ***** 	    FUNCION PARA CARGAR LOS DATEPICKER DEL MODAL			 *****
 // ===========================================================================
-function onCalendario() {
+function onCalendario(inicio) {
 
  var dateInicial = $('#fecha_inicio').datepicker({
     dateFormat: "dd/mm/yy",
@@ -570,6 +693,7 @@ function onCalendario() {
     onSelect: function (dateText, ins) {
         $scope.formData.fecha_inicio = dateText;
         dateFinal.datepicker("option", "minDate", dateText)
+        $scope.formData.fecha_fin = dateText;
     }
 }).css("display", "inline-block");
 
@@ -581,9 +705,20 @@ var dateFinal =$('#fecha_fin').datepicker({
         $scope.formData.fecha_fin = dateText;
     }
 }).css("display", "inline-block");
+
+   /* if(inicio)
+    {
+        dateInicial.datepicker("option", "minDate", inicio);
+    }
+    else {
+        dateInicial.datepicker("option", "minDate", "+0D");
+    }*/
+
+
     if($scope.date_evento_select!="")
     {
-        dateInicial.datepicker("option", "minDate", $scope.date_evento_select);
+        $scope.formData.fecha_inicio = $scope.date_evento_select;
+        // dateInicial.datepicker("option", "minDate", $scope.date_evento_select);
         dateFinal.datepicker("option", "minDate", $scope.date_evento_select);
     }
 }
@@ -619,6 +754,18 @@ $scope.onAgenda = function(fecha) {
                 dias = dias +' día';
             else
                 dias = dias +' días';
+            var color =  "#7e1916"
+
+            if(parseInt(objEvento.CANTIDAD_PARTICIPANTES) == 1)
+                color =  "#a5a207";
+
+            if(parseInt(objEvento.CANTIDAD_PARTICIPANTES) > 1 && parseInt(objEvento.PERSONAS_MINIMO) > parseInt(objEvento.CANTIDAD_PARTICIPANTES))
+                color =  "#bd6d0a";
+
+            if(parseInt(objEvento.PERSONAS_MINIMO) == parseInt(objEvento.CANTIDAD_PARTICIPANTES))
+                color =  "#0d681c";
+
+
                 eventos.push(
                     {
                         title: ' '+dias+' - ' + objEvento.NOMBRE_CURSO + " - Por: " + objEvento.NOMBRE_AUDITOR ,
@@ -626,8 +773,7 @@ $scope.onAgenda = function(fecha) {
                         end: new Date(anhio_fin, mes_fin, dia_fin, 18, 30),
                         allDay: false,
                         id: objEvento.ID,
-                        color: "#"+i+"0287E",
-
+                        color: color,
                     }
                 )
             if(i==0)
@@ -642,18 +788,35 @@ $scope.onAgenda = function(fecha) {
         }
 
         $scope.global_calendar = $('#calendar').fullCalendar({
+            customButtons: {
+                historico: {
+                    text: '- Histórico',
+                    click: function() {
+
+                        $scope.openModalHistoricoEliminados();
+                    }
+                },
+                newEvent: {
+                    text: '+ Agregar Curso',
+                    click: function() {
+
+                        $scope.openModalInsertarModificar('insertar');
+                    }
+                }
+
+            },
             header: {
-                left: 'prev,next today',
+                left: 'newEvent prev,next today ',
                 center: 'title',
-                right: 'month,agendaWeek,agendaDay'
+                right: 'month,agendaWeek,agendaDay,historico'
             },
             minTime:"07:00:00",
             selectable: false,
-            editable: false,
-            //eventBackgroundColor:"#50287E",
-            eventBackgroundColor:"#50287E",
-            locale: 'es',
             navLinks: true,
+            editable: true,
+            eventLimit: true,
+            eventTextColor:"#141414",
+            locale: 'es',
             defaultDate:date,
             events: eventos,
             eventClick: function (calEvent, jsEvent, view) {
@@ -661,6 +824,7 @@ $scope.onAgenda = function(fecha) {
                 {
                     $scope.id_evento_select = calEvent.id;
                     $scope.openModalMostar();
+
                 }
 
             }
@@ -693,6 +857,20 @@ function esDespuesHoy(fecha) {
     var select = new Date(partes[2],parseInt(partes[1])-1,partes[0],hoy.getHours(),hoy.getMinutes(),hoy.getSeconds(),hoy.getMilliseconds());
     if(hoy<=select){return true;}else {return false;}
 }
+// ==============================================================================
+// ***** 		Funcion para buscar el nombre de curso  a partir del ID		*****
+// ==============================================================================
+    $scope.NombreCurso	=	function(id){
+
+        if(typeof $scope.cursos != "undefined"){
+            var datos_curso	=			$scope.cursos.find(function(element,index,array){
+                return element.ID_CURSO == id
+            });
+
+
+            return datos_curso.NOMBRE ;
+        }
+    }
 // ================================================================================
 // *****                  Funcion Mostrar/Ocultar elementos                   *****
 // ================================================================================
@@ -714,6 +892,58 @@ $scope.onSelectedCurso = function(){
     $("#btnInstructor").attr("class", "form-control btn ");
 
     }
+// ==============================================================================
+// ***** 			Funcion para acomodar la fecha para mostrarla			*****
+// ==============================================================================
+    $scope.FuncionFecha	=	function(fecha){
+        var ano	=	fecha.substring(0,4);
+        var mes	=	fecha.substring(4,6);
+        var dia	=	fecha.substring(6,8);
+        var mestexto = "";
+        switch(mes){
+            case "01":
+                mestexto = "Enero";
+                break;
+            case "02":
+                mestexto = "Febrero";
+                break;
+            case "03":
+                mestexto = "Marzo";
+                break;
+            case "04":
+                mestexto = "Abril";
+                break;
+            case "05":
+                mestexto = "Mayo";
+                break;
+            case "06":
+                mestexto = "Junio";
+                break;
+            case "07":
+                mestexto = "Julio";
+                break;
+            case "08":
+                mestexto = "Agosto";
+                break;
+            case "09":
+                mestexto = "Septiembre";
+                break;
+            case "10":
+                mestexto = "Octubre";
+                break;
+            case "11":
+                mestexto = "Noviembre";
+                break;
+            case "12":
+                mestexto = "Diciembre";
+                break;
+            default:
+                mestexto	= " ";
+                break;
+        }
+        return dia+" de "+mestexto+" de "+ano;
+    }
+
 // ==============================================================================
 // ***** 		Funcion para generar referencia	para CIFA		*****
 // ==============================================================================
