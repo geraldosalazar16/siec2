@@ -1,4 +1,4 @@
-<div class="right_col" role="main"  ng-controller="ver_cotizacion_CIL_controller as $ctrl" ng-init='despliega_cotizacion()' ng-cloak>
+<div class="right_col" role="main"  ng-controller="ver_cotizacion_CPER_controller as $ctrl" ng-init='despliega_cotizacion()' ng-cloak>
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
       <div class="x_panel">
@@ -55,15 +55,12 @@
                   <li id="lbEstado">
                     Estado: {{obj_cotizacion.ESTADO.ESTATUS_SEGUIMIENTO}}
                   </li>
-                  <li id="lbSGIntegral">
-                    Actividad Econ&oacutemica: {{obj_cotizacion.ACTIVIDAD_ECONOMICA}}
-                  </li>
-                  <li id="lbTarifa">
+        <!--          <li id="lbTarifa">
                     Tarifa por Día Auditor: {{obj_cotizacion.TARIFA_COMPLETA.TARIFA | currency}}
                   </li>
                   <li id="lbDias">
                     TOTAL DIAS COTIZACION: {{obj_cotizacion.TOTAL_DIAS_COTIZACION}}
-                  </li>
+                  </li>	-->
                   <li id="lbCOt">
                     TOTAL COTIZACION: {{obj_cotizacion.TOTAL_COTIZACION | currency}}
                   </li>
@@ -101,8 +98,6 @@
             <thead>
               <tr class="headings">
                 <th class="column-title">Tipo</th>
-                <th class="column-title">Días de Auditoría</th>
-				<th class="column-title">Personas a encuestar</th>
                 <th class="column-title">Descuento</th>
 				<th class="column-title">Aumento</th>
 	<!--			<th class="column-title">Reduccion</th>	-->
@@ -115,14 +110,8 @@
             <tbody>
               <tr class="even pointer" ng-repeat="tramites_cotizacion in arr_tramites_cotizacion">
                 <td>{{tramites_cotizacion.TIPO }}</td>
-                <td>Días total: <b>{{tramites_cotizacion.DIAS_AUDITORIA }}</b><br>
-				Días base: <b>{{tramites_cotizacion.DIAS_BASE}}</b><br>
-				Días encuesta: <b>{{tramites_cotizacion.DIAS_ENCUESTA}}</b><br>
-				Días multisitio: <b>{{tramites_cotizacion.DIAS_MULTISITIO}}</b><br>
-				
-				</td>
-				<td>{{tramites_cotizacion.PERSONAS_ENCUESTA}} de {{tramites_cotizacion.TOTAL_EMPLEADOS_TRAMITE}}</td>
-                <td>{{tramites_cotizacion.DESCUENTO != null? tramites_cotizacion.DESCUENTO+"%" : "--" }}</td>
+               
+				<td>{{tramites_cotizacion.DESCUENTO != null? tramites_cotizacion.DESCUENTO+"%" : "--" }}</td>
 				<td>{{tramites_cotizacion.AUMENTO != null? tramites_cotizacion.AUMENTO+"%" : "--" }}</td>
 	<!--			<td>{{tramites_cotizacion.REDUCCION != null? tramites_cotizacion.REDUCCION+"%" : "--" }}</td> -->
                 <td>{{tramites_cotizacion.TRAMITE_COSTO_DES | currency }}</td>
@@ -216,10 +205,8 @@
               <tr class="headings">
                 <th class="column-title">#</th>
                 <th class="column-title">Nombre del sitio</th>
-                <th class="column-title">Detalles</th>
-                <th class="column-title">Cantidad de personas</th>
- <!--               <th class="column-title">Días de auditoría</th>	-->
-                <th class="column-title">Por visitar</th>
+				<th class="column-title">Cantidad Personas</th>
+				<th class="column-title">Por visitar</th>
                 <th class="column-title"></th>
               </tr>
             </thead>
@@ -231,17 +218,10 @@
                   {{sitios_cotizacion.NOMBRE }}<br>
                  
                 </td>
-                <td>
-                  ¿Temporal o fijo? {{sitios_cotizacion.TEMPORAL_O_FIJO}} <br>
-                  ¿Matriz o principal? {{sitios_cotizacion.MATRIZ_PRINCIPAL}}<br>
-                  
+				<td>
+                  {{sitios_cotizacion.CANTIDAD_PERSONAS }}<br>
+                 
                 </td>
-                <td>{{sitios_cotizacion.CANTIDAD_PERSONAS}}</td>
-<!--				<td>
-				Días base: <b>{{sitios_cotizacion.DIAS_AUDITORIA}}</b><br>
-				Días encuesta: <b>{{sitios_cotizacion.DIAS_ENCUESTA}}</b><br>
-				</td>	-->
- 
                 <td>
                   <input type="checkbox" class="flat" ng-click="actualiza_sitio_seleccionado(sitios_cotizacion.ID)"
                   ng-checked="sitios_cotizacion.SELECCIONADO == 1" ng-disabled="bl_cotizado || modulo_permisos['editar'] != 1">
@@ -261,14 +241,7 @@
             </tbody>
           </table>
 
-            <form name="form2" id="form2" class="form-horizontal form-label-left" ng-if="arr_sitios_cotizacion.length >= 1" hidden>
-                  <div class="form-group">
-                    <label class="control-label col-md-4 col-sm-4 col-xs-10">Cotizar con el total de empleados</label>
-                      <div class="col-md-1 col-sm-1 col-xs-1">
-                        <input type="checkbox" class="form-control col-md-7 col-xs-12 selector noshadow" ng-model="bl_sum_empleados">
-                      </div>
-                  </div>
-            </form>
+           
 
             <div class="alert alert-danger alert-dismissible fade in" role="alert" ng-hide="obj_cotizacion_tramite.RESTRICCIONES.length == 0">
               <ul class="list-unstyled user_data" ng-repeat="restriccion in obj_cotizacion_tramite.RESTRICCIONES">
@@ -281,13 +254,6 @@
             <div class="col-md-8 col-md-offset-1 col-sm-8 col-xs-8" ng-hide="obj_cotizacion_tramite.RESTRICCIONES.length > 0">
               <ul class="list-unstyled user_data">
                   <li id="lbTotla" style="font-size: 20px;">
-                    Total de empleados: {{obj_cotizacion_tramite.TOTAL_EMPLEADOS}}<br>
-                    Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}} <i>(Dias Base-{{obj_cotizacion_tramite.DIAS_BASE}} Dias Encuesta-{{obj_cotizacion_tramite.DIAS_ENCUESTA}} Dias Multisitio-{{obj_cotizacion_tramite.DIAS_MULTISITIO}})</i><br>
-                    <div ng-if="obj_cotizacion.SG_INTEGRAL == 'si'">
-                      Factor de Integración: {{obj_cotizacion_tramite.FACTOR_INTEGRACION}}%<br>
-                      Total Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA_INTG}}<br>
-                    </div>
-                    Tarifa de Día Auditor<!-- <span style="font-size: 12px;"> *c/ descuento</span>-->: {{obj_cotizacion_tramite.TARIFA | currency}}<br>
 					Costo Inicial: {{obj_cotizacion_tramite.COSTO_INICIAL | currency}}<br>
                     Costo de auditoría con descuento : {{obj_cotizacion_tramite.COSTO_DESCUENTO | currency}}<br>
                     Viáticos: {{obj_cotizacion_tramite.VIATICOS | currency}}<br>
@@ -585,13 +551,13 @@
 					<div class="col-md-12">
 						<input type="numeric" ng-model="tramite_insertar_editar.REDUCCION" required="required" class="form-control col-md-7 col-xs-12">
 					</div>
-				</div>	-->
-				<div class="form-group form-vertical">
+				</div>	
+				<div class="form-group form-vertical" ng-show="false">
 					<label class="control-label col-md-12">D&iacuteas para multisitio</label>
 					<div class="col-md-12">
 						<input type="numeric" ng-model="tramite_insertar_editar.DIAS_MULTISITIO" required="required" class="form-control col-md-7 col-xs-12">
 					</div>
-				</div>	
+				</div>	-->
          
              
             </form>
@@ -623,50 +589,12 @@
                 </div>
               </div>
 			  <div class="form-group form-vertical">
-                <label class="control-label col-md-12">Cantidad de personas <span class="required">*</span></label>
+                <label class="control-label col-md-12">Cantidad de Personas<span class="required">*</span></label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="obj_sitio.CANTIDAD_PERSONAS" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-<!--              <div class="form-group form-vertical">
-                <label class="control-label col-md-12">Factor de Reducción (%)<span class="required">*</span></label>
-                <div class="col-md-12">
-                  <input type="numeric" ng-model="obj_sitio.FACTOR_REDUCCION" required="required" class="form-control col-md-7 col-xs-12">
-                </div>
-              </div>
-               <div class="form-group form-vertical">
-                <label class="control-label col-md-12">Factor de Ampliación (%)<span class="required">*</span></label>
-                <div class="col-md-12">
-                  <input type="numeric" ng-model="obj_sitio.FACTOR_AMPLIACION" required="required" class="form-control col-md-7 col-xs-12">
-                </div>
-              </div>
-              <div class="form-group form-vertical">
-                <label class="control-label col-md-12">Justificación <span class="required">*</span></label>
-                <div class="col-md-12">
-                  <textarea rows="4" cols="50" ng-model="obj_sitio.JUSTIFICACION" required="required" class="form-control col-md-7 col-xs-12">
-                  </textarea>
-                </div>
-              </div>
- -->             <div class="form-group form-vertical">
-                <label class="control-label col-md-12">¿Temporal o fijo? <span class="required">*</span></label>
-                <div class="col-md-12">
-                  <select  ng-model="obj_sitio.TEMPORAL_O_FIJO" class="form-control">
-                     <option value="" selected disabled>-- selecciona una opción --</option>
-                     <option value="temporal">Temporal</option>
-                     <option value="fijo">Fijo</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group form-vertical">
-                <label class="control-label col-md-12">¿Matriz principal? <span class="required">*</span></label>
-                <div class="col-md-12">
-                  <select  ng-model="obj_sitio.MATRIZ_PRINCIPAL" class="form-control">
-                     <option value="" selected disabled>-- selecciona una opción --</option>
-                     <option value="si">Si</option>
-                     <option value="no">No</option>
-                  </select>
-                </div>
-              </div>
+			 
             </form>
         </div>
         <div class="modal-footer">
@@ -905,7 +833,7 @@
         <h4 class="modal-title" id="modalTituloGenerarCotizacion">Generar Cotizacion</h4>
       </div>
       <div class="modal-body">
-		<form name="exampleFormGenCotizacion" target="VentanaGenerarPDF_CIL" method="POST" ><!-- action="./generar/pdf/cotizacion_propuesta_cil/index.php" -->
+		<form name="exampleFormGenCotizacion" target="VentanaGenerarPDF_CIL" method="POST" action="./generar/pdf/cotizacion_propuesta_cper/index.php">
 				<div  class='form-group'>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<label class="control-label col-md-4 col-xs-4 col-sm-4">Trámite</label>
@@ -923,7 +851,7 @@
 						<input type="text" class="form-control" id="formDataGenCotizacion.tramites[$index].TIPO"  ng-model="formDataGenCotizacion.tramites[$index].TIPO" required ng-class="{ error: exampleFormGenCotizacion.tramite.x.$error.required && !exampleForm.$pristine}" disabled >
 					</div>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
-						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TRAMITE_COSTO" required ng-class="{ error: exampleFormGenCotizacion.monto.x.$error.required && !exampleForm.$pristine}" disabled >
+						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TRAMITE_COSTO_DES" required ng-class="{ error: exampleFormGenCotizacion.monto.x.$error.required && !exampleForm.$pristine}" disabled >
 					</div>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].VIATICOS" required ng-class="{ error: exampleFormGenCotizacion.viaticos.x.$error.required && !exampleForm.$pristine}" disabled >

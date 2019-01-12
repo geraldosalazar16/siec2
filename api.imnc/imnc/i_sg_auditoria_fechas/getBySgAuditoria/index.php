@@ -2,7 +2,7 @@
 include  '../../common/conn-apiserver.php'; 
 include  '../../common/conn-medoo.php'; 
 include  '../../common/conn-sendgrid.php'; 
-
+//
 function valida_parametro_and_die($parametro, $mensaje_error){ 
 	$parametro = "" . $parametro; 
 	if ($parametro == "") { 

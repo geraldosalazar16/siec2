@@ -9,7 +9,7 @@ require_once('../../../phplibs/FPDI-2.0.2/src/autoload.php');
 include  '../../../../api.imnc/imnc/common/conn-apiserver.php'; 
 include  '../../../../api.imnc/imnc/common/conn-medoo.php'; 
 include  '../../../../api.imnc/imnc/common/conn-sendgrid.php'; 
-
+require_once('../../../diff/direccion.php'); 
 //require_once('../../../common/apiserver.php'); //$global_apiserver
 //require_once('../../../diff/selector.php'); //$global_diffname
 //require_once('../../../diff/'.$global_diffname.'/strings.php'); 
@@ -466,9 +466,9 @@ $No14="";//$No14 = $NoSitios;
 
 $str_direccion="Daniel Hernandez Barroso";
 //$global_diffname="E:/xampp/htdocs/imnc/imnc/generar/pdf/cotizacion/";
-$global_diffname="E:/xampp/htdocs/pruebagit/siec2/imnc/generar/pdf/cotizacion/";
+//$global_diffname="E:/xampp/htdocs/pruebagit/siec2/imnc/generar/pdf/cotizacion_propuesta/";
 // create new PDF document
-$pdf1 = new MYPDF($No5, $str_direccion, $global_diffname, PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf1 = new MYPDF($No5, $str_direccion, $global_direccion_pdf, PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 //$fontname = TCPDF_FONTS::addTTFfont('E:/xampp/htdocs/imnc/imnc/phplibs/libPDF/fonts/Calibri Bold Italic.ttf','TrueTypeUnicode','',96);
 $pdf1->AddFont('Calibri','','calibri.php');
 $pdf1->AddFont('Calibri','B','calibrib.php');
@@ -513,7 +513,7 @@ $pdf1->SetTextColor(54,95,145);
 $pdf1->SetPrintHeader(false);
 $pdf1->AddPage();
 $pdf1->SetPrintFooter(false);
-$pdf1->Image('logob.jpg', 160, 10, 45, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+$pdf1->Image($global_direccion_pdf.'logob.jpg', 160, 10, 45, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
 $pdf1->SetXY(0,0);
 // Titulo de documento (centrado)
@@ -590,7 +590,7 @@ for($i=0;$i<count($datos);$i++){
 	if($i==3 || $i == 7 || $i==11){
 		$pdf1->AddPage();
 	}
-	if($datos[$i]->ID_ETAPA_PROCESO == 1 && $datos[$i+1]->ID_ETAPA_PROCESO == 2){
+	if($datos[$i]->ID_ETAPA_PROCESO == 2 && $datos[$i+1]->ID_ETAPA_PROCESO == 3){
 		$Titulo_Tabla="SERVICIO DE AUDITORÍA DE CERTIFICACIÓN INICIAL";
 		$dias_auditor_E1 = $datos[$i]->DIAS_AUDITORIA;
 		$costo_E1	=	$datos[$i]->TRAMITE_COSTO;
@@ -682,8 +682,8 @@ $pdf1->writeHTML($html, true, false, true, false, '');
 $i=$i+1;
 	}
 	else{
-		$Titulo_Tabla="SERVICIO DE AUDITORÍA DE ".strtoupper($datos[$i]->ETAPA);
-		$Descripcion_servicio=$datos[$i]->ETAPA;
+		$Titulo_Tabla="SERVICIO DE AUDITORÍA DE ".strtoupper($datos[$i]->TIPO);
+		$Descripcion_servicio=$datos[$i]->TIPO;
 		$dias_auditor = $datos[$i]->DIAS_AUDITORIA;
 		$costo	=	$datos[$i]->TRAMITE_COSTO;
 		$viaticos = $datos[$i]->VIATICOS;

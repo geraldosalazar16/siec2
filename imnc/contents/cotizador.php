@@ -72,6 +72,11 @@
 							<i class="fa fa-bullseye"></i> Ver cotización
 						</a>	
 					</div>
+					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 19">
+						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_CPER&id_cotizacion={{cotizacion.ID}}" style="float: right;">
+							<i class="fa fa-bullseye"></i> Ver cotización
+						</a>	
+					</div>
                 </td>
 				        <td>
                   <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=registro_expediente&id={{cotizacion.ID}}&id_entidad=4" style="float: right;">
@@ -240,7 +245,7 @@
               </div>
 
             
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID != 19">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa por Día Auditor<span class="required">*</span></label>
                 <div class="col-md-12">
                   <select ng-model="cotizacion_insertar_editar.TARIFA" required="required" class="form-control"

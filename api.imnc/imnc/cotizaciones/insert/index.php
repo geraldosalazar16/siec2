@@ -59,7 +59,15 @@ valida_parametro_and_die($FOLIO_SERVICIO,"Falta FOLIO SERVICIO");
 $FOLIO_INICIALES = $objeto->FOLIO_INICIALES;
 valida_parametro_and_die($FOLIO_INICIALES,"Falta FOLIO INICIALES");
 $TARIFA = $objeto->TARIFA;
-valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
+//No se necesita para Certificacion Personas
+if($ID_TIPO_SERVICIO != 19){
+	valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
+} else {
+	if(!$TARIFA){
+		$TARIFA = 0;
+	}
+}
+
 $DESCUENTO = $objeto->DESCUENTO;
 $AUMENTO = $objeto->AUMENTO;
 $REFERENCIA = $objeto->REFERENCIA;
