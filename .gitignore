@@ -1,7 +1,7 @@
 imnc/common
-imnc/diff
 .vscode/
 .idea/
 api.imnc/imnc/common
 imnc/login
 api.imnc/imnc/arch_expediente
+imnc/diff
