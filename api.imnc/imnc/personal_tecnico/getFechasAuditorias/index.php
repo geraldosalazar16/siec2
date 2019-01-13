@@ -28,7 +28,7 @@ function valida_error_medoo_and_die(){
 
 $respuesta=array();
 $id = $_REQUEST["id"];
-
+/*
 $ids_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "ID", ["ID_PERSONAL_TECNICO" => $id]);
 valida_error_medoo_and_die();
 
@@ -52,7 +52,37 @@ for ($i=0; $i < count($datos_auditoria) ; $i++) {
 }
 
 print_r(json_encode($datos_auditoria));
+*/
+$ids_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "ID", ["ID_PERSONAL_TECNICO" => $id]);
+valida_error_medoo_and_die();
 
+$datos_auditoria = $database->select("I_SG_AUDITORIA_GRUPOS", [
+	"ID_SERVICIO_CLIENTE_ETAPA", 
+	"TIPO_AUDITORIA",
+	"CICLO"
+], [
+	"ID_PERSONAL_TECNICO_CALIF" => $ids_califs
+]);
+valida_error_medoo_and_die();
 
+for ($i=0; $i < count($datos_auditoria) ; $i++) { 
+	$sce = $database->get("SERVICIO_CLIENTE_ETAPA","ID_TIPO_SERVICIO",["ID" => $datos_auditoria[$i]["ID_SERVICIO_CLIENTE_ETAPA"]]);
+	valida_error_medoo_and_die();
+	$datos_auditoria[$i]["ID_TIPO_SERVICIO"] = $sce["ID_TIPO_SERVICIO"];
+	$normas = $database->select("SCE_NORMAS","ID_NORMA",["ID_SCE" => $sce["ID_TIPO_SERVICIO"]]);
+	valida_error_medoo_and_die();
+	$datos_auditoria[$i]["NORMAS"] = $normas;
+
+	$sg_auditoria_grupo_fechas = $database->select("I_SG_AUDITORIA_GRUPO_FECHAS", "FECHA", [
+		"ID_SERVICIO_CLIENTE_ETAPA" => $sce["ID_TIPO_SERVICIO"],
+		"TIPO_AUDITORIA" => $datos_auditoria[$i]["TIPO_AUDITORIA"],
+		"CICLO" => $datos_auditoria[$i]["CICLO"],
+		"ID_PERSONAL_TECNICO_CALIF" => $ids_califs
+	]);
+	valida_error_medoo_and_die();
+	$datos_auditoria[$i]["FECHAS_ASIGNADAS"] = $sg_auditoria_grupo_fechas;
+}
+
+print_r(json_encode($datos_auditoria));
 //-------- FIN --------------
 ?>
