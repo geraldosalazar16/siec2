@@ -33,6 +33,7 @@ $NOMBRE = $objeto->NOMBRE;
 $USUARIO = $objeto->USUARIO; 
 $EMAIL = $objeto->EMAIL; 
 $PASSWORD = $objeto->PASSWORD; 
+$PASSWORD = sha1($PASSWORD);
 
 if ($PASSWORD == "") {
 	$PASSWORD = $database->get("USUARIOS", "PASSWORD", ["ID"=>$ID]);
