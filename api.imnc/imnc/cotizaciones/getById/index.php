@@ -605,7 +605,7 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 				["ID_COTIZACION"=>$cotizacion[0]["ID"]]);
 				valida_error_medoo_and_die();
 			$cotizacion[0]["COTIZACION_TRAMITES"] = $tramites;
-			
+			$total_cotizacion=0;
 			foreach ($tramites as $key => $tramite_item) {
 				//En vez de usar la etapa usar el tipo de auditoria
 				//$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$tramite_item["ID_ETAPA_PROCESO"]]);
@@ -673,7 +673,7 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_DES"] = $costo_desc;
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"] = $costo_desc + $tramite_item["VIATICOS"]+$total_tarifa_adicional;
 		
-						$total_dias_cotizacion += $total_dias_auditoria;
+						//$total_dias_cotizacion += $total_dias_auditoria;
 						$total_cotizacion += $cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"];
 				}
 				//$cotizacion[0]["TOTAL_DIAS_COTIZACION"] = $total_dias_cotizacion;

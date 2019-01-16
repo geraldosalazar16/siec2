@@ -1,4 +1,4 @@
-<div class="right_col" role="main"  ng-controller="ver_cotizacion_PLAYA_controller as $ctrl" ng-init='despliega_cotizacion()' ng-cloak>
+<div class="right_col" role="main"  ng-controller="ver_cotizacion_TUR_controller as $ctrl" ng-init='despliega_cotizacion()' ng-cloak>
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
       <div class="x_panel">
@@ -272,16 +272,28 @@
 
             <div class="col-md-8 col-md-offset-1 col-sm-8 col-xs-8" ng-hide="obj_cotizacion_tramite.RESTRICCIONES.length > 0">
               <ul class="list-unstyled user_data">
-                  <li id="lbTotla" style="font-size: 20px;">
+                 <li id="lbTotla" style="font-size: 20px;" ng-if="obj_cotizacion.NORMAS[0].ID_NORMA=='NMX-AA-120-SCFI-2006'||obj_cotizacion.NORMAS[0].ID_NORMA=='NMX-AA-120-SCFI-2016'">
 					Longitud de la playa: {{obj_cotizacion_tramite.LONGITUD_PLAYA}} <br>
+				</li>
+				<li id="lbTotla" style="font-size: 20px;">
                     Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}} <br>
+				</li>
+				<li id="lbTotla" style="font-size: 20px;">
                     Tarifa de Día Auditor<!-- <span style="font-size: 12px;"> *c/ descuento</span>-->: {{obj_cotizacion_tramite.TARIFA | currency}}<br>
+				</li>
+				<li id="lbTotla" style="font-size: 20px;">
 					Costo Inicial: {{obj_cotizacion_tramite.COSTO_INICIAL | currency}}<br>
-                    Costo de auditoría con descuento : {{obj_cotizacion_tramite.COSTO_DESCUENTO | currency}}<br>
-                    Viáticos: {{obj_cotizacion_tramite.VIATICOS | currency}}<br>
-                    Costo Total de auditoría<span style="font-size: 12px;"> *costos adicionales incluidos</span>
+                </li>
+				<li id="lbTotla" style="font-size: 20px;">
+					Costo de auditoría con descuento : {{obj_cotizacion_tramite.COSTO_DESCUENTO | currency}}<br>
+                </li>
+				<li id="lbTotla" style="font-size: 20px;">
+					Viáticos: {{obj_cotizacion_tramite.VIATICOS | currency}}<br>
+                </li>
+				<li id="lbTotla" style="font-size: 20px;">
+				Costo Total de auditoría<span style="font-size: 12px;"> *costos adicionales incluidos</span>
                     : {{obj_cotizacion_tramite.COSTO_TOTAL | currency}}
-                  </li>
+                 </li>
               </ul>
             </div>
           </div>
@@ -893,7 +905,7 @@
         <h4 class="modal-title" id="modalTituloGenerarCotizacion">Generar Cotizacion</h4>
       </div>
       <div class="modal-body">
-		<form name="exampleFormGenCotizacion" target="VentanaGenerarPDF_CIL" method="POST" action="./generar/pdf/cotizacion_propuesta_cil/index.php">
+		<form name="exampleFormGenCotizacion" target="VentanaGenerarPDF_TUR" method="POST" action="./generar/pdf/cotizacion_propuesta_tur/index.php">
 				<div  class='form-group'>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<label class="control-label col-md-4 col-xs-4 col-sm-4">Trámite</label>

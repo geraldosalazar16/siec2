@@ -106,6 +106,7 @@ else if(strpos($nombre_auditoria, 'Renovación') !== false || strpos($nombre_aud
 }
 $obj_cotizacion = [];
 $obj_cotizacion["TIPOS_SERVICIO"] = $tipos_servicio;
+$obj_cotizacion["TIPO_AUDITORIA"] = $etapa;
 $obj_cotizacion["ETAPA"] = $nombre_auditoria;
 $obj_cotizacion["TARIFA_TOTAL"] = $tarifa;
 
