@@ -1,4 +1,4 @@
-app.controller("ver_cotizacion_PLAYA_controller", ['$scope','$window', '$http','$document', function($scope,$window,$http,$document){
+app.controller("ver_cotizacion_TUR_controller", ['$scope','$window', '$http','$document', function($scope,$window,$http,$document){
   $scope.modulo_permisos =  global_permisos["COTIZADOR"];
   $scope.arr_prospectos = [];
   $scope.arr_sitios_cotizacion = [];
@@ -458,7 +458,7 @@ $scope.formData = {};
 		//document.getElementById('formDataGenCotizacion').submit();
 		//var url = "./generar/pdf/cotizacion_propuesta/index.php?datos="+JSON.stringify(formDataGenCotizacion);
 		$scope.id_producto="";
-		var url = "./generar/pdf/cotizacion_propuesta_cil/index.php?id_prospecto="+$scope.obj_cotizacion.ID_PROSPECTO+"&id_producto="+$scope.id_producto+"&id_contacto="+$scope.formDataGenCotizacion.contactoprospecto1+"&id_domicilio="+$scope.formDataGenCotizacion.domicilioprospecto1+"&id_cotizacion="+$scope.obj_cotizacion.ID+"&tramites="+JSON.stringify(formDataGenCotizacion.tramites)+"&descripcion="+JSON.stringify(formDataGenCotizacion.descripcion);
+		var url = "./generar/pdf/cotizacion_propuesta_tur/index.php?id_prospecto="+$scope.obj_cotizacion.ID_PROSPECTO+"&id_producto="+$scope.id_producto+"&id_contacto="+$scope.formDataGenCotizacion.contactoprospecto1+"&id_domicilio="+$scope.formDataGenCotizacion.domicilioprospecto1+"&id_cotizacion="+$scope.obj_cotizacion.ID+"&tramites="+JSON.stringify(formDataGenCotizacion.tramites)+"&descripcion="+JSON.stringify(formDataGenCotizacion.descripcion);
 		window.open(url,'_blank');
 		$("#modalGenerarCotizacion").modal("hide");
 	}
@@ -503,7 +503,7 @@ $scope.formData = {};
 	 }
 	
 	  function tramite_tarifa_adicional_by_tramite(id,key){
-		$http.get(  global_apiserver + "/cotizacion_tarifa_adicional/getByIdTramite/?id="+id)
+		$http.get(  global_apiserver + "/cotizacion_tarifa_adicional/getByIdTramite/?id="+id+"&id_cot="+global_id_cotizacion)
 		.then(function( response ){
 			
 				$scope.tarifa_adicional_tramite_cotizacion_by_tramite[key] = response.data;
@@ -560,6 +560,7 @@ $scope.formData = {};
 
    $scope.tarifa_adicional_guardar = function(){
     $scope.obj_tarifa_adicional.ID_TRAMITE = current_tramite;
+	$scope.obj_tarifa_adicional.ID_COTIZACION = global_id_cotizacion, 
     $scope.obj_tarifa_adicional.ID_USUARIO= sessionStorage.getItem("id_usuario");
 
     if (accion_tarifa == 'insertar') {
