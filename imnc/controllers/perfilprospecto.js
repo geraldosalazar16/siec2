@@ -628,12 +628,21 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 		var alcance = $scope.alcance_producto;
 		var modalidad = $scope.modalidades;
 		var cantidad = $scope.cantidad_participantes;
-        var curso = "";
+		var curso = "";		
         if(typeof $scope.cursos_programados !== "undefined")
 		 curso =  $scope.cursos_programados;
 		var tipo_persona = "";
 		if($scope.tipoPersona=="" || $scope.tipoPersona==null)
-            tipo_persona = $scope.tipo_persona;
+			tipo_persona = $scope.tipo_persona;
+
+		var solo_cliente;
+		if($scope.opciones_participantes == 'solo_cliente'){
+			solo_cliente = 1;
+			cantidad = 1; //Si solo es para el cliente la cantidad de personas es 1
+		} else if($scope.opciones_participantes == 'participantes'){
+			solo_cliente = 0;			
+		}
+
 		var boton = $("#btnGuardarProductoProspecto");
 		var accion = boton.attr("accion");
 
@@ -648,7 +657,8 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 				tipo_persona: tipo_persona,
 				modalidad:modalidad,
 				curso:curso,
-				cantidad:cantidad
+				cantidad:cantidad,
+				solo_cliente: solo_cliente
 			};
 			$.post(global_apiserver + "/prospecto_producto/insert/", JSON.stringify(info), function(respuesta){
 				respuesta = JSON.parse(respuesta);
@@ -675,7 +685,8 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
                 tipo_persona: tipo_persona,
                 modalidad:modalidad,
                 curso:curso,
-                cantidad:cantidad
+				cantidad:cantidad,
+				solo_cliente: solo_cliente
 			};
 			$.post(global_apiserver + "/prospecto_producto/update/", JSON.stringify(info), function(respuesta){
 				respuesta = JSON.parse(respuesta);
@@ -694,8 +705,6 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
         $scope.tipo_persona = $scope.tipoPersona;
         clear_modal_insertar_actualizar_productos();
 		if(accion == 'insertar'){
-
-
 			$("#modalTituloProductoProspecto").html('INSERTAR PRODUCTO');
 			$("#btnGuardarProductoProspecto").attr("accion","insertar");
 			$("#modalInsertarActualizarProductoProspecto").modal('show');
@@ -737,12 +746,19 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
             $scope.productos = producto.normas;
             //alert($scope.modalidades+"--"+producto.modalidad);
             $scope.modalidades = producto.modalidad;
-
+			
             $scope.onChangeModalidades(producto.id_tipo_servicio,producto.id_curso);
             if(producto.modalidad=="insitu")
 			{
-                //$scope.insitu = true;
                 $scope.cantidad_participantes = producto.cantidad;
+			} else if(producto.modalidad == 'programado'){
+				if(producto.solo_cliente == 0){
+					$scope.cantidad_participantes = producto.cantidad;
+					$scope.opciones_participantes = 'participantes';
+				} else if(producto.solo_cliente == 1){
+					$scope.cantidad_participantes = 1;
+					$scope.opciones_participantes = 'solo_cliente';
+				}
 			}
 
 
@@ -835,7 +851,8 @@ $scope.eliminar = function(id){
                           nombre_curso: item.CURSO.NOMBRE_CURSO,
                           id_curso: item.CURSO.ID_CURSO,
                           cantidad: item.CURSO.CANTIDAD,
-                          modalidad: item.CURSO.MODALIDAD,
+						  modalidad: item.CURSO.MODALIDAD,
+						  solo_cliente: item.CURSO.SOLO_PARA_CLIENTE,
 						  sectores: [],
 						  integracion: [],
 						  nivel_integracion: 0
