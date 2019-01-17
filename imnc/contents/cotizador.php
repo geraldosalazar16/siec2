@@ -374,7 +374,7 @@
               </div>              
 
 					    <!-- Solo mostrar para CIFA-->
-              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 ">
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && modalidades == 'programado'">
                 <label class="control-label col-md-12" id="labelCurso">Cursos Programados </label>
                 <div class="col-md-12">
                 <select ng-model="cursos_programados" class="form-control"
@@ -382,7 +382,18 @@
                     <option value="" ng-selected="true" disabled>Seleccione una opción</option>
                   </select>
                 </div>
-              </div>					    
+              </div>	
+
+              <!-- Solo mostrar para CIFA-->
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && modalidades == 'insitu'">
+                <label class="control-label col-md-12" id="labelCurso">Cursos Insitu </label>
+                <div class="col-md-12">
+                <select ng-model="cursos_insitu" class="form-control"
+                  ng-options="cursoi.id as cursoi.nombre  for cursoi in CursosInsitu">
+                    <option value="" ng-selected="true" disabled>Seleccione una opción</option>
+                  </select>
+                </div>
+              </div>				    
 
               <!-- Solo mostrar para CIFA-->
               <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && modalidades == 'programado'">

@@ -178,6 +178,10 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     fill_select_tipo_servicio();
     $scope.titulo_columna_tarifa = 'Tarifa día auditor';
     $scope.titulo_columna_info = 'Prospecto, tipo de servicio y norma';
+
+    $scope.CursosLista(3,null);
+    $scope.CursosProgramadoLista(3,null);
+
     var http_request = {
       method: 'GET',
       url: global_apiserver + "/cotizaciones/getAll/",
@@ -360,6 +364,12 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     } else if($scope.opciones_participantes == 'participantes'){
       solo_cliente = 0;      
     }
+    var id_curso = 0;
+    if($scope.modalidades == 'programado'){
+      id_curso = $scope.cursos_programados;
+    } else if($scope.modalidades == 'insitu'){
+      id_curso = $scope.cursos_insitu;
+    }
     if($scope.bandera == 0){
       id_entidad = $scope.cotizacion_insertar_editar.PROSPECTO.ID;
       cotizacion = {
@@ -383,7 +393,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
 		    DICTAMEN_CONSTANCIA: $scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA,
         MODALIDAD: $scope.modalidades,
-        ID_CURSO: $scope.cursos_programados,
+        ID_CURSO: id_curso,
         CANT_PARTICIPANTES: $scope.cantidad_participantes,
         SOLO_CLIENTE: solo_cliente,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
@@ -412,7 +422,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
 		    DICTAMEN_CONSTANCIA: $scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA,
         MODALIDAD: $scope.modalidades,
-        ID_CURSO: $scope.cursos_programados,
+        ID_CURSO: id_curso,
         CANT_PARTICIPANTES: $scope.cantidad_participantes,
         SOLO_CLIENTE: solo_cliente,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
@@ -557,14 +567,12 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
           .then(function( response ) {//se ejecuta cuando la petición fue correcta
             $scope.Cursos = response.data.map(function(item){
               if(item!=null)
-            {
-                          return{
-                              id : item.ID,
-                              nombre : item.NOMBRE +" ["+item.FECHAS+"]",
-                          }
-            }
-  
-  
+              {
+                return{
+                  id : item.ID,
+                  nombre : item.NOMBRE +" ["+item.FECHAS+"]",
+                }
+              }  
             });
             if(seleccionado){
             $scope.cursos_programados = seleccionado;
@@ -577,14 +585,14 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
           $scope.Cursos = {};
           $http.get(  global_apiserver + "/cursos/getByModulo/?id="+id)
               .then(function( response ) {//se ejecuta cuando la petición fue correcta
-                      $scope.Cursos = response.data.map(function(item){
+                      $scope.CursosInsitu = response.data.map(function(item){
                           return{
                               id : item.ID_CURSO,
                               nombre : item.NOMBRE,
                           }
                       });
                       if(seleccionado){
-                          $scope.cursos_programados = seleccionado;
+                          $scope.cursos_insitu = seleccionado;
                       }
                   },
                   function (response){});
