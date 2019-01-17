@@ -818,13 +818,7 @@ if($id_servicio_cliente_etapa	!=	0){
 		if($MODALIDAD == "programado"){
 
 		} else {
-			//INSERTAR EN SCE_CURSOS
-			$id_sce_cursos = $database->insert("SCE_CURSOS", [
-				"ID_SCE" => $id_servicio_cliente_etapa,
-				"ID_CURSO" => $ID_CURSO
-			]);
 			//GENERAR TOKEN PARA EL CLIENTE
-			$respuesta = array();
 
 			//payload
 			$data = [
@@ -838,20 +832,24 @@ if($id_servicio_cliente_etapa	!=	0){
 			data = payload del JWT
 			*/
 			$token = array(
-			"iss" => $global_apiserver,
-			"data" => $data
+				'iss' => $global_apiserver,
+				'aud' => $global_apiserver,
+				'exp' => time() + $duration,
+				'data' => $data
 			);
 
 			//Codifica la información usando el $key definido en jwt.php
 			$jwt = JWT::encode($token, $key);
 
-			//GUARDAR EL URL EN COTIZACIÓN DETALLE
+			//GUARDAR EL URL SCE_CURSOS
 			$url = $insertar_participantes . "?token=" . $jwt;
-			$cot_detalle = $database->insert("COTIZACION_DETALLES", [
-				"ID_COTIZACION" => $ID_COTIZACION,
-				"DETALLE" => "URL_PARTICIPANTES",
-				"VALOR" => $url
-			]);
+
+			//INSERTAR EN SCE_CURSOS
+			$id_sce_cursos = $database->insert("SCE_CURSOS", [
+				"ID_SCE" => $id_servicio_cliente_etapa,
+				"ID_CURSO" => $ID_CURSO,
+				"URL_PARTICIPANTES" => $url
+			]);			
 			valida_error_medoo_and_die();
 
 			//TODO: Enviar notificación al cliente de que su servicio está listo para cargar participantes

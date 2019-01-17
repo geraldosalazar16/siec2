@@ -105,16 +105,7 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	$cotizaciones[$i]["ESTADO"] = $estado;
 	$cotizaciones[$i]["VALOR_TARIFA"] = $desc_tarifa['TARIFA'];
 	
-	//Si es CIFA y está firmado buscar el url para la carga de participantes
-	if($servicio["ID"] == 3 && $estado["ESTATUS_SEGUIMIENTO"] == "Firmado"){
-		$url = $database->get("COTIZACION_DETALLES", "VALOR", [
-			"AND" => [
-				"ID_COTIZACION"=>$cotizaciones[$i]["ID"],
-				"DETALLE" => "URL_PARTICIPANTES"
-			]			
-		]);
-		$desc_curso["URL_PARTICIPANTES"] = $url;
-	}
+	
 	$cotizaciones[$i]["CURSO"] = $desc_curso;
 
 	$CONSECUTIVO = str_pad("".$cotizaciones[$i]["FOLIO_CONSECUTIVO"], 5, "0", STR_PAD_LEFT);

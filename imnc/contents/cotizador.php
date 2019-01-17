@@ -59,12 +59,13 @@
 				  <i ng-if="cotizacion.SERVICIO.ID==3"><br><strong>Modalidad:</strong> {{cotizacion.CURSO.MODALIDAD}}</i>
                   <i ng-if="cotizacion.SERVICIO.ID==3"><br><strong>Curso:</strong> {{cotizacion.CURSO.NOMBRE_CURSO}}</i>
                   <br ng-if="cotizacion.SERVICIO.ID==3">
+                  <!--
                   <a type="link" class="btn btn-primary btn-xs btn-success btnVerEnlace"
                   ng-if="cotizacion.SERVICIO.ID==3 && cotizacion.CURSO.URL_PARTICIPANTES"
                   ng-click="mostrar_enlace(cotizacion.CURSO.URL_PARTICIPANTES)">
                       <i class="fa fa-bullseye"></i> Enlace para cargar participantes
                     </a>
-                  <!--<p ng-if="cotizacion.SERVICIO.ID==3 && cotizacion.CURSO.URL_PARTICIPANTES"><strong>URL para cargar participantes:</strong> {{cotizacion.CURSO.URL_PARTICIPANTES}}</p>-->
+                    -->
                 </td>
                 <td>{{cotizacion.FOLIO}}</td>
                 <td>{{cotizacion.ESTADO.ESTATUS_SEGUIMIENTO}}</td>
