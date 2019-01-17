@@ -62,8 +62,8 @@ $TARIFA = $objeto->TARIFA;
 
 
 if($ID_SERVICIO != 3){
-	//No se necesita para Certificacion Personas
-	if($ID_TIPO_SERVICIO != 19){
+	//No se necesita para Certificacion Personas,informacion_comercial
+	if($ID_TIPO_SERVICIO != 19 ){
 		valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
 	} else {
 		if(!$TARIFA){
@@ -114,6 +114,15 @@ if($ID_TIPO_SERVICIO == 16){
 } else {
 	if(!$ACTIVIDAD_ECONOMICA){
 		$ACTIVIDAD_ECONOMICA = 0;
+	}
+}
+//SOLO ES OBLIGATORIO PARA UNIDAD VERIFICACION INFORMACION COMERCIAL
+$DICTAMEN_CONSTANCIA = $objeto->DICTAMEN_CONSTANCIA;
+if($ID_TIPO_SERVICIO == 18){
+	valida_parametro_and_die($DICTAMEN_CONSTANCIA,"Falta el DICTAMEN_CONSTANCIA");
+} else {
+	if(!$DICTAMEN_CONSTANCIA){
+		$DICTAMEN_CONSTANCIA = 0;
 	}
 }
 
@@ -231,12 +240,20 @@ if($ID_SERVICIO != 3){
 				"VALOR"	=>	$ACTIVIDAD_ECONOMICA
 			]);
 			valida_error_medoo_and_die();
-		break;
+			break;
 		case 17:
 			
-		break;
+			break;
+		case 18:
+			$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+				"ID_COTIZACION" => $id_cotizacion,
+				"DETALLE" => "DICTAMEN_O_CONSTANCIA",
+				"VALOR"	=>	$DICTAMEN_CONSTANCIA
+			]);
+			valida_error_medoo_and_die();
+			break;
 		default: 
-		break;
+			break;
 	}
 
 	

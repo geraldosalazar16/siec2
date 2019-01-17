@@ -591,6 +591,85 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 				$cotizacion[0]["TOTAL_COTIZACION_DES"] = $total_cotizacion * (1-($cotizacion[0]["DESCUENTO"]/100)+($cotizacion[0]["AUMENTO"]/100));
 	
 			break;
+		case 18:
+			//Si la cotizacion tiene detalles es necesario cargar los datos de la tabla COTIZACION_DETALLES
+			$cotizacion_detalles = $database->select("COTIZACION_DETALLES","*", [
+				"ID_COTIZACION" => $id,
+				]);
+			valida_error_medoo_and_die();
+			$cotizacion[0]["DETALLES"] = $cotizacion_detalles;
+			$campos_tramite = [
+				"COTIZACIONES_TRAMITES_INF_COM.ID",
+				"COTIZACIONES_TRAMITES_INF_COM.VIATICOS",
+				"COTIZACIONES_TRAMITES_INF_COM.DESCUENTO",
+				"COTIZACIONES_TRAMITES_INF_COM.ID_TIPO_AUDITORIA",
+				"COTIZACIONES_TRAMITES_INF_COM.AUMENTO",
+				"I_SG_AUDITORIAS_TIPOS.TIPO"
+			];
+			$tramites =  $database->select("COTIZACIONES_TRAMITES_INF_COM", 
+				["[>]I_SG_AUDITORIAS_TIPOS" => ["ID_TIPO_AUDITORIA" => "ID"]], $campos_tramite,
+				["ID_COTIZACION"=>$cotizacion[0]["ID"]]);
+				valida_error_medoo_and_die();
+			$cotizacion[0]["COTIZACION_TRAMITES"] = $tramites;
+			$total_cotizacion=0;
+			foreach ($tramites as $key => $tramite_item) {
+				//En vez de usar la etapa usar el tipo de auditoria
+				//$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$tramite_item["ID_ETAPA_PROCESO"]]);
+				$etapa = $database->get("I_SG_AUDITORIAS_TIPOS", "*", ["ID"=>$tramite_item["ID_TIPO_AUDITORIA"]]);
+				//Sustituyo $etapa["ETAPA"] por nombre_auditoria
+				$nombre_auditoria = $etapa["TIPO"];
+				valida_error_medoo_and_die();
+				
+				
+				//AQUI VENDRIA LA PARTE DE CODIGO QUE TIENE Q VER CON TARIFA ADICIONAL PERO COMO NO LO HAN PEDIDO PUES LO DEJAMOS EN BLANCO
+				//{..........}		
+				
+				$cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
+						"*", ["AND"=>["ID_TRAMITE"=>$tramite_item["ID"],"ID_COTIZACION"=>$cotizacion[0]["ID"]]]);
+				valida_error_medoo_and_die();
+
+				$total_tarifa_adicional = 0;
+				for ($i=0; $i < count($cotizacion_tarifa_adicional); $i++) {
+					$subtotal = $cotizacion_tarifa_adicional[$i]["TARIFA"] * $cotizacion_tarifa_adicional[$i]["CANTIDAD"];
+					$total_tarifa_adicional += $subtotal;
+				}
+				//AQUI LA PARTE QUE TIENE QUE VER CON LA COTIZACION POR SITIOS
+				$cotizacion_sitios = $database->select("COTIZACION_SITIOS_INF_COM", "*", ["ID_COTIZACION"=>$tramite_item["ID"]]);
+				valida_error_medoo_and_die();
+
+				// Aqui calculo el costo de la auditoria dependiendo de la etapa por la que esta pasando, teniendo en cuenta que el costo de la auditoria es fijo para cada etapa.
+				$costo_inicial = 0;
+			
+					if ($cotizacion_sitios[0]["SELECCIONADO"] == 1) {
+						$costo_inicial = $tarifa['TARIFA'];  
+					}
+					else{
+						$costo_inicial = 0;
+					}	
+			
+			
+				$costo_inicial = $costo_inicial;
+			
+						
+					//	$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_DES"] = (floatval($tarifa['TARIFA'])*(1-($tramite_item["DESCUENTO"]/100)+($tramite_item["AUMENTO"]/100)));
+					//	$total_dias_auditoria=$dias_base;
+					//	$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_BASE"] = $dias_base;
+					//	$costo_inicial = (($total_dias_auditoria) * floatval($tarifa['TARIFA']));
+						$costo_desc = ($costo_inicial *  floatval(1-($tramite_item["DESCUENTO"]/100)+($tramite_item["AUMENTO"]/100)));
+						
+						//$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_AUDITORIA"] = $total_dias_auditoria;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_ADICIONAL"] = $total_tarifa_adicional;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO"] = $costo_inicial;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_DES"] = $costo_desc;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"] = $costo_desc + $tramite_item["VIATICOS"]+$total_tarifa_adicional;
+		
+						//$total_dias_cotizacion += $total_dias_auditoria;
+						$total_cotizacion += $cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"];
+				}
+				//$cotizacion[0]["TOTAL_DIAS_COTIZACION"] = $total_dias_cotizacion;
+				$cotizacion[0]["TOTAL_COTIZACION"] = $total_cotizacion;
+				$cotizacion[0]["TOTAL_COTIZACION_DES"] = $total_cotizacion * (1-($cotizacion[0]["DESCUENTO"]/100)+($cotizacion[0]["AUMENTO"]/100));
+			break;
 		case 19:
 			$campos_tramite = [
 				"COTIZACIONES_TRAMITES_CPER.ID",
