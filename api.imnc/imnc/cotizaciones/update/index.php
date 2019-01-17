@@ -53,8 +53,8 @@ valida_parametro_and_die($FOLIO_INICIALES,"Falta FOLIO INICIALES");
 $REFERENCIA = $objeto->REFERENCIA;
 $TARIFA = $objeto->TARIFA;
 if($ID_SERVICIO != 3){
-	//No se necesita para Certificacion Personas
-	if($ID_TIPO_SERVICIO != 19){
+	//No se necesita para Certificacion Personas,&& $ID_TIPO_SERVICIO != 18
+	if($ID_TIPO_SERVICIO != 19 ){
 		valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
 	} else {
 		if(!$TARIFA){
@@ -97,7 +97,7 @@ if($ID_TIPO_SERVICIO == 20){
 	}
 }
 $ACTIVIDAD_ECONOMICA = $objeto->ACTIVIDAD_ECONOMICA;
-//SOLO ES OBLIGATORIO PARA INTEGRAL
+//SOLO ES OBLIGATORIO PARA IGUALDAD LABORAL
 if($ID_TIPO_SERVICIO == 16){
 	valida_parametro_and_die($ACTIVIDAD_ECONOMICA,"Falta la Actividad Economica");
 } else {
@@ -105,7 +105,15 @@ if($ID_TIPO_SERVICIO == 16){
 		$ACTIVIDAD_ECONOMICA = 0;
 	}
 }
-
+//SOLO ES OBLIGATORIO PARA UNIDAD VERIFICACION INFORMACION COMERCIAL
+$DICTAMEN_CONSTANCIA = $objeto->DICTAMEN_CONSTANCIA;
+if($ID_TIPO_SERVICIO == 18){
+	valida_parametro_and_die($DICTAMEN_CONSTANCIA,"Falta el DICTAMEN_CONSTANCIA");
+} else {
+	if(!$DICTAMEN_CONSTANCIA){
+		$DICTAMEN_CONSTANCIA = 0;
+	}
+}
 //Solo para CIFA
 $MODALIDAD = "";
 $ID_CURSO = "";
@@ -210,6 +218,13 @@ switch($ID_TIPO_SERVICIO){
 		break;
 	case 17:
 		
+		break;
+	case 18:
+			$id_cotizacion_detalles = $database->update("COTIZACION_DETALLES", [
+			"VALOR"	=>	$DICTAMEN_CONSTANCIA
+			],["AND"=>["ID_COTIZACION" => $ID,"DETALLE" => "DICTAMEN_O_CONSTANCIA",]]);
+			
+			valida_error_medoo_and_die();
 		break;	
 	default: 
 		break;

@@ -63,6 +63,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       $scope.cotizacion_insertar_editar.NORMAS.push($scope.Normas[0]);
     }
     $scope.onChangeModalidades($scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID);
+	$scope.fill_select_tarifa_id_tipo_servicio($scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID);
   }
 
   $scope.fill_select_estatus = function(seleccionado){
@@ -86,6 +87,20 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   $scope.fill_select_tarifa = function(){
     //recibe la url del php que se ejecutará
     $http.get(  global_apiserver + "/tarifa_cotizacion/getAll/")
+        .then(function( response ) {//se ejecuta cuando la petición fue correcta
+          $scope.Tarifa_Cotizacion = response.data.map(function(item){
+            return{
+              id: item.ID,
+              tarifa : item.TARIFA,
+              descripcion : item.DESCRIPCION + " - $" + item.TARIFA
+            }
+          });
+      },
+      function (response){});
+  }
+   $scope.fill_select_tarifa_id_tipo_servicio = function(idts){
+    //recibe la url del php que se ejecutará
+    $http.get(  global_apiserver + "/tarifa_cotizacion/getByIdTipoServicio/?id="+idts)
         .then(function( response ) {//se ejecuta cuando la petición fue correcta
           $scope.Tarifa_Cotizacion = response.data.map(function(item){
             return{
@@ -158,7 +173,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $scope.fill_select_prospectos("");
     $scope.fill_select_clientes("");
     $scope.fill_select_estatus("");
-    $scope.fill_select_tarifa();
+    //$scope.fill_select_tarifa();
     fill_select_servicio();
     fill_select_tipo_servicio();
     $scope.titulo_columna_tarifa = 'Tarifa día auditor';
@@ -223,7 +238,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $scope.fill_select_prospectos("");
     $scope.fill_select_clientes("");
     $scope.fill_select_estatus("");
-    $scope.fill_select_tarifa();
+    //$scope.fill_select_tarifa();
     fill_select_tipo_servicio();
     $scope.changeReferencia();
     $('#modalInsertarActualizarCotizacion').modal('show');
@@ -270,6 +285,9 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
             break;
           case 17:
             
+            break;
+		case 18:
+            $scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA = data[0].DETALLES[0].VALOR;
             break;
           default:
             break;
@@ -346,6 +364,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
         ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
+		DICTAMEN_CONSTANCIA: $scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA,
         MODALIDAD: $scope.modalidades,
         ID_CURSO: $scope.cursos_programados,
         CANT_PARTICIPANTES: $scope.cantidad_participantes,
@@ -373,6 +392,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
         ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
+		DICTAMEN_CONSTANCIA: $scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA,
         MODALIDAD: $scope.modalidades,
         ID_CURSO: $scope.cursos_programados,
         CANT_PARTICIPANTES: $scope.cantidad_participantes,
@@ -640,5 +660,23 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       content: url,
       columnClass: 'col-md-8 col-md-offset-2'
     });    
+  }
+  
+  $scope.cambio_dictamen_constancia = function() {
+    if($scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA == "Dictamen"){
+		$scope.Tarifa_Cotizacion.forEach(tarifa => {
+		if(tarifa.id == 19){
+			$scope.cotizacion_insertar_editar.TARIFA = tarifa.id;
+        }
+		});
+		
+	}
+	if($scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA == "Constancia"){
+		$scope.Tarifa_Cotizacion.forEach(tarifa => {
+		if(tarifa.id == 20){
+			$scope.cotizacion_insertar_editar.TARIFA = tarifa.id;
+        }
+		});
+	}
   }
 }]);
