@@ -385,7 +385,21 @@
               </div>					    
 
               <!-- Solo mostrar para CIFA-->
-              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && modalidades == 'insitu'">
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && modalidades == 'programado'">
+                <label class="control-label col-md-12">Opciones de Participantes </label>
+                <div class="col-md-12">
+                  <select ng-model="opciones_participantes" class="form-control"
+                  >
+                    <option value="" ng-selected="true" disabled>Seleccione una opción</option>
+                    <option value="solo_cliente">Sólo participará el cliente</option>
+                    <option value="participantes">El cliente agregará participantes</option>
+                  </select>
+                </div>
+              </div> 
+
+              <!-- Solo mostrar para CIFA-->
+              <div class="form-group form-vertical" 
+              ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && ((modalidades == 'programado' && opciones_participantes == 'participantes') || modalidades == 'insitu')">
                 <label class="control-label col-md-12">Cantidad de Participantes </label>
                 <div class="col-md-12">
                   <input type="text" class="form-control" name="cantidad_participantes" id="cantidad_participantes" ng-model="cantidad_participantes"   required>

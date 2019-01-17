@@ -241,6 +241,9 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     //$scope.fill_select_tarifa();
     fill_select_tipo_servicio();
     $scope.changeReferencia();
+    $scope.modalidades = "";
+    $scope.opciones_participantes = "";
+    $scope.cantidad_participantes = 0;
     $('#modalInsertarActualizarCotizacion').modal('show');
   }
 
@@ -295,11 +298,18 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         //Cotización CIFA
         if($scope.cotizacion_insertar_editar.ID_SERVICIO.ID == 3){          
           $scope.tipo_persona = "";
-          $scope.modalidades = $scope.cotizacion_insertar_editar.MODALIDAD;          
-          validar_cursos_cargados($scope.modalidades,$scope.cotizacion_insertar_editar.ID_CURSO);
+          $scope.modalidades = $scope.cotizacion_insertar_editar.MODALIDAD; 
           if($scope.modalidades == 'insitu'){
-            $scope.cantidad_participantes = $scope.cotizacion_insertar_editar.CANT_PARTICIPANTES;
-          }
+            validar_cursos_cargados($scope.modalidades,$scope.cotizacion_insertar_editar.ID_CURSO);
+          } else if($scope.modalidades == 'programado') {
+            validar_cursos_cargados($scope.modalidades,$scope.cotizacion_insertar_editar.ID_CURSO_PROGRAMADO);
+          }        
+          $scope.cantidad_participantes = $scope.cotizacion_insertar_editar.CANT_PARTICIPANTES;
+          if($scope.cotizacion_insertar_editar.SOLO_CLIENTE == 0){
+            $scope.opciones_participantes = 'participantes';
+          }else if($scope.cotizacion_insertar_editar.SOLO_CLIENTE == 1){
+            $scope.opciones_participantes = 'solo_cliente';
+          }           
         }
       }
       else  {
@@ -342,7 +352,14 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   }
   $scope.cotizacion_guardar = function(){
     var cotizacion;
-	  var id_entidad = 0;
+    var id_entidad = 0;
+    var solo_cliente = 0;
+    if($scope.opciones_participantes == 'solo_cliente'){
+      solo_cliente = 1;
+      $scope.cantidad_participantes = 1;
+    } else if($scope.opciones_participantes == 'participantes'){
+      solo_cliente = 0;      
+    }
     if($scope.bandera == 0){
       id_entidad = $scope.cotizacion_insertar_editar.PROSPECTO.ID;
       cotizacion = {
@@ -364,10 +381,11 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
         ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
-		DICTAMEN_CONSTANCIA: $scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA,
+		    DICTAMEN_CONSTANCIA: $scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA,
         MODALIDAD: $scope.modalidades,
         ID_CURSO: $scope.cursos_programados,
         CANT_PARTICIPANTES: $scope.cantidad_participantes,
+        SOLO_CLIENTE: solo_cliente,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }else{
@@ -392,10 +410,11 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         COMPLEJIDAD : $scope.cotizacion_insertar_editar.COMPLEJIDAD,
         COMBINADA: $scope.cotizacion_insertar_editar.COMBINADA,
         ACTIVIDAD_ECONOMICA: $scope.cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA,
-		DICTAMEN_CONSTANCIA: $scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA,
+		    DICTAMEN_CONSTANCIA: $scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA,
         MODALIDAD: $scope.modalidades,
         ID_CURSO: $scope.cursos_programados,
         CANT_PARTICIPANTES: $scope.cantidad_participantes,
+        SOLO_CLIENTE: solo_cliente,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }
@@ -532,44 +551,44 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
     }
     $scope.CursosProgramadoLista = function(id,seleccionado){
-		//recibe la url del php que se ejecutará
-        $scope.Cursos = {};
-        $http.get(  global_apiserver + "/cursos_programados/getByModulo/?id="+id)
-	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
-	  			$scope.Cursos = response.data.map(function(item){
-	  				if(item!=null)
-					{
-                        return{
-                            id : item.ID,
-                            nombre : item.NOMBRE +" ["+item.FECHAS+"]",
-                        }
-					}
-
-
-	  			});
-	  			if(seleccionado){
-					$scope.cursos_programados = seleccionado;
-				}
-			},
-			function (response){});
-	}
-    $scope.CursosLista = function(id,seleccionado){
-        //recibe la url del php que se ejecutará
-        $scope.Cursos = {};
-        $http.get(  global_apiserver + "/cursos/getByModulo/?id="+id)
-            .then(function( response ) {//se ejecuta cuando la petición fue correcta
-                    $scope.Cursos = response.data.map(function(item){
-                        return{
-                            id : item.ID_CURSO,
-                            nombre : item.NOMBRE,
-                        }
-                    });
-                    if(seleccionado){
-                        $scope.cursos_programados = seleccionado;
-                    }
-                },
-                function (response){});
+      //recibe la url del php que se ejecutará
+          $scope.Cursos = {};
+          $http.get(  global_apiserver + "/cursos_programados/getByModulo/?id="+id)
+          .then(function( response ) {//se ejecuta cuando la petición fue correcta
+            $scope.Cursos = response.data.map(function(item){
+              if(item!=null)
+            {
+                          return{
+                              id : item.ID,
+                              nombre : item.NOMBRE +" ["+item.FECHAS+"]",
+                          }
+            }
+  
+  
+            });
+            if(seleccionado){
+            $scope.cursos_programados = seleccionado;
+          }
+        },
+        function (response){});
     }
+      $scope.CursosLista = function(id,seleccionado){
+          //recibe la url del php que se ejecutará
+          $scope.Cursos = {};
+          $http.get(  global_apiserver + "/cursos/getByModulo/?id="+id)
+              .then(function( response ) {//se ejecuta cuando la petición fue correcta
+                      $scope.Cursos = response.data.map(function(item){
+                          return{
+                              id : item.ID_CURSO,
+                              nombre : item.NOMBRE,
+                          }
+                      });
+                      if(seleccionado){
+                          $scope.cursos_programados = seleccionado;
+                      }
+                  },
+                  function (response){});
+      }
 
  $scope.cambioReferencia = function(){
    $scope.Servicios.forEach(servicio => {
