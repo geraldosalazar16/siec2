@@ -179,8 +179,8 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $scope.titulo_columna_tarifa = 'Tarifa día auditor';
     $scope.titulo_columna_info = 'Prospecto, tipo de servicio y norma';
 
-    $scope.CursosLista(3,null);
-    $scope.CursosProgramadoLista(3,null);
+    //$scope.CursosLista(3,null);
+    //$scope.CursosProgramadoLista(3,null);
 
     var http_request = {
       method: 'GET',
@@ -304,9 +304,9 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
           $scope.tipo_persona = "";
           $scope.modalidades = $scope.cotizacion_insertar_editar.MODALIDAD; 
           if($scope.modalidades == 'insitu'){
-            validar_cursos_cargados($scope.modalidades,$scope.cotizacion_insertar_editar.ID_CURSO);
+            validar_cursos_cargados($scope.modalidades,$scope.cotizacion_insertar_editar.ID_CURSO,$scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID);
           } else if($scope.modalidades == 'programado') {
-            validar_cursos_cargados($scope.modalidades,$scope.cotizacion_insertar_editar.ID_CURSO_PROGRAMADO);
+            validar_cursos_cargados($scope.modalidades,$scope.cotizacion_insertar_editar.ID_CURSO_PROGRAMADO,$scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID);
           }        
           $scope.cantidad_participantes = $scope.cotizacion_insertar_editar.CANT_PARTICIPANTES;
           if($scope.cotizacion_insertar_editar.SOLO_CLIENTE == 0){
@@ -335,22 +335,22 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     });
   }
 
-  function validar_cursos_cargados(modalidad,id_curso){
+  function validar_cursos_cargados(modalidad,id_curso,id_tipo_servicio){
     if($scope.Cursos){
       if($scope.Cursos.length > 0){
         $scope.cursos_programados = id_curso;        
       } else {
         if(modalidad == 'programado'){
-          $scope.CursosProgramadoLista(3,id_curso);
+          $scope.CursosProgramadoLista(id_tipo_servicio,id_curso);
         } else {
-          $scope.CursosLista(3,id_curso);
+          $scope.CursosLista(id_tipo_servicio,id_curso);
         }
       }              
     } else {
       if(modalidad == 'programado'){
-        $scope.CursosProgramadoLista(3,id_curso);
+        $scope.CursosProgramadoLista(id_tipo_servicio,id_curso);
       } else {
-        $scope.CursosLista(3,id_curso);
+        $scope.CursosLista(id_tipo_servicio,id_curso);
       }
     }
   }
