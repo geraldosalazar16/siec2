@@ -75,12 +75,6 @@ app.controller('auditores_agenda_general_controller',['$scope','$http' ,function
                             case '2':
                                 color = '#B2F84C';
                                 break;
-                            case '1':
-                                color = "#FBFB32";
-                                break;
-                            case '2':
-                                color = '#B2F84C';
-                                break;
                             case '12':
                                 color = '#D790FC';
                                 break;
