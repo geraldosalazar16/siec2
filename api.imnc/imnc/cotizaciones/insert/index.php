@@ -62,8 +62,8 @@ $TARIFA = $objeto->TARIFA;
 
 
 if($ID_SERVICIO != 3){
-	//No se necesita para Certificacion Personas
-	if($ID_TIPO_SERVICIO != 19){
+	//No se necesita para Certificacion Personas,informacion_comercial
+	if($ID_TIPO_SERVICIO != 19 ){
 		valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
 	} else {
 		if(!$TARIFA){
@@ -116,6 +116,15 @@ if($ID_TIPO_SERVICIO == 16){
 		$ACTIVIDAD_ECONOMICA = 0;
 	}
 }
+//SOLO ES OBLIGATORIO PARA UNIDAD VERIFICACION INFORMACION COMERCIAL
+$DICTAMEN_CONSTANCIA = $objeto->DICTAMEN_CONSTANCIA;
+if($ID_TIPO_SERVICIO == 18){
+	valida_parametro_and_die($DICTAMEN_CONSTANCIA,"Falta el DICTAMEN_CONSTANCIA");
+} else {
+	if(!$DICTAMEN_CONSTANCIA){
+		$DICTAMEN_CONSTANCIA = 0;
+	}
+}
 
 if ($DESCUENTO != "" && ($DESCUENTO < 0 || $DESCUENTO > 100)) {
 	$respuesta["resultado"] = "error";
@@ -137,16 +146,21 @@ valida_parametro_and_die($ID_USUARIO_CREACION,"Falta ID de USUARIO");
 $MODALIDAD = "";
 $ID_CURSO = "";
 $CANT_PARTICIPANTES = 0;
+$SOLO_CLIENTE = "";
 if($ID_SERVICIO == 3){
 	$MODALIDAD = $objeto->MODALIDAD;
 	valida_parametro_and_die($MODALIDAD,"Falta MODALIDAD");
 	$ID_CURSO = $objeto->ID_CURSO;
 	valida_parametro_and_die($ID_CURSO,"Falta ID CURSO");
-	//Para los cursos in situ validar que tenga cantidad de participantes
-	if($MODALIDAD == "insitu"){
+	$SOLO_CLIENTE = $objeto->SOLO_CLIENTE;
+	valida_parametro_and_die($SOLO_CLIENTE,"Falta SOLO_CLIENTE");
+	if($SOLO_CLIENTE == 0){
 		$CANT_PARTICIPANTES = $objeto->CANT_PARTICIPANTES;
 		valida_parametro_and_die($CANT_PARTICIPANTES,"Falta CANT_PARTICIPANTES");
+	} else if($SOLO_CLIENTE == 1){
+		$CANT_PARTICIPANTES = 1;
 	}
+	
 }
 
 
@@ -231,12 +245,20 @@ if($ID_SERVICIO != 3){
 				"VALOR"	=>	$ACTIVIDAD_ECONOMICA
 			]);
 			valida_error_medoo_and_die();
-		break;
+			break;
 		case 17:
 			
-		break;
+			break;
+		case 18:
+			$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+				"ID_COTIZACION" => $id_cotizacion,
+				"DETALLE" => "DICTAMEN_O_CONSTANCIA",
+				"VALOR"	=>	$DICTAMEN_CONSTANCIA
+			]);
+			valida_error_medoo_and_die();
+			break;
 		default: 
-		break;
+			break;
 	}
 
 	
@@ -256,14 +278,18 @@ if($ID_SERVICIO != 3){
 		"VALOR"	=>	$ID_CURSO
 	]);
 	valida_error_medoo_and_die();
-	if($MODALIDAD == "insitu"){
-		$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
-			"ID_COTIZACION" => $id_cotizacion,
-			"DETALLE" => "CANT_PARTICIPANTES",
-			"VALOR"	=>	$CANT_PARTICIPANTES
-		]);
-		valida_error_medoo_and_die();
-	}
+	$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+		"ID_COTIZACION" => $id_cotizacion,
+		"DETALLE" => "CANT_PARTICIPANTES",
+		"VALOR"	=>	$CANT_PARTICIPANTES
+	]);
+	valida_error_medoo_and_die();
+	$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+		"ID_COTIZACION" => $id_cotizacion,
+		"DETALLE" => "SOLO_CLIENTE",
+		"VALOR"	=>	$SOLO_CLIENTE
+	]);
+	valida_error_medoo_and_die();
 }
 
 //Si todo salio bien agregar el id de la cotizacion al producto

@@ -38,6 +38,22 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	valida_error_medoo_and_die(); 
 	$norma = $database->select("COTIZACION_NORMAS", "*", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
     valida_error_medoo_and_die(); 
+	//Se buscan los detalles si el tipo de servicio en cuestion tiene.
+	switch($tipos_servicio["ID"]){
+		case 16:
+			$cotizacion_detalles = $database->get("COTIZACION_DETALLES","VALOR", 
+				["AND"=>["ID_COTIZACION" => $cotizaciones[$i]["ID"],"DETALLE" => "SECTOR",]]);
+			valida_error_medoo_and_die();
+			$cotizaciones[$i]["SECTOR"] = $cotizacion_detalles;
+			break;
+		case 18:
+			$cotizacion_detalles = $database->get("COTIZACION_DETALLES","VALOR", ["AND"=>["ID_COTIZACION" => $cotizaciones[$i]["ID"],"DETALLE" => "DICTAMEN_O_CONSTANCIA",]]);
+			valida_error_medoo_and_die();
+			$cotizaciones[$i]["DICTAMEN_O_CONSTANCIA"] = $cotizacion_detalles;
+			break;	
+		default:
+			break;	
+	}
     //Info de cursos
     $desc_curso = array();
     if($servicio["ID"] == 3){

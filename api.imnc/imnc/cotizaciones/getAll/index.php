@@ -38,6 +38,22 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	//$norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
 	$norma = $database->select("COTIZACION_NORMAS", "*", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
 	valida_error_medoo_and_die(); 
+	//Se buscan los detalles si el tipo de servicio en cuestion tiene.
+	switch($tipos_servicio["ID"]){
+		case 16:
+			$cotizacion_detalles = $database->get("COTIZACION_DETALLES","VALOR", 
+				["AND"=>["ID_COTIZACION" => $cotizaciones[$i]["ID"],"DETALLE" => "SECTOR",]]);
+			valida_error_medoo_and_die();
+			$cotizaciones[$i]["SECTOR"] = $cotizacion_detalles;
+			break;
+		case 18:
+			$cotizacion_detalles = $database->get("COTIZACION_DETALLES","VALOR", ["AND"=>["ID_COTIZACION" => $cotizaciones[$i]["ID"],"DETALLE" => "DICTAMEN_O_CONSTANCIA",]]);
+			valida_error_medoo_and_die();
+			$cotizaciones[$i]["DICTAMEN_O_CONSTANCIA"] = $cotizacion_detalles;
+			break;	
+		default:
+			break;	
+	}
 	//Info de cursos
     $desc_curso = array();
     if($servicio["ID"] == 3){
@@ -50,6 +66,7 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 		$modalidad = "";
 		$id_curso = 0;
 		$cantidad_participantes = 0;
+		$solo_cliente = 0;
 		$meta = $database->select("COTIZACION_DETALLES", "*", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
 		foreach($meta as $data){
 			if($data["DETALLE"] == "MODALIDAD"){
@@ -61,6 +78,9 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 			if($data["DETALLE"] == "CANT_PARTICIPANTES"){
 				$cantidad_participantes = $data["VALOR"];
 			}
+			if($data["DETALLE"] == "SOLO_CLIENTE"){
+				$solo_cliente = $data["VALOR"];
+			}
 		}
 
         $desc_curso["MODALIDAD"] = "";
@@ -71,12 +91,15 @@ for ($i=0; $i < count($cotizaciones); $i++) {
             $desc_curso["NOMBRE_CURSO"] = $NOMBRE_CURSO[0]["NOMBRE"];
 			$desc_curso["ID_CURSO_PROGRAMADO"] = $id_curso;
 			$desc_curso["ID_CURSO"] = $NOMBRE_CURSO[0]["ID_CURSO"];
+			$desc_curso["CANT_PARTICIPANTES"] = $cantidad_participantes;
+			$desc_curso["SOLO_CLIENTE"] = $solo_cliente;
         } else if($modalidad == 'insitu'){
             $desc_curso["MODALIDAD"] = "insitu";
 			$data = $database->get("CURSOS", ["ID_CURSO","NOMBRE"], ["ID_CURSO"=>$id_curso]);
 			$desc_curso["NOMBRE_CURSO"] = $data["NOMBRE"];
 			$desc_curso["ID_CURSO"] = $id_curso;
 			$desc_curso["CANT_PARTICIPANTES"] = $cantidad_participantes;
+			$desc_curso["SOLO_CLIENTE"] = $solo_cliente;
         }
     }     
 	$desc_tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizaciones[$i]["TARIFA"]]);
@@ -89,16 +112,7 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	$cotizaciones[$i]["ESTADO"] = $estado;
 	$cotizaciones[$i]["VALOR_TARIFA"] = $desc_tarifa['TARIFA'];
 	
-	//Si es CIFA y está firmado buscar el url para la carga de participantes
-	if($servicio["ID"] == 3 && $estado["ESTATUS_SEGUIMIENTO"] == "Firmado"){
-		$url = $database->get("COTIZACION_DETALLES", "VALOR", [
-			"AND" => [
-				"ID_COTIZACION"=>$cotizaciones[$i]["ID"],
-				"DETALLE" => "URL_PARTICIPANTES"
-			]			
-		]);
-		$desc_curso["URL_PARTICIPANTES"] = $url;
-	}
+	
 	$cotizaciones[$i]["CURSO"] = $desc_curso;
 
 	$CONSECUTIVO = str_pad("".$cotizaciones[$i]["FOLIO_CONSECUTIVO"], 5, "0", STR_PAD_LEFT);

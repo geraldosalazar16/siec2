@@ -51,22 +51,21 @@
                 <td>{{$index + 1}}</td>
                 <td>
                   <strong>{{cotizacion.NOMBRE_VISTA}}</strong><br>
-                  Tipo de servicio: <strong>{{cotizacion.TIPOS_SERVICIO.NOMBRE}}</strong>
-                  <br ng-if="cotizacion.TIPOS_SERVICIO.ID==17">
-                  <i ng-if="cotizacion.SERVICIO.ID!=3">{{cotizacion.NORMA[0].ID_NORMA}}</i>
-                  <br>                  
-                  <i ng-if="cotizacion.SERVICIO.ID!=3">Tarifa día auditor: {{cotizacion.VALOR_TARIFA | currency}}</i>
-                  <br ng-if="cotizacion.SERVICIO.ID!=3">
-                  <i ng-if="cotizacion.SERVICIO.ID==3"><strong>Modalidad:</strong> {{cotizacion.CURSO.MODALIDAD}}</i>
+                  <strong>Tipo de servicio: </strong>{{cotizacion.TIPOS_SERVICIO.NOMBRE}}
+				  <i ng-if="cotizacion.TIPOS_SERVICIO.ID==16"><br><strong>Actividad Econ&oacutemica: </strong> {{cotizacion.SECTOR}}</i>
+                  <i ng-if="cotizacion.TIPOS_SERVICIO.ID==17"><br><strong>Norma: </strong>{{cotizacion.NORMA[0].ID_NORMA}}</i>
+				  <i ng-if="cotizacion.TIPOS_SERVICIO.ID==18"><br><strong>Dictamen o Constancia: </strong>{{cotizacion.DICTAMEN_O_CONSTANCIA}}</i>
+				  <i ng-if="cotizacion.SERVICIO.ID!=3 && cotizacion.TIPOS_SERVICIO.ID!=18 && cotizacion.TIPOS_SERVICIO.ID!=19"><br><strong>Tarifa día auditor: </strong>{{cotizacion.VALOR_TARIFA | currency}}</i>
+				  <i ng-if="cotizacion.SERVICIO.ID==3"><br><strong>Modalidad:</strong> {{cotizacion.CURSO.MODALIDAD}}</i>
+                  <i ng-if="cotizacion.SERVICIO.ID==3"><br><strong>Curso:</strong> {{cotizacion.CURSO.NOMBRE_CURSO}}</i>
                   <br ng-if="cotizacion.SERVICIO.ID==3">
-                  <i ng-if="cotizacion.SERVICIO.ID==3"><strong>Curso:</strong> {{cotizacion.CURSO.NOMBRE_CURSO}}</i>
-                  <br ng-if="cotizacion.SERVICIO.ID==3">
+                  <!--
                   <a type="link" class="btn btn-primary btn-xs btn-success btnVerEnlace"
                   ng-if="cotizacion.SERVICIO.ID==3 && cotizacion.CURSO.URL_PARTICIPANTES"
                   ng-click="mostrar_enlace(cotizacion.CURSO.URL_PARTICIPANTES)">
                       <i class="fa fa-bullseye"></i> Enlace para cargar participantes
                     </a>
-                  <!--<p ng-if="cotizacion.SERVICIO.ID==3 && cotizacion.CURSO.URL_PARTICIPANTES"><strong>URL para cargar participantes:</strong> {{cotizacion.CURSO.URL_PARTICIPANTES}}</p>-->
+                    -->
                 </td>
                 <td>{{cotizacion.FOLIO}}</td>
                 <td>{{cotizacion.ESTADO.ESTATUS_SEGUIMIENTO}}</td>
@@ -108,6 +107,11 @@
                   </div>
                   <div ng-show = "cotizacion.ID_TIPO_SERVICIO == 17">
                     <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_TUR&id_cotizacion={{cotizacion.ID}}" style="float: right;">
+                      <i class="fa fa-bullseye"></i> Ver cotización
+                    </a>	
+                  </div>
+				  <div ng-show = "cotizacion.ID_TIPO_SERVICIO == 18">
+                    <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_INF_COM&id_cotizacion={{cotizacion.ID}}" style="float: right;">
                       <i class="fa fa-bullseye"></i> Ver cotización
                     </a>	
                   </div>
@@ -296,12 +300,12 @@
 
             
 
-              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID != 3 && cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID != 19">
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID != 3  && cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID != 19">
 
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa por Día Auditor<span class="required">*</span></label>
                 <div class="col-md-12">
                   <select ng-model="cotizacion_insertar_editar.TARIFA" required="required" class="form-control"
-                  ng-options="item_tarifa.id as item_tarifa.descripcion for item_tarifa in Tarifa_Cotizacion">
+                  ng-options="item_tarifa.id as item_tarifa.descripcion for item_tarifa in Tarifa_Cotizacion" ng-disabled="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID == 18">
                     <option value="" selected disabled>---Seleccione una tarifa---</option>
                   </select>
                 </div>
@@ -313,8 +317,7 @@
                   <input type="numeric" ng-model="cotizacion_insertar_editar.DESCUENTO" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-			        <!-- Esta opción es solo para Certificacion de Igualdad Laboral -->
-			        <div class="form-group form-vertical" ng-show="false">
+			  <div class="form-group form-vertical" ng-show="false">
                 <label class="control-label col-md-12">Aumento (%)</label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="cotizacion_insertar_editar.AUMENTO" required="required" class="form-control col-md-7 col-xs-12">
@@ -339,7 +342,18 @@
                    </select>
                 </div>
               </div>
-
+				     <!-- Esta opción es solo para Unidad de verificación de información comercial -->
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID == 18">
+                <label class="control-label col-md-12">Dictamen o Constancia</label>
+                <div class="col-md-12">
+                  <select id="complejidad" ng-model="cotizacion_insertar_editar.DICTAMEN_CONSTANCIA" class="form-control" ng-change="cambio_dictamen_constancia()">
+                    <option value="" selected disabled>-- selecciona  --</option>
+                    <option value="Dictamen">Dictamen</option>
+                    <option value="Constancia" selected>Constancia</option>
+                    
+                   </select>
+                </div>
+              </div>
               <!-- Solo mostrar para CIFA-->
               <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3">
                 <label class="control-label col-md-12">Tipo de persona: {{tipo_persona}}</label>
@@ -360,7 +374,7 @@
               </div>              
 
 					    <!-- Solo mostrar para CIFA-->
-              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 ">
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && modalidades == 'programado'">
                 <label class="control-label col-md-12" id="labelCurso">Cursos Programados </label>
                 <div class="col-md-12">
                 <select ng-model="cursos_programados" class="form-control"
@@ -368,10 +382,35 @@
                     <option value="" ng-selected="true" disabled>Seleccione una opción</option>
                   </select>
                 </div>
-              </div>					    
+              </div>	
 
               <!-- Solo mostrar para CIFA-->
               <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && modalidades == 'insitu'">
+                <label class="control-label col-md-12" id="labelCurso">Cursos Insitu </label>
+                <div class="col-md-12">
+                <select ng-model="cursos_insitu" class="form-control"
+                  ng-options="cursoi.id as cursoi.nombre  for cursoi in CursosInsitu">
+                    <option value="" ng-selected="true" disabled>Seleccione una opción</option>
+                  </select>
+                </div>
+              </div>				    
+
+              <!-- Solo mostrar para CIFA-->
+              <div class="form-group form-vertical" ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && modalidades == 'programado'">
+                <label class="control-label col-md-12">Opciones de Participantes </label>
+                <div class="col-md-12">
+                  <select ng-model="opciones_participantes" class="form-control"
+                  >
+                    <option value="" ng-selected="true" disabled>Seleccione una opción</option>
+                    <option value="solo_cliente">Sólo participará el cliente</option>
+                    <option value="participantes">El cliente agregará participantes</option>
+                  </select>
+                </div>
+              </div> 
+
+              <!-- Solo mostrar para CIFA-->
+              <div class="form-group form-vertical" 
+              ng-show="cotizacion_insertar_editar.ID_SERVICIO.ID == 3 && ((modalidades == 'programado' && opciones_participantes == 'participantes') || modalidades == 'insitu')">
                 <label class="control-label col-md-12">Cantidad de Participantes </label>
                 <div class="col-md-12">
                   <input type="text" class="form-control" name="cantidad_participantes" id="cantidad_participantes" ng-model="cantidad_participantes"   required>

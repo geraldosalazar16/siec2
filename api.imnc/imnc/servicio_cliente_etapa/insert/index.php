@@ -5,6 +5,10 @@ include  '../../common/conn-medoo.php';
 include  '../../common/conn-sendgrid.php';  
 include '../../ex_common/archivos.php';
 include 'funciones.php';
+include  '../../common/jwt.php'; 
+
+use \Firebase\JWT\JWT;
+
 function valida_parametro_and_die($parametro, $mensaje_error){ 
 	$parametro = "" . $parametro; 
 	if ($parametro == "" or is_null($parametro)) { 
@@ -89,9 +93,36 @@ valida_error_medoo_and_die();
 //Agregar las normas
 if($ID_SERVICIO == 3)
 {
+	//GENERAR TOKEN PARA EL CLIENTE
+
+			//payload
+			$data = [
+				'ID_CLIENTE' => $ID_CLIENTE,
+				'MODALIDAD' => 'insitu',
+				'ID_CURSO' => $NORMAS,
+				'ID_PROGRAMACION' => $id_sce
+			];
+			/*
+			iss = issuer, servidor que genera el token
+			data = payload del JWT
+			*/
+			$token = array(
+				'iss' => $global_apiserver,
+				'aud' => $global_apiserver,
+				'exp' => time() + $duration,
+				'data' => $data
+			);
+
+			//Codifica la información usando el $key definido en jwt.php
+			$jwt = JWT::encode($token, $key);
+
+			//GUARDAR EL URL SCE_CURSOS
+			$url = $insertar_participantes . "?token=" . $jwt;
+
     $id_sce_normas = $database->insert("SCE_CURSOS", [
         "ID_SCE" => $id_sce,
-        "ID_CURSO" => $NORMAS
+		"ID_CURSO" => $NORMAS,
+		"URL_PARTICIPANTES" => $url
     ]);
 }else{
     for ($i=0; $i < count($NORMAS); $i++) {
