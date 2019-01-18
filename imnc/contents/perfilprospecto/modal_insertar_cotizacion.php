@@ -118,6 +118,15 @@
                    </select>
                 </div>
               </div>
+
+              <!-- Solo mostrar para CIFA-->
+              <div class="form-group form-vertical" ng-show="producto_actual.id_servicio == 3">	
+                <label class="control-label col-md-12">Modalidad del curso: <strong>{{producto_actual.modalidad}}</strong></label>
+                <label class="control-label col-md-12"><strong>{{producto_actual.nombre_curso}}</strong></label>
+                <label ng-if="producto_actual.solo_cliente == 1" class="control-label col-md-12">Participantes: <strong>El curso es para el cliente</strong></label>
+                <label ng-if="producto_actual.solo_cliente == 0" class="control-label col-md-12">Participantes: <strong>El cliente cargará {{producto_actual.cantidad}} participantes</strong></label>
+              </div>
+              
             </form>
         </div>
         <div class="modal-footer">

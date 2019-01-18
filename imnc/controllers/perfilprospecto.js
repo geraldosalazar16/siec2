@@ -1870,6 +1870,30 @@ $scope.mostrar_modal_crear_cotizacion = function(producto){
 	$scope.cotizacion_insertar_editar.ID_SERVICIO = producto.id_servicio;
 	$scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO = producto.id_tipo_servicio;
 	$scope.cotizacion_insertar_editar.NORMAS = producto.normas;
+
+	//CIFA
+	if(producto.id_servicio == 3){
+			//$scope.cotizacion_insertar_editar.MODALIDAD = producto.modalidad;
+			
+			//Buscar el nombre del curso
+			/*
+			var nombre_curso = "";
+			$scope.Cursos.forEach(curso => {
+				if(curso.id == producto.id_curso){
+					nombre_curso = curso.nombre;
+				}
+			});
+			$scope.cotizacion_insertar_editar.NOMBRE_CURSO = nombre_curso;
+
+            if(producto.modalidad == 'programado'){
+				if(producto.solo_cliente == 0){
+					$scope.cotizacion_insertar_editar.OPCIONES_PARTICIPANTES = 'El cliente cargará '+producto.cantidad+'participantes';
+				} else if(producto.solo_cliente == 1){
+					$scope.cotizacion_insertar_editar.OPCIONES_PARTICIPANTES = 'El cliente participará en el curso';
+				}
+			}
+			*/
+	}
 	//CargarEtapas(producto.id_servicio);
 	$("#modalInsertarActualizarCotizacion").modal("show");
 }
@@ -1912,6 +1936,7 @@ $scope.cotizacion_guardar = function(){
 		MODALIDAD: $scope.producto_actual.modalidad,
 		ID_CURSO: $scope.producto_actual.id_curso,
 		CANT_PARTICIPANTES: $scope.producto_actual.cantidad,
+		SOLO_CLIENTE: $scope.producto_actual.solo_cliente,
         ID_USUARIO : sessionStorage.getItem("id_usuario")
 	};
 	$http.post(global_apiserver + "/cotizaciones/insert/",datos).
