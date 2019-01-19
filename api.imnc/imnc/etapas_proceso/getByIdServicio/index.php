@@ -25,7 +25,12 @@ function valida_error_medoo_and_die(){
 } 
 
 $id = $_REQUEST["id"]; 
-$etapas_proceso = $database->select("ETAPAS_PROCESO", "*", ["ID_SERVICIO"=>$id]); 
+$etapas_proceso = $database->select("ETAPAS_PROCESO", "*", [
+	"AND" => [
+		"ID_SERVICIO"=>$id,
+		"HABILITAR_INSERCION" => 0
+	]	
+]); 
 valida_error_medoo_and_die(); 
 print_r(json_encode($etapas_proceso)); 
 ?> 

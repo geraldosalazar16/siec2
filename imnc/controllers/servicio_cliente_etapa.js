@@ -133,11 +133,18 @@ function llenar_modal_insertar_actualizar(){
 		}
         $scope.formData.sel_tipoServicio = servicio_obtenido.ID_TIPO_SERVICIO;
 		//$scope.formData.Norma	=	servicio_obtenido.ID_NORMA;
-		$scope.formData.etapa	=	servicio_obtenido.ID_ETAPA_PROCESO;
-
-		
-		
+		$scope.formData.etapa	=	servicio_obtenido.ID_ETAPA_PROCESO;		
 }	
+// ===========================================================================
+// ***** 		Funcion para eliminar Asignación de las posibles etapas  *****
+// ===========================================================================
+function eliminarAsignacion(){
+    //Quitar Asignación de las posibles etapas
+    $scope.Etapas = $scope.Etapas.filter(etapa => {
+        return etapa.ID_ETAPA !== '3';
+    });
+    //$scope.Etapas = nuevasEtapas;
+}
 // ===========================================================================
 // ***** 		Funcion para limpiar las variables del modal			 *****
 // ===========================================================================
