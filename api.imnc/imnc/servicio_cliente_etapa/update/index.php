@@ -50,12 +50,15 @@ valida_parametro_and_die($REFERENCIA, "Es necesario capturar la referencia");
 
 $ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
-
+$CANTIDAD = "";
 $NORMAS= "";
 $CAMBIO= "";
 if($ID_SERVICIO==3)
 {
-    $NORMAS= $objeto->NORMAS;
+    $NORMAS = $objeto->NORMAS;
+    valida_parametro_and_die($NORMAS, "Es neceario seleccionar un curso");
+    $CANTIDAD = $objeto->CANTIDAD;
+    valida_parametro_and_die($CANTIDAD, "Es neceario seleccionar la cantidad de participantes");
 }else{
     $NORMAS= $objeto->NORMAS;
     if(count($NORMAS) == 0){
@@ -109,7 +112,7 @@ if($ID_SERVICIO==3)  //para cifa
 {
     if($id_sce != 0)
     {
-        $id1 = $database->update("SCE_CURSOS", ["ID_CURSO"=>$NORMAS], ["ID_SCE"=>$ID]);
+        $id1 = $database->update("SCE_CURSOS", ["ID_CURSO"=>$NORMAS,"CANTIDAD_PARTICIPANTES"=>$CANTIDAD], ["ID_SCE"=>$ID]);
 
         $consulta = "SELECT SCE.ID,SCE.REFERENCIA,SCE.ID_SERVICIO,
                   (SELECT C.NOMBRE FROM CLIENTES C WHERE C.ID=SCE.ID_CLIENTE) AS CLIENTE,
@@ -237,7 +240,7 @@ else{ //para el resto
 }
 
 
-
+$respuesta["resultado"]="ok";
 
 print_r(json_encode($respuesta)); 
 ?> 

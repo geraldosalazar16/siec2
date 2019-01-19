@@ -41,11 +41,14 @@ valida_parametro_and_die($ID_SERVICIO, "Es necesario seleccionar un servicio");
 
 $ID_TIPO_SERVICIO	= $objeto->ID_TIPO_SERVICIO; 
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
-
+$CANTIDAD = null;
 $NORMAS= '';
 if($ID_SERVICIO == 3)
 {
      $NORMAS = $objeto->NORMAS;
+     valida_parametro_and_die($NORMAS, "Es neceario seleccionar un curso");
+     $CANTIDAD = $objeto->CANTIDAD;
+     valida_parametro_and_die($CANTIDAD, "Es neceario seleccionar la cantidad de participantes");
 }
 else{
         $NORMAS= $objeto->NORMAS;
@@ -121,8 +124,13 @@ if($ID_SERVICIO == 3)
 
     $id_sce_normas = $database->insert("SCE_CURSOS", [
         "ID_SCE" => $id_sce,
+<<<<<<< HEAD
+        "ID_CURSO" => $NORMAS,
+		"CANTIDAD_PARTICIPANTES"=>$CANTIDAD
+=======
 		"ID_CURSO" => $NORMAS,
 		"URL_PARTICIPANTES" => $url
+>>>>>>> 15c6f2a11246f80ccc73ee5bf57ca778b4d59bcb
     ]);
 }else{
     for ($i=0; $i < count($NORMAS); $i++) {

@@ -55,36 +55,50 @@ valida_parametro_and_die($EJECUTIVO, "Es introducir el Nombre del ejecutivo come
 $ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
 
+$ID_CURSO = $objeto->ID_CURSO;
+valida_parametro_and_die($ID_CURSO,"Falta ID del Curso");
 
-$id_participante = $database->insert("PARTICIPANTES", [
-	"RAZON_ENTIDAD" => $RAZON_ENTIDAD,
-	"EMAIL"=>	$EMAIL,
-	"TELEFONO" => $TELEFONO,
-	"CURP" => $CURP,
-	"RFC"=>$RFC,
-	"ID_ESTADO"=>$ESTADO,
-	"EJECUTIVO"=>$EJECUTIVO
-]);
-valida_error_medoo_and_die();
+$CANTIDAD_PARTICIPANTES = $objeto->CANTIDAD_PARTICIPANTES;
+valida_parametro_and_die($CANTIDAD_PARTICIPANTES,"Falta cantidad de participantes");
 
-if($id_participante!=0)
+$count = $database->count("SCE_PARTICIPANTES","*",["AND"=>["ID_SCE" => $ID_SCE,"ID_CURSO"=>$ID_CURSO]]);
+
+if($count < $CANTIDAD_PARTICIPANTES)
 {
-    $id = $database->insert("SCE_PARTICIPANTES", [
-        "ID_SCE" => $ID_SCE,
-        "ID_PARTICIPANTE"=>	$id_participante
-
+    $id_participante = $database->insert("PARTICIPANTES", [
+        "RAZON_ENTIDAD" => $RAZON_ENTIDAD,
+        "EMAIL"=>	$EMAIL,
+        "TELEFONO" => $TELEFONO,
+        "CURP" => $CURP,
+        "RFC"=>$RFC,
+        "ID_ESTADO"=>$ESTADO,
+        "EJECUTIVO"=>$EJECUTIVO
     ]);
     valida_error_medoo_and_die();
-    $estado_actual = "Razón Social: ".$RAZON_ENTIDAD.", Correo:".$EMAIL.", Teléfono: ".$TELEFONO.", CURP: ".$CURP.", RFC: ".$RFC.", Estado:".$ESTADO.", le atendió:".$EJECUTIVO;
-    $id2=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [
-        "ID_SERVICIO_CONTRATADO" => $ID_SCE,
-        "MODIFICACION" => "NUEVO PARTICIPANTE",
-        "ESTADO_ANTERIOR"=>	"",
-        "ESTADO_ACTUAL"=>$estado_actual,
-        "USUARIO" => $ID_USUARIO_MODIFICACION,
-        "FECHA_USUARIO" => date("Ymd"),
-        "FECHA_MODIFICACION" => date("Ymd")]);
+
+    if($id_participante!=0)
+    {
+        $id = $database->insert("SCE_PARTICIPANTES", [
+            "ID_SCE" => $ID_SCE,
+            "ID_PARTICIPANTE"=>	$id_participante,
+            "ID_CURSO"=>$ID_CURSO
+
+        ]);
+        valida_error_medoo_and_die();
+        $estado_actual = "Razón Social: ".$RAZON_ENTIDAD.", Correo:".$EMAIL.", Teléfono: ".$TELEFONO.", CURP: ".$CURP.", RFC: ".$RFC.", Estado:".$ESTADO.", le atendió:".$EJECUTIVO;
+        $id2=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [
+            "ID_SERVICIO_CONTRATADO" => $ID_SCE,
+            "MODIFICACION" => "NUEVO PARTICIPANTE",
+            "ESTADO_ANTERIOR"=>	"",
+            "ESTADO_ACTUAL"=>$estado_actual,
+            "USUARIO" => $ID_USUARIO_MODIFICACION,
+            "FECHA_USUARIO" => date("Ymd"),
+            "FECHA_MODIFICACION" => date("Ymd")]);
+    }
+}else{
+    valida_parametro_and_die(null,"No se puede agregar mas participantes a este curso.");
 }
+
 
 $respuesta["resultado"]="ok"; 
 

@@ -93,6 +93,7 @@ function llenar_modal_insertar_actualizar(){
             $('#divCursos').show();
             cargarCursos(servicio_obtenido.ID_TIPO_SERVICIO);
             $scope.formData.sel_Cursos = servicio_obtenido.NORMAS[0].ID_CURSO;
+            $scope.formData.cantidad_participantes = servicio_obtenido.NORMAS[0].CANTIDAD_PARTICIPANTES;
             cargarEtapas($scope.formData.claveServicio,servicio_obtenido.ID_ETAPA_PROCESO);
 
 		}
@@ -155,6 +156,7 @@ function clear_modal_insertar_actualizar(){
         $scope.formData.claveServicio = "";
         $scope.formData.sel_tipoServicio	=	"";
         $scope.formData.sel_Cursos = "";
+        $scope.formData.cantidad_participantes = "";
 		$scope.formData.Normas	=	[];
 		$scope.Normas = [];
 		$scope.formData.etapa	=	"";
@@ -175,6 +177,7 @@ function clear_modal_insertar_actualizar(){
                     ID_TIPO_SERVICIO: $scope.formData.sel_tipoServicio,
                     ID_ETAPA_PROCESO:	$scope.formData.etapa,
                     NORMAS: $scope.formData.sel_Cursos,
+                    CANTIDAD: $scope.formData.cantidad_participantes,
                     REFERENCIA: formData.txtReferencia,
                     CAMBIO	: "N",
                     ID_USUARIO:	sessionStorage.getItem("id_usuario")
@@ -193,17 +196,17 @@ function clear_modal_insertar_actualizar(){
 			}
 
 
-			
+
             $http.post(global_apiserver + "/servicio_cliente_etapa/insert/",datos).
             then(function(response){
-                if(response){
+                if(response.data.resultado == "ok"){
 					notify('Éxito','Se ha insertado un nuevo registro','success');
                     $scope.tabla_servicios();
 					TraerTodosCambios();
 					
                 }
                 else{
-                    notify('Error','No se pudo guardar el registro','error');
+                    notify('Error',response.data.mensaje,response.data.resultado);
                 }
                 $("#modalInsertarActualizar").modal("hide");
             });
@@ -218,6 +221,7 @@ function clear_modal_insertar_actualizar(){
                     ID_SERVICIO: $scope.formData.claveServicio,
                     ID_TIPO_SERVICIO: $scope.formData.sel_tipoServicio,
                     NORMAS: $scope.formData.sel_Cursos,
+                    CANTIDAD: $scope.formData.cantidad_participantes,
                     ID_ETAPA_PROCESO: $scope.formData.etapa,
                     REFERENCIA: $scope.formData.txtReferencia,
                     CAMBIO: $scope.formData.cambio,
@@ -278,19 +282,58 @@ function clear_modal_insertar_actualizar(){
 
             }
             $http.post(global_apiserver + "/servicio_cliente_etapa/update/", datos).then(function (response) {
-                if (response) {
-                    notify('Éxito', 'Se han actualizado los datos', 'success');
+                if(response.data.resultado == "ok"){
+                    notify('Éxito','Se ha insertado un nuevo registro','success');
                     $scope.tabla_servicios();
                     TraerTodosCambios();
 
                 }
-                else {
-                    notify('Error', 'No se pudo guardar los cambios', 'error');
+                else{
+                    notify('Error',response.data.mensaje,response.data.resultado);
                 }
                 $("#modalInsertarActualizar").modal("hide");
             });
         }
-    };	
+    };
+
+// =======================================================================================
+// *****               Función para observar el campo del formulario         		 *****
+// =======================================================================================
+    $scope.$watch('formData.cantidad_participantes',function(nuevo, anterior) {
+        if(!nuevo)return;
+        if(!$scope.validar_numeros())
+            $scope.formData.cantidad_participantes = anterior;
+    })
+
+// =======================================================================================
+// *****               Función para validar que entren solo numeros         		 *****
+// =======================================================================================
+    $scope.validar_numeros = function()
+    {
+        var valor = $scope.formData.cantidad_participantes;
+        valor = eliminaEspacios(valor);
+        reg=/(^[0-9]{1,4}$)/;
+        if(!reg.test(valor))
+        {
+            $scope.formData.cantidad_participantes = "";
+            // Si hay error muestro el div que contiene el error
+            $("#minimo").focus();
+            return false;
+        }
+        else
+            return true;
+    }
+    // =======================================================================================
+// *****               Función para eliminar espacios a una cadena          		 *****
+// =======================================================================================
+    function eliminaEspacios(cadena)
+    {
+        // Funcion equivalente a trim en PHP
+        var x=0, y=cadena.length-1;
+        while(cadena.charAt(x)==" ") x++;
+        while(cadena.charAt(y)==" ") y--;
+        return cadena.substr(x, y-x+1);
+    }
 
 // ===========================================================================
 // ***** 			Función para traer las sectores IAF.				 *****

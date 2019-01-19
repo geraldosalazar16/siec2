@@ -38,7 +38,7 @@ for ($i=0; $i < count($servicio_cliente_etapa) ; $i++) {
 
 	if($servicio_cliente_etapa[$i]["ID_SERVICIO"]==3)
 	{
-        $curso = $database->query("SELECT C.ID_CURSO ,C.NOMBRE as ID_NORMA FROM SCE_CURSOS SC INNER JOIN CURSOS C ON SC.ID_CURSO = C.ID_CURSO WHERE SC.ID_SCE =".$servicio_cliente_etapa[$i]["ID"]." LIMIT 1")->fetchAll(PDO::FETCH_ASSOC);
+        $curso = $database->query("SELECT C.ID_CURSO,C.NOMBRE as ID_NORMA ,SC.CANTIDAD_PARTICIPANTES FROM SCE_CURSOS SC INNER JOIN CURSOS C ON SC.ID_CURSO = C.ID_CURSO WHERE SC.ID_SCE =".$servicio_cliente_etapa[$i]["ID"]." LIMIT 1")->fetchAll(PDO::FETCH_ASSOC);
         $servicio_cliente_etapa[$i]["NORMAS"] = $curso;
 	}
 	else{

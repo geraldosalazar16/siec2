@@ -10,6 +10,7 @@
 app.controller('cursos_programados_controller',['$scope','$http',function($scope,$http){
 
     $scope.formData = {};
+    $scope.formDataParticipante = {};
     $scope.global_calendar;
     $scope.id_evento_select = '';
     $scope.date_evento_select = '';
@@ -17,7 +18,9 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
     $scope.instructoresCursos=[];
     $scope.id_instructor = "";
     $scope.objCursoProgramado = [];
+    $scope.participantes = [];
     $scope.salir = false;
+    $scope.cantidad_participante = "";
 
 
 
@@ -134,13 +137,14 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
             $scope.txtFechas = fechas;
             $scope.txtMinimo = response.PERSONAS_MINIMO;
             $scope.txtEtapa = response.NOMBRE_ETAPA;
+            $scope.cantidad_participante = response.CANTIDAD_PARTICIPANTES,
             $scope.$apply();
 
         });
         if ($scope.accion == "editar")
         {
-            mytoggle("divMostrar");
-            mytoggle("divInsertar");
+            $scope.mytoggle("divMostrar");
+            $scope.mytoggle("divInsertar");
         }
 
 
@@ -149,6 +153,8 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
             $("#divInsertar").hide();
             $("#divInstructor").hide();
             $("#divVerHistorico").hide();
+            $("#divVerParticipantes").hide();
+            $("#divVerInsertParticipantes").hide();
             $("#divMostrar").show();
         }
 
@@ -197,7 +203,7 @@ $scope.openModalInsertarModificar = function(accion){
                 $scope.formData.referencia = response.REFERENCIA;
                 $("#btnInstructor").attr("value",response.NOMBRE_AUDITOR.NOMBRE+" "+response.NOMBRE_AUDITOR.APELLIDO_PATERNO+" "+response.NOMBRE_AUDITOR.APELLIDO_MATERNO)
                 $("#btnInstructor").attr("class", "form-control ");
-                if(parseInt(response.CANTIDAD_PARTICIPANTES) == parseInt(response.PERSONAS_MINIMO))
+                if(parseInt(response.CANTIDAD_PARTICIPANTES_REAL) == parseInt(response.PERSONAS_MINIMO))
                 $scope.enVerde = true;
                 $scope.cargarEtapas(3,response.ETAPA);
                 onCalendario(response.FECHA_INICIO);
@@ -207,8 +213,8 @@ $scope.openModalInsertarModificar = function(accion){
 
             });
 
-            mytoggle("divMostrar");
-            mytoggle("divInsertar");
+            $scope.mytoggle("divMostrar");
+            $scope.mytoggle("divInsertar");
             /*$("#divMostrar").hide();
             $("#divInsertar").show();*/
 
@@ -243,8 +249,8 @@ $scope.openModalMostarInst = function() {
 
             })
             $("#modal-size").attr("class","modal-dialog modal-lg");
-            mytoggle("divInstructor")
-            mytoggle("divInsertar");
+            $scope.mytoggle("divInstructor")
+            $scope.mytoggle("divInsertar");
 
             $scope.cargarInstructores($scope.formData.selectCurso);
             $("#txtinstructorerror").text("");
@@ -260,12 +266,60 @@ $scope.openModalMostarInst = function() {
 
 }
 // =======================================================================================
+// ***** 			FUNCION PARA ABRIR MODAL MOSTRAR Participantes             		 *****
+// =======================================================================================
+    $scope.openModalParticipantes = function() {
+        $scope.cargaParticipantes();
+        $("#modal-size").attr("class","modal-dialog modal-lg");
+        $scope.mytoggle("divMostrar");
+        $scope.mytoggle("divVerParticipantes");
+
+    }
+// =======================================================================================
+// ***** 			FUNCION PARA ABRIR MODAL MOSTRAR Agregar Participantes             		 *****
+// =======================================================================================
+    $scope.openModalInsertParticipantes = function(key) {
+        if(esDespuesHoy($scope.date_evento_select)) {
+            $scope.titulo_participante_modal = "Agregar Participante";
+            $("#modal-size").attr("class", "modal-dialog");
+            $scope.cargarEstados();
+            $scope.cargarClientes();
+            $scope.mytoggle("divVerParticipantes");
+            $scope.mytoggle("divVerInsertParticipantes");
+            if (typeof key !== "undefined") {
+                $scope.titulo_participante_modal = "Editar Participante";
+                $scope.accion_p = 'editar';
+                $scope.id_participante  = $scope.participantes[key].ID;
+                $scope.formDataParticipante.nombre_participante = $scope.participantes[key].NOMBRE;
+                $scope.formDataParticipante.email_participante = $scope.participantes[key].EMAIL;
+                $scope.formDataParticipante.telefono_participante = $scope.participantes[key].TELEFONO;
+                $scope.formDataParticipante.curp_participante = $scope.participantes[key].CURP;
+                $scope.formDataParticipante.perfil_participante = $scope.participantes[key].PERFIL;
+                $scope.formDataParticipante.estado_participante = $scope.participantes[key].ID_ESTADO;
+                if($scope.participantes[key].ID_CLIENTE!=0)
+                {
+                    cliente = {
+                        ID:$scope.participantes[key].ID_CLIENTE
+                    }
+                    $scope.formDataParticipante.tiene_cliente = true;
+                    $scope.formDataParticipante.select_cliente = cliente;
+                }
+
+            }
+        } else{
+            notify("Error", "No puede agregar o editar un participante a un curso con fecha menor que la actual", "error");
+        }
+
+
+
+    }
+// =======================================================================================
 // ***** 			FUNCION PARA ABRIR MODAL MOSTRAR HISTORICOS             		 *****
 // =======================================================================================
     $scope.openModalHistorico = function() {
         $("#modal-size").attr("class","modal-dialog modal-lg");
-        mytoggle("divMostrar");
-        mytoggle("divVerHistorico");
+        $scope.mytoggle("divMostrar");
+        $scope.mytoggle("divVerHistorico");
         $scope.cargarHistorico($scope.id_evento_select);
     }
 // =======================================================================================
@@ -326,9 +380,18 @@ $scope.onSelectInstructor = function(instructor)
 $scope.cerrarInstructores = function()
 {
     $("#modal-size").attr("class","modal-dialog");
-    mytoggle("divInsertar");
-    mytoggle("divInstructor");
+    $scope.mytoggle("divInsertar");
+    $scope.mytoggle("divInstructor");
 }
+$scope.cerrarInsertParticipante = function()
+{
+    $('#modal-size').attr('class','modal-dialog modal-lg');
+    $scope.mytoggle("divVerInsertParticipantes");
+    $scope.mytoggle("divVerParticipantes");
+    clear_form_participante();
+
+}
+
 
 $scope.cerrarHistorico = function()
 {
@@ -336,13 +399,25 @@ $scope.cerrarHistorico = function()
     if(!$scope.salir)
     {
 
-        mytoggle("divVerHistorico");
-        mytoggle("divMostrar");
+        $scope.mytoggle("divVerHistorico");
+        $scope.mytoggle("divMostrar");
     }
     else {
         $scope.salir = false;
         $("#modalMostrar").modal("hide");
     }
+
+}
+
+$scope.cerrar = function(div)
+{
+    $("#modal-size").attr("class","modal-dialog");
+
+
+        $scope.mytoggle(div);
+        $scope.mytoggle("divMostrar");
+
+
 
 }
 
@@ -681,6 +756,442 @@ function insertar(formData) {
 
         $scope.objCursoProgramado = [];
     }
+// =======================================================================================================
+// *****   Funcion para limpiar las variables del formulario INSERTAR PARTICIPANTES			 *****
+// =======================================================================================================
+    function clear_form_participante(){
+        $scope.formDataParticipante.nombre_participante = '';
+        $scope.formDataParticipante.email_participante = '';
+        $scope.formDataParticipante.telefono_participante = '';
+        $scope.formDataParticipante.curp_participante = "";
+        $scope.formDataParticipante.perfil_participante = "";
+        $scope.formDataParticipante.estado_participante = "";
+        $scope.formDataParticipante.select_cliente = "";
+        $scope.formDataParticipante.tiene_cliente = false;
+        $scope.error_nombre_participante = "";
+        $scope.error_email_participante = "";
+        $scope.error_telefono_participante = "";
+        $scope.error_curp_participante = "";
+        $scope.error_perfil_participante = "";
+        $scope.error_tiene_cliente = "";
+    }
+
+// =======================================================================================
+// *****               Función para validar que entren solo numeros         		 *****
+// =======================================================================================
+    $scope.validar_telefono = function (telefono)
+    {
+        if (typeof telefono !== "undefined")
+        {
+            var caract = new RegExp(/(^[0-9]{1,10}$)/);
+
+            if (caract.test(telefono) == false){
+                return false;
+            }else{
+                return true;
+            }
+        }else return false;
+
+    }
+// =======================================================================================
+// *****               Función para validar que entren solo numeros         		 *****
+// =======================================================================================
+    $scope.validar_email = function (email)
+    {
+        if (typeof email !== "undefined")
+        {
+            var caract = new RegExp(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/);
+
+            if (caract.test(email) == false){
+                return false;
+            }else{
+                return true;
+            }
+        }else return false;
+
+    }
+// =======================================================================================
+// *****                       Función para validar CURP                    		 *****
+// =======================================================================================
+    $scope.curpValida = function(input) {
+        if (typeof input !== "undefined") {
+            var curp = input;
+            var re = /^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0\d|1[0-2])(?:[0-2]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/,
+                validado = curp.match(re);
+
+            if (!validado)  //Coincide con el formato general?
+                return false;
+
+            //Validar que coincida el dígito verificador
+            function digitoVerificador(curp17) {
+                //Fuente https://consultas.curp.gob.mx/CurpSP/
+                var diccionario = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
+                    lngSuma = 0.0,
+                    lngDigito = 0.0;
+                for (var i = 0; i < 17; i++)
+                    lngSuma = lngSuma + diccionario.indexOf(curp17.charAt(i)) * (18 - i);
+                lngDigito = 10 - lngSuma % 10;
+                if (lngDigito == 10)
+                    return 0;
+                return lngDigito;
+            }
+
+            if (validado[2] != digitoVerificador(validado[1]))
+                return false;
+
+            return true; //Validado
+        }else return false;
+    }
+// =======================================================================================================
+// *****    Accion al presionar button agregar participantes		 *****
+// =======================================================================================================
+    $scope.cargaParticipantes = function()
+    {
+        $.get(global_apiserver + "/cursos_programados/getAllParticipante?id="+$scope.id_evento_select, function (respuesta) {
+            respuesta = JSON.parse(respuesta);
+            $scope.participantes = respuesta;
+            $scope.cantidad_insertados = respuesta.length;
+            $scope.$apply();
+        });
+
+    }
+// ===================================================================
+// ***** 	  FUNCION PARA CARGAR LOS CLIENTES_CURSO_PROGRAMADo	 *****
+// ===================================================================
+    $scope.cargarClientes = function(){
+        $.get(global_apiserver + "/cursos_programados/getAllClienteByIdCurso/?id="+$scope.id_evento_select, function (respuesta) {
+            respuesta = JSON.parse(respuesta);
+            $scope.clientes= respuesta;
+            if($scope.clientes.length == 0)
+                $scope.visible_check = false;
+            else
+                $scope.visible_check = true;
+            $scope.$apply();
+
+        });
+    }
+// ===================================================================
+// ***** 	  FUNCION PARA CARGAR LOS ESTADOSS		 *****
+// ===================================================================
+    $scope.cargarEstados = function(){
+        $.post(global_apiserver + "/cursos_programados/getAllEstados/", function (respuesta) {
+            respuesta = JSON.parse(respuesta);
+            $scope.estados= respuesta;
+            $scope.$apply();
+
+        });
+    }
+// ===================================================================
+// ***** 	  FUNCION PARA SELECT CLIENTE		 *****
+// ===================================================================
+    /*$scope.onCliente = function() {
+        $scope.formDataParticipante.nombre_participante = "";
+        if(typeof $scope.formDataParticipante.select_cliente !== "undefined")
+        {
+            if($scope.formDataParticipante.select_cliente.SOLO_PARA_CLIENTE == 1)
+            {
+                $scope.formDataParticipante.nombre_participante = $scope.formDataParticipante.select_cliente.NOMBRE;
+                $scope.nombredisabled = true;
+            }
+            else {
+                $scope.nombredisabled = false;
+            }
+        }else {
+            $scope.nombredisabled = false;
+        }
+
+    }*/
+// ===================================================================
+// ***** 	             FUNCION PARA CHECK CLIENTE	        	 *****
+// ===================================================================
+ /*   $scope.onTieneCliente = function() {
+
+        if($scope.formDataParticipante.tiene_cliente == false)
+        {
+            $scope.formDataParticipante.nombre_participante ="";
+            $scope.nombredisabled = false;
+        }
+    }*/
+// =======================================================================================================
+// *****    Accion al presionar button agregar participantes		 *****
+// =======================================================================================================
+    $scope.insertaParticipantes= function () {
+        var id_cliente = 0;
+        var cantidad_cliente = 0;
+
+        if (typeof $scope.formDataParticipante.tiene_cliente !== "undefined")
+        if($scope.formDataParticipante.tiene_cliente == true)
+        {
+            if($scope.formDataParticipante.select_cliente != "")
+            {
+                id_cliente = $scope.formDataParticipante.select_cliente.ID;
+                cantidad_cliente = $scope.formDataParticipante.select_cliente.CANTIDAD_PARTICIPANTES;
+            }
+
+        }
+
+        var add = {
+            NOMBRE: $scope.formDataParticipante.nombre_participante,
+            EMAIL: $scope.formDataParticipante.email_participante,
+            TELEFONO: $scope.formDataParticipante.telefono_participante,
+            CURP: $scope.formDataParticipante.curp_participante,
+            PERFIL: $scope.formDataParticipante.perfil_participante,
+            ESTADO: $scope.formDataParticipante.estado_participante,
+            ID:$scope.id_evento_select,
+            ID_CLIENTE: id_cliente,
+            CANTIDAD_PARTICIPANTES:cantidad_cliente
+
+        }
+
+            $.post(global_apiserver + "/cursos_programados/insertParticipante/", JSON.stringify(add), function (respuesta) {
+                respuesta = JSON.parse(respuesta);
+                if (respuesta.resultado == "ok") {
+                    $scope.cargaParticipantes();
+                    notify("Éxito", "Agregado el participante", "success");
+                    $scope.onAgenda($scope.date_evento_select);
+                    $scope.cerrarInsertParticipante();
+
+                }
+                else {
+                    notify("Error", respuesta.mensaje, "error");
+                }
+            });
+
+    }
+// =======================================================================================================
+// *****    Accion al presionar button editar participantes		 *****
+// =======================================================================================================
+    $scope.editaParticipantes= function () {
+        var id_cliente = 0;
+        if($scope.formDataParticipante.tiene_cliente == true)
+        {
+            if($scope.formDataParticipante.select_cliente.ID)
+            {
+                id_cliente = $scope.formDataParticipante.select_cliente.ID;
+            }
+        }
+
+        var add = {
+            NOMBRE: $scope.formDataParticipante.nombre_participante,
+            EMAIL: $scope.formDataParticipante.email_participante,
+            TELEFONO: $scope.formDataParticipante.telefono_participante,
+            CURP: $scope.formDataParticipante.curp_participante,
+            PERFIL: $scope.formDataParticipante.perfil_participante,
+            ESTADO: $scope.formDataParticipante.estado_participante,
+            ID:$scope.id_participante,
+            ID_CURSO: $scope.id_evento_select,
+            ID_CLIENTE: id_cliente
+
+
+        }
+        $.post(global_apiserver + "/cursos_programados/updateParticipante/", JSON.stringify(add), function (respuesta) {
+            respuesta = JSON.parse(respuesta);
+            if (respuesta.resultado == "ok") {
+                $scope.cargaParticipantes();
+                notify("Éxito", "Editado el participante", "success");
+                $scope.onAgenda($scope.date_evento_select);
+                $scope.cerrarInsertParticipante();
+            }
+            else {
+                notify("Error", respuesta.mensaje, "error");
+            }
+
+        });
+    }
+// =======================================================================================================
+// *****    Accion eliminar Participante		 *****
+// ======================================================================================================
+    $scope.eliminarParticipantes = function(key)
+    {
+        if(confirm("¿Estás seguro que desea eliminar este participante?")) {
+            var add = {
+                ID: $scope.participantes[key].ID,
+                ID_CURSO: $scope.id_evento_select
+            }
+            $.post(global_apiserver + "/cursos_programados/deleteParticipante/", JSON.stringify(add), function (respuesta) {
+                respuesta = JSON.parse(respuesta);
+                if (respuesta.resultado == "ok") {
+                    $scope.cargaParticipantes();
+                    notify("Éxito", "Ha sido eliminado el participante", "success");
+                    $scope.onAgenda($scope.date_evento_select);
+
+                }
+                else {
+                    notify("Error", respuesta.mensaje, "error");
+                }
+
+            });
+        }
+    }
+// =======================================================================================
+// *****     Función para submit formulario participante Guardar		 *****
+// =======================================================================================
+   $scope.submitParticipante = function(accion){
+
+       validar_formulario_participante();
+       if($scope.respuesta == 1){
+
+           if(accion=='insertar')
+           {
+                   $scope.insertaParticipantes();
+
+           }
+
+           if(accion=='editar')
+           {
+               $scope.editaParticipantes();
+           }
+
+
+       }
+   }
+
+// =======================================================================================
+// *****     Función para validar los campos del formulario antes de Guardar		 *****
+// =======================================================================================
+    function validar_formulario_participante() {
+        $scope.respuesta = 1;
+        var setfocus = null;
+
+        if (typeof $scope.formDataParticipante.estado_participante !== "undefined") {
+            if ($scope.formDataParticipante.estado_participante.length == 0) {
+                $scope.respuesta = 0;
+                $scope.error_estado_participante = "Complete este campo";
+                setfocus = "perfil_participante";
+            } else {
+                $scope.error_estado_participante = "";
+            }
+        } else {
+            $scope.respuesta = 0;
+            $scope.error_estado_participante = "Complete este campo";
+            setfocus = "estado_participante";
+        }
+//////////////////////////////////////////////////////////////////////////////////////////
+        if (typeof $scope.formDataParticipante.perfil_participante !== "undefined") {
+            if ($scope.formDataParticipante.perfil_participante.length == 0) {
+                $scope.respuesta = 0;
+                $scope.error_perfil_participante = "Complete este campo";
+                setfocus = "perfil_participante";
+            } else {
+                $scope.error_perfil_participante = "";
+            }
+        } else {
+            $scope.respuesta = 0;
+            $scope.error_perfil_participante = "Complete este campo";
+            setfocus = "perfil_participante";
+        }
+////////////////////////////////////////////////////////////////////////////////////////////////
+        if(typeof $scope.formDataParticipante.curp_participante !== "undefined") {
+            if ($scope.formDataParticipante.curp_participante.length == 0) {
+                $scope.respuesta = 0;
+                $scope.error_curp_participante = "Complete este campo";
+                setfocus = "curp_participante";
+            } else {
+
+                if($scope.curpValida($scope.formDataParticipante.curp_participante))
+                {
+                    $scope.error_curp_participante = "";
+                }
+                else
+                {
+                    $scope.respuesta = 0;
+                    $scope.error_curp_participante = "CURP inválido";
+                    setfocus = "curp_participante";
+                }
+            }
+        }else {
+            $scope.respuesta = 0;
+            $scope.error_curp_participante = "Complete este campo";
+            setfocus = "curp_participante";
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////
+        if(typeof $scope.formDataParticipante.telefono_participante !== "undefined") {
+            if ($scope.formDataParticipante.telefono_participante.length == 0) {
+                $scope.respuesta = 0;
+                $scope.error_telefono_participante = "Complete este campo";
+                setfocus = "telefono_participante";
+            } else {
+                if($scope.validar_telefono($scope.formDataParticipante.telefono_participante))
+                {
+                    $scope.error_telefono_participante = "";
+                }
+                else
+                {
+                    $scope.respuesta = 0;
+                    $scope.error_telefono_participante = "Correo electrónico inválido";
+                    setfocus = "telefono_participante";
+                }
+
+            }
+        }else {
+            $scope.respuesta = 0;
+            $scope.error_telefono_participante = "Complete este campo";
+            setfocus = "telefono_participante";
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////
+        if(typeof $scope.formDataParticipante.email_participante !== "undefined") {
+            if ($scope.formDataParticipante.email_participante.length == 0) {
+                $scope.respuesta = 0;
+                $scope.error_email_participante = "Complete este campo";
+                setfocus = "email_participante";
+            } else {
+                if($scope.validar_email($scope.formDataParticipante.email_participante))
+                {
+                    $scope.error_email_participante = "";
+                }
+                else
+                {
+                    $scope.respuesta = 0;
+                    $scope.error_email_participante = "Correo electrónico inválido";
+                    setfocus = "email_participante";
+                }
+
+            }
+        }else {
+            $scope.respuesta = 0;
+            $scope.error_email_participante = "Complete este campo";
+            setfocus = "email_participante";
+        }
+////////////////////////////////////////////////////////////////////////////////////////////
+        if (typeof $scope.formDataParticipante.nombre_participante !== "undefined") {
+            if ($scope.formDataParticipante.nombre_participante.length == 0) {
+                $scope.respuesta = 0;
+                //$("#error_nombre_participante").text("Complete este campo");
+                $scope.error_nombre_participante = "Complete este campo";
+                setfocus = "nombre_participante";
+            } else {
+                $scope.error_nombre_participante = "";
+            }
+        } else {
+            $scope.respuesta = 0;
+            $scope.error_nombre_participante = "Complete este campo";
+            setfocus = "nombre_participante";
+        }
+///////////////////////////////////////////////////////////////////////////////////////////
+        if($scope.formDataParticipante.tiene_cliente == true)
+        {
+            if (typeof $scope.formDataParticipante.select_cliente !== "undefined") {
+                if ($scope.formDataParticipante.select_cliente.length == 0) {
+                    $scope.respuesta = 0;
+                    $scope.error_tiene_cliente = "Complete este campo";
+                    setfocus = "select_cliente";
+                } else {
+                    $scope.error_tiene_cliente = "";
+                }
+            } else {
+                $scope.respuesta = 0;
+                $scope.error_tiene_cliente = "Complete este campo";
+                setfocus = "select_cliente";
+            }
+        }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+        if(setfocus != null)
+        {
+            $('#'+setfocus).focus();
+        }
+    }
 // ===========================================================================
 // ***** 	    FUNCION PARA CARGAR LOS DATEPICKER DEL MODAL			 *****
 // ===========================================================================
@@ -707,7 +1218,7 @@ var dateFinal =$('#fecha_fin').datepicker({
 }).css("display", "inline-block");
 
    /* if(inicio)
-    {
+    {np
         dateInicial.datepicker("option", "minDate", inicio);
     }
     else {
@@ -756,13 +1267,13 @@ $scope.onAgenda = function(fecha) {
                 dias = dias +' días';
             var color =  "#7e1916"
 
-            if(parseInt(objEvento.CANTIDAD_PARTICIPANTES) == 1)
+            if(parseInt(objEvento.CANTIDAD_PARTICIPANTES_REAL) == 1)
                 color =  "#a5a207";
 
-            if(parseInt(objEvento.CANTIDAD_PARTICIPANTES) > 1 && parseInt(objEvento.PERSONAS_MINIMO) > parseInt(objEvento.CANTIDAD_PARTICIPANTES))
+            if(parseInt(objEvento.CANTIDAD_PARTICIPANTES_REAL) > 1 && parseInt(objEvento.PERSONAS_MINIMO) > parseInt(objEvento.CANTIDAD_PARTICIPANTES_REAL))
                 color =  "#bd6d0a";
 
-            if(parseInt(objEvento.PERSONAS_MINIMO) == parseInt(objEvento.CANTIDAD_PARTICIPANTES))
+            if(parseInt(objEvento.PERSONAS_MINIMO) <= parseInt(objEvento.CANTIDAD_PARTICIPANTES_REAL))
                 color =  "#0d681c";
 
 
@@ -822,9 +1333,9 @@ $scope.onAgenda = function(fecha) {
             eventClick: function (calEvent, jsEvent, view) {
                 if(calEvent.id)
                 {
+                    $scope.date_evento_select = calEvent.start.format("DD/MM/YYYY");
                     $scope.id_evento_select = calEvent.id;
                     $scope.openModalMostar();
-
                 }
 
             }
@@ -874,7 +1385,7 @@ function esDespuesHoy(fecha) {
 // ================================================================================
 // *****                  Funcion Mostrar/Ocultar elementos                   *****
 // ================================================================================
-function mytoggle(id)
+$scope.mytoggle = function (id)
 {
     $("#"+id).toggle(function(){
 
