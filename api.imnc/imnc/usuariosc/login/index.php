@@ -35,6 +35,8 @@ $email = $_REQUEST["email"];
 valida_parametro_and_die($email, "Es necesario escribir tu usuario o email");
 $password = $_REQUEST["password"]; 
 valida_parametro_and_die($password, "Es necesario escribir tu contraseña");
+//Codificar el pwd
+$password = sha1($password);
 
 $usuario = $database->get("USUARIOS", "*", ["EMAIL"=>$email]); 
 valida_error_medoo_and_die(); 

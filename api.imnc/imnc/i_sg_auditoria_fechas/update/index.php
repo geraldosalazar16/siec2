@@ -53,6 +53,9 @@ $FECHA_MODIFICACION = date("Ymd");
 $HORA_MODIFICACION = date("His");
 
 if($database->count("I_SG_AUDITORIA_FECHAS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO,"FECHA" => $FECHA]])==0){
+
+$datos = $database->get("I_SG_AUDITORIA_FECHAS","*", ["ID" => $ID]);
+//Aqui actualizo la fecha sino existe otra posibilidad
 $id1 = $database->update("I_SG_AUDITORIA_FECHAS",
 											
 											[
@@ -67,6 +70,9 @@ $id1 = $database->update("I_SG_AUDITORIA_FECHAS",
 	["ID"=>$ID]
 ); 
 valida_error_medoo_and_die(); 
+//Ahora actualizo esta fecha si esta cargada a algun auditor
+$id2=$database->update("I_SG_AUDITORIA_GRUPO_FECHAS",["FECHA"=>$FECHA],["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$datos['ID_SERVICIO_CLIENTE_ETAPA'],"TIPO_AUDITORIA"=>$datos['TIPO_AUDITORIA'],"CICLO"=>$datos['CICLO'],"FECHA"=>$datos['FECHA']]]);
+valida_error_medoo_and_die();
 $respuesta["resultado"]="ok";  
 }
 else{

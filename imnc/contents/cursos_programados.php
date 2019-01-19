@@ -314,7 +314,10 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                                 <td>{{item.CURP}}</td>
                                 <td>{{item.PERFIL}}</td>
                                 <td>{{item.ID_ESTADO}}</td>
-                                <td><button type="button" ng-click="openModalInsertParticipantes(key)" class="btn btn-primary btn-sm"> Editar</button></td>
+                                <td>
+                                    <button type="button" ng-click="openModalInsertParticipantes(key)" class="btn btn-primary btn-xs btn-imnc "> Editar</button>
+                                    <button type="button" ng-click="eliminarParticipantes(key)" class="btn btn-primary btn-xs btn-imnc "> Eliminar</button>
+                                </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -334,9 +337,9 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                          <div class="form-group" ng-show="visible_check">
                          <div class="checkbox-inline" style="margin-top: 10px;">
                             <label style="vertical-align: middle; margin-bottom: 10px; ">
-                              <input  id="tiene_cliente" type="checkbox" ng-model="formDataParticipante.tiene_cliente" class="checkbox"  value="true" ng-change="onTieneCliente();" > Pertenece a un cliente
+                              <input  id="tiene_cliente" type="checkbox" ng-model="formDataParticipante.tiene_cliente" class="checkbox"  value="true"  > Pertenece a un cliente
                             </label>
-                            <select ng-model="formDataParticipante.select_cliente" ng-options="cliente.ID as cliente.NOMBRE for cliente in clientes"
+                            <select ng-model="formDataParticipante.select_cliente" ng-options="cliente.NOMBRE for cliente in clientes track by cliente.ID"
                                      class="form-control" id="tiene_cliente" name="tiene_cliente"  required
                                     ng-show="formDataParticipante.tiene_cliente == true" >
                                     <option value="">---Seleccione un Estado---</option>

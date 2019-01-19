@@ -38,28 +38,63 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	valida_error_medoo_and_die(); 
 	$norma = $database->select("COTIZACION_NORMAS", "*", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
     valida_error_medoo_and_die(); 
+	//Se buscan los detalles si el tipo de servicio en cuestion tiene.
+	switch($tipos_servicio["ID"]){
+		case 16:
+			$cotizacion_detalles = $database->get("COTIZACION_DETALLES","VALOR", 
+				["AND"=>["ID_COTIZACION" => $cotizaciones[$i]["ID"],"DETALLE" => "SECTOR",]]);
+			valida_error_medoo_and_die();
+			$cotizaciones[$i]["SECTOR"] = $cotizacion_detalles;
+			break;
+		case 18:
+			$cotizacion_detalles = $database->get("COTIZACION_DETALLES","VALOR", ["AND"=>["ID_COTIZACION" => $cotizaciones[$i]["ID"],"DETALLE" => "DICTAMEN_O_CONSTANCIA",]]);
+			valida_error_medoo_and_die();
+			$cotizaciones[$i]["DICTAMEN_O_CONSTANCIA"] = $cotizacion_detalles;
+			break;	
+		default:
+			break;	
+	}
     //Info de cursos
     $desc_curso = array();
     if($servicio["ID"] == 3){
+		/*
         //Buscar el id del producto con el ID de la cotización
         $ID_PRODUCTO = $database->get("PROSPECTO_PRODUCTO", "ID", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
         $PROSPECTO_PROD_CURSO = $database->get("PROSPECTO_PRODUCTO_CURSO", "*", ["ID_PRODUCTO"=>$ID_PRODUCTO]);
-        $modalidad = $PROSPECTO_PROD_CURSO["MODALIDAD"];
+		$modalidad = $PROSPECTO_PROD_CURSO["MODALIDAD"];
+		*/
+		$modalidad = "";
+		$id_curso = 0;
+		$cantidad_participantes = 0;
+		$meta = $database->select("COTIZACION_DETALLES", "*", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
+		foreach($meta as $data){
+			if($data["DETALLE"] == "MODALIDAD"){
+				$modalidad = $data["VALOR"];
+			}
+			if($data["DETALLE"] == "ID_CURSO"){
+				$id_curso = $data["VALOR"];
+			}
+			if($data["DETALLE"] == "CANT_PARTICIPANTES"){
+				$cantidad_participantes = $data["VALOR"];
+			}
+		}
+
         $desc_curso["MODALIDAD"] = "";
         if($modalidad == 'programado'){
             $desc_curso["MODALIDAD"] = "programado";
-            $query = "SELECT C.ID_CURSO,C.NOMBRE FROM CURSOS C INNER JOIN CURSOS_PROGRAMADOS CP ON C.ID_CURSO = CP.ID_CURSO WHERE CP.ID =" . $PROSPECTO_PROD_CURSO["ID_CURSO_PROGRAMADO"];
+            $query = "SELECT C.ID_CURSO,C.NOMBRE FROM CURSOS C INNER JOIN CURSOS_PROGRAMADOS CP ON C.ID_CURSO = CP.ID_CURSO WHERE CP.ID =" . $id_curso;
             $NOMBRE_CURSO = $database->query($query)->fetchAll(PDO::FETCH_ASSOC); 
             $desc_curso["NOMBRE_CURSO"] = $NOMBRE_CURSO[0]["NOMBRE"];
-			$desc_curso["ID_CURSO_PROGRAMADO"] = $PROSPECTO_PROD_CURSO["ID_CURSO_PROGRAMADO"];
+			$desc_curso["ID_CURSO_PROGRAMADO"] = $id_curso;
 			$desc_curso["ID_CURSO"] = $NOMBRE_CURSO[0]["ID_CURSO"];
         } else if($modalidad == 'insitu'){
             $desc_curso["MODALIDAD"] = "insitu";
-			$data = $database->get("CURSOS", ["ID","NOMBRE"], ["ID_CURSO"=>$PROSPECTO_PROD_CURSO["ID_CURSO"]]);
+			$data = $database->get("CURSOS", ["ID_CURSO","NOMBRE"], ["ID_CURSO"=>$id_curso]);
 			$desc_curso["NOMBRE_CURSO"] = $data["NOMBRE"];
-			$desc_curso["ID_CURSO"] = $data["ID_CURSO"];
+			$desc_curso["ID_CURSO"] = $id_curso;
+			$desc_curso["CANT_PARTICIPANTES"] = $cantidad_participantes;
         }
-    }      
+    }       
 	$desc_tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizaciones[$i]["TARIFA"]]);
 	valida_error_medoo_and_die();
 	$estado = $database->get("PROSPECTO_ESTATUS_SEGUIMIENTO", "*", ["ID"=>$cotizaciones[$i]["ESTADO_COTIZACION"]]);

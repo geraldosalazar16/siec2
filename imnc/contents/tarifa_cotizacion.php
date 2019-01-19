@@ -33,7 +33,7 @@
 					<td>{{$index + 1}}</td>
 					<td>{{x.DESCRIPCION}}</td>
           <td>{{x.TARIFA | currency}}</td>
-		  <td>{{x.ID_TIPO_SERVICIO}}</td>
+		  <td>{{x.NOMBRE}}</td>
 		  <td><input disabled readonly type="checkbox" checked="checked" class="form-control col-md-7 col-xs-12 selector noshadow" ng-if="x.ACTIVO == 1"/>
 		  <input disabled readonly type="checkbox" class="form-control col-md-7 col-xs-12 selector noshadow" ng-if="x.ACTIVO == 0"/></td>
 					<td>

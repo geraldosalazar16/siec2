@@ -111,7 +111,7 @@ $campos_t = [
 ];
 
 $cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
-	$campos_t, ["ID_TRAMITE"=>$cotizacio_tramite["ID"]]);
+	$campos_t, ["AND"=>["ID_TRAMITE"=>$cotizacio_tramite["ID"],"ID_COTIZACION"=>$id_cotizacion]]);
 valida_error_medoo_and_die();
 
 

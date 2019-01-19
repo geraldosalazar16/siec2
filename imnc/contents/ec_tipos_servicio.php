@@ -37,6 +37,10 @@
 					Cantidad de Participantes: <i> {{DatosServicio.CANTIDAD_PARTICIPANTES}}</i></b>
 					</li>
 
+                    <li ng-if="DatosServicio.ID_SERVICIO == 3" ><b>
+					URL Generada: <i> {{DatosServicio.URL_PARTICIPANTES}}</i></b>
+					</li>
+
 					<li ><b>
 					Etapa: <i> {{DatosServicio.NOMBRE_ETAPA}}</i></b>
 					</li>

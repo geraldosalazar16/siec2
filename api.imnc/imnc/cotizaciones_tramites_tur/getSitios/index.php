@@ -89,7 +89,7 @@ $campos_t = [
 ];
 
 $cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
-	$campos_t, ["ID_TRAMITE"=>$cotizacio_tramite["ID"]]);
+	$campos_t, ["AND"=>["ID_TRAMITE"=>$cotizacio_tramite["ID"],"ID_COTIZACION"=>$id_cotizacion]]);
 valida_error_medoo_and_die();
 
 
@@ -106,6 +106,7 @@ else if(strpos($nombre_auditoria, 'Renovación') !== false || strpos($nombre_aud
 }
 $obj_cotizacion = [];
 $obj_cotizacion["TIPOS_SERVICIO"] = $tipos_servicio;
+$obj_cotizacion["TIPO_AUDITORIA"] = $etapa;
 $obj_cotizacion["ETAPA"] = $nombre_auditoria;
 $obj_cotizacion["TARIFA_TOTAL"] = $tarifa;
 

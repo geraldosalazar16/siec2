@@ -54,7 +54,7 @@
 						<div class="col-md-9 col-sm-9 col-xs-12">
 							<div class="profile_title">
 								<div class="col-md-6">
-									<h2>Actividad del Propecto </h2>
+									<h2>Actividad del Prospecto </h2>
 								</div>
 							</div>
 							<div class="" role="tabpanel" data-example-id="togglable-tabs">

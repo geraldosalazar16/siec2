@@ -42,26 +42,32 @@ function valida_error_medoo_and_die(){
     $NORMAS= "";
     $MODALIDAD = "";
     $CURSO = "";
-    $CANTIDAD = "";
+	$CANTIDAD = "";
+	$SOLO_CLIENTE = "";
     if($ID_SERVICIO!=3)
 	{
-	$NORMAS= $objeto->producto;
-	if(count($NORMAS) == 0){
-		$respuesta['resultado']="error";
-		$respuesta['mensaje']="Es necesario seleccionar una norma";
-		print_r(json_encode($respuesta));
-		die();
-	}
+		$NORMAS= $objeto->producto;
+		if(count($NORMAS) == 0){
+			$respuesta['resultado']="error";
+			$respuesta['mensaje']="Es necesario seleccionar una norma";
+			print_r(json_encode($respuesta));
+			die();
+		}
     }
     else
 	{
         $MODALIDAD = $objeto->modalidad;
-        valida_parametro_and_die($MODALIDAD,"Es necesario seleccionar una modalidad");
+		valida_parametro_and_die($MODALIDAD,"Es necesario seleccionar una modalidad");
+		
         $CURSO = $objeto->curso;
-        valida_parametro_and_die($CURSO,"Es necesario seleccionar un curso");
-        $CANTIDAD = $objeto->cantidad;
-        if($MODALIDAD == 'insitu')
-        valida_parametro_and_die($CANTIDAD,"Es necesario intruducir la cantidad de personas");
+		valida_parametro_and_die($CURSO,"Es necesario seleccionar un curso");    
+		    
+		$SOLO_CLIENTE = $objeto->solo_cliente;
+        if($MODALIDAD == 'programado')
+			valida_parametro_and_die($SOLO_CLIENTE,"Es necesario definir opciones de participantes");
+		
+		$CANTIDAD = $objeto->cantidad;
+		valida_parametro_and_die($CANTIDAD,"Es necesario intruducir la cantidad de personas");
 	}
 	$ALCANCE= $objeto->alcance;
 	if(!$ALCANCE){
@@ -109,9 +115,20 @@ function valida_error_medoo_and_die(){
     else
 	{
         if($MODALIDAD == "programado")
-		$id_producto_curso = $database->insert("PROSPECTO_PRODUCTO_CURSO", ["ID_PRODUCTO" => $id_producto,"ID_CURSO_PROGRAMADO" => $CURSO,"MODALIDAD"=> $MODALIDAD,"CANTIDAD_PARTICIPANTES"=>0]);
+			$id_producto_curso = $database->insert("PROSPECTO_PRODUCTO_CURSO", [
+				"ID_PRODUCTO" => $id_producto,
+				"ID_CURSO_PROGRAMADO" => $CURSO,
+				"MODALIDAD"=> $MODALIDAD,
+				"CANTIDAD_PARTICIPANTES"=>$CANTIDAD,
+				"SOLO_PARA_CLIENTE"=>$SOLO_CLIENTE
+			]);
         if($MODALIDAD == "insitu")
-            $id_producto_curso = $database->insert("PROSPECTO_PRODUCTO_CURSO", ["ID_PRODUCTO" => $id_producto,"ID_CURSO" => $CURSO,"MODALIDAD"=> $MODALIDAD,"CANTIDAD_PARTICIPANTES"=>$CANTIDAD]);
+            $id_producto_curso = $database->insert("PROSPECTO_PRODUCTO_CURSO", [
+				"ID_PRODUCTO" => $id_producto,
+				"ID_CURSO" => $CURSO,
+				"MODALIDAD"=> $MODALIDAD,
+				"CANTIDAD_PARTICIPANTES"=>$CANTIDAD
+			]);
         valida_error_medoo_and_die();
 	}
 

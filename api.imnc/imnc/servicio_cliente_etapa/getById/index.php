@@ -34,7 +34,7 @@ $servicio_cliente_etapa["NOMBRE_CLIENTE"] = $cliente_nombre;
 
 if($servicio_cliente_etapa["ID_SERVICIO"] == 3)
 {
-    $sce_curso = $database->get("SCE_CURSOS", ["ID_CURSO","CANTIDAD_PARTICIPANTES"], ["ID_SCE"=>$servicio_cliente_etapa["ID"]]);
+    $sce_curso = $database->get("SCE_CURSOS", ["ID_CURSO","CANTIDAD_PARTICIPANTES","URL_PARTICIPANTES"], ["ID_SCE"=>$servicio_cliente_etapa["ID"]]);
     $curso = $database->get("CURSOS", ["ID_CURSO","NOMBRE"], ["ID_CURSO"=>$sce_curso["ID_CURSO"]]);
     $servicio_cliente_etapa["NOMBRE_CURSO"] = $curso["NOMBRE"];
     $servicio_cliente_etapa["ID_CURSO"] = $curso["ID_CURSO"];

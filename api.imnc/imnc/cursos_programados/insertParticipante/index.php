@@ -65,9 +65,9 @@ valida_parametro_and_die($CANTIDAD_PARTICIPANTES, "Es necesario la cantidad de p
 
 
 
-$count = $database->count("CURSOS_PROGRAMADOS_PARTICIPANTES","ID_CURSO_PROGRAMADO",["ID_CURSO_PROGRAMADO"=>$ID]);
+$count = $database->count("CURSOS_PROGRAMADOS_PARTICIPANTES","ID_CURSO_PROGRAMADO",["AND"=>["ID_CURSO_PROGRAMADO"=>$ID,"ID_CLIENTE"=>$ID_CLIENTE]]);
 
-if($count<$CANTIDAD_PARTICIPANTES || $CANTIDAD_PARTICIPANTES==0)
+if($CANTIDAD_PARTICIPANTES==0 || $count<$CANTIDAD_PARTICIPANTES)
 {
     $idp = $database->insert("PARTICIPANTES", [
         "NOMBRE" => $NOMBRE,

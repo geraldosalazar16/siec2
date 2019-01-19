@@ -28,7 +28,8 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
     $NORMAS= "";
 	$MODALIDAD = "";
 	$CURSO = "";
-    $CANTIDAD = "";
+	$CANTIDAD = "";
+	$SOLO_CLIENTE = "";
 	if($ID_SERVICIO!=3)
 	{
 		$NORMAS= $objeto->producto;
@@ -44,9 +45,12 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
         valida_parametro_and_die($MODALIDAD,"Es necesario seleccionar una modalidad");
         $CURSO = $objeto->curso;
         valida_parametro_and_die($CURSO,"Es necesario seleccionar un curso");
-        $CANTIDAD = $objeto->cantidad;
-        if($MODALIDAD == 'insitu')
-            valida_parametro_and_die($CANTIDAD,"Es necesario intruducir la cantidad de personas");
+        $SOLO_CLIENTE = $objeto->solo_cliente;
+        if($MODALIDAD == 'programado')
+			valida_parametro_and_die($SOLO_CLIENTE,"Es necesario definir opciones de participantes");
+		
+		$CANTIDAD = $objeto->cantidad;
+		valida_parametro_and_die($CANTIDAD,"Es necesario intruducir la cantidad de personas");
 	}
 	$ALCANCE= $objeto->alcance;
 	if(!$ALCANCE){
@@ -84,11 +88,26 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 
         if($MODALIDAD=="programado")
 		{
-			$id_producto_curso = $database->update("PROSPECTO_PRODUCTO_CURSO", ["ID_CURSO" => null,"ID_CURSO_PROGRAMADO" => $CURSO,"MODALIDAD"=> $MODALIDAD,"CANTIDAD_PARTICIPANTES"=>0],["ID_PRODUCTO" => $ID_PRODUCTO]);
+			$id_producto_curso = $database->update("PROSPECTO_PRODUCTO_CURSO", [
+				"ID_CURSO" => null,
+				"ID_CURSO_PROGRAMADO" => $CURSO,
+				"MODALIDAD"=> $MODALIDAD,
+				"CANTIDAD_PARTICIPANTES"=>$CANTIDAD,
+				"SOLO_PARA_CLIENTE"=>$SOLO_CLIENTE
+			],[
+				"ID_PRODUCTO" => $ID_PRODUCTO
+			]);
 		}
 		if($MODALIDAD=="insitu")
 		{
-            $id_producto_curso = $database->update("PROSPECTO_PRODUCTO_CURSO", ["ID_CURSO" => $CURSO,"ID_CURSO_PROGRAMADO" => null,"MODALIDAD"=> $MODALIDAD,"CANTIDAD_PARTICIPANTES"=>$CANTIDAD],["ID_PRODUCTO" => $ID_PRODUCTO]);
+            $id_producto_curso = $database->update("PROSPECTO_PRODUCTO_CURSO", [
+				"ID_CURSO" => $CURSO,
+				"ID_CURSO_PROGRAMADO" => null,
+				"MODALIDAD"=> $MODALIDAD,
+				"CANTIDAD_PARTICIPANTES"=>$CANTIDAD
+			],[
+				"ID_PRODUCTO" => $ID_PRODUCTO
+			]);
 		}
     }
 	if($TIPO_PERSONA!="")

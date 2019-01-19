@@ -25,6 +25,11 @@ $id = $_REQUEST["id"];
 
 $participantes = $database->select("CURSOS_PROGRAMADOS_PARTICIPANTES",["[><]PARTICIPANTES"=>["ID_PARTICIPANTE"=>"ID"]], ["CURSOS_PROGRAMADOS_PARTICIPANTES.ID_CLIENTE","PARTICIPANTES.ID","NOMBRE","EMAIL","TELEFONO","CURP","PERFIL","ID_ESTADO"] , ["ID_CURSO_PROGRAMADO"=>$id]);
 valida_error_medoo_and_die();
+/*for($i=0;$i<count($participantes);$i++)
+{
+    $cliente= $database->get("CLIENTE_CURSOS_PROGRAMADOS",["[><]CLIENTES"=>["ID_CLIENTE"=>"ID"]], ["CLIENTES.ID"] , ["AND"=>["ID_CURSO_PROGRAMADO"=>$id,"ID_CLIENTE"=>$participantes[$i]["ID_CLIENTE"]]]);
+    $participantes[$i]["CLIENTE"] = $cliente;
+}*/
 
 
 

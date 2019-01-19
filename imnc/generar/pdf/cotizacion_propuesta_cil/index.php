@@ -9,7 +9,7 @@ require_once('../../../phplibs/FPDI-2.0.2/src/autoload.php');
 include  '../../../../api.imnc/imnc/common/conn-apiserver.php'; 
 include  '../../../../api.imnc/imnc/common/conn-medoo.php'; 
 include  '../../../../api.imnc/imnc/common/conn-sendgrid.php'; 
-
+require_once('../../../diff/direccion.php'); 
 //require_once('../../../common/apiserver.php'); //$global_apiserver
 //require_once('../../../diff/selector.php'); //$global_diffname
 //require_once('../../../diff/'.$global_diffname.'/strings.php'); 
@@ -329,9 +329,9 @@ $No6 = $name_prospecto;
 
 $str_direccion="Daniel Hernandez Barroso";
 //$global_diffname="E:/xampp/htdocs/imnc/imnc/generar/pdf/cotizacion/";
-$global_diffname="";//$global_diffname="E:/xampp/htdocs/pruebasiec2/siec2/imnc/generar/pdf/cotizacion_propuesta_cil/";
+//$global_diffname="";//$global_diffname="E:/xampp/htdocs/pruebasiec2/siec2/imnc/generar/pdf/cotizacion_propuesta_cil/";
 // create new PDF document
-$pdf1 = new MYPDF($No5, $str_direccion, $global_diffname, PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf1 = new MYPDF($No5, $str_direccion, $global_direccion_pdf, PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 //$fontname = TCPDF_FONTS::addTTFfont('E:/xampp/htdocs/imnc/imnc/phplibs/libPDF/fonts/Calibri Bold Italic.ttf','TrueTypeUnicode','',96);
 $pdf1->AddFont('Calibri','','calibri.php');
 $pdf1->AddFont('Calibri','B','calibrib.php');
@@ -376,7 +376,7 @@ $pdf1->SetTextColor(54,95,145);
 $pdf1->SetPrintHeader(false);
 $pdf1->AddPage();
 $pdf1->SetPrintFooter(false);
-$pdf1->Image('logob.jpg', 160, 10, 45, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+$pdf1->Image($global_direccion_pdf.'logob.jpg', 160, 10, 45, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
 $pdf1->SetXY(0,0);
 // Titulo de documento (centrado)
@@ -763,7 +763,7 @@ $html = <<<EOT
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
-$pdf1->Image('Formula1.jpg', 50, 95, 100, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+$pdf1->Image($global_direccion_pdf.'Formula1.jpg', 50, 95, 100, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 $pdf1->AddPage();
 $html = <<<EOT
 <table cellpadding="8" border="0" width="500">
