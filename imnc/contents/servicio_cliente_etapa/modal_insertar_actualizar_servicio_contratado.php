@@ -38,6 +38,11 @@
                                         class="form-control" id="sel_Cursos" name="sel_Cursos"
                                         ng-class="{ error: exampleForm.sel_Cursos.$error.required && !exampleForm.$pristine}" ng-disabled="!formData.claveServicio " ></select>
                             </div>
+                            <div class="form-group" ng-show="formData.claveServicio==3">
+                                <label  for="cantidad_participantes">Cantidad de Participantes<span class="required">*</span></label>
+                                <input type="text" ng-model="formData.cantidad_participantes" class="form-control" id="cantidad_participantes" name="cantidad_participantes"
+                                       ng-class="{ error: exampleForm.cantidad_participantes.$error.required && !exampleForm.$pristine}" ng-disabled="!formData.claveServicio " >
+                            </div>
 							<div class="form-group" id="divNorma">
                                 <label for="Normas">Norma<span class="required">*</span></label>
                                  <multiple-autocomplete ng-model="formData.Normas" id="Normas"

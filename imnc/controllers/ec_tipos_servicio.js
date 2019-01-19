@@ -2114,7 +2114,10 @@ $scope.get_domicilio_cliente	= function(id_cliente){
                     RFC:formData.rfcParticipante,
                     ESTADO:formData.estadoParticipante,
                     EJECUTIVO:formData.comercialParticipante,
-                    ID_USUARIO:	sessionStorage.getItem("id_usuario")
+                    ID_USUARIO:	sessionStorage.getItem("id_usuario"),
+					ID_CURSO:$scope.DatosServicio.ID_CURSO,
+                    CANTIDAD_PARTICIPANTES:$scope.DatosServicio.CANTIDAD_PARTICIPANTES
+
 
                 };
                 $.post(global_apiserver + "/sce_cifa_participantes/insert/", JSON.stringify(participante), function (respuesta) {

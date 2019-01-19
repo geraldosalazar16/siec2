@@ -79,6 +79,11 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
 
 											</li>
                                             <li>
+												<a ng-click="openModalParticipantes()">
+												<span class="labelAcordeon"	>Participantes</span></a>
+
+											</li>
+                                             <li>
 												<a ng-click="openModalHistorico()">
 												<span class="labelAcordeon"	>Ver Histórico</span></a>
 
@@ -278,6 +283,128 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                     </div>
                 </div>
                 </div>
+
+                <!-- Ver Participantes -->
+                <div id="divVerParticipantes">
+                <div class="modal-content">
+                    <div class="modal-header">
+					<button type="button" ng-click="cerrar('divVerParticipantes')" style="float:right;font-size:21px;font-weight:700;line-height:1;color:#000;text-shadow:0 1px 0 #fff;filter:alpha(opacity=20);opacity:.2"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalTitulo">Participantes</h4>
+                    </div>
+                    <div class="modal-body" style="min-height: 400px;">
+                         <button type="button" ng-click="openModalInsertParticipantes()" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> + Agregar Participante</button>
+                        <br>
+                        <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin-top: 20px;" >
+                            <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo Electrónico</th>
+                                <th>Teléfono</th>
+                                <th>CURP</th>
+                                <th>Perfil</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="(key, item) in participantes" class="ng-scope  even pointer">
+                                <td>{{item.NOMBRE}}</td>
+                                <td>{{item.EMAIL}}</td>
+                                <td>{{item.TELEFONO}}</td>
+                                <td>{{item.CURP}}</td>
+                                <td>{{item.PERFIL}}</td>
+                                <td>{{item.ID_ESTADO}}</td>
+                                <td><button type="button" ng-click="openModalInsertParticipantes(key)" class="btn btn-primary btn-sm"> Editar</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+
+                <!-- Ver InsertParticipante -->
+                <div id="divVerInsertParticipantes">
+                <div class="modal-content">
+                    <div class="modal-header">
+					<button type="button" ng-click="cerrarInsertParticipante()" style="float:right;font-size:21px;font-weight:700;line-height:1;color:#000;text-shadow:0 1px 0 #fff;filter:alpha(opacity=20);opacity:.2"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalTitulo">{{titulo_participante_modal}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                         <div class="form-group" ng-show="visible_check">
+                         <div class="checkbox-inline" style="margin-top: 10px;">
+                            <label style="vertical-align: middle; margin-bottom: 10px; ">
+                              <input  id="tiene_cliente" type="checkbox" ng-model="formDataParticipante.tiene_cliente" class="checkbox"  value="true" ng-change="onTieneCliente();" > Pertenece a un cliente
+                            </label>
+                            <select ng-model="formDataParticipante.select_cliente" ng-options="cliente.ID as cliente.NOMBRE for cliente in clientes"
+                                     class="form-control" id="tiene_cliente" name="tiene_cliente"  required
+                                    ng-show="formDataParticipante.tiene_cliente == true" >
+                                    <option value="">---Seleccione un Estado---</option>
+                            </select>
+                             <span class="text-danger" >{{error_tiene_cliente}}</span>
+                         </div>
+                         </div>
+                        <div class="form-group">
+								<label for="nombre_participante">Nombre<span class="required">*</span></label>
+								<div>
+									<input type="text" class="form-control" id="nombre_participante" name="nombre_participante" ng-model="formDataParticipante.nombre_participante"  required
+                                        ng-disabled="nombredisabled"   ng-change="error_nombre_participante = (formDataParticipante.nombre_participante?'':'Complete este campo')"     ng-class="{ error: exampleForm.nombre_participante.$error.required && !exampleForm.$pristine}" >
+									<span class="text-danger" >{{error_nombre_participante}}</span>
+								</div>
+						</div>
+                        <div class="form-group">
+								<label for="email_participante">Correo Electrónico<span class="required">*</span></label>
+								<div>
+									<input type="text" class="form-control" id="email_participante" name="email_participante" ng-model="formDataParticipante.email_participante"  required
+                                           ng-change="error_email_participante = (validar_email(formDataParticipante.email_participante)?'':'Correo electrónico Inválido')"   ng-class="{ error: exampleForm.email_participante.$error.required && !exampleForm.$pristine}" >
+									<span  class="text-danger" >{{error_email_participante}}</span>
+								</div>
+						</div>
+                         <div class="form-group">
+								<label for="telefono_participante">Telefono<span class="required">*</span></label>
+								<div>
+									<input type="text" class="form-control" id="telefono_participante" name="telefono_participante" ng-model="formDataParticipante.telefono_participante"  required
+                                           ng-change="error_telefono_participante = (validar_telefono(formDataParticipante.telefono_participante)?'':'Teléfono Inválido')"   ng-class="{ error: exampleForm.telefono_participante.$error.required && !exampleForm.$pristine}" >
+									<span  class="text-danger" >{{error_telefono_participante}}</span>
+								</div>
+						</div>
+                         <div class="form-group">
+								<label for="curp_participante">CURP<span class="required">*</span></label>
+								<div>
+									<input type="text" class="form-control" id="curp_participante" name="curp_participante" ng-model="formDataParticipante.curp_participante"  required
+                                           ng-change="error_curp_participante = (curpValida(formDataParticipante.curp_participante)?'':'CURP Inválido')"   ng-class="{ error: exampleForm.curp_participante.$error.required && !exampleForm.$pristine}" >
+									<span  class="text-danger" >{{error_curp_participante}}</span>
+								</div>
+						</div>
+                        <div class="form-group">
+								<label for="perfil_participante">Perfil<span class="required">*</span></label>
+								<div>
+									<input type="text" class="form-control" id="perfil_participante" name="perfil_participante" ng-model="formDataParticipante.perfil_participante"  required
+                                           ng-change="error_perfil_participante = (formDataParticipante.perfil_participante?'':'Complete este campo')"  ng-class="{ error: exampleForm.perfil_participante.$error.required && !exampleForm.$pristine}" >
+									<span  class="text-danger" >{{error_perfil_participante}}</span>
+								</div>
+						</div>
+                        <div class="form-group">
+                                <label for="estado_participante">Estado<span class="required">*</span></label>
+                                <select ng-model="formDataParticipante.estado_participante" ng-options="estado.ENTIDAD_FEDERATIVA as estado.ENTIDAD_FEDERATIVA for estado in estados"
+                                        ng-change="error_estado_participante = (formDataParticipante.estado_participante?'':'Complete este campo')" class="form-control" id="estado_participante" name="estado_participante"  required
+                                        ng-class="{ error: exampleForm.estado_participante.$error.required && !exampleForm.$pristine}" >
+                                    <option value="">---Seleccione un Estado---</option>
+                                </select>
+                            <span class="text-danger">{{error_estado_participante}}</span>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" ng-click="cerrarInsertParticipante()">Cancelar</button>
+                        <button ng-if="accion_p == 'editar'" type="button" class="btn btn-primary" ng-click="submitParticipante('editar')" id="btnGuardarParticipante">Guardar</button>
+                        <button ng-if="accion_p != 'editar'"type="button" class="btn btn-primary" ng-click="submitParticipante('insertar')" id="btnGuardarParticipante">Guardar</button>
+
+
+                    </div>
+                </div>
+                </div>
+
         </div>
   </div>
 
