@@ -79,6 +79,11 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
 
 											</li>
                                             <li>
+												<a ng-click="openModalClientes()">
+												<span class="labelAcordeon"	>Inscripción de Clientes</span></a>
+
+											</li>
+                                            <li>
 												<a ng-click="openModalParticipantes()">
 												<span class="labelAcordeon"	>Participantes</span></a>
 
@@ -284,6 +289,85 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                 </div>
                 </div>
 
+
+                <!-- Ver Clientes -->
+                <div id="divVerClientes">
+                <div class="modal-content">
+                    <div class="modal-header">
+					<button type="button" ng-click="cerrar('divVerClientes')" style="float:right;font-size:21px;font-weight:700;line-height:1;color:#000;text-shadow:0 1px 0 #fff;filter:alpha(opacity=20);opacity:.2"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalTitulo">Inscripción de Clientes</h4>
+                    </div>
+                    <div class="modal-body" style="min-height: 200px;">
+                         <button type="button" ng-click="openModalInsertClientes()" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> + Inscribir Cliente</button>
+                        <br>
+                        <h2 class="text-center" ng-show="no_clientes">No hay clientes Inscritos a este curso</h2>
+                        <table ng-show="!no_clientes" class="table table-striped responsive-utilities jambo_table bulk_action" style="margin-top: 20px;" >
+                            <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>RFC</th>
+                                <th>Cantidad</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="(key, item) in clientes" class="ng-scope  even pointer">
+                                <td>{{item.NOMBRE}}</td>
+                                <td>{{item.RFC}}</td>
+                                <td>{{item.CANTIDAD_PARTICIPANTES}}</td>
+                                <td>
+                                    <button type="button" ng-click="openModalInsertClientes(key)" class="btn btn-primary btn-xs btn-imnc "> Editar</button>
+                                    <button type="button" ng-click="eliminarClientes(key)" class="btn btn-primary btn-xs btn-imnc "> Eliminar</button>
+                                </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+                <!-- Ver Clientes -->
+                <div id="divVerInsertClientes">
+                <div class="modal-content">
+                    <div class="modal-header">
+					<button type="button" ng-click="cerrarInsertCliente()" style="float:right;font-size:21px;font-weight:700;line-height:1;color:#000;text-shadow:0 1px 0 #fff;filter:alpha(opacity=20);opacity:.2"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalTitulo">{{titulo_cliente_modal}}</h4>
+                    </div>
+                    <div class="modal-body" style="min-height: 400px;">
+                    <form>
+                         <div class="form-group" style="margin-bottom: 20px;">
+                             <label for="select_cliente">Cliente<span class="required">*</span></label>
+                            <select ng-model="formDataCliente.select_cliente" ng-options="cliente.ID as cliente.NOMBRE+' / '+cliente.RFC for cliente in allclientes"
+                                    class="form-control" id="select_cliente" name="select_cliente"  required ng-disabled="accion_c == 'editar'"
+                                    ng-change="error_select_cliente = (formDataCliente.select_cliente!=''?'':'Complete este campo')" >
+                                    <option value="">---Seleccione un Cliente---</option>
+                            </select>
+                              <span class="text-danger" >{{error_select_cliente}}</span>
+                         </div>
+                        <div class="form-group" ng-show="formDataCliente.select_cliente" >
+                            <label class="checkbox-inline">
+                                <input  id="solo_para_cliente" type="checkbox" ng-model="formDataCliente.solo_para_cliente" class="checkbox"  value="true" ng-change="formDataCliente.cantidad = (formDataCliente.solo_para_cliente==true?1:'')" > <strong>Solo para el cliente</strong>
+                            </label>
+                         </div>
+                         <div class="form-group" style="margin-top: 20px;">
+								<label for="cantidad">Cantidad de Participantes<span class="required">*</span></label>
+								<div>
+									<input type="text" class="form-control" id="cantidad" name="cantidad" ng-model="formDataCliente.cantidad"  required
+                                           ng-disabled="formDataCliente.solo_para_cliente==true" ng-change="error_cantidad = (formDataCliente.cantidad?'':'Complete este campo')"   ng-class="{ error: exampleForm.nombre_participante.$error.required && !exampleForm.$pristine}" >
+									<span class="text-danger" >{{error_cantidad}}</span>
+								</div>
+						</div>
+                    </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" ng-click="cerrarInsertCliente()">Cancelar</button>
+                        <button ng-if="accion_c == 'editar'" type="button" class="btn btn-primary" ng-click="submitCliente('editar')" id="btnGuardarParticipante">Guardar</button>
+                        <button ng-if="accion_c != 'editar'"type="button" class="btn btn-primary" ng-click="submitCliente('insertar')" id="btnGuardarParticipante">Guardar</button>
+
+
+                    </div>
+                </div>
+                </div>
+
                 <!-- Ver Participantes -->
                 <div id="divVerParticipantes">
                 <div class="modal-content">
@@ -291,29 +375,28 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
 					<button type="button" ng-click="cerrar('divVerParticipantes')" style="float:right;font-size:21px;font-weight:700;line-height:1;color:#000;text-shadow:0 1px 0 #fff;filter:alpha(opacity=20);opacity:.2"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="modalTitulo">Participantes</h4>
                     </div>
-                    <div class="modal-body" style="min-height: 400px;">
+                    <div class="modal-body" style="min-height: 200px;">
                          <button type="button" ng-click="openModalInsertParticipantes()" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> + Agregar Participante</button>
                         <br>
-                        <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin-top: 20px;" >
+                        <h2 class="text-center" ng-show="no_participantes">No hay participantes agregados a este curso</h2>
+                        <table ng-show="!no_participantes" class="table table-striped responsive-utilities jambo_table bulk_action" style="margin-top: 20px;" >
                             <thead>
                             <tr>
-                                <th>Nombre</th>
-                                <th>Correo Electrónico</th>
-                                <th>Teléfono</th>
-                                <th>CURP</th>
-                                <th>Perfil</th>
-                                <th>Estado</th>
-                                <th></th>
+                                <th style="width: 90%;">Datos del Participante</th>
+                                <th style="width: 10%;"></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr ng-repeat="(key, item) in participantes" class="ng-scope  even pointer">
-                                <td>{{item.NOMBRE}}</td>
-                                <td>{{item.EMAIL}}</td>
-                                <td>{{item.TELEFONO}}</td>
-                                <td>{{item.CURP}}</td>
-                                <td>{{item.PERFIL}}</td>
-                                <td>{{item.ID_ESTADO}}</td>
+                                <td>
+                                    Nombre: <strong>{{item.NOMBRE}}</strong><br>
+                                    Correo Electrónico: <strong>{{item.EMAIL}}</strong><br>
+                                    Teléfono: <strong>{{item.TELEFONO}}</strong><br>
+                                    CURP: <strong>{{item.CURP}}</strong><br>
+                                    Perfil: <strong>{{item.PERFIL}}</strong><br>
+                                    Estado: <strong>{{item.ID_ESTADO}}</strong><br>
+                                    <label ng-show="item.CLIENTE.NOMBRE">CLIENTE: <strong>{{item.CLIENTE.NOMBRE}}</strong></label>
+                                </td>
                                 <td>
                                     <button type="button" ng-click="openModalInsertParticipantes(key)" class="btn btn-primary btn-xs btn-imnc "> Editar</button>
                                     <button type="button" ng-click="eliminarParticipantes(key)" class="btn btn-primary btn-xs btn-imnc "> Eliminar</button>
@@ -324,6 +407,8 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                     </div>
                 </div>
                 </div>
+
+
 
                 <!-- Ver InsertParticipante -->
                 <div id="divVerInsertParticipantes">
@@ -342,7 +427,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                             <select ng-model="formDataParticipante.select_cliente" ng-options="cliente.NOMBRE for cliente in clientes track by cliente.ID"
                                      class="form-control" id="tiene_cliente" name="tiene_cliente"  required
                                     ng-show="formDataParticipante.tiene_cliente == true" >
-                                    <option value="">---Seleccione un Estado---</option>
+                                    <option value="">---Seleccione un Cliente---</option>
                             </select>
                              <span class="text-danger" >{{error_tiene_cliente}}</span>
                          </div>
@@ -407,6 +492,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                     </div>
                 </div>
                 </div>
+
 
         </div>
   </div>
