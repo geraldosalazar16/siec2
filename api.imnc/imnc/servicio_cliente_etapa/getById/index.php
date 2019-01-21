@@ -39,6 +39,7 @@ if($servicio_cliente_etapa["ID_SERVICIO"] == 3)
     $servicio_cliente_etapa["NOMBRE_CURSO"] = $curso["NOMBRE"];
     $servicio_cliente_etapa["ID_CURSO"] = $curso["ID_CURSO"];
     $servicio_cliente_etapa["CANTIDAD_PARTICIPANTES"] = $sce_curso["CANTIDAD_PARTICIPANTES"];
+    $servicio_cliente_etapa["URL_PARTICIPANTES"] = $sce_curso["URL_PARTICIPANTES"];
 
 }
 
