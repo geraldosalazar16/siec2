@@ -83,6 +83,7 @@ function llenar_modal_insertar_actualizar(){
 		$scope.formData.txtReferencia = servicio_obtenido.REFERENCIA;
         $scope.formData.claveCliente = servicio_obtenido.ID_CLIENTE;
         $scope.formData.claveServicio = servicio_obtenido.ID_SERVICIO;
+        $scope.formData.sel_tipoServicio = servicio_obtenido.ID_TIPO_SERVICIO;
 		cargartipoServicio($scope.formData.claveServicio);
 		cargarEtapas($scope.formData.claveServicio);
 
@@ -401,7 +402,8 @@ $scope.cambiosel_tipoServicio	=	function(id_tipo_servicio){
 function cargarNormastipoServicio(id_tipo_servicio,normas_a_mostrar){
 	if(!normas_a_mostrar){
 		normas_a_mostrar = [];
-	}
+    }
+    if(normas_a_mostrar)
 		//Agregue normas a mostrar para cuando sea edición 
 		//Se muestre en el multiselect las que tiene seleccionadas
 		//Mientras que en las sugerencias no se muestren estas
