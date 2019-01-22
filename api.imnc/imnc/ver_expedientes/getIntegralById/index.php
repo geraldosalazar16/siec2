@@ -62,7 +62,7 @@ valida_error_medoo_and_die();
 //		AHORA A BUSCAR NOMBRE DE LAS SECCIONES
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 $respuesta=array();
-	$nombre_secciones = $database->select("CATALOGO_SECCIONES", "*", ["ORDER"=>"ID"]);
+	$nombre_secciones = $database->select("CATALOGO_SECCIONES", "*",  ["ORDER"=>"ID"]);
 valida_error_medoo_and_die();
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //		AHORA A BUSCAR TODOS DOCUMENTOS
@@ -80,8 +80,9 @@ else{
 }
 
 for($i=0;$i<count($DOCUMENTOS);$i++){
-	$ESTADO_DOCUMENTO = $database->select("BASE_DOCUMENTOS","ESTADO_DOCUMENTO",["AND"=>["ID_CATALOGO_DOCUMENTOS"=>$DOCUMENTOS[$i]["ID"],"ID_SERVICIO"=>$id]]);
-	$DOCUMENTOS[$i]["ESTADO"]=$ESTADO_DOCUMENTO;
+	$ESTADO_DOCUMENTO = $database->select("BASE_DOCUMENTOS",["ESTADO_DOCUMENTO","EXTENSION_DOCUMENTO"],["AND"=>["ID_CATALOGO_DOCUMENTOS"=>$DOCUMENTOS[$i]["ID"],"ID_SERVICIO"=>$id]]);
+	$DOCUMENTOS[$i]["ESTADO"]=$ESTADO_DOCUMENTO[0]['ESTADO_DOCUMENTO'];
+	$DOCUMENTOS[$i]["EXTENSION"]=$ESTADO_DOCUMENTO[0]['EXTENSION_DOCUMENTO'];
 
 }
 
