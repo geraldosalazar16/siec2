@@ -25,7 +25,9 @@ function valida_error_medoo_and_die(){
 }
 
 $id = $_REQUEST["id"]; //ID del servicio para filtrar por el
+valida_parametro_and_die($id, "Es necesario el id del servicio");
 $tipo = $_REQUEST["tipo"]; // El tipo de curso P o D
+valida_parametro_and_die($tipo, "Es necesario el tipo de curso");
 $referencia = "";
 
 
