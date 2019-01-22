@@ -115,12 +115,16 @@
                       <i class="fa fa-bullseye"></i> Ver cotización
                     </a>	
                   </div>
-				  <div ng-show = "cotizacion.ID_TIPO_SERVICIO == 19">
+					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 19">
 						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_CPER&id_cotizacion={{cotizacion.ID}}" style="float: right;">
 							<i class="fa fa-bullseye"></i> Ver cotización
 						</a>	
 					</div>
-
+					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 14">
+						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_DH&id_cotizacion={{cotizacion.ID}}" style="float: right;">
+							<i class="fa fa-bullseye"></i> Ver cotización
+						</a>	
+					</div>
                 </td>
 				        <td>
                   <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=registro_expediente&id={{cotizacion.ID}}&id_entidad=4" style="float: right;">
