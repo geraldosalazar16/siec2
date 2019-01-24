@@ -195,8 +195,6 @@ function clear_modal_insertar_actualizar(){
                 };
 			}
 
-
-
             $http.post(global_apiserver + "/servicio_cliente_etapa/insert/",datos).
             then(function(response){
                 if(response.data.resultado == "ok"){
@@ -377,6 +375,7 @@ $scope.cambioclaveServicio	=	function(id_servicio){
         $('#divNorma').hide();
         $('#divCursos').show();
         generar_referencia_cifa(id_servicio);
+        $scope.formData.cantidad_participantes = "";
 
     }
     else {

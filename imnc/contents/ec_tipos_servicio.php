@@ -37,10 +37,6 @@
 					Cantidad de Participantes: <i> {{DatosServicio.CANTIDAD_PARTICIPANTES}}</i></b>
 					</li>
 
-                    <li ng-if="DatosServicio.ID_SERVICIO == 3" ><b>
-					URL Generada: <i> {{DatosServicio.URL_PARTICIPANTES}}</i></b>
-					</li>
-
 					<li ><b>
 					Etapa: <i> {{DatosServicio.NOMBRE_ETAPA}}</i></b>
 					</li>
@@ -48,6 +44,11 @@
 					<li ><b>
 					Referencia: <i> {{DatosServicio.REFERENCIA}}</i></b>
 					</li>
+
+                     <li ng-if="DatosServicio.ID_SERVICIO == 3" ><b>
+                            URL Generada: <i><textarea style="width: 100%; border: transparent;" type="text" ng-model="url" ng-init="url = DatosServicio.URL_PARTICIPANTES"></textarea></i></b>
+					</li>
+
 
 				</ul>
 			
