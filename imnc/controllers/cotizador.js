@@ -645,41 +645,56 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   }
 
   $scope.generar_servicio = function(cotizacion){
-    console.log(cotizacion);
-
-    var id_cliente = cotizacion.ID_PROSPECTO;
-    var cliente_prospecto = '';
-    //Determinar si la cotización es para un prospecto o cliente
-    if(cotizacion.BANDERA != 0) {
-      cliente_prospecto = 'cliente';
+    //para cursos programados uso otro end point
+    if(cotizacion.ID_SERVICIO == 3 && cotizacion.CURSO.MODALIDAD == 'programado'){
+      var datos = { 
+        ID_CURSO: cotizacion.CURSO.ID_CURSO,
+        ID_USUARIO:	sessionStorage.getItem("id_usuario")
+      };
+      $http.post(global_apiserver + "/cursos_programados/insertDesdeCotizador/",datos).
+        then(function(response){
+          if(response.data.resultado == 'ok'){
+            notify('Éxito','Se ha insertado un nuevo registro','success');        
+          } else {
+            notify('Error',response.data.mensaje,'error');
+          }
+        });
     } else {
-      cliente_prospecto = 'prospecto';
-    }
+      var id_cliente = cotizacion.ID_PROSPECTO;
+      var cliente_prospecto = '';
+      //Determinar si la cotización es para un prospecto o cliente
+      if(cotizacion.BANDERA != 0) {
+        cliente_prospecto = 'cliente';
+      } else {
+        cliente_prospecto = 'prospecto';
+      }
 
-    const id_servicio = cotizacion.ID_SERVICIO;
-    const id_tipo_servicio = cotizacion.ID_TIPO_SERVICIO;
-    //Información del servicio a insertar para prospecto
-    var datos = {
-      ID_COTIZACION: cotizacion.ID,
-      CLIENTE_PROSPECTO: cliente_prospecto,
-      ID_CLIENTE: id_cliente,
-      ID_SERVICIO: id_servicio,
-      ID_TIPO_SERVICIO: id_tipo_servicio,
-      ID_ETAPA_PROCESO:	31, //confirmado
-      CAMBIO	: "N",
-      MODALIDAD: cotizacion.CURSO.MODALIDAD, 
-      ID_CURSO: cotizacion.CURSO.ID_CURSO,
-      ID_CURSO_PROGRAMADO: cotizacion.CURSO.ID_CURSO_PROGRAMADO,
-      ID_USUARIO:	sessionStorage.getItem("id_usuario")
-    };
-    $http.post(global_apiserver + "/servicio_cliente_etapa/insertDesdeCotizador/",datos).
-      then(function(response){
-        if(response.data.resultado == 'ok'){
-          notify('Éxito','Se ha insertado un nuevo registro','success');        
-        } else {
-          notify('Error',response.data.mensaje,'error');
-        }
-      });
+      const id_servicio = cotizacion.ID_SERVICIO;
+      const id_tipo_servicio = cotizacion.ID_TIPO_SERVICIO;
+      //Información del servicio a insertar para prospecto
+      var datos = {
+        ID_COTIZACION: cotizacion.ID,
+        CLIENTE_PROSPECTO: cliente_prospecto,
+        ID_CLIENTE: id_cliente,
+        ID_SERVICIO: id_servicio,
+        ID_TIPO_SERVICIO: id_tipo_servicio,
+        ID_ETAPA_PROCESO:	31, //confirmado
+        CAMBIO	: "N",
+        MODALIDAD: cotizacion.CURSO.MODALIDAD, 
+        ID_CURSO: cotizacion.CURSO.ID_CURSO,
+        ID_CURSO_PROGRAMADO: cotizacion.CURSO.ID_CURSO_PROGRAMADO,
+        ID_USUARIO:	sessionStorage.getItem("id_usuario")
+      };
+      $http.post(global_apiserver + "/servicio_cliente_etapa/insertDesdeCotizador/",datos).
+        then(function(response){
+          if(response.data.resultado == 'ok'){
+            notify('Éxito','Se ha insertado un nuevo registro','success');        
+          } else {
+            notify('Error',response.data.mensaje,'error');
+          }
+        });
+    }
+    
   }
   $scope.mostrar_enlace = function(url){
     $.dialog({
