@@ -124,13 +124,9 @@ if($ID_SERVICIO == 3)
 
     $id_sce_normas = $database->insert("SCE_CURSOS", [
         "ID_SCE" => $id_sce,
-<<<<<<< HEAD
-        "ID_CURSO" => $NORMAS,
-		"CANTIDAD_PARTICIPANTES"=>$CANTIDAD
-=======
 		"ID_CURSO" => $NORMAS,
+		"CANTIDAD_PARTICIPANTES"=>$CANTIDAD,
 		"URL_PARTICIPANTES" => $url
->>>>>>> 15c6f2a11246f80ccc73ee5bf57ca778b4d59bcb
     ]);
 }else{
     for ($i=0; $i < count($NORMAS); $i++) {
