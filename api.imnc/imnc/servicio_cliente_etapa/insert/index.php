@@ -5,7 +5,7 @@ include  '../../common/conn-medoo.php';
 include  '../../common/conn-sendgrid.php';  
 include '../../ex_common/archivos.php';
 include 'funciones.php';
-include  '../../common/jwt.php'; 
+include  '../../common/jwt.php';
 
 use \Firebase\JWT\JWT;
 
@@ -89,6 +89,7 @@ $id_sce = $database->insert("SERVICIO_CLIENTE_ETAPA", [
 	"FECHA_CREACION" => $FECHA_CREACION,
 	"HORA_CREACION" => $HORA_CREACION,
 	"CAMBIO"=>$CAMBIO,
+	"CANTIDAD_PARTICIPANTES"=>$CANTIDAD
 //	"ID_REFERENCIA_SEG"=>$ID_REFERENCIA_SEG,
     //"OBSERVACION_CAMBIO"=>$OBSERVACION_CAMBIO
 ]); 
