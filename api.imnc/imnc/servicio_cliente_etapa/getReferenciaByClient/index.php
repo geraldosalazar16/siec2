@@ -3,7 +3,13 @@ include  '../../ex_common/query.php';
 
 if( $_REQUEST["cliente"] != null){
 	$cliente = $_REQUEST["cliente"];
-	$referencia_seg = $database->select("SERVICIO_CLIENTE_ETAPA", "*", ["ID_CLIENTE"=>$cliente]); 
+	$SERVICIOS = [1,2];
+	$referencia_seg = $database->select("SERVICIO_CLIENTE_ETAPA", "*", [
+		"AND" => [
+			"ID_CLIENTE"=>$cliente,
+			"ID_SERVICIO"=>$SERVICIOS 
+		]
+	]); 
 	valida_error_medoo_and_die("SERVICIO_CLIENTE_ETAPA", "lqc347@gmail.com"); 
 	
 }
