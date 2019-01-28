@@ -57,6 +57,7 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 	//Info de cursos
     $desc_curso = array();
     if($servicio["ID"] == 3){
+
 		/*
         //Buscar el id del producto con el ID de la cotización
         $ID_PRODUCTO = $database->get("PROSPECTO_PRODUCTO", "ID", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
@@ -67,6 +68,7 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 		$id_curso = 0;
 		$cantidad_participantes = 0;
 		$solo_cliente = 0;
+        $tiene_servicio = 0;
 		$meta = $database->select("COTIZACION_DETALLES", "*", ["ID_COTIZACION"=>$cotizaciones[$i]["ID"]]);
 		foreach($meta as $data){
 			if($data["DETALLE"] == "MODALIDAD"){
@@ -81,6 +83,9 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 			if($data["DETALLE"] == "SOLO_CLIENTE"){
 				$solo_cliente = $data["VALOR"];
 			}
+            if($data["DETALLE"] == "TIENE_SERVICIO"){
+                $tiene_servicio = $data["VALOR"];
+            }
 		}
 
         $desc_curso["MODALIDAD"] = "";
@@ -93,6 +98,7 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 			$desc_curso["ID_CURSO"] = $NOMBRE_CURSO[0]["ID_CURSO"];
 			$desc_curso["CANT_PARTICIPANTES"] = $cantidad_participantes;
 			$desc_curso["SOLO_CLIENTE"] = $solo_cliente;
+			$desc_curso["TIENE_SERVICIO"] = $tiene_servicio;
         } else if($modalidad == 'insitu'){
             $desc_curso["MODALIDAD"] = "insitu";
 			$data = $database->get("CURSOS", ["ID_CURSO","NOMBRE"], ["ID_CURSO"=>$id_curso]);
@@ -100,12 +106,16 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 			$desc_curso["ID_CURSO"] = $id_curso;
 			$desc_curso["CANT_PARTICIPANTES"] = $cantidad_participantes;
 			$desc_curso["SOLO_CLIENTE"] = $solo_cliente;
+            $desc_curso["TIENE_SERVICIO"] = $tiene_servicio;
         }
+        $prospecto = $database->get("PROSPECTO",["ID_CLIENTE"],["ID"=>$cotizaciones[$i]["ID_PROSPECTO"]]);
+        $cotizaciones[$i]["ID_PROSPENTO_SERVICIO"] = $prospecto["ID_CLIENTE"];
     }     
 	$desc_tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizaciones[$i]["TARIFA"]]);
 	valida_error_medoo_and_die();
 	$estado = $database->get("PROSPECTO_ESTATUS_SEGUIMIENTO", "*", ["ID"=>$cotizaciones[$i]["ESTADO_COTIZACION"]]);
-	valida_error_medoo_and_die(); 
+	valida_error_medoo_and_die();
+
 	$cotizaciones[$i]["SERVICIO"] = $servicio;
 	$cotizaciones[$i]["TIPOS_SERVICIO"] = $tipos_servicio;
 	$cotizaciones[$i]["NORMA"] = $norma;
