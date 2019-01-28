@@ -41,7 +41,7 @@ valida_parametro_and_die($ID_SERVICIO, "Es necesario seleccionar un servicio");
 
 $ID_TIPO_SERVICIO	= $objeto->ID_TIPO_SERVICIO; 
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
-$CANTIDAD = null;
+$CANTIDAD = 0;
 $NORMAS= '';
 if($ID_SERVICIO == 3)
 {
