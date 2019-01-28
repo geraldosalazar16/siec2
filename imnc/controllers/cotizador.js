@@ -723,7 +723,6 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
             CANTIDAD_PARTICIPANTES:cotizacion.CURSO.CANT_PARTICIPANTES,
             SOLO_PARA_CLIENTE:cotizacion.CURSO.SOLO_CLIENTE
         }
-        alert(JSON.stringify(add));
         $.post(global_apiserver + "/cursos_programados/insertClienteDesdeCotizacion/", JSON.stringify(add), function (respuesta) {
             respuesta = JSON.parse(respuesta);
             if (respuesta.resultado == "ok") {
