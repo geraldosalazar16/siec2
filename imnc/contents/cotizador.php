@@ -130,6 +130,11 @@
 							<i class="fa fa-bullseye"></i> Ver cotización
 						</a>	
 					</div>
+					<div ng-show = "cotizacion.ID_TIPO_SERVICIO == 13">
+						<a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion_PInd&id_cotizacion={{cotizacion.ID}}" style="float: right;">
+							<i class="fa fa-bullseye"></i> Ver cotización
+						</a>	
+					</div>
                 </td>
 				        <td>
                   <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=registro_expediente&id={{cotizacion.ID}}&id_entidad=4" style="float: right;">
@@ -281,7 +286,7 @@
                       suggestions-arr="Normas">
                       </multiple-autocomplete>
                 </div>
-			        </div>
+			  </div>
 
               <!-- Esto se oculta con ng-show porque por el momento no se va a usar -->
               <div class="form-group form-vertical" ng-if='bandera==1' ng-show="false">
