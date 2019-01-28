@@ -145,7 +145,7 @@ if($id_servicio_cliente_etapa	!=	0){
 			"FECHA_USUARIO" => $FECHA_CREACION,
 			"FECHA_MODIFICACION" => date("Ymd"),
 	
-	]); 
+	]);
 	valida_error_medoo_and_die(); 
 	//Para Servicios de Certificacion de Sistemas de Gestion
 	if($ID_SERVICIO == 1){
@@ -1058,6 +1058,12 @@ if($id_servicio_cliente_etapa	!=	0){
 				"URL_PARTICIPANTES" => $url
 			]);			
 			valida_error_medoo_and_die();
+
+            //INSERTA ID SCE EN COTIZACION DETALLES
+            $id_sce_cursos = $database->update("COTIZACION_DETALLES", [
+                "VALOR" => $id_servicio_cliente_etapa,
+            ],["AND"=>["DETALLE"=>"TIENE_SERVICIO","ID_COTIZACION"=>$ID_COTIZACION]]);
+            valida_error_medoo_and_die();
 
 			//TODO: Enviar notificación al cliente de que su servicio está listo para cargar participantes
 		}		

@@ -192,7 +192,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
 
 
                     </div>
-            </div>
+                  </div>
                 </div>
                 <!-- Modal Mostrar Instructores-->
                 <div id="divInstructor">

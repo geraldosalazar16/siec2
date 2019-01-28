@@ -924,6 +924,7 @@ if($cotizacion[0]["ID_SERVICIO"] == 3){
 	$id_curso = 0;
 	$cantidad_participantes = 0;
 	$solo_cliente = 0;
+	$tiene_servicio = 0;
 	$meta = $database->select("COTIZACION_DETALLES","*",["ID_COTIZACION" => $id]);
 	foreach($meta as $data){
 		if($data["DETALLE"] == "MODALIDAD"){
@@ -938,6 +939,9 @@ if($cotizacion[0]["ID_SERVICIO"] == 3){
 		if($data["DETALLE"] == "SOLO_CLIENTE"){
 			$solo_cliente = $data["VALOR"];
 		}
+		if($data["DETALLE"] == "TIENE_SERVICIO"){
+			$tiene_servicio = $data["VALOR"];
+		}
 	}
 	$cotizacion[0]["MODALIDAD"] = $modalidad;
 	if($modalidad == 'programado'){		
@@ -948,12 +952,14 @@ if($cotizacion[0]["ID_SERVICIO"] == 3){
 		$cotizacion[0]["ID_CURSO"] = $NOMBRE_CURSO[0]["ID"];
 		$cotizacion[0]["CANT_PARTICIPANTES"] = $cantidad_participantes;
 		$cotizacion[0]["SOLO_CLIENTE"] = $solo_cliente;
+		$cotizacion[0]["TIENE_SERVICIO"] = $tiene_servicio;
 	} else if($modalidad == 'insitu'){
 		$data = $database->get("CURSOS", ["ID_CURSO","NOMBRE"], ["ID_CURSO"=>$id_curso]);
 		$cotizacion[0]["NOMBRE_CURSO"] = $data["NOMBRE"];
 		$cotizacion[0]["ID_CURSO"] = $id_curso;
 		$cotizacion[0]["CANT_PARTICIPANTES"] = $cantidad_participantes;
 		$cotizacion[0]["SOLO_CLIENTE"] = $solo_cliente;
+        $cotizacion[0]["TIENE_SERVICIO"] = $tiene_servicio;
 	}
 }
 $cotizacion[0]["SERVICIO"] = $servicio;
