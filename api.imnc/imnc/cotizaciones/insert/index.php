@@ -290,6 +290,12 @@ if($ID_SERVICIO != 3){
 		"VALOR"	=>	$SOLO_CLIENTE
 	]);
 	valida_error_medoo_and_die();
+    $id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+        "ID_COTIZACION" => $id_cotizacion,
+        "DETALLE" => "TIENE_SERVICIO",
+        "VALOR"	=>	0
+    ]);
+    valida_error_medoo_and_die();
 }
 
 //Si todo salio bien agregar el id de la cotizacion al producto

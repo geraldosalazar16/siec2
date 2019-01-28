@@ -89,11 +89,25 @@
                       <i class="fa fa-bullseye"></i> Generar cotización
                     </a>	
                   </div>
-                  <div ng-show = "cotizacion.SERVICIO.ID == 3 && cotizacion.ESTADO.ESTATUS_SEGUIMIENTO == 'Firmado'">
+                  <div ng-show = "cotizacion.SERVICIO.ID == 3 && cotizacion.ESTADO.ESTATUS_SEGUIMIENTO == 'Firmado' && cotizacion.CURSO.TIENE_SERVICIO==0">
                     <a type="button" class="btn btn-primary btn-xs btn-success btnGenerarServicio" 
                     style="float: right;" ng-click="generar_servicio(cotizacion)">
                       <i class="fa fa-plus"></i> Crear servicio
                     </a>	
+                  </div>
+                    <div ng-show = "cotizacion.SERVICIO.ID == 3 && cotizacion.ESTADO.ESTATUS_SEGUIMIENTO == 'Firmado' && cotizacion.CURSO.TIENE_SERVICIO!=0 && cotizacion.CURSO.MODALIDAD == 'programado'">
+                        <a type="button" class="btn btn-primary btn-xs btn-success btnGenerarServicio"
+                           href="./?pagina=cursos_programados&id={{cotizacion.CURSO.TIENE_SERVICIO}}"
+                           style="float: right;" ng-click="generar_servicio(cotizacion)">
+                            <i class="fa fa-bullseye"></i> Ver servicio
+                        </a>
+                    </div>
+                  <div ng-show = "cotizacion.SERVICIO.ID == 3 && cotizacion.ESTADO.ESTATUS_SEGUIMIENTO == 'Firmado' && cotizacion.CURSO.TIENE_SERVICIO!=0 && cotizacion.CURSO.MODALIDAD == 'insitu'">
+                      <a type="button" class="btn btn-primary btn-xs btn-success btnGenerarServicio"
+                         href="./?pagina=ec_tipos_servicio&id_serv_cli_et={{cotizacion.CURSO.TIENE_SERVICIO}}"
+                    style="float: right;" ng-click="generar_servicio(cotizacion)">
+                      <i class="fa fa-bullseye"></i> Ver servicio
+                    </a>
                   </div>
                   <div ng-show = "cotizacion.ID_TIPO_SERVICIO == 1 || cotizacion.ID_TIPO_SERVICIO == 2 || cotizacion.ID_TIPO_SERVICIO == 12 || cotizacion.ID_TIPO_SERVICIO == 20">
                     <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion&id_cotizacion={{cotizacion.ID}}" style="float: right;">
@@ -436,4 +450,6 @@
       </div>
     </div>
   </div>
+
+
 </div>
