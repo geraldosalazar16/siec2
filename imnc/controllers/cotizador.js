@@ -716,13 +716,14 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
         var add = {
             ID_COTIZACION: cotizacion.ID,
-            ID_CURSO:cotizacion.CURSO.ID_CURSO_PROGRAMADO,
+            ID_CURSO:cotizacion.CURSO.ID_CURSO,
+            ID_CURSO_PROGRAMADO:cotizacion.CURSO.ID_CURSO_PROGRAMADO,
             CLIENTE_PROSPECTO: cliente_prospecto,
             ID_CLIENTE: id_cliente,
             CANTIDAD_PARTICIPANTES:cotizacion.CURSO.CANT_PARTICIPANTES,
             SOLO_PARA_CLIENTE:cotizacion.CURSO.SOLO_CLIENTE
-
         }
+        alert(JSON.stringify(add));
         $.post(global_apiserver + "/cursos_programados/insertClienteDesdeCotizacion/", JSON.stringify(add), function (respuesta) {
             respuesta = JSON.parse(respuesta);
             if (respuesta.resultado == "ok") {

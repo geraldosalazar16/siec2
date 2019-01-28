@@ -9,6 +9,8 @@
 include  '../../common/conn-apiserver.php';
 include  '../../common/conn-medoo.php';
 include  '../../common/conn-sendgrid.php';
+include  '../../common/jwt.php';
+use \Firebase\JWT\JWT;
 
 
 
@@ -42,6 +44,9 @@ valida_parametro_and_die($ID_COTIZACION, "Es necesario el ID COTIZACION");
 $ID_CURSO = $objeto->ID_CURSO;
 valida_parametro_and_die($ID_CURSO, "Es necesario el ID CURSO");
 
+$ID_CURSO_PROGRAMADO = $objeto->ID_CURSO_PROGRAMADO;
+valida_parametro_and_die($ID_CURSO_PROGRAMADO, "Es necesario el ID CURSO PROGRAMADO");
+
 $ID_CLIENTE= $objeto->ID_CLIENTE;
 valida_parametro_and_die($ID_CLIENTE, "Es necesario  el cliente");
 
@@ -72,24 +77,52 @@ if($CLIENTE_PROSPECTO == 'prospecto'){
     $ID_FINAL = $ID_CLIENTE;
 }
 
-$count = $database->count("CLIENTE_CURSOS_PROGRAMADOS",["ID_CLIENTE"],["AND"=>["ID_CLIENTE"=>$ID_FINAL,"ID_CURSO_PROGRAMADO"=>$ID_CURSO]]);
+$count = $database->count("CLIENTE_CURSOS_PROGRAMADOS",["ID_CLIENTE"],["AND"=>["ID_CLIENTE"=>$ID_FINAL,"ID_CURSO_PROGRAMADO"=>$ID_CURSO_PROGRAMADO]]);
 
     if($count == 0)
     {
+        //payload
+        $data = [
+            'ID_CLIENTE' => $ID_FINAL,
+            'MODALIDAD' => "programado",
+            'ID_CURSO' => $ID_CURSO,
+            'ID_PROGRAMACION' => $ID_CURSO_PROGRAMADO
+        ];
+
+        /*
+        iss = issuer, servidor que genera el token
+        data = payload del JWT
+        */
+        $token = array(
+            'iss' => $global_apiserver,
+            'aud' => $global_apiserver,
+            'exp' => time() + $duration,
+            'data' => $data
+        );
+
+        //Codifica la información usando el $key definido en jwt.php
+        $jwt = JWT::encode($token, $key);
+
+        //GUARDAR EL URL SCE_CURSOS
+        $url = $insertar_participantes . "?token=" . $jwt;
+
         $idp = $database->insert("CLIENTE_CURSOS_PROGRAMADOS", [
             "ID_CLIENTE" => $ID_FINAL,
-            "ID_CURSO_PROGRAMADO"=>	$ID_CURSO,
+            "ID_CURSO_PROGRAMADO"=>	$ID_CURSO_PROGRAMADO,
             "CANTIDAD_PARTICIPANTES"=>	$CANTIDAD_PARTICIPANTES,
-            "SOLO_PARA_CLIENTE" => $SOLO_PARA_CLIENTE
+            "SOLO_PARA_CLIENTE" => $SOLO_PARA_CLIENTE,
+            "URL_PARTICIPANTES" =>$url
         ]);
         valida_error_medoo_and_die();
 
 
             //INSERTA ID CP EN COTIZACION DETALLES
             $idcp = $database->update("COTIZACION_DETALLES", [
-                "VALOR" => $ID_CURSO,
+                "VALOR" => $ID_CURSO_PROGRAMADO,
             ],["AND"=>["DETALLE"=>"TIENE_SERVICIO","ID_COTIZACION"=>$ID_COTIZACION]]);
             valida_error_medoo_and_die();
+
+
 
     }
     else
