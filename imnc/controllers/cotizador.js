@@ -614,6 +614,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         $scope.Tipos_Servicio_Total.forEach(tipo_servicio => {
           if(tipo_servicio.ID == $scope.cotizacion_insertar_editar.REFERENCIA.ID_TIPO_SERVICIO){
             $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO = tipo_servicio;
+			$scope.fill_select_tarifa_id_tipo_servicio($scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID);
             $scope.Normas = $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.NORMAS;
             $scope.Normas.forEach(norma => {
               if(norma.ID_NORMA == $scope.cotizacion_insertar_editar.REFERENCIA.ID_NORMA){
@@ -644,6 +645,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         delay: 2500
     });
   }
+
 
   $scope.generar_servicio = function(cotizacion) {
       //para cursos programados uso otro end point
@@ -736,6 +738,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
     }
 
+>>>>>>> 4d0bcb46923319aa861b26d6584850f9e3d316bb
   $scope.mostrar_enlace = function(url){
     $.dialog({
       title: 'Enlace para cargar participantes',

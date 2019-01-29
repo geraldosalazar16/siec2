@@ -22,7 +22,10 @@ function valida_error_medoo_and_die(){
 		die();
 	}
 }
-
+function redondeado ($numero, $decimales) { 
+   $factor = pow(10, $decimales); 
+   return (round($numero*$factor)/$factor); }
+   
 	$id = $_REQUEST["id"];
 	
 	$cotizacion = $database->get("COTIZACIONES", "*", ["ID"=>$id]);
@@ -321,6 +324,119 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 			
 	
 	switch($cotizacion[0]["ID_TIPO_SERVICIO"]){
+		case 13:
+			
+			$campos_tramite = [
+				"COTIZACIONES_TRAMITES_PIND.ID",
+				"COTIZACIONES_TRAMITES_PIND.VIATICOS",
+				"COTIZACIONES_TRAMITES_PIND.DESCUENTO",
+				"COTIZACIONES_TRAMITES_PIND.ID_TIPO_AUDITORIA",
+				"COTIZACIONES_TRAMITES_PIND.AUMENTO",
+				"I_SG_AUDITORIAS_TIPOS.TIPO"
+			];
+			$tramites =  $database->select("COTIZACIONES_TRAMITES_PIND", 
+				["[>]I_SG_AUDITORIAS_TIPOS" => ["ID_TIPO_AUDITORIA" => "ID"]], $campos_tramite,
+				["ID_COTIZACION"=>$cotizacion[0]["ID"]]);
+				valida_error_medoo_and_die();
+			$cotizacion[0]["COTIZACION_TRAMITES"] = $tramites;
+			$total_cotizacion=0;
+			foreach ($tramites as $key => $tramite_item) {
+				//En vez de usar la etapa usar el tipo de auditoria
+				//$etapa = $database->get("ETAPAS_PROCESO", "*", ["ID_ETAPA"=>$tramite_item["ID_ETAPA_PROCESO"]]);
+				$etapa = $database->get("I_SG_AUDITORIAS_TIPOS", "*", ["ID"=>$tramite_item["ID_TIPO_AUDITORIA"]]);
+				//Sustituyo $etapa["ETAPA"] por nombre_auditoria
+				$nombre_auditoria = $etapa["TIPO"];
+				valida_error_medoo_and_die();
+				
+				
+				//AQUI VENDRIA LA PARTE DE CODIGO QUE TIENE Q VER CON TARIFA ADICIONAL PERO COMO NO LO HAN PEDIDO PUES LO DEJAMOS EN BLANCO
+				//{..........}		
+				
+				$cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
+						"*", ["AND"=>["ID_TRAMITE"=>$tramite_item["ID"],"ID_COTIZACION"=>$cotizacion[0]["ID"]]]);
+				valida_error_medoo_and_die();
+
+				$total_tarifa_adicional = 0;
+				for ($i=0; $i < count($cotizacion_tarifa_adicional); $i++) {
+					$subtotal = $cotizacion_tarifa_adicional[$i]["TARIFA"] * $cotizacion_tarifa_adicional[$i]["CANTIDAD"];
+					$total_tarifa_adicional += $subtotal;
+				}
+				//AQUI LA PARTE QUE TIENE QUE VER CON LA COTIZACION POR SITIOS
+				$cotizacion_sitios = $database->select("COTIZACION_SITIOS_PIND", "*", ["ID_COTIZACION"=>$tramite_item["ID"]]);
+				valida_error_medoo_and_die();
+
+				// Aqui calculo el costo de la auditoria que sin importar el tramite seria tarifa*cantidad_de_dias
+				$costo_inicial = 0;
+				$costo_total_visita_inspeccion =0;
+				$costo_total_ensayos = 0;
+				for ($i=0; $i < count($cotizacion_sitios) ; $i++) {
+					$productos = [];
+					$costo_visita_inspeccion =0;
+					$costo_ensayos = 0;
+					//Aqui se buscan los productos de la cotizacion
+					$productos = $database->select("PROD_IND_SITIO", ["[>]PRODUCTOS_INDUSTRIALES" => ["ID_PI" => "ID"]], ["PRODUCTOS_INDUSTRIALES.NOMBRE","PRODUCTOS_INDUSTRIALES.VALOR"], ["AND"=>["ID_SITIO_PIND"=>$cotizacion_sitios[$i]["ID"],"ID_TRAMITE"=>$tramite_item["ID"]]]);
+					valida_error_medoo_and_die();
+					$productos1="";
+					for($j=0;$j<count($productos);$j++){
+						$productos1 .= $productos[$j]["NOMBRE"].",";
+						if ($cotizacion_sitios[$i]["SELECCIONADO"] == 1 && $etapa["ID"]!=15) {
+							$costo_ensayos += $productos[$j]["VALOR"];
+						}
+					} 
+		
+					$cotizacion_sitios[$i]["PRODUCTOS_LISTA"] = $productos1;
+					$cotizacion_sitios[$i]["PRODUCTOS"] = $productos;
+					if($etapa["ID"]==14  ){// Este es el costo de inspeccion y fijo para Certificacion
+						if ($cotizacion_sitios[$i]["SELECCIONADO"] == 1) {
+							$costo_visita_inspeccion = $tarifa['TARIFA'];  
+						}
+				
+					}
+					if($etapa["ID"]==15  ){// Este es el costo de inspeccion y fijo para Renovacion
+						if ($cotizacion_sitios[$i]["SELECCIONADO"] == 1) {
+							$costo_visita_inspeccion = 3200;  
+						}
+				
+					}
+					if($etapa["ID"]==16  ){// Este es el costo de inspeccion y fijo para Renovacion
+						if ($cotizacion_sitios[$i]["SELECCIONADO"] == 1) {
+							$costo_visita_inspeccion = $tarifa['TARIFA'];  
+						}
+				
+					}
+					if($etapa["ID"]>=17 && $etapa["ID"]<=23 ){// Este es el costo de inspeccion y fijo para Vigilancias
+						if ($cotizacion_sitios[$i]["SELECCIONADO"] == 1) {
+							$costo_visita_inspeccion = $tarifa['TARIFA'];  
+						}
+					}
+					$costo_total_visita_inspeccion +=$costo_visita_inspeccion;
+					$costo_total_ensayos += $costo_ensayos;
+					$cotizacion_sitios[$i]["COSTO_VISITA_INSPECCION"] = $costo_visita_inspeccion;
+					$cotizacion_sitios[$i]["COSTO_ENSAYOS"] = $costo_ensayos;
+	
+				}								
+				$costo_inicial = $costo_total_visita_inspeccion+$costo_total_ensayos + $total_tarifa_adicional;
+			
+						
+					//	$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_DES"] = (floatval($tarifa['TARIFA'])*(1-($tramite_item["DESCUENTO"]/100)+($tramite_item["AUMENTO"]/100)));
+					//	$total_dias_auditoria=$dias_base;
+					//	$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_BASE"] = $dias_base;
+					//	$costo_inicial = (($total_dias_auditoria) * floatval($tarifa['TARIFA']));
+						$costo_desc = ($costo_inicial *  floatval(1-($tramite_item["DESCUENTO"]/100)+($tramite_item["AUMENTO"]/100)));
+						
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_AUDITORIA"] = $cotizacion_sitios[0]["CANTIDAD_DIAS"];
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_ADICIONAL"] = $total_tarifa_adicional;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO"] = redondeado ($costo_inicial,2);
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_DES"] = redondeado ($costo_desc,2);
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"] = $costo_desc + $tramite_item["VIATICOS"];
+		
+						//$total_dias_cotizacion += $total_dias_auditoria;
+						$total_cotizacion += $cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"];
+				}
+				//$cotizacion[0]["TOTAL_DIAS_COTIZACION"] = $total_dias_cotizacion;
+				$cotizacion[0]["TOTAL_COTIZACION"] = redondeado ($total_cotizacion,2);
+				$cotizacion[0]["TOTAL_COTIZACION_DES"] = redondeado ($total_cotizacion * (1-($cotizacion[0]["DESCUENTO"]/100)+($cotizacion[0]["AUMENTO"]/100)),2);
+			break;
 		case 14:
 			
 			$campos_tramite = [
