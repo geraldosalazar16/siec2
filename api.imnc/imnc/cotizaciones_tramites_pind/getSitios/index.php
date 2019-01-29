@@ -24,6 +24,10 @@ function valida_error_medoo_and_die(){
 	} 
 }
 
+function redondeado ($numero, $decimales) { 
+   $factor = pow(10, $decimales); 
+   return (round($numero*$factor)/$factor); }
+
 $id = $_REQUEST["id"]; 
 $id_cotizacion = $_REQUEST["cotizacion"]; 
 
@@ -207,10 +211,10 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 	//$costo_desc = ($costo_inicial * (1-($cotizacio_tramite["DESCUENTO"]/100) + ($cotizacio_tramite["AUMENTO"]/100) ) );
 	$costo_desc = ($costo_inicial* floatval(1-($cotizacio_tramite["DESCUENTO"]/100)+($cotizacio_tramite["AUMENTO"]/100)) );
 	$obj_cotizacion["TOTAL_PRODUCTOS"] = $total_productos;
-	$obj_cotizacion["COSTO_TOTAL_VISITA_INSPECCION"] = $costo_total_visita_inspeccion;
-	$obj_cotizacion["COSTO_TOTAL_ENSAYOS"] = $costo_total_ensayos;
-	$obj_cotizacion["COSTO_INICIAL"] = $costo_inicial;
-	$obj_cotizacion["COSTO_DESCUENTO"] = $costo_desc;
+	$obj_cotizacion["COSTO_TOTAL_VISITA_INSPECCION"] = redondeado ($costo_total_visita_inspeccion,2) ;
+	$obj_cotizacion["COSTO_TOTAL_ENSAYOS"] = redondeado ($costo_total_ensayos,2);
+	$obj_cotizacion["COSTO_INICIAL"] = redondeado ($costo_inicial,2);
+	$obj_cotizacion["COSTO_DESCUENTO"] = redondeado ($costo_desc,2);
 	$obj_cotizacion["COSTO_TOTAL"] = $costo_desc + $cotizacio_tramite["VIATICOS"];
 	
 	$obj_cotizacion["NORMAS"] = $normas;

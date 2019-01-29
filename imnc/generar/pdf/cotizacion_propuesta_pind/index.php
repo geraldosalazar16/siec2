@@ -91,6 +91,9 @@ function valida_isset($variable, $mensaje){
 	}
 }
 
+function redondeado ($numero, $decimales) { 
+   $factor = pow(10, $decimales); 
+   return (round($numero*$factor)/$factor); }
 
 $id_prospecto = $_REQUEST["id_prospecto"]; 
 //valida_parametro_and_die($id_prospecto,"Es necesario seleccionar un prospecto");
@@ -504,7 +507,7 @@ EOT;
 EOT;
 			}}		
 			$subtotal=$costo+$viaticos;
-			$IVA16=0.16*$subtotal;
+			$IVA16=redondeado (0.16*$subtotal,2);
 			$total=$subtotal+$IVA16;
 			$html .= <<<EOT
 			<tr>

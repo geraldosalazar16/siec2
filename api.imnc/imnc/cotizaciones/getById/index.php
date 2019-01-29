@@ -22,7 +22,10 @@ function valida_error_medoo_and_die(){
 		die();
 	}
 }
-
+function redondeado ($numero, $decimales) { 
+   $factor = pow(10, $decimales); 
+   return (round($numero*$factor)/$factor); }
+   
 	$id = $_REQUEST["id"];
 	
 	$cotizacion = $database->get("COTIZACIONES", "*", ["ID"=>$id]);
@@ -423,16 +426,16 @@ if($cotizacion[0]["ID_SERVICIO"] == 2){
 						
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_AUDITORIA"] = $cotizacion_sitios[0]["CANTIDAD_DIAS"];
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_ADICIONAL"] = $total_tarifa_adicional;
-						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO"] = $costo_inicial;
-						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_DES"] = $costo_desc;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO"] = redondeado ($costo_inicial,2);
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_DES"] = redondeado ($costo_desc,2);
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"] = $costo_desc + $tramite_item["VIATICOS"];
 		
 						//$total_dias_cotizacion += $total_dias_auditoria;
 						$total_cotizacion += $cotizacion[0]["COTIZACION_TRAMITES"][$key]["TRAMITE_COSTO_TOTAL"];
 				}
 				//$cotizacion[0]["TOTAL_DIAS_COTIZACION"] = $total_dias_cotizacion;
-				$cotizacion[0]["TOTAL_COTIZACION"] = $total_cotizacion;
-				$cotizacion[0]["TOTAL_COTIZACION_DES"] = $total_cotizacion * (1-($cotizacion[0]["DESCUENTO"]/100)+($cotizacion[0]["AUMENTO"]/100));
+				$cotizacion[0]["TOTAL_COTIZACION"] = redondeado ($total_cotizacion,2);
+				$cotizacion[0]["TOTAL_COTIZACION_DES"] = redondeado ($total_cotizacion * (1-($cotizacion[0]["DESCUENTO"]/100)+($cotizacion[0]["AUMENTO"]/100)),2);
 			break;
 		case 14:
 			
