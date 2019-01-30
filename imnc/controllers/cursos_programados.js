@@ -381,6 +381,10 @@ $scope.openModalMostarInst = function() {
         $("#divInsertar").hide();
         $("#divMostrar").hide();
         $("#divInstructor").hide();
+        $("#divVerParticipantes").hide();
+        $("#divVerInsertParticipantes").hide();
+        $("#divVerClientes").hide();
+        $("#divVerInsertClientes").hide();
         $("#divVerHistorico").show();
         $("#modalMostrar").modal("show");
         $scope.cargarHistorico();
@@ -1744,12 +1748,14 @@ $scope.onSelectedCurso = function(){
 
 
 $(document).ready(function () {
-    if (typeof $scope.id_curso_programado_url !== "undefined" && $scope.id_curso_programado_url!=""){
+    if (typeof $scope.id_curso_programado_url !== "undefined" && $scope.id_curso_programado_url.length != 0){
         carga_curso_url();
-    }
-    else {
+    }else
+    {
         $scope.onAgenda();
     }
+
+
 
 
     $("button.btn-default:contains('Cerrar') ,#btnCerrar, .close").click(function(){
