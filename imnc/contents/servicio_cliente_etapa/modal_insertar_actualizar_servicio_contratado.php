@@ -68,6 +68,16 @@
                                          class="form-control" id="etapa" name="etapa" ng-change='cambioEtapa()' required
                                          ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}" ng-if="accion == 'insertar' && formData.claveServicio==3" ng-disabled="!formData.claveServicio || accion == 'insertar'"></select>
                             </div>
+							     <!-- Esta opción es solo para Unidad de verificación de información comercial -->
+							<div class="form-group" ng-show="formData.sel_tipoServicio == 18">
+								<label for="Dict_const">Dictamen o Constancia<span class="required">*</span></label>
+									<select ng-model="formData.DICTAMEN_CONSTANCIA" class="form-control" id="DICTAMEN_CONSTANCIA" name="DICTAMEN_CONSTANCIA" ng-change="cambio_dictamen_constancia(formData.DICTAMEN_CONSTANCIA)" required ng-class="{ error: exampleForm.DICTAMEN_CONSTANCIA.$error.required && !exampleForm.$pristine}" ng-disabled="accion=='editar'">
+										<option value="" selected disabled>-- selecciona  --</option>
+										<option value="Dictamen">Dictamen</option>
+										<option value="Constancia" selected>Constancia</option>
+									</select>
+								
+							</div>
 							<div class="form-group" ng-show="accion=='editar' && formData.claveServicio!=3">
                                 <label for="cambio">¿Hay Cambio?</label>
                                 <select ng-model="formData.cambio"  

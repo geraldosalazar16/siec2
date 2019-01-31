@@ -136,6 +136,15 @@ function llenar_modal_insertar_actualizar(){
             $scope.formData.etapa	=	servicio_obtenido.ID_ETAPA_PROCESO;
 		}
         $scope.formData.sel_tipoServicio = servicio_obtenido.ID_TIPO_SERVICIO;
+		if($scope.formData.sel_tipoServicio == 18){
+			if(servicio_obtenido.REFERENCIA.substr(7,1) =='D'){
+				$scope.formData.DICTAMEN_CONSTANCIA	=	"Dictamen";
+			}
+			if(servicio_obtenido.REFERENCIA.substr(7,1)=='C'){
+				$scope.formData.DICTAMEN_CONSTANCIA	=	"Constancia";
+			}
+			
+		}
 		//$scope.formData.Norma	=	servicio_obtenido.ID_NORMA;
 
 		//$scope.formData.etapa	=	servicio_obtenido.ID_ETAPA_PROCESO;
@@ -147,7 +156,7 @@ function llenar_modal_insertar_actualizar(){
 // ***** 		Funcion para limpiar las variables del modal			 *****
 // ===========================================================================
 function clear_modal_insertar_actualizar(){
-		generar_referencia("C1","XX","XXX");
+		generar_referencia("C1","XX","XXX","YYY","ZZ");
 		$scope.id_servicio = 0;
 		//$scope.formData.txtReferencia = "";
 		
@@ -160,6 +169,7 @@ function clear_modal_insertar_actualizar(){
 		$scope.formData.Normas	=	[];
 		$scope.Normas = [];
 		$scope.formData.etapa	=	"";
+		$scope.formData.DICTAMEN_CONSTANCIA	=	"";
 	}
 	
 // ===========================================================================
@@ -386,11 +396,18 @@ $scope.cambioclaveServicio	=	function(id_servicio){
         var ref		=	$scope.formData.txtReferencia;
         var etapa	=	"XX";
         var	tipo_servicio	=	"XXX";
+		var norma = "YYY";
+		var dict_const = "ZZ";
         if($scope.formData.sel_tipoServicio)
             tipo_servicio	=	$scope.formData.sel_tipoServicio;
         if($scope.formData.etapa)
             etapa	=	$scope.formData.etapa;
-        generar_referencia(ref,etapa,tipo_servicio);
+		if($scope.formData.DICTAMEN_CONSTANCIA)
+            dict_const	=	$scope.formData.DICTAMEN_CONSTANCIA;
+		if($scope.formData.Normas[0])
+            norma	=	$scope.formData.Normas[0].ID_NORMA;
+		
+        generar_referencia(ref,etapa,tipo_servicio,norma,dict_const);
     }
 
 
@@ -421,11 +438,19 @@ $scope.cambiosel_tipoServicio	=	function(id_tipo_servicio){
 	
 	var ref		=	$scope.formData.txtReferencia;
 	var etapa	=	"XX";
+	var norma = "YYY";
+	var dict_const = "ZZ";
 	var	tipo_servicio	=	$scope.formData.sel_tipoServicio;
 	if($scope.formData.etapa)
 		etapa	=	$scope.formData.etapa;
+	if($scope.formData.DICTAMEN_CONSTANCIA){
+            dict_const	=	$scope.formData.DICTAMEN_CONSTANCIA;
+	}
+	if($scope.formData.Normas[0]){
+            norma	=	$scope.formData.Normas[0].ID_NORMA;
+	}
     if($scope.formData.claveServicio!=3)
-	generar_referencia(ref,etapa,tipo_servicio);
+		generar_referencia(ref,etapa,tipo_servicio,norma,dict_const);
 }
 // ==============================================================================
 // ***** 	Funcion para traer los Cursos de este tipo de Servicio			*****
@@ -496,10 +521,19 @@ $scope.cambioEtapa	=	function(){
 	var ref		=	$scope.formData.txtReferencia;
 	var etapa	=	$scope.formData.etapa;
 	var	tipo_servicio	=	"XXX";
+	var norma = "YYY";
+	var dict_const = "ZZ";
 	if($scope.formData.sel_tipoServicio)
 		tipo_servicio	=	$scope.formData.sel_tipoServicio;
+	if($scope.formData.DICTAMEN_CONSTANCIA){
+            dict_const	=	$scope.formData.DICTAMEN_CONSTANCIA;
+	}
+	if($scope.formData.Normas[0]){
+            norma	=	$scope.formData.Normas[0].ID_NORMA;
+	}
 	if($scope.formData.claveServicio!=3)
-	generar_referencia(ref,etapa,tipo_servicio);
+	generar_referencia(ref,etapa,tipo_servicio,norma,dict_const);
+
 }	
 // ==============================================================================
 // ***** 	Funcion para traer los tipos de cambios	*****
@@ -537,7 +571,7 @@ $scope.cambioEtapa	=	function(){
 // ==============================================================================
 // ***** 		Funcion para generar referencia	de forma automatica			*****
 // ==============================================================================	
-function generar_referencia(ref,etapa,tipo_servicio){
+function generar_referencia(ref,etapa,tipo_servicio,norma,dict_const){
 	if(!tipo_servicio)
 	{
 		tipo_servicio = "XXX";
@@ -548,7 +582,7 @@ function generar_referencia(ref,etapa,tipo_servicio){
 	}
 	
 	
-	$http.get(  global_apiserver + "/tipos_servicio/generarReferencia/?ref="+ref+"&etapa="+etapa+"&id="+tipo_servicio)
+	$http.get(  global_apiserver + "/tipos_servicio/generarReferencia/?ref="+ref+"&etapa="+etapa+"&id="+tipo_servicio+"&norma="+norma+"&dict_const="+dict_const)
 		.then(function( response ){
 			
 			//$scope.formData.txtReferencia = response.data;
@@ -557,6 +591,30 @@ function generar_referencia(ref,etapa,tipo_servicio){
 		});
 	
 
+}
+
+// ======================================================================
+// ***** Cambio Dictamen COnstancia solo para informacion COmercial	*****
+// ======================================================================
+$scope.cambio_dictamen_constancia	=	function(dict_const){
+	
+
+	
+	var ref		=	$scope.formData.txtReferencia;
+	var etapa	=	"XX";
+	var	tipo_servicio	=	"XXX";
+	var norma = "YYY";
+	if($scope.formData.etapa)
+		etapa	=	$scope.formData.etapa;
+	if($scope.formData.sel_tipoServicio){
+		tipo_servicio	=	$scope.formData.sel_tipoServicio;
+	}
+	if($scope.formData.Normas[0].ID_NORMA){
+            norma	=	$scope.formData.Normas[0].ID_NORMA;
+	}
+	if($scope.formData.claveServicio!=3){
+		generar_referencia(ref,etapa,tipo_servicio,norma,dict_const);
+    }
 }
 // ==============================================================================
 // ***** 		Funcion para generar referencia	para CIFA		*****
@@ -567,6 +625,8 @@ function generar_referencia(ref,etapa,tipo_servicio){
                 $scope.formData.txtReferencia	= response.data;
             });
     }
+	
+	
 
     $(document).ready(function () {
 	cargarClientes();
