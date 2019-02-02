@@ -1061,7 +1061,7 @@ if($cotizacion[0]["ID_SERVICIO"] == 3){
 	}
 	$cotizacion[0]["MODALIDAD"] = $modalidad;
 	if($modalidad == 'programado'){		
-		$query = "SELECT C.ID_CURSO,C.NOMBRE FROM CURSOS C INNER JOIN CURSOS_PROGRAMADOS CP ON C.ID_CURSO = CP.ID_CURSO WHERE CP.ID =" . $id_curso;
+		$query = "SELECT C.ID_CURSO,C.NOMBRE,C.PRECIO_PROGRAMADO,C.DIAS_PROGRAMADO FROM CURSOS C INNER JOIN CURSOS_PROGRAMADOS CP ON C.ID_CURSO = CP.ID_CURSO WHERE CP.ID =" . $id_curso;
 		$NOMBRE_CURSO = $database->query($query)->fetchAll(PDO::FETCH_ASSOC); 
 		$cotizacion[0]["NOMBRE_CURSO"] = $NOMBRE_CURSO[0]["NOMBRE"];
 		$cotizacion[0]["ID_CURSO_PROGRAMADO"] = $id_curso;
@@ -1069,14 +1069,53 @@ if($cotizacion[0]["ID_SERVICIO"] == 3){
 		$cotizacion[0]["CANT_PARTICIPANTES"] = $cantidad_participantes;
 		$cotizacion[0]["SOLO_CLIENTE"] = $solo_cliente;
 		$cotizacion[0]["TIENE_SERVICIO"] = $tiene_servicio;
+		$cotizacion[0]["CURSOS"] = $NOMBRE_CURSO;
+		//Aqui la parte que tiene que ver con TARIFA ADICIONAL
+		
+
+		$cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
+		"*", ["AND"=>["ID_TRAMITE"=>0,"ID_COTIZACION"=>$id]]);
+		valida_error_medoo_and_die();
+		
+		$total_tarifa_adicional = 0;
+				for ($i=0; $i < count($cotizacion_tarifa_adicional); $i++) {
+					$subtotal = $cotizacion_tarifa_adicional[$i]["TARIFA"] * $cotizacion_tarifa_adicional[$i]["CANTIDAD"];
+					$total_tarifa_adicional += $subtotal;
+				}
+		//FINAL DE LA PARTE TARIFA ADICIONAL
+		//Aqui se calcula el costo que seria tarifa*cantidad_de_dias
+		$total_cotizacion = $NOMBRE_CURSO[0]["PRECIO_PROGRAMADO"]*$cantidad_participantes + $total_tarifa_adicional;
+		
 	} else if($modalidad == 'insitu'){
-		$data = $database->get("CURSOS", ["ID_CURSO","NOMBRE"], ["ID_CURSO"=>$id_curso]);
+		$data = $database->get("CURSOS", "*", ["ID_CURSO"=>$id_curso]);
 		$cotizacion[0]["NOMBRE_CURSO"] = $data["NOMBRE"];
 		$cotizacion[0]["ID_CURSO"] = $id_curso;
 		$cotizacion[0]["CANT_PARTICIPANTES"] = $cantidad_participantes;
 		$cotizacion[0]["SOLO_CLIENTE"] = $solo_cliente;
         $cotizacion[0]["TIENE_SERVICIO"] = $tiene_servicio;
+		$cotizacion[0]["CURSOS"] = $data;
+		
+		//AQUI LA PARTE QUE TIENE QUE VER CON LA COTIZACION POR SITIOS
+		$const_sitio = 0;
+		$const_sitio = $database->count("COTIZACION_SITIOS_CIFA", ["AND"=>["ID_COTIZACION"=>$id,"SELECCIONADO"=>1]]);
+		valida_error_medoo_and_die();
+		//Aqui la parte que tiene que ver con TARIFA ADICIONAL
+		
+
+		$cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
+		"*", ["AND"=>["ID_TRAMITE"=>0,"ID_COTIZACION"=>$id]]);
+		valida_error_medoo_and_die();
+		
+		$total_tarifa_adicional = 0;
+				for ($i=0; $i < count($cotizacion_tarifa_adicional); $i++) {
+					$subtotal = $cotizacion_tarifa_adicional[$i]["TARIFA"] * $cotizacion_tarifa_adicional[$i]["CANTIDAD"];
+					$total_tarifa_adicional += $subtotal;
+				}
+		//FINAL DE LA PARTE TARIFA ADICIONAL
+		//Aqui se calcula el costo que seria tarifa*cantidad_de_dias
+		$total_cotizacion = $data["PRECIO_INSITU"]*$data["DIAS_INSITU"]*$const_sitio + $total_tarifa_adicional;
 	}
+	$cotizacion[0]["TOTAL_COTIZACION"] = $total_cotizacion;
 }
 $cotizacion[0]["SERVICIO"] = $servicio;
 $cotizacion[0]["TIPOS_SERVICIO"] = $tipos_servicio;
