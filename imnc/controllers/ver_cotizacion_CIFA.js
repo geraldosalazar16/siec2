@@ -1,4 +1,4 @@
-app.controller("ver_cotizacion_INF_COM_controller", ['$scope','$window', '$http','$document', function($scope,$window,$http,$document){
+app.controller("ver_cotizacion_CIFA_controller", ['$scope','$window', '$http','$document', function($scope,$window,$http,$document){
   $scope.modulo_permisos =  global_permisos["COTIZADOR"];
   $scope.arr_prospectos = [];
   $scope.arr_sitios_cotizacion = [];
@@ -346,21 +346,21 @@ $scope.formData = {};
 		Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
 		Contactos_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
 		
-		$scope.formDataGenCotizacion.tramites=$scope.arr_tramites_cotizacion;
+	/*	$scope.formDataGenCotizacion.tramites=$scope.arr_tramites_cotizacion;
 		$scope.formDataGenCotizacion.descripcion=[];
 		$scope.tarifa_adicional_tramite_cotizacion_by_tramite=[];
 		
 		
 		for(var key in $scope.formDataGenCotizacion.tramites){
 /*			
-			/*===========================================================================*/
-			 tramite_tarifa_adicional_by_tramite($scope.formDataGenCotizacion.tramites[key].ID,key);
-			/*===========================================================================*/
+			
+		 tramite_tarifa_adicional_by_tramite($scope.formDataGenCotizacion.tramites[key].ID,key);
+			\
 			
 		}
 		
 		$scope.formDataGenCotizacion.descripcion=$scope.tarifa_adicional_tramite_cotizacion_by_tramite;
-		
+		*/
     $('#modalTituloGenerarCotizacion').html("Editar datos");
     $('#modalGenerarCotizacion').modal('show');
   }
@@ -371,7 +371,7 @@ $scope.formData = {};
 		//document.getElementById('formDataGenCotizacion').submit();
 		//var url = "./generar/pdf/cotizacion_propuesta/index.php?datos="+JSON.stringify(formDataGenCotizacion);
 		$scope.id_producto="";
-		var url = "./generar/pdf/cotizacion_propuesta_inf_com/index.php?id_prospecto="+$scope.obj_cotizacion.ID_PROSPECTO+"&id_producto="+$scope.id_producto+"&id_contacto="+$scope.formDataGenCotizacion.contactoprospecto1+"&id_domicilio="+$scope.formDataGenCotizacion.domicilioprospecto1+"&id_cotizacion="+$scope.obj_cotizacion.ID+"&tramites="+JSON.stringify(formDataGenCotizacion.tramites)+"&descripcion="+JSON.stringify(formDataGenCotizacion.descripcion);
+		var url = "./generar/pdf/cotizacion_propuesta_cifa/index.php?id_prospecto="+$scope.obj_cotizacion.ID_PROSPECTO+"&id_producto="+$scope.id_producto+"&id_contacto="+$scope.formDataGenCotizacion.contactoprospecto1+"&id_domicilio="+$scope.formDataGenCotizacion.domicilioprospecto1+"&id_cotizacion="+$scope.obj_cotizacion.ID;
     window.open(url,'_blank');
 		$("#modalGenerarCotizacion").modal("hide");
 	}

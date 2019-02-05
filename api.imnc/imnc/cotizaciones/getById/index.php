@@ -1072,9 +1072,16 @@ if($cotizacion[0]["ID_SERVICIO"] == 3){
 		$cotizacion[0]["CURSOS"] = $NOMBRE_CURSO;
 		//Aqui la parte que tiene que ver con TARIFA ADICIONAL
 		
-
+		$campos_t = [
+				"COTIZACION_TARIFA_ADICIONAL.ID",
+				"COTIZACION_TARIFA_ADICIONAL.ID_TRAMITE",
+				"COTIZACION_TARIFA_ADICIONAL.ID_TARIFA_ADICIONAL",
+				"COTIZACION_TARIFA_ADICIONAL.CANTIDAD",
+				"TARIFA_COTIZACION_ADICIONAL.DESCRIPCION",
+				"TARIFA_COTIZACION_ADICIONAL.TARIFA"
+		];
 		$cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
-		"*", ["AND"=>["ID_TRAMITE"=>0,"ID_COTIZACION"=>$id]]);
+		$campos_t, ["AND"=>["ID_TRAMITE"=>0,"ID_COTIZACION"=>$id]]);
 		valida_error_medoo_and_die();
 		
 		$total_tarifa_adicional = 0;
@@ -1101,9 +1108,16 @@ if($cotizacion[0]["ID_SERVICIO"] == 3){
 		valida_error_medoo_and_die();
 		//Aqui la parte que tiene que ver con TARIFA ADICIONAL
 		
-
+		$campos_t = [
+				"COTIZACION_TARIFA_ADICIONAL.ID",
+				"COTIZACION_TARIFA_ADICIONAL.ID_TRAMITE",
+				"COTIZACION_TARIFA_ADICIONAL.ID_TARIFA_ADICIONAL",
+				"COTIZACION_TARIFA_ADICIONAL.CANTIDAD",
+				"TARIFA_COTIZACION_ADICIONAL.DESCRIPCION",
+				"TARIFA_COTIZACION_ADICIONAL.TARIFA"
+		];
 		$cotizacion_tarifa_adicional = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
-		"*", ["AND"=>["ID_TRAMITE"=>0,"ID_COTIZACION"=>$id]]);
+		$campos_t, ["AND"=>["ID_TRAMITE"=>0,"ID_COTIZACION"=>$id]]);
 		valida_error_medoo_and_die();
 		
 		$total_tarifa_adicional = 0;
@@ -1115,7 +1129,8 @@ if($cotizacion[0]["ID_SERVICIO"] == 3){
 		//Aqui se calcula el costo que seria tarifa*cantidad_de_dias
 		$total_cotizacion = $data["PRECIO_INSITU"]*$data["DIAS_INSITU"]*$const_sitio + $total_tarifa_adicional;
 	}
-	$cotizacion[0]["TOTAL_COTIZACION"] = $total_cotizacion;
+	$cotizacion[0]["COTIZACION_TARIFA_ADICIONAL"] = $cotizacion_tarifa_adicional;
+	$cotizacion[0]["TOTAL_COTIZACION"] = redondeado($total_cotizacion,2);
 }
 $cotizacion[0]["SERVICIO"] = $servicio;
 $cotizacion[0]["TIPOS_SERVICIO"] = $tipos_servicio;

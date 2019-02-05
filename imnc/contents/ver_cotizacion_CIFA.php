@@ -1,4 +1,4 @@
-<div class="right_col" role="main"  ng-controller="ver_cotizacion_INF_COM_controller as $ctrl" ng-init='despliega_cotizacion()' ng-cloak>
+<div class="right_col" role="main"  ng-controller="ver_cotizacion_CIFA_controller as $ctrl" ng-init='despliega_cotizacion()' ng-cloak>
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
       <div class="x_panel">
@@ -85,7 +85,7 @@
                   </li>
                   <li>
                     <button type="button" id="btnInsertarSitio" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_sitio_insertar()'
-                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado && obj_cotizacion.MODALIDAD == "insitu"' >
+                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado && obj_cotizacion.MODALIDAD == "insitu"'ng-disabled="obj_cotizacion_datos.COUNT_SITIOS.SITIOS_A_VISITAR >0" >
                       <i class="fa fa-plus"> </i> Agregar sitio
                     </button>
 					<button type="button" id="btnInsertarTarifa" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_tarifa_adicional_insertar()'
@@ -490,7 +490,7 @@
       </div>
       <div class="modal-body">
 		<form name="exampleFormGenCotizacion" target="VentanaGenerarPDF_CIL" method="POST" ><!-- action="./generar/pdf/cotizacion_propuesta_cil/index.php" -->
-				<div  class='form-group'>
+			<!--	<div  class='form-group'>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<label class="control-label col-md-4 col-xs-4 col-sm-4">Trámite</label>
 					</div>
@@ -511,7 +511,7 @@
 					</div>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].VIATICOS" required ng-class="{ error: exampleFormGenCotizacion.viaticos.x.$error.required && !exampleForm.$pristine}" disabled >
-					</div>
+					</div> 
 					<div class='form-group' ng-repeat="y in tarifa_adicional_tramite_cotizacion_by_tramite[tram_index]" >
 						<div class='form-group  col-md-9 col-xs-9 col-sm-9'>
 							<input type="text" class="form-control"  ng-model="formDataGenCotizacion.descripcion[tram_index][$index].DESCRIPCION" required ng-class="{ error: exampleFormGenCotizacion.descipcion.$error.required && !exampleForm.$pristine}" ng-if="formDataGenCotizacion.descripcion[tram_index][$index].DESCRIPCION!=''" disabled > 
@@ -522,7 +522,7 @@
 
 					</div>
 
-				</div>
+				</div> -->
 
 				<div class="form-group" ng-if="obj_cotizacion.BANDERA == 0">
 						<label class="control-label">Contactos</label>
