@@ -75,6 +75,7 @@ app.controller('tareas_controller',['$scope','$http',function($scope,$http){
 							end: new Date(anhio_ini, mes_ini, dia_ini, 18, 30),
 							allDay: false,
 							color: color,
+							textColor: 'black',
 							url: './?pagina=ec_tipos_servicio&id_serv_cli_et='+objAuditoria.ID_SERVICIO_CLIENTE_ETAPA,
 						}
 					)
