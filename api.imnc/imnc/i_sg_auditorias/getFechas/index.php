@@ -1,34 +1,64 @@
 <?php 
-//error_reporting(E_ALL);
-//ini_set("display_errors",1);
+
+include  '../../common/conn-apiserver.php';  
+include  '../../common/conn-medoo.php';  
+include  '../../common/conn-sendgrid.php';  
+
+function valida_parametro_and_die($parametro, $mensaje_error){ 
+	$parametro = "" . $parametro; 
+	if ($parametro == "" or is_null($parametro)) { 
+		$respuesta["resultado"] = "error\n"; 
+		$respuesta["mensaje"] = $mensaje_error; 
+		print_r(json_encode($respuesta)); 
+		die(); 
+	} 
+} 
+
+function valida_error_medoo_and_die(){ 
+	global $database, $mailerror; 
+	if ($database->error()[2]) { 
+		$respuesta["resultado"]="error"; 
+		$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
+		print_r(json_encode($respuesta)); 
+		die(); 
+	} 
+} 
+
+$respuesta=array(); 
+$json = file_get_contents("php://input"); 
+$objeto = json_decode($json); 
+
+$TIPO_SERVICIO = $objeto->TIPO_SERVICIO;
+//$SECTOR = $objeto->SECTOR;
+$REFERENCIA = $objeto->REFERENCIA;
+$CLIENTE = $objeto->CLIENTE;
 
 
-include  '../../common/conn-apiserver.php'; 
-include  '../../common/conn-medoo.php'; 
-include  '../../common/conn-sendgrid.php'; 
+$whereTIPO_SERVICIO = "";
+$whereSECTOR = "";
+$whereREFERENCIA = "";
+$whereCLIENTE = "";
+$where = " WHERE 1 ";
 
-function valida_parametro_and_die($parametro, $mensaje_error){
-	$parametro = "".$parametro;
-	if ($parametro == "") {
-		$respuesta['resultado'] = 'error';
-		$respuesta['mensaje'] = $mensaje_error;
-		print_r(json_encode($respuesta));
-		die();
-	}
+$whereTIPO_SERVICIO = "";
+if ($TIPO_SERVICIO != "") {
+	$whereTIPO_SERVICIO = " AND SERVICIO_CLIENTE_ETAPA.ID_TIPO_SERVICIO = " . $database->quote($TIPO_SERVICIO) . " ";
+}
+/*
+$whereSECTOR = "";
+if ($SECTOR != "") {
+	$whereSECTOR = " AND SECTORES.ID_SECTOR = " . $database->quote($SECTOR) . " ";
+}
+*/
+$whereREFERENCIA = "";
+if ($REFERENCIA != "") {
+	$whereREFERENCIA = " AND SERVICIO_CLIENTE_ETAPA.REFERENCIA = " . $database->quote($REFERENCIA) . " ";
 }
 
-function valida_error_medoo_and_die(){
-	global $database, $mailerror;
-	if ($database->error()[2]) { //Aqui está el error
-		$respuesta['resultado']="error";
-		$respuesta['mensaje']="Error al ejecutar script: " . $database->error()[2];
-		print_r(json_encode($respuesta));
-		$mailerror->send("certificando", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx");
-		die();
-	}
+$whereCLIENTE = "";
+if ($CLIENTE != "") {
+	$whereCLIENTE = " AND CLIENTES.ID = " . $database->quote($CLIENTE) . " ";
 }
-
-$respuesta=array();
 
 $strQuery = "SELECT DISTINCT 
 I_SG_AUDITORIA_FECHAS.ID, 
@@ -49,8 +79,9 @@ AND I_SG_AUDITORIAS.TIPO_AUDITORIA = I_SG_AUDITORIA_FECHAS.TIPO_AUDITORIA
 INNER JOIN SERVICIO_CLIENTE_ETAPA
 ON I_SG_AUDITORIAS.ID_SERVICIO_CLIENTE_ETAPA = SERVICIO_CLIENTE_ETAPA.ID
 INNER JOIN CLIENTES
-ON CLIENTES.ID = SERVICIO_CLIENTE_ETAPA.ID_CLIENTE";
-//print_r($strQuery);
+ON CLIENTES.ID = SERVICIO_CLIENTE_ETAPA.ID_CLIENTE" .
+$where . $whereTIPO_SERVICIO . $whereREFERENCIA . $whereCLIENTE;
+
 
 $arreglo_fechas = $database->query($strQuery)->fetchAll();
 valida_error_medoo_and_die();

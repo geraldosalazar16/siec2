@@ -8,7 +8,7 @@
 <script type="text/javascript" src="js/datepicker/timepicker.js"></script>
 <script type="text/javascript" src="js/notify.js"></script>
 
-<div class="right_col" role="main">
+<div class="right_col" role="main" ng-controller="tareas_controller">
     <div class="page-title">
         <div class="title_left">
         <?php
@@ -29,19 +29,21 @@
 		<div class="col-md-12 col-sm-12 col-xs-12"><!--</div>col-md-3 col-sm-6 col-xs-6">-->
 			<div class="x_panel">
 				<div class="x_title">
-					<p><h2>Filtros</h2></p>
+					<p><h2>Filtros para auditorías</h2></p>
 					<div class="clearfix"></div>
 				</div>
 				<div class="x_content text-center">
 					<div class="form-group" style="text-align: left;">
 						<label>Tipos de servicio</label>
 						<div>
-						  <select class="select2_single form-control" id="selectTiposServicio" >
-							
+						  <select class="form-control" id="selectTiposServicio" 
+						  ng-model="selectTipoServicio"
+						  ng-change="filtrar()"
+						  ng-options="tipo_servicio.ID as tipo_servicio.NOMBRE_SERVICIO + ' - ' + tipo_servicio.NOMBRE for tipo_servicio in TiposServicio">							
 						  </select>
 						</div>
 					</div>
-
+					<!--
 					<div class="form-group" style="text-align: left;">
 						<label>Sectores</label>
 						<div>
@@ -50,12 +52,13 @@
 							</select>
 						</div>
 					</div>
-
+					-->
 					<div class="form-group" style="text-align: left;">
 						<label>Referencias</label>
 						<div>
-							<select class="select2_single form-control" id="selectReferencias" >
-						
+							<select class="select2_single form-control" id="selectReferencias" 
+							ng-model="selectReferencias"
+							ng-options="ref as ref for ref in Referencias">							
 							</select>
 						</div>
 					</div>
@@ -63,8 +66,9 @@
 					<div class="form-group" style="text-align: left;">
 						<label>Clientes</label>
 						<div>
-							<select class="select2_single form-control" id="selectClientes" >
-                
+							<select class=" select2_single form-control" id="selectClientes" 
+							ng-model="selectClientes"
+							ng-options="cliente.ID as cliente.NOMBRE for cliente in Clientes">                
 							</select>
 						</div>
 					</div>
@@ -85,7 +89,7 @@
 		</div>
     </div>
 	<!-- Modal Editar tarea -->
-	<div ng-controller="tareas_controller">
+
 		<div class="modal fade" id="modalCreateEvento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
@@ -184,7 +188,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+
 </div>
 
 
