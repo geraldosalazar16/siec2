@@ -150,7 +150,7 @@
           </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" ng-click="cerrar()">Cerrar</button>
+        <button type="button" class="btn" ng-click="cerrar()">Cerrar</button>
         <button type="button" class="btn btn-primary" ng-click="guardarTipoServicios()" id="btnGuardar">Guardar</button>
       </div>
     </div>
