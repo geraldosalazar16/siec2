@@ -437,8 +437,16 @@
 				</datepicker>-->
 															<ul class="list-unstyled user_data">
 																<li ng-repeat="r in x.AUDITORES_FECHAS[w.ID_PERSONAL_TECNICO_CALIF]">
-																	{{mostrarFecha(r.FECHA)}} {{mostrarNorma(r.ID_NORMA)}}
-														
+																	<table>
+																		<tr>
+																			<td>{{mostrarFecha(r.FECHA)}} {{mostrarNorma(r.ID_NORMA)}}</td>																	
+																			<td>
+																				<p ng-if='modulo_permisos["editar"] == 1'>
+																				<button class="btn btn-primary btn-xs btnEliminaFechaGrupoAuditoria" ng-click="eliminar_fechasAuditoriaGrupo(r.ID)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+																				</p>
+																			</td>	
+																		</tr>
+																	</table>
 																</li>
 															</ul>	
 															</td>

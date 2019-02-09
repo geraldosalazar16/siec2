@@ -1519,6 +1519,43 @@ $scope.funcion_guardar_datos = function(id_sce,id_ta,ciclo,id_pt,norma_serv_inte
 		$scope.txtInsertarFechasGrupo={};		
 
 }
+// ==============================================================================
+// ***** 			Funcion para eliminar las fechas de un auditor			*****
+// ==============================================================================
+$scope.eliminar_fechasAuditoriaGrupo = function(id){
+
+	var datos	=	{
+					ID:	id,
+					ID_USUARIO:	sessionStorage.getItem("id_usuario")
+				};
+			$http.post(global_apiserver + "/i_sg_auditoria_grupo_fechas/delete/",datos).
+            then(function(response){
+                if(response.data.resultado=="ok"){
+					notify('&Eacutexito','Se han eliminado los datos','success');
+					
+					if($scope.DatosServicio.ID_SERVICIO == 1){
+						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa,0,0);
+					}
+					if($scope.DatosServicio.ID_SERVICIO == 2){	
+						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					}
+					$scope.IdFechaEliminar="";
+                }
+                else{
+                    notify('Error',response.data.mensaje,'error');
+					if($scope.DatosServicio.ID_SERVICIO == 1){
+						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa,0,0);
+					}
+					if($scope.DatosServicio.ID_SERVICIO == 2){	
+						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					}
+					$scope.IdFechaEliminar="";
+                }
+               
+            });
+	 $("#modalConfirmacion").modal("hide");
+	 
+}	
 // ==============================================================
 // *****	FUNCION PARA MOSTRAR NORMA PARA TS INTEGRAL		*****
 // ==============================================================
