@@ -139,6 +139,14 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '</li>';
           }
           
+		  if ($modulo_permisos["SERVICIOS"]["ver"] == 1) {
+            echo ' <li>';
+            echo '  <a href="./?pagina=dictaminacion">';
+            echo '    <i class="fa fa-usd" aria-hidden="true"></i> Dictaminación ';
+            echo '  </a>';
+            echo '</li>';
+          }
+		  
           if ($modulo_permisos["EXPEDIENTES"]["ver"] == 1) {
             echo '<li><a><i class="fa fa-folder-open"></i> Expediente </a>';
             echo '         <ul class="nav child_menu" style="display: none">';
