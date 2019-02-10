@@ -12,52 +12,7 @@ include  '../../../../api.imnc/imnc/common/conn-sendgrid.php';
 
 //require_once('../../../common/apiserver.php'); //$global_apiserver
 //require_once('../../../diff/selector.php'); //$global_diffname
-//require_once('../../../diff/'.$global_diffname.'/strings.php'); 
-
-/*/////////////////////////////////////////////////////////////////////////*/
-function mes_esp($string){
-	list($day,$month,$year) = explode('/',$string);
-	switch($month){
-		case 1:
-			$mes = "Enero";
-			break;
-		case 2:
-			$mes = "Febrero";
-			break;
-		case 3:
-			$mes = "Marzo";
-			break;
-		case 4:
-			$mes = "Abril";
-			break;
-		case 5:
-			$mes = "Mayo";
-			break;
-		case 6:
-			$mes = "Junio";
-			break;
-		case 7:
-			$mes = "Julio";
-			break;
-		case 8:
-			$mes = "Agosto";
-			break;		
-		case 9:
-			$mes = "Septiembre";
-			break;
-		case 10:
-			$mes = "Octubre";
-			break;
-		case 11:
-			$mes = "Noviembre";
-			break;
-		case 12:
-			$mes = "Diciembre";
-			break;	
-	}
-	$str = $day."/".$mes."/".$year;
-	return $str;
-}
+//require_once('../../../diff/'.$global_diffname.'/strings.php');
 
 function valida_parametro_and_die($parametro, $mensaje_error){ 
 	$parametro = "" . $parametro; 
@@ -90,24 +45,46 @@ function valida_isset($variable, $mensaje){
 }
 //$id_auditoria = $_REQUEST["ID_AUDITORIA"];
 $id_sce = $_REQUEST["ID_SCE"];
+if($id_sce)
+{
+$id_servicio = $_REQUEST["SERVICIO"];
 $id_tipo_auditoria = $_REQUEST["ID_TA"];
 $ciclo = $_REQUEST["CICLO"];
 $abcde = explode("string:",$_REQUEST["cmbDomicilioNotificacionPDF"]);
+$chck1 = $_REQUEST["CHCK1"];
+$chck2 = $_REQUEST["CHCK2"];
+$chck1 = ($chck1?'checked="true"':"");
+$chck2 = ($chck2?'checked="true"':"");
+
 $id_domicilio =$abcde[1] ;
 //$tipoNotificacionPDF = $_REQUEST["cmbTipoNotificacionPDF"];
 //$tipoCambiosPDF = $_REQUEST["cmbTipoCambiosPDF"];
 //$certificacionMantenimientoPDF = $_REQUEST["cmbCertificacionMantenimientoPDF"];
-$nota1PDF = $_REQUEST["txtNota1PDF"];
-$nota2PDF = $_REQUEST["txtNota2PDF"];
-$nota3PDF = $_REQUEST["txtNota3PDF"];
-$nombreAutorizaPDF = $_REQUEST["txtNombreAutorizaPDF"];
+$notasPDF = $_REQUEST["txtNotas"];
+if($notasPDF)
+{
+    $notasPDF = explode("<|>",$notasPDF);
+}else{
+    $notasPDF = [];
+}
+
+
+//$nombreAutorizaPDF = $_REQUEST["txtNombreAutorizaPDF"];
 //$cargoAutorizaPDF = $_REQUEST["txtCargoAutorizaPDF"];
-$nombreAuxiliar = $_REQUEST["nombreUsuario"];
+$nombreAuxiliar = strtoupper($_REQUEST["nombreUsuario"]);
 
 /*/////////////////////////////////////////////////////////////////////////*/
 //Para obtener datos de la base de datos
 /*/////////////////////////////////////////////////////////////////////////*/
 $valor = false;
+if($id_servicio==1)
+{
+    $json_response = file_get_contents($global_apiserver . "/i_sg_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
+}
+if($id_servicio==2)
+{
+    $json_response = file_get_contents($global_apiserver . "/i_ec_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
+}
 $json_response = file_get_contents($global_apiserver . "/i_sg_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
 valida_isset($json_response, "Error en la conexión a los datos para generar PDF en linea: " . __LINE__);
 
@@ -138,7 +115,7 @@ for ($i=0; $i < count($arr_sectores); $i++) {
 		valida_isset($SECTORES, "Error: No se encuentra SECTORES en linea: " . __LINE__);
 	}
 }
-
+    $SECTORES =   ($SECTORES?$SECTORES:'N/A');
 // Datos de contacto y domicilio
 
 $obj_cliente = $json_object->SERVICIO_CLIENTE_ETAPA->CLIENTE;
@@ -259,8 +236,8 @@ for ($i=0; $i < count($pts) ; $i++) {
 $CLAVE_CERTIFICADO = " ";
 $CC_FECHA_INICIO = " ";
 $CC_FECHA_FIN = " ";
-//$CLAVE_CERTIFICADO = $json_object->SG_AUDITORIA_CERTIFICADO->CLAVE;
-valida_isset($CLAVE_CERTIFICADO, "Error: No se encuentra la clave certificado: " . __LINE__);
+$CLAVE_CERTIFICADO = $json_object->SERVICIO_CLIENTE_ETAPA->INFO_SERVICIO[0]->VALOR;
+//valida_isset($CLAVE_CERTIFICADO, "Error: No se encuentra la clave certificado: " . __LINE__);
 //$CC_FECHA_INICIO = $json_object->SG_AUDITORIA_CERTIFICADO->FECHA_INICIO;
 valida_isset($CC_FECHA_INICIO, "Error: No se encuentra la fecha de inicio: " . __LINE__);
 //$CC_FECHA_FIN = $json_object->SG_AUDITORIA_CERTIFICADO->FECHA_FIN;
@@ -269,75 +246,12 @@ valida_isset($CC_FECHA_FIN, "Error: No se encuentra la fecha final: " . __LINE__
 $FA = $json_object->SG_AUDITORIA_FECHAS;
 valida_isset($FA, "Error: No se encuentra las fechas auditoria " . __LINE__);
 $FECHAS_AUDITORIAS = "";
-for ($i=0; $i < count($FA) ; $i++) { 
-	$FECHAS_AUDITORIAS .= $FA[$i]->FECHA.",";
-}
-/*===========================================================================*/
-//				LOGICA PARA MARCAR EL TIPO DE AUDITORIA
-$aud_et1 = "false";
-$aud_et2 = "false";
-$aud_vig1 = "false";
-$aud_vig2 = "false";
-$aud_otra = "false";
-$texto_otra="";
-$aud_ren = "false";
-$aud_trans = "false";
-$aud_esp = "false";
-$aud_cortoplazo = "false";
-switch($id_tipo_auditoria){
-	case 1:
-		$aud_esp = "true";
-		break;
-	case 2:
-		$aud_et1 = "true";
-		break;
-	case 3:
-		$aud_et2 = "true";
-		break;	
-	case 4:
-		$aud_ren = "true";
-		break;	
-	case 5:
-		//$aud_esp = true;
-		break;
-	case 6:
-		$aud_vig1 = "true";
-		break;		
-	case 7:
-		$aud_vig2 = "true";
-		break;
-	case 8:
-		$aud_otra = "true";
-		$texto_otra=" -  Vigilancia 1 Semestral";
-		break;	
-	case 9:
-		$aud_otra = "true";
-		$texto_otra=" -  Vigilancia 2 Semestral";
-		break;	
-	case 10:
-		$aud_otra = "true";
-		$texto_otra=" -  Vigilancia 3 Semestral";
-		break;		
-	case 11:
-		$aud_otra = "true";
-		$texto_otra=" -  Vigilancia 4 Semestral";
-		break;		
-	case 12:
-		$aud_otra = "true";
-		$texto_otra=" -  Vigilancia 5 Semestral";
-		break;		
-	case 13:
-		//$aud_otra = true;
-		//$texto_otra="Vigilancia 1 Semestral"
-		break;		
-	default:
-		break;
-}
-/*===========================================================================*/
+for ($i=0; $i < count($FA) ; $i++) {
 
+	$FECHAS_AUDITORIAS .= substr($FA[$i]->FECHA,6,8)."/".substr($FA[$i]->FECHA,-4,2)."/".substr($FA[$i]->FECHA,0,4).",";
+}
+    $FECHAS_AUDITORIAS = substr($FECHAS_AUDITORIAS,0,strripos($FECHAS_AUDITORIAS,","));
 
-$fecha = mes_esp(date('d/n/Y'));
-//////////////////////////////////////////////////////////////////////////////////////////////
 //Prueba
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
@@ -358,20 +272,14 @@ class MYPDF extends TCPDF {
 		// Set font
 		$this->SetFont('Helvetica', 'B', 14);
 		// Title
-		$this->setCellMargins(15,15,0,0);
-		$this->Cell(0, 10, 'NOTIFICACIÓN DE AUDITORÍA DE', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+		$this->setCellMargins(0,15,0,0);
+		$this->Cell(0, 10, 'NOTIFICACIÓN DE SERVICIO ', 0, false, 'L', 0, '', 0, false, 'M', 'M');
 		
-		// Set font
-		//$this->SetFont('Calibri', 'B', 14);
-		// Title
-		$this->SetY(3);
-		$this->setCellMargins(15,25,0,0);
-		$this->Cell(0, 10, $this->certificacion, 0, false, 'L', 0, '', 0, false, 'M', 'M');
 		// Logo
-		$image_file = $this->selector . '/barra.jpg';
-		$this->Image($image_file, 30, 10, 140, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		$image_file1 = $this->selector . '/logob.jpg';
-		$this->Image($image_file1, 175, 10, 30, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+		$image_file = 'imnc/barra.jpg';
+		$this->Image($image_file, 10, 10, 170, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+		$image_file1 = 'imnc/logob.jpg';
+		$this->Image($image_file1, 170, 10, 30, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 	}
 
 	// Page footer
@@ -383,8 +291,7 @@ class MYPDF extends TCPDF {
 		//$this->Cell(0, 10, 'Página '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
 		$NumPage =  $this->getAliasNumPage();
 		$TotPage =	$this->getAliasNbPages();
-		
-		$a=123;
+
 		$this->SetFont('Helvetica', '', 9);
 
 		// Lugar, fecha y claves (alineado a la derecha)
@@ -400,9 +307,9 @@ $html = <<<EOD
 		</td>
 		
 		<td style="font-size: small; text-align:left;" width="115"> 
-			Clave: FPEC14 <br>
-			Fecha de aplicación: 2018-04-09 <br>
-			Versión: 05 <br>
+			Clave: FPOP01 <br>
+			Fecha de aplicación: 2019-01-07 <br>
+			Versión: 00 <br>
 			Página $NumPage de $TotPage<br>
 		</td>
 	</tr>
@@ -427,7 +334,7 @@ EOD;
 $str_direccion="Daniel Hernandez Barroso";
 //$global_diffname="E:/xampp/htdocs/imnc/imnc/generar/pdf/cotizacion/";
 $No5="CERTIFICACIÓN DE SISTEMAS DE GESTIÓN";
-$global_diffname="E:/xampp/htdocs/pruebagit/siec2/imnc/generar/pdf/notificacion_servicio/imnc";
+$global_diffname="imnc/";
 // create new PDF document
 $pdf1 = new MYPDF($No5, $str_direccion, $global_diffname, PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 //$fontname = TCPDF_FONTS::addTTFfont('E:/xampp/htdocs/imnc/imnc/phplibs/libPDF/fonts/Calibri Bold Italic.ttf','TrueTypeUnicode','',96);
@@ -475,27 +382,35 @@ $pdf1->AddPage();
 $pdf1->SetPrintFooter(true);
 
 // Titulo de documento (centrado)
-$pdf1->SetXY(0,25);
+$pdf1->SetXY(0,10);
+
 // set font
-$pdf1->SetFont('Calibri', 'B', 12);
-$html = '<br><br><br><div style="text-align:center;">Notificación </div>';
+$pdf1->SetFont('Calibri', 'B', 16);
+$html = '<br><br><br><div style="text-align:center;">Notificación &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;</div>';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 11);
 $html =  '<br><div style="text-align:right;">Ciudad de México, a</div>';
-$html .= '<div style="text-align:right;">'.$fecha.'</div>';
+$html .= '<br>';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 10);
 $html = '<div style="text-align:left;"><strong><i>Nombre de la Organización:&nbsp;</i></strong> '.$NOMBRE_CLIENTE.'<br>';
-$html .= '<strong><i>Dirección:&nbsp;</i></strong> '.$CALLE_Y_NUMERO.'&nbsp;'.$COLONIA_DELEGACION_Y_CP.'&nbsp;'.$ENTIDAD_FEDERATIVA.'<br>';
+$html .= '<i>Dirección:&nbsp;</i> '.$CALLE_Y_NUMERO.'&nbsp;'.$COLONIA_DELEGACION_Y_CP.'&nbsp;'.$ENTIDAD_FEDERATIVA.'<br>';
+$html .= '<br>';
 $html .= '<strong><i>Representante Autorizado:&nbsp;</i></strong> '.$NOMBRE_CONTACTO.'<br>';
 $html .= '<strong><i>Puesto:&nbsp;</i></strong> '.$CARGO_CONTACTO.'<br>';
 $html .= '<strong><i>Teléfono:&nbsp;</i></strong> '.$TELEFONO.'<br>';
 $html .= '<strong><i>Email:&nbsp;</i></strong> '.$CORREO.'</div>';
-$html .= '<br> Por medio de este conducto le informo que de acuerdo a su Proceso de Certificación, se llevará a cabo su servicio de auditoría como a continuación se indica:';
+$html .= '<br>';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 9);
 $html= <<<EOT
-<br><br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;" width="450">
+<br><br>
+<table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;" width="450">
+    <tr>
+     <td BGCOLOR="#E0E0E0" colspan="2">
+       DATOS DEL CLIENTE
+     </td> 
+   </tr>
 	<tr>
 		<td style="font-size: medium; text-align:left" width="100" BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;No(s). De Solicitud</strong></td>
 		<td style="font-size: medium; text-align:left" width="350"> &nbsp;&nbsp;$REFERENCIA</td>
@@ -505,18 +420,8 @@ $html= <<<EOT
 		<td style="font-size: medium; text-align:left" width="350"> &nbsp;&nbsp;$SECTORES</td>
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left" width="100" BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;Categoría (Exclusivo SGIA)</strong></td>
-		<td style="font-size: medium; text-align:left" width="350"> &nbsp;&nbsp;N/A</td>
-	</tr>
-	<tr>
 		<td style="font-size: medium; text-align:left" width="100" BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;Número de registro</strong></td>
 		<td style="font-size: medium; text-align:left" width="350"> &nbsp;&nbsp;$CLAVE_CERTIFICADO</td>
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left" width="100" BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;Fecha de inicio de vigencia</strong></td>
-		<td style="font-size: medium; text-align:left" width="125"> &nbsp;&nbsp;$CC_FECHA_INICIO</td>
-		<td style="font-size: medium; text-align:left" width="100" BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;Fecha de expiración</strong></td>
-		<td style="font-size: medium; text-align:left" width="125"> &nbsp;&nbsp;$CC_FECHA_FIN</td>
 	</tr>
 	
 </table>
@@ -526,62 +431,17 @@ $pdf1->SetFont('Calibri', '', 11);
 $html= <<<EOT
 <br><br><table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" width="450">
 	<tr>
-		<td style="font-size: medium; text-align:center"  BGCOLOR="#1F487B"><strong>TIPO DE SERVICIO</strong></td>
+		<td style="font-size: medium; text-align:center; color: #ffffff"  BGCOLOR="#1F487B"><strong>TIPO DE SERVICIO</strong></td>
 	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:center"  BGCOLOR="#E0E0E0"><i>Marque por favor los recuadros que correspondan a la auditoría a realizar:</i></td>
-		
-	</tr>
-	
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 9);
 $html= <<<EOT
-<br><br><table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" width="450">
+<table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" width="450">
 	<tr>
-		<td style="font-size: medium; text-align:center"  width="225"><input type="checkbox" name="chk1" value="1" checked="false" readonly="false">Auditoría en instalaciones del IMNC</td>
-		<td style="font-size: medium; text-align:center"  width="225"><input type="checkbox" name="chk2" value="1" checked="false" readonly="false">Auditoría en Sitio</td>
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk3" value="1" checked="$aud_et1" readonly="false">Auditoría Etapa 1</td>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk4" value="1" checked="$aud_esp" readonly="false">Auditoría Especial:</td>	
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk18" value="1" checked="$aud_et2" readonly="false">Auditoría Etapa 2</td>
-		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk19" value="1" checked="false" readonly="false">Ampliación de alcance</td>	
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk5" value="1" checked="$aud_vig1" readonly="false">Auditoría de Vigilancia 1</td>
-		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk6" value="1" checked="false" readonly="false">Reducción de alcance</td>	
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk7" value="1" checked="$aud_vig2" readonly="false">Auditoría de Vigilancia 2</td>
-		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk8" value="1" checked="false" readonly="false">Actualización de Sistema de Gestión</td>	
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk9" value="1" checked="$aud_otra" readonly="false">Otra (Indique el No. de vigilancia que corresponda)</td>
-		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk10" value="1" checked="false" readonly="false">Por cambios de domicilio</td>	
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225">$texto_otra</td>
-		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk11" value="1" checked="false" readonly="false">Por cambio de situación legal</td>	
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"></td>
-		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk12" value="1" checked="false" readonly="false">Por cambio en personal clave</td>	
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk13" value="1" checked="$aud_ren" readonly="false">Renovación de la certificación</td>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk14" value="1" checked="$aud_cortoplazo" readonly="false">Auditoría con notificación a corto plazo:</td>	
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chk15" value="1" checked="$aud_trans" readonly="false">Transferencia de la certificación</td>
-		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk16" value="1" checked="false" readonly="false">Por quejas de clientes</td>	
-	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:left"  width="225"></td>
-		<td style="font-size: medium; text-align:left"  width="225">&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="chk17" value="1" checked="false" readonly="false">Por seguimiento de la certificación suspendida</td>	
+		<td style="font-size: medium; text-align:center"  width="225"><input type="checkbox" name="chk1" value="1" $chck1 readonly="false">Servicio en instalaciones del IMNC</td>
+		<td style="font-size: medium; text-align:center"  width="225"><input type="checkbox" name="chk2" value="1" $chck2  readonly="false">Servicio en Sitio</td>
 	</tr>
 </table>
 EOT;
@@ -601,13 +461,8 @@ $pdf1->writeHTML($html, true, false, true, false, '');
 
 
 
-// add pagina 2
-$pdf1->SetPrintHeader(true);
-$pdf1->AddPage();
-$pdf1->SetPrintFooter(true);
-
 $html= <<<EOT
-<br><br><strong>Con el siguiente equipo auditor asignado para conducir la auditoría de certificación:</strong>
+<br><br><strong>Con el siguiente equipo asignado:</strong>
 <br><br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000ff style="text-align:center;" width="450">
 	<tr>
 		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0" width="75"><strong>FUNCIÓN</strong></td>
@@ -617,50 +472,39 @@ $html= <<<EOT
 	</tr>
 	$PERSONAL_TECNICO
 </table>
-<br><br> Bajo la(s) siguiente(s) norma(s) de referencia: 
+
 <br>
-<br><br><table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" width="450">
-	$TEXT_NORMA
+<br><br>
+<table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" width="450">
+    <tr>
+     <td BGCOLOR="#1F487B" style="color: #ffffff; text-align: left;"> Bajo el/los siguiente (s) lineamiento (s) de referencia: </td>
+    </tr>
+    <tr>
+     <td  BGCOLOR="#E0E0E0">$TEXT_NORMA</td>
+    </tr>
+
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 10);
 $html= <<<EOT
-<br><br><strong>NOTA 1:</strong> El servicio de auditoría que se describe en la presente Notificación, ha sido programado con base al ciclo actual de su
-certificación, y en apego a las “Condiciones generales de certificación” vigentes, dadas a conocer previamente por el IMNC y
-publicadas en <a>www.imnc.org.mx</a> En caso de requerir reprogramar la(s) fecha(s) de su auditoría, consulte con su Ejecutivo de
-Atención a Clientes.
-<br><br><strong>NOTA 2:</strong> Para el mantenimiento de su certificación, las auditorias de vigilancia, el IMNC deberá confirmar con el cliente, las
-fechas propuestas 30 días naturales antes de la fecha máxima; en caso contrario, la auditoría se programara en las fechas que
-el IMNC tenga disponibles.
-<br><br><strong>NOTA 3:</strong> Para el caso de la auditoria de renovación se recomienda que ésta se lleve a cabo con al menos tres meses antes de
-la fecha de expiración de su registro.
-<br><br><strong> NOTA 4:</strong> En caso de no estar de acuerdo con la designación de algún miembro del equipo auditor y/o fecha, el cliente debe
-notificarlo por escrito al IMNC, presentando las razones correspondientes, en un plazo no mayor a 5 días hábiles a partir de la
-recepción de esta notificación. En caso contrario se considerará como aceptado el equipo auditor y/o fecha propuesta.
-<br><br><strong> NOTA 5:</strong> Los documentos solicitados para elaboración del plan de auditoría deben ser enviados en un plazo no mayor a 5 días hábiles a partir de la recepción de esta notificación, en caso contrario el IMNC se reserva el derecho de reprogramar la auditoría conforme al clausulado del acuerdo legalmente ejecutable entre ambas partes.
+<br><br><strong>NOTA 1:</strong> El servicio que se describe en la presente Notificación, ha sido programado en apego a las “Condiciones generales” vigentes del servicio contratado, dadas a conocer previamente por el IMNC y publicadas en <a>www.imnc.org.mx</a>
+
+<br><br><strong>NOTA 2:</strong> En caso de no estar de acuerdo con la designación de algún miembro del equipo y/o fecha, el cliente debe notificarlo por escrito al IMNC, presentando las razones correspondientes, en un plazo no mayor a 3 días hábiles a partir de la recepción de esta notificación. En caso contrario se considerará como aceptado el equipo y/o fecha propuesta.
 EOT;
-if($nota1PDF!=""){
+ $index = 3;
+ foreach ($notasPDF as $nota)
+ {
+     if($nota)
+     {
 $html .= <<<EOT
-<br><br><strong>NOTA 6:</strong> $nota1PDF
+<br><br><strong>NOTA $index:</strong> $nota
 EOT;
-}
-if($nota2PDF!=""){
-$html .= <<<EOT
-<br><br><strong>NOTA 7:</strong> $nota2PDF
-EOT;
-}
-if($nota3PDF!=""){
-$html .= <<<EOT
-<br><br><strong>NOTA 8:</strong> $nota3PDF
-EOT;
-}
-$html .=<<<EOT
-<br><br>
-Por lo anterior le agradeceremos se sirva enviarnos el presente documento con la firma de Visto Bueno.
-</div>
-<br>
-EOT;
+$index ++;
+     }
+
+ }
+
 $pdf1->writeHTML($html, true, false, true, false, '');
 
 
@@ -668,23 +512,9 @@ $pdf1->writeHTML($html, true, false, true, false, '');
 $html = <<<EOT
 <table cellpadding="15" cellspacing="0" border="0" style="text-align:center;">
 	<tr>
-		<td style="font-size: medium; text-align:center" width="200"><strong> Atentamente,  </strong></td>
-		<td style="font-size: medium;" width="38"></td>
-		<td style="font-size: medium; text-align:center" width="200"><strong> Vo.Bo </strong></td>
+		<td style="font-size: medium; text-align:center" ><strong> Atentamente,  $nombreAuxiliar</strong></td>
 	</tr>
-	<tr>
-		<td style="font-size: medium; text-align:center" width="200">
-			<strong>
-				________________________________<br>$nombreAuxiliar<br>Programador(a) IMNC
-			</strong>
-  		</td>
-		<td style="font-size: medium;" width="38"></td>
-		<td style="font-size: medium; text-align:center" width="200">
-			<strong>
-				________________________________<br>$nombreAutorizaPDF<br>Representante Autorizado
-  			</strong>
-  		</td>
-	</tr>
+
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
@@ -695,6 +525,12 @@ $pdf1->writeHTML($html, true, false, true, false, '');
 //Close and output PDF document
 $pdf1->Output();
 // ---------------------------------------------------------
-
+}
+else
+{
+    echo  "<script type='text/javascript'>";
+    echo "window.close();";
+    echo "</script>";
+}
 
 ?>

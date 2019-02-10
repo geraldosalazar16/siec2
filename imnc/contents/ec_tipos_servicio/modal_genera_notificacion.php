@@ -8,14 +8,16 @@
       </div>
       <div class="modal-body">
 	  
-		<form name="exampleFormGeneraNotificacionPDF"  target="VentanaNotificacionPDF" method="POST" action="./generar/pdf/notificacion_servicio/index.php" >
+		<form id="exampleFormGeneraNotificacionPDF" name="exampleFormGeneraNotificacionPDF"  target="VentanaNotificacionPDF" method="POST" action="./generar/pdf/notificacion_servicio/index.php" >
 			<input type="hidden" id="inputIdSCE" name="ID_SCE" value="" />
 			<input type="hidden" id="inputIdTA" name="ID_TA" value="" />
 			<input type="hidden" id="inputCiclo" name="CICLO" value="" />
+			<input type="hidden" id="inputServicio" name="SERVICIO" value="" />
             <input type="hidden" id="inputNombreUsuario" name="nombreUsuario" value="" />
+            <input type="hidden" id="inputNotas" name="txtNotas" value="" />
             <div class="form-group">
 				<label class="control-label"> Domicilio <span class="required">*</span></label>
-				<select class="form-control" name="cmbDomicilioNotificacionPDF" ng-model="formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF" ng-options="Domicilio.ID as Domicilio.NOMBRE_DOMICILIO for Domicilio in Domicilios" required ng-class="{ error: exampleFormGeneraNotificacionPDF.cmbDomicilioNotificacionPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}" ><!----> 
+				<select class="form-control" name="cmbDomicilioNotificacionPDF" ng-model="formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF" ng-options="Domicilio.ID as Domicilio.NOMBRE_DOMICILIO for Domicilio in Domicilios" required ng-class="{ error: exampleFormGeneraNotificacionPDF.cmbDomicilioNotificacionPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}" ><!---->
                 </select>
 			</div>
 	<!--		<div class="form-group" hidden>
@@ -46,38 +48,50 @@
                   <option value="el mantenimiento">Mantenimiento</option>
                 </select> 
             </div>
---> 
+-->
+            <div class="form-group" style="margin-top: 20px;margin-bottom: 20px;">
+                <label class="control-label"> Seleccione el Tipo de Servicio <span class="required">*</span></label><br>
+                    <label class="checkbox-inline">
+                        <input  id="chckIMNC" type="checkbox" ng-model="formDataGeneraNotificacionPDF.chckIMNC" class="checkbox"  value="true" name="CHCK1" > Servicio en instalaciones del IMNC
+                    </label>
+                    <label class="checkbox-inline">
+                        <input  id="chckSitio" type="checkbox" ng-model="formDataGeneraNotificacionPDF.chckSitio" class="checkbox"  value="true" name="CHCK2"> Servicio en Sitio
+                    </label>
+
+                <label class="text-danger" ng-if="chck_error" style="margin-top: 10px;">Debe seleccionar al menos una opción</label>
+            </div>
             <div class="form-group">
-              <label class="control-label" >Nota adicional 1: </label>
-              <textarea name="txtNota1PDF" class="form-control" rows="5" ng-model="formDataGeneraNotificacionPDF.txtNota1PDF" ></textarea>
-             
+              <label class="control-label" >Nota adicional: </label>
+              <textarea name="txtNotaPDF" class="form-control" rows="5" ng-model="formDataGeneraNotificacionPDF.txtNotaPDF" ></textarea>
+              <input type="button" class="btn"  ng-click="addNote(formDataGeneraNotificacionPDF.txtNotaPDF)" value="+ Agregar Nota">
+                <br>
+                <table class="table" ng-if="countnotas>0" >
+                    <thead>
+                    <th width="10">#</th>
+                    <th>Nota</th>
+                    </thead>
+                    <tr ng-repeat="(index,item) in notas">
+                        <td><strong>{{index+3}}</strong></td>
+                        <td>{{item}}</td>
+                    </tr>
+                    <tr></tr>
+                </table>
             </div>
 
-            <div class="form-group">
-              <label class="control-label" >Nota adicional 2: </label>
-              <textarea name="txtNota2PDF" class="form-control" rows="5" ng-model="formDataGeneraNotificacionPDF.txtNota2PDF"  ></textarea>
-            </div>
 
-            <div class="form-group">
-              <label class="control-label" >Nota adicional 3: </label>
-             
-                <textarea name="txtNota3PDF" class="form-control" rows="5" ng-model="formDataGeneraNotificacionPDF.txtNota3PDF" ></textarea>
-             
-            </div>
+            <!--            <div class="form-group">
+                          <label class="control-label" >¿Quién autoriza?  <span class="required">*</span></label>
 
-            <div class="form-group">
-              <label class="control-label" >¿Quién autoriza?  <span class="required">*</span></label>
-              
-                <input type="text" name="txtNombreAutorizaPDF"  class="form-control" ng-model="formDataGeneraNotificacionPDF.txtNombreAutorizaPDF"  required ng-class="{ error: exampleFormGeneraNotificacionPDF.txtNombreAutorizaPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}" ><!----> 
-             
-            </div>
-<!--
-            <div class="form-group" >
-				<label class="control-label" >Cargo de quién autoriza  <span class="required">*</span></label>
-				<input type="text" name="txtCargoAutorizaPDF"  class="form-control"  ng-model="formDataGeneraNotificacionPDF.txtCargoAutorizaPDF"  required ng-class="{ error: exampleFormGeneraNotificacionPDF.txtCargoAutorizaPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}">
-            </div>
-			-->
-            <input type="submit" class="btn btn-success pull-right mt-2" ng-click="submitFormGeneraNotificacionPDF(formDataGeneraNotificacionPDF)" ng-disabled="!exampleFormGeneraNotificacionPDF.$valid" value="Generar PDF"/>
+                            <input type="text" name="txtNombreAutorizaPDF"  class="form-control" ng-model="formDataGeneraNotificacionPDF.txtNombreAutorizaPDF"  required ng-class="{ error: exampleFormGeneraNotificacionPDF.txtNombreAutorizaPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}" >
+
+                        </div>-->
+            <!--
+                        <div class="form-group" >
+                            <label class="control-label" >Cargo de quién autoriza  <span class="required">*</span></label>
+                            <input type="text" name="txtCargoAutorizaPDF"  class="form-control"  ng-model="formDataGeneraNotificacionPDF.txtCargoAutorizaPDF"  required ng-class="{ error: exampleFormGeneraNotificacionPDF.txtCargoAutorizaPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}">
+                        </div>
+                        -->
+            <input type="button" class="btn btn-success pull-right mt-2" ng-click="submitFormGeneraNotificacionPDF()" ng-disabled="!exampleFormGeneraNotificacionPDF.$valid" value="Generar PDF"/>
           </form>
 		  
       </div>
