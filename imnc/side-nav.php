@@ -49,7 +49,7 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
            echo '     <li><a href="./?pagina=servicios_tipo">Tipos de servicio</a>';
            echo '     </li>';
-		   echo '     <li><a href="./?pagina=normas_tiposervicio">Normas-Tipo de servicio</a>';
+		   echo '     <li><a href="./?pagina=dictaminador_tiposervicio">Dictaminadores</a>';
            echo '     </li>';
 		   echo '     <li><a href="./?pagina=i_servicios_contratados_tipos_cambios">Tipos de cambio para servicios contratados</a>';
            echo '     </li>';
