@@ -29,6 +29,8 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.txtInsertarFechasGrupo = {};
     $scope.id_instructor = "";
     $scope.flag = true;
+	$scope.notas = [];
+	$scope.countnotas = 0;
 
 // =======================================================================================
 // ***** 			FUNCION PARA EL BOTON AGREGAR INFORMACION AUDITORIA				 *****
@@ -1821,11 +1823,15 @@ cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 
 /*============================================================================================*/
 //GENERAR NOTIFICACION
-  $scope.modal_generar_notificacion = function(id_sce,id_ta,ciclo){
+  $scope.modal_generar_notificacion = function(id_servicio,id_sce,id_ta,ciclo){
 		$("#inputIdSCE").val(id_sce);
 		$("#inputIdTA").val(id_ta);
 		$("#inputCiclo").val(ciclo);
+		$("#inputServicio").val(id_servicio);
+		$("#inputNombreUsuario").val(sessionStorage.getItem("nombre_usuario"));
 		$scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa);
+		$scope.notas = [];
+		$scope.countnotas = 0;
 //		Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
 //		Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
 //		Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
@@ -1849,7 +1855,18 @@ cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
   
     $('#modalGeneraNotificacion').modal('show');
   }
-  
+
+// Agredar notas adicionales
+$scope.addNote = function(value)
+{
+	$scope.notas[$scope.countnotas++] =value ;
+	$scope.formDataGeneraNotificacionPDF.txtNotaPDF = "";
+	$("#inputNotas").val($("#inputNotas").val()+value+"<|>");
+
+
+
+
+}
   
  //	FUNCIONES PARA OBTENER LOS DOMICILIOS DEL CLIENTE 
 $scope.get_domicilio_cliente	= function(id_cliente){
@@ -1860,11 +1877,35 @@ $scope.get_domicilio_cliente	= function(id_cliente){
 	});
 	
   }
+ $scope.validar_chck = function()
+ {
+	 if(typeof $scope.formDataGeneraNotificacionPDF.chckIMNC !== "undefined" && $scope.formDataGeneraNotificacionPDF.chckIMNC)
+	 {
+		 $scope.chck_error = false;
+	 	return true;
+	 }
+	 if(typeof $scope.formDataGeneraNotificacionPDF.chckSitio !== "undefined" && $scope.formDataGeneraNotificacionPDF.chckSitio)
+	 {
+		 $scope.chck_error = false;
+	 	return true;
+	 }
+		$scope.chck_error = true;
+ 	return false;
+ }
   
- $scope.submitFormGeneraNotificacionPDF = function (formDataGeneraNotificacionPDF) {
- 
-		window.open('', 'VentanaNotificacionPDF');
-		document.getElementById('formGeneraNotificacionPDF').submit();
+ $scope.submitFormGeneraNotificacionPDF = function () {
+  	    if(typeof $scope.formDataGeneraNotificacionPDF.txtNotaPDF !== "undefined" && $scope.formDataGeneraNotificacionPDF.txtNotaPDF.length > 0)
+		{
+			$scope.addNote($scope.formDataGeneraNotificacionPDF.txtNotaPDF);
+		}
+
+
+		//window.open('', 'VentanaNotificacionPDF');
+	    if($scope.validar_chck())
+		{
+			document.getElementById('exampleFormGeneraNotificacionPDF').submit();
+		}
+
  // submitFormGeneraNotificacionPDF(formGeneraNotificacionPDF)
   }
 
