@@ -2596,6 +2596,7 @@ $scope.funcionDictaminadores = function(id_ts){
 						
 						notify("Éxito", "Se han enviado la auditoria a dictaminar","success");
 						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 					}
 					 else {
 							notify('Error',respuesta.mensaje,'error');

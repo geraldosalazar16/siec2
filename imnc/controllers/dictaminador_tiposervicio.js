@@ -42,7 +42,7 @@ app.controller('dictaminador_tiposervicio_controller', ['$scope', function($scop
 	};
 	
 /*		
-		Función para traer los nombres de las normas.
+		Función para traer los nombres de los Servicios.
 */
 $scope.funcionNombreServicio = function(){
 	$.ajax({
@@ -59,7 +59,7 @@ $scope.funcionNombreServicio = function(){
 /*		
 		Función para traer los nombres de los tipos de Servicio.
 */
-$scope.funcionNombreTipoServicio = function(id){
+$scope.funcionNombreTipoServicio = function(){
 	$.ajax({
 		type:'GET',
 		url:global_apiserver+"/tipos_servicio/getList",
@@ -92,7 +92,6 @@ $scope.funcionNombreUsuarios = function(){
 */
  $scope.cambio_servicio = function () {
     const servicio = $scope.formDataInsActDict.nombreServicio;
-    //$scope.funcionNombreTipoServicio(servicio.ID);
    
     const tipos_servicio = $scope.Tipos_Servicio_Total;
     $scope.nombreTipoServicios = [];

@@ -537,6 +537,15 @@
 													</button>	-->
 												</p>
 											</td>
+											<td>
+												
+												<p ng-if='modulo_permisos["registrar"] == 1'>
+													<button type="button"  ng-click='modal_dictaminacion(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,xx.CICLO)' class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-disabled="xx.ESTADO_DICTAMINACION != 'Pendiente Solicitud'"> 
+														<i class="fa fa-send" aria-hidden="true"></i> Solicitar Dictaminaci&oacuten 
+													</button>
+												</p>
+												{{xx.ESTADO_DICTAMINACION}}
+											</td>
 										</tr>
 										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->
 										<tr  ng-if="DatosServicio.ID_SERVICIO == 2" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-sitios-auditoria_ec">
