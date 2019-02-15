@@ -22,6 +22,7 @@ function valida_error_medoo_and_die(){
 	} 
 } 
 $id = $_REQUEST["id"]; 
+$ciclo = $_REQUEST["ciclo"]; 
 
 //Lo primero es buscar el id tipo de servicio que sera un dato importante para trabajar
 	$tipo_servicio = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_TIPO_SERVICIO", ["ID"=>$id]);
@@ -43,7 +44,7 @@ $valores = $database->query("SELECT
  ON `I_SG_AUDITORIAS_TIPOS`.`ID` = `I_SG_AUDITORIAS`.`TIPO_AUDITORIA` 
  INNER JOIN `I_SG_AUDITORIA_STATUS` 
  ON `I_SG_AUDITORIA_STATUS`.`ID` = `I_SG_AUDITORIAS`.`STATUS_AUDITORIA` 
- WHERE `I_SG_AUDITORIAS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id)->fetchAll(PDO::FETCH_ASSOC);
+ WHERE `I_SG_AUDITORIAS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id." AND `I_SG_AUDITORIAS`.`CICLO`= ".$ciclo)->fetchAll(PDO::FETCH_ASSOC);
 valida_error_medoo_and_die(); 
 
 for ($i=0; $i < count($valores) ; $i++) { 

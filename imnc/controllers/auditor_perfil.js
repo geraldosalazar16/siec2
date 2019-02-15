@@ -1310,15 +1310,15 @@ function removeOptions(selectbox)
             var mes_ini = parseInt(f_ini.substring(4,6))-1; //En js los meses comienzan en 0
             var dia_ini = parseInt(f_ini.substring(6,8));
 
-           const descripcion = 'Auditoría: ' + objAuditoria.ID_SG_AUDITORIA + " (" + objAuditoria.ID_TIPO_SERVICIO + ")";
+           const descripcion = 'Auditoría: ' + objAuditoria.REFERENCIA;
             eventos.push(
               {
-                title: 'Auditoría: ' + objAuditoria.ID_SG_AUDITORIA + " (" + objAuditoria.ID_TIPO_SERVICIO + ")",
+                title: descripcion,
                 start: new Date(anhio_ini, mes_ini, dia_ini, 07, 0),
                 end: new Date(anhio_ini, mes_ini, dia_ini, 18, 30),
                 allDay: false,
-                url: './?pagina=sg_tipos_servicio&id_serv_cli_et='+objAuditoria.ID_SERVICIO_CLIENTE_ETAPA +'&sg_tipo_servicio='+objAuditoria.ID_SG_TIPO_SERVICIO,
-				descripcion: descripcion,
+                url: './?pagina=ec_tipos_servicio&id_serv_cli_et='+objAuditoria.ID_SERVICIO_CLIENTE_ETAPA,
+				        descripcion: descripcion,
                 tipo: 'Auditoría'
               }
             )

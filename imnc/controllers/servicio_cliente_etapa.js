@@ -83,6 +83,7 @@ function llenar_modal_insertar_actualizar(){
 		$scope.formData.txtReferencia = servicio_obtenido.REFERENCIA;
         $scope.formData.claveCliente = servicio_obtenido.ID_CLIENTE;
         $scope.formData.claveServicio = servicio_obtenido.ID_SERVICIO;
+        $scope.formData.sel_tipoServicio = servicio_obtenido.ID_TIPO_SERVICIO;
 		cargartipoServicio($scope.formData.claveServicio);
 
 
@@ -137,12 +138,18 @@ function llenar_modal_insertar_actualizar(){
 		}
         $scope.formData.sel_tipoServicio = servicio_obtenido.ID_TIPO_SERVICIO;
 		//$scope.formData.Norma	=	servicio_obtenido.ID_NORMA;
-
-		//$scope.formData.etapa	=	servicio_obtenido.ID_ETAPA_PROCESO;
-
-		
-		
+		$scope.formData.etapa	=	servicio_obtenido.ID_ETAPA_PROCESO;		
 }	
+// ===========================================================================
+// ***** 		Funcion para eliminar Asignación de las posibles etapas  *****
+// ===========================================================================
+function eliminarAsignacion(){
+    //Quitar Asignación de las posibles etapas
+    $scope.Etapas = $scope.Etapas.filter(etapa => {
+        return etapa.ID_ETAPA !== '3';
+    });
+    //$scope.Etapas = nuevasEtapas;
+}
 // ===========================================================================
 // ***** 		Funcion para limpiar las variables del modal			 *****
 // ===========================================================================
@@ -442,7 +449,8 @@ $scope.cambiosel_tipoServicio	=	function(id_tipo_servicio){
 function cargarNormastipoServicio(id_tipo_servicio,normas_a_mostrar){
 	if(!normas_a_mostrar){
 		normas_a_mostrar = [];
-	}
+    }
+    if(normas_a_mostrar)
 		//Agregue normas a mostrar para cuando sea edición 
 		//Se muestre en el multiselect las que tiene seleccionadas
 		//Mientras que en las sugerencias no se muestren estas

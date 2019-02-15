@@ -57,7 +57,8 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 	  			$scope.Prospectos = response.data.map(function(item){
 	  				return{
 	  					ID : item.ID,
-	  					NOMBRE : item.NOMBRE
+						NOMBRE : item.NOMBRE,
+						ID_ESTATUS_SEGUIMIENTO: item.ID_ESTATUS_SEGUIMIENTO
 	  				}
 	  			});
 			},
@@ -172,7 +173,23 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 			},
 			function (response){});
 	}
-	
+	$scope.cambioFiltroStatus = function(){
+		var estatus = $scope.filtroEstatus;
+		if($scope.prospectos_total){
+			if($scope.prospectos_total.length == 0){
+				$scope.prospectos_total = $scope.prospecto;
+			}						
+		} else {
+			$scope.prospectos_total = $scope.prospecto;
+		}		
+		$scope.prospecto = [];
+		$scope.prospectos_total.forEach(prospecto => {
+			if(prospecto.ID_ESTATUS_SEGUIMIENTO == estatus){				
+				$scope.prospecto.push(prospecto);
+			}
+		});
+		$scope.cantidad_prospectos = $scope.prospecto.length;
+	}
 	$scope.EstatusSeguimientoLista = function(){
 		//recibe la url del php que se ejecutará
 		$http.get(  global_apiserver + "/prospecto_estatus_seguimiento/getAll/")

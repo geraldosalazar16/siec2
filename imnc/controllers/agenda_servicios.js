@@ -2,56 +2,6 @@
 
   var global_calendar;
 
-  function fill_select_tipos_servicio(arrTipoServicio, val){
-    var strHtml = '';
-    $("#selectTiposServicio").html('<option value="" selected>-ninguno-</option>');
-
-    for (var i = 0; i < arrTipoServicio.length; i++) {
-      objTipoServicio = arrTipoServicio[i];
-      //console.log(objTipoServicio);
-      $("#selectTiposServicio").append('<option value="'+objTipoServicio.ID_TIPO_SERVICIO+'">'+objTipoServicio.NOMBRE+'</option>');
-    }
-    $("#selectTiposServicio").val(val);
-  }
-
-  function fill_select_sectores(arrSectores, val){
-    var strHtml = '';
-    $("#selectSectores").html('<option value="" selected>-ninguno-</option>');
-
-    for (var i = 0; i < arrSectores.length; i++) {
-      objSector = arrSectores[i];
-      //console.log(objSector);
-      $("#selectSectores").append('<option value="'+objSector.ID_SECTOR+'">'+objSector.NOMBRE+'</option>');
-    }
-    $("#selectSectores").val(val);
-  }
-
-  function fill_select_referencias(arrReferencias, val){
-    var strHtml = '';
-    $("#selectReferencias").html('<option value="" selected>-ninguno-</option>');
-
-    for (var i = 0; i < arrReferencias.length; i++) {
-      objReferencia = arrReferencias[i];
-      //console.log(objReferencia);
-      $("#selectReferencias").append('<option value="'+objReferencia.REFERENCIA+'">'+objReferencia.REFERENCIA+'</option>');
-    }
-    $("#selectReferencias").val(val);
-  }
-
-
-function fill_select_clientes(arrClientes, val){
-    var strHtml = '';
-    $("#selectClientes").html('<option value="" selected>-ninguno-</option>');
-
-    for (var i = 0; i < arrClientes.length; i++) {
-      objCliente = arrClientes[i];
-      //console.log(objCliente);
-      $("#selectClientes").append('<option value="'+objCliente.ID_CLIENTE+'">'+objCliente.NOMBRE+'</option>');
-    }
-    $("#selectClientes").val(val);
-}
-
-
 var app = angular.module('certificandoApp');
 app.controller('tareas_controller',['$scope','$http',function($scope,$http){
 	$scope.id_serv_cli_et = 0;
@@ -59,39 +9,78 @@ app.controller('tareas_controller',['$scope','$http',function($scope,$http){
 	
 	$scope.draw_calendario = function() {
 		var eventos = [];
+		/*
 		var filtros = {
 			TIPO_SERVICIO:$("#selectTiposServicio").val(),
 			SECTOR:$("#selectSectores").val(),
 			REFERENCIA:$("#selectReferencias").val(),
 			CLIENTE:$("#selectClientes").val()
 		};
+		*/
+		
+		var ts = $("#selectTiposServicio").val();
+		if(ts){
+			ts = ts.substring(7);
+		}
+		var ref = $("#selectReferencias").val();
+		if(ref){
+			ref = ref.substring(7);
+		}
+		var c =$("#selectClientes").val();
+		if(c){
+			c = c.substring(7);
+		}
+		var filtros = {
+			TIPO_SERVICIO:ts,
+			REFERENCIA:ref,
+			CLIENTE:c
+		};
+		
+
 		$(".loading").show();
 		//Codigo que carga las auditorias programadas
-		$.post(global_apiserver + "/sg_auditorias/getFechas/", JSON.stringify(filtros),function(response){
-			response = JSON.parse(response);
-			$.each(response.FECHAS, function( indice, objAuditoria ) {
+		$http.post(  global_apiserver + "/i_sg_auditorias/getFechas/",filtros)
+		.then(function( response ) {//se ejecuta cuando la petición fue correcta
+			$.each(response.data.FECHAS, function( indice, objAuditoria ) {
 				if (objAuditoria.FECHA_AUDITORIA !== null) {
 					var f_ini= objAuditoria.FECHA_AUDITORIA;
 					var anhio_ini = parseInt(f_ini.substring(0,4));
 					var mes_ini = parseInt(f_ini.substring(4,6))-1; //En js los meses comienzan en 0
 					var dia_ini = parseInt(f_ini.substring(6,8));
 					
+					var color = '#3e5a23';
+                        const id_tipo_servicio = objAuditoria.ID_TIPO_SERVICIO;
+                        switch (id_tipo_servicio) {
+                            case '1':
+                                color = "#FBFB32";
+                                break;
+                            case '2':
+                                color = '#B2F84C';
+                                break;
+                            case '12':
+                                color = '#D790FC';
+                                break;
+                            case '21':
+                                color = '#F96888';
+                                break;
+                            default:
+                                color = '3e5a23';
+                                break;                           
+						}
+						var descripcion = 'Ref: ' + objAuditoria.REFERENCIA + " (" + objAuditoria.ID_TIPO_SERVICIO + ")";
 					eventos.push(
 						{
 							title: 'Ref: ' + objAuditoria.REFERENCIA + " (" + objAuditoria.ID_TIPO_SERVICIO + ")",
 							start: new Date(anhio_ini, mes_ini, dia_ini, 07, 0),
 							end: new Date(anhio_ini, mes_ini, dia_ini, 18, 30),
 							allDay: false,
-							color: "#3e5a23",
-							url: './?pagina=sg_tipos_servicio&id_serv_cli_et='+objAuditoria.ID_SERVICIO_CLIENTE_ETAPA +'&sg_tipo_servicio='+objAuditoria.ID_SG_TIPO_SERVICIO,
+							color: color,
+							textColor: 'black',
+							url: './?pagina=ec_tipos_servicio&id_serv_cli_et='+objAuditoria.ID_SERVICIO_CLIENTE_ETAPA,
 						}
 					)
 				}
 			});
-			fill_select_tipos_servicio(response.TIPOS_SERVICIO, response.FILTROS.TIPO_SERVICIO);
-			fill_select_sectores(response.SECTORES, response.FILTROS.SECTOR);
-			fill_select_referencias(response.REFERENCIAS, response.FILTROS.REFERENCIA);
-			fill_select_clientes(response.CLIENTES, response.FILTROS.CLIENTE);
 			
 			if(global_calendar !== undefined)
 			{
@@ -142,8 +131,9 @@ app.controller('tareas_controller',['$scope','$http',function($scope,$http){
 			});
 			$(".select2_single").select2({});		
 			$(".loading").hide();
-			 //Fin de la carga de auditorias programadas
+			 //Fin de la carga de auditorias programadas	
 		});
+		
 		//Ahora es necesario cargar las tareas programadas
 		 $(".loading").show();
 		$.post(global_apiserver + "/cita_calendario_servicios/getAll/", JSON.stringify(filtros),function(response){
@@ -411,14 +401,58 @@ app.controller('tareas_controller',['$scope','$http',function($scope,$http){
                     }
                 }).css("display", "inline-block");
             });
-        }
+		}
+	function cargarTiposServicio(){
+		//recibe la url del php que se ejecutará
+		$http.get(  global_apiserver + "/tipos_servicio/getAll/")
+			  .then(function( response ) {//se ejecuta cuando la petición fue correcta
+				//fill_select_tipos_servicio(response.data,null);
+				$scope.TiposServicio = response.data;	 			
+			});
+	}
+	function cargarSectores(){
+		//recibe la url del php que se ejecutará
+		$http.get(  global_apiserver + "/sectores/getAll/")
+			  .then(function( response ) {//se ejecuta cuando la petición fue correcta
+				fill_select_sectores(response.data,null);
+				$scope.Sectores = response.data;	 			
+			});
+	}
+	function cargarReferencias(){
+		//recibe la url del php que se ejecutará
+		$http.get(  global_apiserver + "/servicio_cliente_etapa/getAllReferencias/")
+			  .then(function( response ) {//se ejecuta cuando la petición fue correcta
+				//fill_select_referencias(response.data,null);
+				$scope.Referencias = response.data;	 			
+			});
+	}
+	function cargarClientes(){
+		//recibe la url del php que se ejecutará
+		$http.get(  global_apiserver + "/clientes/getAll/")
+			  .then(function( response ) {//se ejecuta cuando la petición fue correcta
+				//fill_select_clientes(response.data,null);
+				$scope.Clientes = response.data;	 			
+			});
+	}
+	
+	$('.select2_single').on('select2:select', function (evt) {		
+		global_calendar.fullCalendar('destroy');
+		$scope.draw_calendario();		
+	});
+
+	$scope.filtrar = function(){
+		global_calendar.fullCalendar('destroy');
+		$scope.draw_calendario();
+	}
+
+	// Entry point
 	$scope.draw_calendario();
 	$scope.TareasLista();
+	cargarTiposServicio();
+	//cargarSectores();
+	cargarReferencias();
+	cargarClientes();
 	onCalendar();
-		$('.select2_single').on('select2:select', function (evt) {
-		  global_calendar.fullCalendar('destroy');
-		  $scope.draw_calendario();
-		});
 }]);
 function notify(titulo, texto, tipo) {
 		new PNotify({
@@ -432,10 +466,54 @@ function notify(titulo, texto, tipo) {
 			delay: 2500
 		});
 	}
-/*
-   $( window ).load(function() {
-      draw_calendario();
-  });
-*/
+	function fill_select_tipos_servicio(arrTipoServicio, val){
+		var strHtml = '';
+		$("#selectTiposServicio").html('<option value="" selected>-ninguno-</option>');
+	
+		for (var i = 0; i < arrTipoServicio.length; i++) {
+		  objTipoServicio = arrTipoServicio[i];
+		  //console.log(objTipoServicio);
+		  $("#selectTiposServicio").append('<option value="'+objTipoServicio.ID+'">'+objTipoServicio.NOMBRE+'</option>');
+		}
+		$("#selectTiposServicio").val(val);
+	  }
+	
+	  function fill_select_sectores(arrSectores, val){
+		var strHtml = '';
+		$("#selectSectores").html('<option value="" selected>-ninguno-</option>');
+	
+		for (var i = 0; i < arrSectores.length; i++) {
+		  objSector = arrSectores[i];
+		  //console.log(objSector);
+		  $("#selectSectores").append('<option value="'+objSector.ID_SECTOR+'">'+objSector.NOMBRE+'</option>');
+		}
+		$("#selectSectores").val(val);
+	  }
+	
+	  function fill_select_referencias(arrReferencias, val){
+		var strHtml = '';
+		$("#selectReferencias").html('<option value="" selected>-ninguno-</option>');
+	
+		for (var i = 0; i < arrReferencias.length; i++) {
+		  objReferencia = arrReferencias[i];
+		  //console.log(objReferencia);
+		  $("#selectReferencias").append('<option value="'+objReferencia+'">'+objReferencia+'</option>');
+		}
+		$("#selectReferencias").val(val);
+	  }
+	
+	
+	function fill_select_clientes(arrClientes, val){
+		var strHtml = '';
+		$("#selectClientes").html('<option value="" selected>-ninguno-</option>');
+	
+		for (var i = 0; i < arrClientes.length; i++) {
+		  objCliente = arrClientes[i];
+		  //console.log(objCliente);
+		  $("#selectClientes").append('<option value="'+objCliente.ID_CLIENTE+'">'+objCliente.NOMBRE+'</option>');
+		}
+		$("#selectClientes").val(val);
+	}
+
   
 

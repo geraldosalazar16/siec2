@@ -241,15 +241,24 @@
 								</div>
 								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO ==2"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" -->
 									<div class="x_title">
-										<p><h2>Auditor&iacuteas</h2></p>
+										<p><h2>Auditor&iacuteas </h2></p>
 											<p ng-if='modulo_permisos["registrar"] == 1'>
-											<button type="button" ng-click="agregar_editar_auditorias('insertar')" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+											<button type="button" ng-click="agregar_editar_auditorias('insertar')" class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-disabled="DatosServicio.NombreCiclo !=0 && DatosServicio.NombreCiclo !=  DatosServicio.CICLO"> 
 												<i class="fa fa-plus"> </i> Agregar auditor&iacuteas 
 											</button>
 										</p>
 										<div class="clearfix"></div>
 									</div>
-
+									<div class="form-group">
+										<label class="control-label col-sm-1" for="Ciclos"><h4><strong>Ciclo: </strong></h4><span class="required"></span>
+										</label>
+										<div class="col-md-2 col-sm-2 col-xs-2">
+											<select class="form-control" id="NombreCiclo" ng-model="DatosServicio.NombreCiclo" ng-options="ciclo1.VAL as ciclo1.NOMBRE  for ciclo1 in CICLO1" ng-change="cambioCiclo()">
+                  
+											</select>
+											<ul class="parsley-errors-list" id="parsley-id-2324"></ul>
+										</div>
+									</div>	
                                     <table class="table table-striped responsive-utilities jambo_table bulk_action">
 									<thead>
 										<tr class="headings">
@@ -437,8 +446,16 @@
 				</datepicker>-->
 															<ul class="list-unstyled user_data">
 																<li ng-repeat="r in x.AUDITORES_FECHAS[w.ID_PERSONAL_TECNICO_CALIF]">
-																	{{mostrarFecha(r.FECHA)}} {{mostrarNorma(r.ID_NORMA)}}
-														
+																	<table>
+																		<tr>
+																			<td>{{mostrarFecha(r.FECHA)}} {{mostrarNorma(r.ID_NORMA)}}</td>																	
+																			<td>
+																				<p ng-if='modulo_permisos["editar"] == 1'>
+																				<button class="btn btn-primary btn-xs btnEliminaFechaGrupoAuditoria" ng-click="eliminar_fechasAuditoriaGrupo(r.ID)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+																				</p>
+																			</td>	
+																		</tr>
+																	</table>
 																</li>
 															</ul>	
 															</td>

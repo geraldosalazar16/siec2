@@ -466,7 +466,7 @@ $No14="";//$No14 = $NoSitios;
 
 $str_direccion="Daniel Hernandez Barroso";
 //$global_diffname="E:/xampp/htdocs/imnc/imnc/generar/pdf/cotizacion/";
-//$global_diffname="E:/xampp/htdocs/pruebagit/siec2/imnc/generar/pdf/cotizacion_propuesta/";
+$global_diffname="http://apinube.com/imnc/siec2.0/imnc/generar/pdf/cotizacion/";
 // create new PDF document
 $pdf1 = new MYPDF($No5, $str_direccion, $global_direccion_pdf, PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 //$fontname = TCPDF_FONTS::addTTFfont('E:/xampp/htdocs/imnc/imnc/phplibs/libPDF/fonts/Calibri Bold Italic.ttf','TrueTypeUnicode','',96);

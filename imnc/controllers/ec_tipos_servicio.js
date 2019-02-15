@@ -16,6 +16,7 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.resp={};
 	$scope.resp1={};
 	$scope.DatosSitiosEC={};
+	$scope.CICLO1=[];// $scope.NombreCiclo="";
 	$scope.prueba	= "PAGINA EN DESARROLLO";
 	$scope.id_servicio_cliente_etapa = getQueryVariable("id_serv_cli_et");
 	$scope.PrincipalSectores	=	{0:{ID:"S",NOMBRE:"Si"},1:{ID:"N",NOMBRE:"No"}};
@@ -241,9 +242,39 @@ function clear_modal_agregar_informacion(){
 				cargarMetaDatos($scope.DatosServicio.ID_TIPO_SERVICIO,0);
 			}
 			cargarMetaDatosSitios($scope.DatosServicio.ID_TIPO_SERVICIO);
+			// Datos para select para filtrar ciclos
+			$scope.CICLO1.push({VAL:0,NOMBRE:"Todos"});
+			for(var i=0;i<$scope.DatosServicio.CICLO;i++){
+				$scope.CICLO1.push({VAL:i+1,NOMBRE:"C"+(i+1)});
+				
+			}
+			$scope.DatosServicio.NombreCiclo	= 0;
 		});
 	
-	}		
+	}	
+
+//	funcion para cambio ciclo
+$scope.cambioCiclo	=	function(){
+	var cc = $scope.DatosServicio.NombreCiclo;
+	if($scope.DatosServicio.ID_SERVICIO == 1){
+		if(cc == 0){
+			cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+		}
+		else{
+			cargarDatosAuditoriasSG_Ciclo($scope.id_servicio_cliente_etapa,cc);
+		
+		}
+	}
+	if($scope.DatosServicio.ID_SERVICIO == 2){
+		if(cc == 0){
+			cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+		}
+		else{
+			cargarDatosAuditoriasEC_Ciclo($scope.id_servicio_cliente_etapa,cc);
+		
+		}
+	}
+}	
 // ==============================================================================
 // ***** 	Funcion para obtener metadatos de este servicio 				*****
 // ==============================================================================
@@ -1146,6 +1177,21 @@ function cargarDatosAuditoriasSG(id_servicio){
 				});				
 		//}
     }
+//
+function cargarDatosAuditoriasSG_Ciclo(id_servicio,cc){
+	$http.get(  global_apiserver + "/i_sg_auditorias/getAllByIdServicioAndCiclo/?id="+id_servicio+"&ciclo="+cc)
+		.then(function( response ){
+            $scope.DatosAuditoriasSG = response.data;
+			
+			$.each($scope.DatosAuditoriasSG, function( i, datos1 ) {
+				$.each(datos1.AUDITORIA_FECHAS, function( j, datos ) {
+						$scope.txtFechasAuditoria[datos.ID]=datos.FECHA.substring(0,4)+"-"+datos.FECHA.substring(4,6)+"-"+datos.FECHA.substring(6,8);
+		 
+					});
+				});	
+		});			
+		//}
+    }	
 $scope.btnInsertaSitiosAuditoria = function(id_servicio_cliente_etapa,id_tipo_auditoria,id_cliente_domicilio,ciclo){
     cargarSitiosParaAuditoria(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo);
 }
@@ -1473,6 +1519,43 @@ $scope.funcion_guardar_datos = function(id_sce,id_ta,ciclo,id_pt,norma_serv_inte
 		$scope.txtInsertarFechasGrupo={};		
 
 }
+// ==============================================================================
+// ***** 			Funcion para eliminar las fechas de un auditor			*****
+// ==============================================================================
+$scope.eliminar_fechasAuditoriaGrupo = function(id){
+
+	var datos	=	{
+					ID:	id,
+					ID_USUARIO:	sessionStorage.getItem("id_usuario")
+				};
+			$http.post(global_apiserver + "/i_sg_auditoria_grupo_fechas/delete/",datos).
+            then(function(response){
+                if(response.data.resultado=="ok"){
+					notify('&Eacutexito','Se han eliminado los datos','success');
+					
+					if($scope.DatosServicio.ID_SERVICIO == 1){
+						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa,0,0);
+					}
+					if($scope.DatosServicio.ID_SERVICIO == 2){	
+						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					}
+					$scope.IdFechaEliminar="";
+                }
+                else{
+                    notify('Error',response.data.mensaje,'error');
+					if($scope.DatosServicio.ID_SERVICIO == 1){
+						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa,0,0);
+					}
+					if($scope.DatosServicio.ID_SERVICIO == 2){	
+						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					}
+					$scope.IdFechaEliminar="";
+                }
+               
+            });
+	 $("#modalConfirmacion").modal("hide");
+	 
+}	
 // ==============================================================
 // *****	FUNCION PARA MOSTRAR NORMA PARA TS INTEGRAL		*****
 // ==============================================================
@@ -1641,6 +1724,21 @@ function cargarDatosAuditoriasEC(id_servicio){
 		});
 		
     }
+//
+function cargarDatosAuditoriasEC_Ciclo(id_servicio,cc){
+	$http.get(  global_apiserver + "/i_ec_auditorias/getAllByIdServicioAndCiclo/?id="+id_servicio+"&ciclo="+cc)
+		.then(function( response ){
+            $scope.DatosAuditoriasSG = response.data;
+			
+			$.each($scope.DatosAuditoriasSG, function( i, datos1 ) {
+				$.each(datos1.AUDITORIA_FECHAS, function( j, datos ) {
+						$scope.txtFechasAuditoria[datos.ID]=datos.FECHA.substring(0,4)+"-"+datos.FECHA.substring(4,6)+"-"+datos.FECHA.substring(6,8);
+		 
+					});
+				});	
+		});			
+		//}
+    }	
 $scope.btnInsertaSitiosAuditoriaEC = function(id_servicio_cliente_etapa,id_tipo_auditoria,id_cliente_domicilio,ciclo){
     cargarSitiosParaAuditoriaEC(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo);
 }	
@@ -2518,6 +2616,7 @@ $scope.showFormConfiguracion = function () {
 // ***** 	            TERMINA  SERVICIO CONTRATADO CIFA	           	 *****
 // ===========================================================================
 // ===========================================================================
+
 
 
 DatosServicioContratado($scope.id_servicio_cliente_etapa);

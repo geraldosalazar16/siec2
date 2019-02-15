@@ -207,7 +207,7 @@ function draw_row_documentos(objDocum){
   else{
  
   //BOTON EDITAR ESTADO DOCUMENTO
-  if(objDocum.ESTADO!=""){
+  if(objDocum.ESTADO!="" && objDocum.ESTADO){
 		strHtml += "	<td>";
 		strHtml += '<input type="checkbox" class="chkDocumentoNoAplica" value="" id_documento="'+objDocum.ID+'"  id_servicio="'+global_id_servicio_cliente_etapa+'" disabled=true> No Aplica';
 		strHtml += '</td>';
@@ -272,7 +272,7 @@ function draw_row_documentos(objDocum){
 			strHtml += '      <a> <span class="labelAcordeon">Eliminar Documento</span></a>';
 			strHtml += '    </li>';
 		}
-		strHtml += '    <li class="btnverdocumento" id_documento="'+objDocum.ID+'" nombre_documento="'+objDocum.NOMBRE+'"  nombre_etapa="'+objDocum.ETAPA+'" id_servicio="'+global_id_servicio_cliente_etapa+'"> ';
+		strHtml += '    <li class="btnverdocumento" id_documento="'+objDocum.ID+'" nombre_documento="'+objDocum.NOMBRE+'" extension_documento="'+objDocum.EXTENSION+'"  nombre_etapa="'+objDocum.ETAPA+'" id_servicio="'+global_id_servicio_cliente_etapa+'"> ';
 		strHtml += '     <a> <span class="labelAcordeon">Ver Documento</span>  </a>';
 		strHtml += '    </li>';
 	
@@ -361,7 +361,7 @@ function listener_btn_ver_documento(){
 		var direccion	=	"";
 		var cadena		=	$("#Referencia").val();		
 		var cadena1		=	cadena.split('-');
-		direccion 		= global_apiserver+"/arch_expediente/"+cadena1[1]+cadena1[2]+"/"+$("#NombreCiclo").val()+"/"+$(this).attr("nombre_etapa")+"/"+$("#ValorSeccion").val()+"/"+$(this).attr("id_documento")+".pdf";
+		direccion 		= global_apiserver+"/arch_expediente/"+cadena1[1]+cadena1[2]+"/"+$("#NombreCiclo").val()+"/"+$(this).attr("nombre_etapa")+"/"+$("#ValorSeccion").val()+"/"+$(this).attr("id_documento")+"."+$(this).attr("extension_documento");
       
 	     abc =	window.open( direccion);
 		// abc.document.title="daniel";

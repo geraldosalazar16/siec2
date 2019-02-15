@@ -15,22 +15,17 @@ function valida_parametro_and_die($parametro, $mensaje_error){
 
 function valida_error_medoo_and_die(){ 
 	global $database, $mailerror; 
-	if ($database->error()[2]) { 
+	if ($database->error()[2]) {
 		$respuesta["resultado"]="error"; 
-		$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
+		$respuesta["mensaje"]="Error al ejecutar script:" . $database->error()[2]; 
 		print_r(json_encode($respuesta)); 
-		$mailerror->send("ETAPAS_PROCESO", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
 		die(); 
 	} 
 } 
 
-$id = $_REQUEST["id"]; 
-$etapas_proceso = $database->select("ETAPAS_PROCESO", "*", [
-	"AND" => [
-		"ID_SERVICIO"=>$id,
-		"HABILITAR_INSERCION" => 0
-	]	
-]); 
-valida_error_medoo_and_die(); 
-print_r(json_encode($etapas_proceso)); 
+$respuesta=array(); 
+$anios = $database->select("VENTAS_OBJETIVOS_ANUALES", "*", [ 
+	"ORDER" => "ANIO"	
+]);
+print_r(json_encode($anios)); 
 ?> 

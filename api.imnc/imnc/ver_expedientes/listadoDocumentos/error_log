@@ -1,0 +1,1 @@
+[05-Jun-2018 19:13:15 UTC] PHP Fatal error:  Call to a member function fetchAll() on a non-object in /home/sistemainterno/public_html/api.imnc/imnc/ver_expedientes/listadoDocumentos/index.php on line 35
