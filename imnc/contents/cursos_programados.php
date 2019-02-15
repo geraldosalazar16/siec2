@@ -192,7 +192,7 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
 
 
                     </div>
-            </div>
+                  </div>
                 </div>
                 <!-- Modal Mostrar Instructores-->
                 <div id="divInstructor">
@@ -304,17 +304,18 @@ if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
                         <table ng-show="!no_clientes" class="table table-striped responsive-utilities jambo_table bulk_action" style="margin-top: 20px;" >
                             <thead>
                             <tr>
-                                <th>Nombre</th>
-                                <th>RFC</th>
-                                <th>Cantidad</th>
+                                <th style="width: 85%;">Clientes</th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr ng-repeat="(key, item) in clientes" class="ng-scope  even pointer">
-                                <td>{{item.NOMBRE}}</td>
-                                <td>{{item.RFC}}</td>
-                                <td>{{item.CANTIDAD_PARTICIPANTES}}</td>
+                                <td>
+                                    Nombre: <strong>{{item.NOMBRE}}</strong><br>
+                                    RFC: <strong>{{item.RFC}}</strong><br>
+                                    Cantidad de Participante: <strong>{{item.CANTIDAD_PARTICIPANTES}}</strong><br>
+                                    URL Generada: <br> <textarea style="width: 100%; border: transparent; font-weight: bold;" type="text" ng-model="url"  ng-show="item.URL_PARTICIPANTES" ng-init="url = item.URL_PARTICIPANTES"></textarea>
+                                </td>
                                 <td>
                                     <button type="button" ng-click="openModalInsertClientes(key)" class="btn btn-primary btn-xs btn-imnc "> Editar</button>
                                     <button type="button" ng-click="eliminarClientes(key)" class="btn btn-primary btn-xs btn-imnc "> Eliminar</button>

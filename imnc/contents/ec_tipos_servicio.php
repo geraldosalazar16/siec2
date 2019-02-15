@@ -268,7 +268,8 @@
 											<th class="column-title">Sitios de auditor&iacutea </th>
 											<th class="column-title">Grupo de auditores</th>
 											<th class="column-title"></th>
-											<th class="column-title"></th>								
+											<th class="column-title"></th>
+											<th class="column-title">Estado Dictaminaci&oacuten </th>											
 										</tr>
 									</thead>
 									<tbody>
@@ -347,6 +348,15 @@
 														<i class="fa fa-download" aria-hidden="true"></i> Notificaci&oacuten 
 													</button>
 												</p>
+											</td>
+											<td>
+												
+												<p ng-if='modulo_permisos["registrar"] == 1'>
+													<button type="button"  ng-click='modal_dictaminacion(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)' class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-disabled="x.ESTADO_DICTAMINACION != 'Pendiente Solicitud'"> 
+														<i class="fa fa-send" aria-hidden="true"></i> Solicitar Dictaminaci&oacuten 
+													</button>
+												</p>
+												{{x.ESTADO_DICTAMINACION}}
 											</td>
 										</tr>
 										
@@ -543,6 +553,15 @@
 														<i class="fa fa-download" aria-hidden="true"></i> Notificaci&oacuten 
 													</button>	-->
 												</p>
+											</td>
+											<td>
+												
+												<p ng-if='modulo_permisos["registrar"] == 1'>
+													<button type="button"  ng-click='modal_dictaminacion(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,xx.CICLO)' class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-disabled="xx.ESTADO_DICTAMINACION != 'Pendiente Solicitud'"> 
+														<i class="fa fa-send" aria-hidden="true"></i> Solicitar Dictaminaci&oacuten 
+													</button>
+												</p>
+												{{xx.ESTADO_DICTAMINACION}}
 											</td>
 										</tr>
 										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->
@@ -801,6 +820,7 @@
   include "ec_tipos_servicio/modal_inserta_actualiza_auditoria_grupo_auditores.php";
   include "ec_tipos_servicio/modal_fecha_norma_tipo_servicio_integral.php";
   include "ec_tipos_servicio/modal_genera_notificacion.php";
+  include "ec_tipos_servicio/modal_dictaminacion.php";
   include "ec_tipos_servicio/modal_confirmacion.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_participante.php";
   include "ec_tipos_servicio/modal_select_instructor.php";

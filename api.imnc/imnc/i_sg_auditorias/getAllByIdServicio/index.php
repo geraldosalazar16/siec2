@@ -235,7 +235,13 @@ for ($i=0; $i < count($valores) ; $i++) {
 	}
 	
 	/*======================================================*/
-	
+	//Aqui buscamos el estado de la auditoria en dictaminacion
+	if($database->count("DICTAMINACIONES", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id,"TIPO_AUDITORIA" => $valores[$i]["TIPO_AUDITORIA"], "CICLO" => $valores[$i]["CICLO"] ]]) == 0){
+		$valores[$i]["ESTADO_DICTAMINACION"] = "Pendiente Solicitud";
+	}
+	else{
+		$valores[$i]["ESTADO_DICTAMINACION"] = $database->get("DICTAMINACIONES","STATUS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id,"TIPO_AUDITORIA" => $valores[$i]["TIPO_AUDITORIA"], "CICLO" => $valores[$i]["CICLO"] ]]);
+	}
 }
 
 

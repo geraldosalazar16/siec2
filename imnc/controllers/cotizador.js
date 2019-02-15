@@ -4,6 +4,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   $scope.arr_prospectos = [];
   $scope.arr_clientes = [];
   $scope.arr_tramites = [];
+  $scope.formData = {};
   $scope.cotizacion_insertar_editar = {};
   $scope.bandera = 0;
   $scope.Normas = [];
@@ -613,6 +614,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         $scope.Tipos_Servicio_Total.forEach(tipo_servicio => {
           if(tipo_servicio.ID == $scope.cotizacion_insertar_editar.REFERENCIA.ID_TIPO_SERVICIO){
             $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO = tipo_servicio;
+			$scope.fill_select_tarifa_id_tipo_servicio($scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.ID);
             $scope.Normas = $scope.cotizacion_insertar_editar.ID_TIPO_SERVICIO.NORMAS;
             $scope.Normas.forEach(norma => {
               if(norma.ID_NORMA == $scope.cotizacion_insertar_editar.REFERENCIA.ID_NORMA){
@@ -644,58 +646,99 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     });
   }
 
-  $scope.generar_servicio = function(cotizacion){
-    //para cursos programados uso otro end point
-    if(cotizacion.ID_SERVICIO == 3 && cotizacion.CURSO.MODALIDAD == 'programado'){
-      var datos = { 
-        ID_CURSO: cotizacion.CURSO.ID_CURSO,
-        ID_USUARIO:	sessionStorage.getItem("id_usuario")
-      };
-      $http.post(global_apiserver + "/cursos_programados/insertDesdeCotizador/",datos).
-        then(function(response){
-          if(response.data.resultado == 'ok'){
-            notify('Éxito','Se ha insertado un nuevo registro','success');        
-          } else {
-            notify('Error',response.data.mensaje,'error');
+
+  $scope.generar_servicio = function(cotizacion) {
+      //para cursos programados uso otro end point
+      if (cotizacion.ID_SERVICIO == 3 && cotizacion.CURSO.MODALIDAD == 'programado') {
+
+          if (cotizacion.BANDERA != 0) {
+              $scope.insertaCliente(cotizacion);
           }
-        });
-    } else {
-      var id_cliente = cotizacion.ID_PROSPECTO;
-      var cliente_prospecto = '';
-      //Determinar si la cotización es para un prospecto o cliente
-      if(cotizacion.BANDERA != 0) {
-        cliente_prospecto = 'cliente';
+          else {
+              if(cotizacion.ID_PROSPENTO_SERVICIO != 0)
+              {
+                  $scope.insertaCliente(cotizacion);
+              }else {
+                  notify('Error', "Para crear un servicio curso programado se necesita un cliente, este prospecto no tiene cliente", 'error');
+              }
+
+          }
+
       } else {
-        cliente_prospecto = 'prospecto';
+
+          var id_cliente = cotizacion.ID_PROSPECTO;
+          var cliente_prospecto = '';
+          //Determinar si la cotización es para un prospecto o cliente
+          if (cotizacion.BANDERA != 0) {
+              cliente_prospecto = 'cliente';
+          } else {
+              cliente_prospecto = 'prospecto';
+          }
+
+          const id_servicio = cotizacion.ID_SERVICIO;
+          const id_tipo_servicio = cotizacion.ID_TIPO_SERVICIO;
+          //Información del servicio a insertar para prospecto
+          var datos = {
+              ID_COTIZACION: cotizacion.ID,
+              CLIENTE_PROSPECTO: cliente_prospecto,
+              ID_CLIENTE: id_cliente,
+              ID_SERVICIO: id_servicio,
+              ID_TIPO_SERVICIO: id_tipo_servicio,
+              ID_ETAPA_PROCESO: 31, //confirmado
+              CAMBIO: "N",
+              MODALIDAD: cotizacion.CURSO.MODALIDAD,
+              ID_CURSO: cotizacion.CURSO.ID_CURSO,
+              ID_CURSO_PROGRAMADO: cotizacion.CURSO.ID_CURSO_PROGRAMADO,
+              ID_USUARIO: sessionStorage.getItem("id_usuario")
+          };
+          $http.post(global_apiserver + "/servicio_cliente_etapa/insertDesdeCotizador/", datos).then(function (response) {
+              if (response.data.resultado == 'ok') {
+                  notify('Éxito', 'Se ha insertado un nuevo registro', 'success');
+                  $scope.despliega_cotizaciones();
+              } else {
+                  notify('Error', response.data.mensaje, 'error');
+              }
+          });
       }
 
-      const id_servicio = cotizacion.ID_SERVICIO;
-      const id_tipo_servicio = cotizacion.ID_TIPO_SERVICIO;
-      //Información del servicio a insertar para prospecto
-      var datos = {
-        ID_COTIZACION: cotizacion.ID,
-        CLIENTE_PROSPECTO: cliente_prospecto,
-        ID_CLIENTE: id_cliente,
-        ID_SERVICIO: id_servicio,
-        ID_TIPO_SERVICIO: id_tipo_servicio,
-        ID_ETAPA_PROCESO:	31, //confirmado
-        CAMBIO	: "N",
-        MODALIDAD: cotizacion.CURSO.MODALIDAD, 
-        ID_CURSO: cotizacion.CURSO.ID_CURSO,
-        ID_CURSO_PROGRAMADO: cotizacion.CURSO.ID_CURSO_PROGRAMADO,
-        ID_USUARIO:	sessionStorage.getItem("id_usuario")
-      };
-      $http.post(global_apiserver + "/servicio_cliente_etapa/insertDesdeCotizador/",datos).
-        then(function(response){
-          if(response.data.resultado == 'ok'){
-            notify('Éxito','Se ha insertado un nuevo registro','success');        
-          } else {
-            notify('Error',response.data.mensaje,'error');
-          }
-        });
-    }
-    
+
   }
+
+    $scope.insertaCliente= function (cotizacion) {
+
+
+        var id_cliente = cotizacion.ID_PROSPECTO;
+        var cliente_prospecto = '';
+        //Determinar si la cotización es para un prospecto o cliente
+        if (cotizacion.BANDERA != 0) {
+            cliente_prospecto = 'cliente';
+        } else {
+            cliente_prospecto = 'prospecto';
+        }
+
+        var add = {
+            ID_COTIZACION: cotizacion.ID,
+            ID_CURSO:cotizacion.CURSO.ID_CURSO,
+            ID_CURSO_PROGRAMADO:cotizacion.CURSO.ID_CURSO_PROGRAMADO,
+            CLIENTE_PROSPECTO: cliente_prospecto,
+            ID_CLIENTE: id_cliente,
+            CANTIDAD_PARTICIPANTES:cotizacion.CURSO.CANT_PARTICIPANTES,
+            SOLO_PARA_CLIENTE:cotizacion.CURSO.SOLO_CLIENTE
+        }
+        $.post(global_apiserver + "/cursos_programados/insertClienteDesdeCotizacion/", JSON.stringify(add), function (respuesta) {
+            respuesta = JSON.parse(respuesta);
+            if (respuesta.resultado == "ok") {
+                notify('Éxito','Se ha insertado un nuevo registro','success');
+                $scope.despliega_cotizaciones();
+            }
+            else {
+                notify("Error", respuesta.mensaje, "error");
+            }
+        });
+
+    }
+
+
   $scope.mostrar_enlace = function(url){
     $.dialog({
       title: 'Enlace para cargar participantes',
@@ -711,7 +754,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 			$scope.cotizacion_insertar_editar.TARIFA = tarifa.id;
         }
 		});
-		
+
 	}
 	if($scope.cotizacion_insertar_editar.DICTAMEN_CONSTANCIA == "Constancia"){
 		$scope.Tarifa_Cotizacion.forEach(tarifa => {
@@ -721,4 +764,6 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 		});
 	}
   }
+
+
 }]);

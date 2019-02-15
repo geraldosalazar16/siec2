@@ -49,6 +49,8 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
            echo '     <li><a href="./?pagina=servicios_tipo">Tipos de servicio</a>';
            echo '     </li>';
+		   echo '     <li><a href="./?pagina=dictaminador_tiposervicio">Dictaminadores</a>';
+           echo '     </li>';
 		   echo '     <li><a href="./?pagina=i_servicios_contratados_tipos_cambios">Tipos de cambio para servicios contratados</a>';
            echo '     </li>';
            echo '     <li><a href="./?pagina=tramites">Trámites</a>';
@@ -138,6 +140,14 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '</li>';
           }
           
+		  if ($modulo_permisos["SERVICIOS"]["ver"] == 1) {
+            echo ' <li>';
+            echo '  <a href="./?pagina=dictaminacion">';
+            echo '    <i class="fa fa-usd" aria-hidden="true"></i> Dictaminación ';
+            echo '  </a>';
+            echo '</li>';
+          }
+		  
           if ($modulo_permisos["EXPEDIENTES"]["ver"] == 1) {
             echo '<li><a><i class="fa fa-folder-open"></i> Expediente </a>';
             echo '         <ul class="nav child_menu" style="display: none">';

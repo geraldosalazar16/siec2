@@ -22,6 +22,7 @@ app.controller('cursos_programados_controller',['$scope','$http',function($scope
     $scope.participantes = [];
     $scope.salir = false;
     $scope.cantidad_participante = "";
+    $scope.id_curso_programado_url = getQueryVariable("id");
 
 
 
@@ -380,6 +381,10 @@ $scope.openModalMostarInst = function() {
         $("#divInsertar").hide();
         $("#divMostrar").hide();
         $("#divInstructor").hide();
+        $("#divVerParticipantes").hide();
+        $("#divVerInsertParticipantes").hide();
+        $("#divVerClientes").hide();
+        $("#divVerInsertClientes").hide();
         $("#divVerHistorico").show();
         $("#modalMostrar").modal("show");
         $scope.cargarHistorico();
@@ -1728,8 +1733,31 @@ $scope.onSelectedCurso = function(){
             });
     }
 
+// ==============================================================================
+// ***** 		Funcion para generar referencia	para CIFA		*****
+// ==============================================================================
+    function carga_curso_url(){
+        $.getJSON( global_apiserver + "/cursos_programados/getById/?id="+$scope.id_curso_programado_url, function( response ) {
+
+            $scope.onAgenda(response.FECHA_INICIO);
+            $scope.id_evento_select = $scope.id_curso_programado_url;
+            $scope.openModalMostar();
+            $scope.$apply();
+        });
+    }
+
+
 $(document).ready(function () {
-$scope.onAgenda();
+    if (typeof $scope.id_curso_programado_url !== "undefined" && $scope.id_curso_programado_url.length != 0){
+        carga_curso_url();
+    }else
+    {
+        $scope.onAgenda();
+    }
+
+
+
+
     $("button.btn-default:contains('Cerrar') ,#btnCerrar, .close").click(function(){
         $scope.date_evento_select = '';
         $scope.objCursoProgramado = [];
