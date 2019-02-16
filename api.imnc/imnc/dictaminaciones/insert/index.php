@@ -1,15 +1,16 @@
 <?php  
 	include  '../../common/conn-apiserver.php'; 
 	include  '../../common/conn-medoo.php'; 
-	include  '../../common/conn-sendgrid.php'; 
-	function imprime_error_and_die($mensaje){
-	$respuesta['resultado'] = 'error';
-	$respuesta['mensaje'] = $mensaje;
-	print_r(json_encode($respuesta));
-	die();
-}
+	include  '../../common/email.php'; 
 
-function valida_parametro_and_die($parametro, $mensaje_error){ 
+	function imprime_error_and_die($mensaje){
+		$respuesta['resultado'] = 'error';
+		$respuesta['mensaje'] = $mensaje;
+		print_r(json_encode($respuesta));
+		die();
+	}
+
+	function valida_parametro_and_die($parametro, $mensaje_error){ 
 		$parametro = "" . $parametro; 
 		if ($parametro == "") { 
 			$respuesta["resultado"] = "error"; 
@@ -27,10 +28,7 @@ function valida_parametro_and_die($parametro, $mensaje_error){
 			$mailerror->send("DICTAMINACIONES", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
 			die(); 
 		} 
-	} 
-
-	
-	
+	} 	
 	
 	$nombre_tabla = "DICTAMINACIONES";
 					 
@@ -66,7 +64,15 @@ function valida_parametro_and_die($parametro, $mensaje_error){
 		valida_error_medoo_and_die(); 
 		$respuesta["resultado"]="ok"; 
 		$respuesta["id"]=$id; 
-		
+		//Enviar email notificando asignación
+		//Buscar info del dictaminador
+		$info_dictaminador = $database->get("USUARIOS","*",["ID" => $ID_DICTAMINADOR]);
+		//Buscar info del asignador
+		$info_asignador = $database->get("USUARIOS","*",["ID" => $ID_USUARIO_CREACION]);
+		$destinatario = $info_dictaminador["EMAIL"];
+		$nombre_asignador = $info_asignador["NOMBRE"];
+		$mensaje = $nombre_asignador . " le ha enviado una nueva solicitud de dictaminación";
+		enviar_email($destinatario,$mensaje,"Nueva solicitud de dictaminación");
 	}
 	else{
 		$respuesta['resultado']="error";
