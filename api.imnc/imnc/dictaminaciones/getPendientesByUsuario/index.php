@@ -17,7 +17,6 @@
 			$respuesta["resultado"]="error"; 
 			$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
 			print_r(json_encode($respuesta)); 
-			$mailerror->send("DICTAMINACIONES", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
 			die(); 
 		} 
 	} 
@@ -37,7 +36,7 @@
 				"CLIENTES.NOMBRE(NOMBRE_CLIENTE)",
 				"SERVICIOS.NOMBRE(NOMBRE_SERVICIO)",
 				"TIPOS_SERVICIO.NOMBRE(NOMBRE_TIPO_SERVICIO)",
-				"SG_AUDITORIAS_TIPOS.TIPO(NOMBRE_TIPO_AUDITORIA)",
+				"I_SG_AUDITORIAS_TIPOS.TIPO(NOMBRE_TIPO_AUDITORIA)",
 				"USUARIOS.NOMBRE(NOMBRE_ASIGNADOR)"
 				
 	
@@ -49,7 +48,7 @@
 										"[><]CLIENTES"=>["SERVICIO_CLIENTE_ETAPA.ID_CLIENTE"=>"ID"],
 										"[><]SERVICIOS"=>["SERVICIO_CLIENTE_ETAPA.ID_SERVICIO"=>"ID"],
 										"[><]TIPOS_SERVICIO"=>["SERVICIO_CLIENTE_ETAPA.ID_TIPO_SERVICIO"=>"ID"],
-										"[><]SG_AUDITORIAS_TIPOS"=>["DICTAMINACIONES.TIPO_AUDITORIA"=>"ID"],
+										"[><]I_SG_AUDITORIAS_TIPOS"=>["DICTAMINACIONES.TIPO_AUDITORIA"=>"ID"],
 										"[><]USUARIOS"=>["DICTAMINACIONES.ID_USUARIO_CREACION"=>"ID"]
 										
 									]	
@@ -57,7 +56,7 @@
 									[
 										"AND"=>[
 												"DICTAMINACIONES.ID_DICTAMINADOR"=>$id_usuario,
-												"STATUS"=>'Solicitud enviada'
+												"STATUS"=>'0'
 												]
 									]
 									

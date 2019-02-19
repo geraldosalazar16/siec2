@@ -243,7 +243,7 @@ function clear_modal_agregar_informacion(){
 				cargarMetaDatos($scope.DatosServicio.ID_TIPO_SERVICIO,0);
 			}
 			cargarMetaDatosSitios($scope.DatosServicio.ID_TIPO_SERVICIO);
-<<<<<<< HEAD
+
 			// Datos para select para filtrar ciclos
 			$scope.CICLO1.push({VAL:0,NOMBRE:"Todos"});
 			for(var i=0;i<$scope.DatosServicio.CICLO;i++){
@@ -251,9 +251,8 @@ function clear_modal_agregar_informacion(){
 				
 			}
 			$scope.DatosServicio.NombreCiclo	= 0;
-=======
+
 			$scope.funcionDictaminadores($scope.DatosServicio.ID_TIPO_SERVICIO);
->>>>>>> 64831c1372597d9370c29fcf8fdaf7fa173a59f1
 		});
 	
 	}	
