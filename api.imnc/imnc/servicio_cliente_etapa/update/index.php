@@ -135,19 +135,28 @@ if($ID_SERVICIO==3)  //para cifa
             "FECHA_USUARIO" => $FECHA_MODIFICACION,
             "FECHA_MODIFICACION" => date("Ymd")]);
     }
+} else {
+    //Elimino las normas cargadas
+    $database->delete("SCE_NORMAS",[
+        "ID_SCE" => $ID
+    ]);
 
-
-}
-else{ //para el resto
-
-//Inserto las normas capturadas
+    //Inserto las normas capturadas
     for ($i=0; $i < count($NORMAS); $i++) {
         $id_norma = $NORMAS[$i]->ID_NORMA;
-        if($database->count("SCE_NORMAS", ["AND"=>[ "ID_SCE" => $ID,"ID_NORMA" => $id_norma]])==0 )
+        //Validar si ya está insertada la norma
+        $cant = $database->count("SCE_NORMAS", [
+            "AND"=>[ 
+                "ID_SCE" => $ID,
+                "ID_NORMA" => $id_norma
+            ]
+        ]);
+        if($cant == 0 ){
             $id_sce_normas = $database->insert("SCE_NORMAS", [
                 "ID_SCE" => $ID,
                 "ID_NORMA" => $id_norma
             ]);
+        }            
         valida_error_medoo_and_die();
     }
 

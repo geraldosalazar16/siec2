@@ -241,15 +241,24 @@
 								</div>
 								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO ==2"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" -->
 									<div class="x_title">
-										<p><h2>Auditor&iacuteas</h2></p>
+										<p><h2>Auditor&iacuteas </h2></p>
 											<p ng-if='modulo_permisos["registrar"] == 1'>
-											<button type="button" ng-click="agregar_editar_auditorias('insertar')" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+											<button type="button" ng-click="agregar_editar_auditorias('insertar')" class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-disabled="DatosServicio.NombreCiclo !=0 && DatosServicio.NombreCiclo !=  DatosServicio.CICLO"> 
 												<i class="fa fa-plus"> </i> Agregar auditor&iacuteas 
 											</button>
 										</p>
 										<div class="clearfix"></div>
 									</div>
-
+									<div class="form-group">
+										<label class="control-label col-sm-1" for="Ciclos"><h4><strong>Ciclo: </strong></h4><span class="required"></span>
+										</label>
+										<div class="col-md-2 col-sm-2 col-xs-2">
+											<select class="form-control" id="NombreCiclo" ng-model="DatosServicio.NombreCiclo" ng-options="ciclo1.VAL as ciclo1.NOMBRE  for ciclo1 in CICLO1" ng-change="cambioCiclo()">
+                  
+											</select>
+											<ul class="parsley-errors-list" id="parsley-id-2324"></ul>
+										</div>
+									</div>	
                                     <table class="table table-striped responsive-utilities jambo_table bulk_action">
 									<thead>
 										<tr class="headings">
@@ -259,7 +268,8 @@
 											<th class="column-title">Sitios de auditor&iacutea </th>
 											<th class="column-title">Grupo de auditores</th>
 											<th class="column-title"></th>
-											<th class="column-title"></th>								
+											<th class="column-title"></th>
+											<th class="column-title">Estado Dictaminaci&oacuten </th>											
 										</tr>
 									</thead>
 									<tbody>
@@ -338,6 +348,15 @@
 														<i class="fa fa-download" aria-hidden="true"></i> Notificaci&oacuten 
 													</button>
 												</p>
+											</td>
+											<td>
+												
+												<p ng-if='modulo_permisos["registrar"] == 1'>
+													<button type="button"  ng-click='modal_dictaminacion(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)' class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-disabled="x.ESTADO_DICTAMINACION != 'Pendiente Solicitud'"> 
+														<i class="fa fa-send" aria-hidden="true"></i> Solicitar Dictaminaci&oacuten 
+													</button>
+												</p>
+												{{x.ESTADO_DICTAMINACION}}
 											</td>
 										</tr>
 										
@@ -437,8 +456,16 @@
 				</datepicker>-->
 															<ul class="list-unstyled user_data">
 																<li ng-repeat="r in x.AUDITORES_FECHAS[w.ID_PERSONAL_TECNICO_CALIF]">
-																	{{mostrarFecha(r.FECHA)}} {{mostrarNorma(r.ID_NORMA)}}
-														
+																	<table>
+																		<tr>
+																			<td>{{mostrarFecha(r.FECHA)}} {{mostrarNorma(r.ID_NORMA)}}</td>																	
+																			<td>
+																				<p ng-if='modulo_permisos["editar"] == 1'>
+																				<button class="btn btn-primary btn-xs btnEliminaFechaGrupoAuditoria" ng-click="eliminar_fechasAuditoriaGrupo(r.ID)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+																				</p>
+																			</td>	
+																		</tr>
+																	</table>
 																</li>
 															</ul>	
 															</td>
@@ -526,6 +553,15 @@
 														<i class="fa fa-download" aria-hidden="true"></i> Notificaci&oacuten 
 													</button>	-->
 												</p>
+											</td>
+											<td>
+												
+												<p ng-if='modulo_permisos["registrar"] == 1'>
+													<button type="button"  ng-click='modal_dictaminacion(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,xx.CICLO)' class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-disabled="xx.ESTADO_DICTAMINACION != 'Pendiente Solicitud'"> 
+														<i class="fa fa-send" aria-hidden="true"></i> Solicitar Dictaminaci&oacuten 
+													</button>
+												</p>
+												{{xx.ESTADO_DICTAMINACION}}
 											</td>
 										</tr>
 										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->
@@ -784,6 +820,7 @@
   include "ec_tipos_servicio/modal_inserta_actualiza_auditoria_grupo_auditores.php";
   include "ec_tipos_servicio/modal_fecha_norma_tipo_servicio_integral.php";
   include "ec_tipos_servicio/modal_genera_notificacion.php";
+  include "ec_tipos_servicio/modal_dictaminacion.php";
   include "ec_tipos_servicio/modal_confirmacion.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_participante.php";
   include "ec_tipos_servicio/modal_select_instructor.php";

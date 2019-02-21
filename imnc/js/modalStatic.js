@@ -9,9 +9,11 @@ function modalStatico(){
         buttons: {
             Salir: function () {
                 $(".modal.fade").modal("hide");
+
             },
             Cancelar: function () {
               console.log("cancel");
+
             }
         }
     });

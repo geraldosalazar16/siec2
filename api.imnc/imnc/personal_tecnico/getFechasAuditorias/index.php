@@ -21,7 +21,6 @@ function valida_error_medoo_and_die(){
 		$respuesta['resultado']="error";
 		$respuesta['mensaje']="Error al ejecutar script: " . $database->error()[2];
 		print_r(json_encode($respuesta));
-		$mailerror->send("certificando", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx");
 		die();
 	}
 }
@@ -66,18 +65,31 @@ $datos_auditoria = $database->select("I_SG_AUDITORIA_GRUPOS", [
 valida_error_medoo_and_die();
 
 for ($i=0; $i < count($datos_auditoria) ; $i++) { 
-	$sce = $database->get("SERVICIO_CLIENTE_ETAPA","ID_TIPO_SERVICIO",["ID" => $datos_auditoria[$i]["ID_SERVICIO_CLIENTE_ETAPA"]]);
+	$id_sce = $datos_auditoria[$i]["ID_SERVICIO_CLIENTE_ETAPA"];
+	$datos_sce = $database->get("SERVICIO_CLIENTE_ETAPA",[
+		"ID_TIPO_SERVICIO",
+		"REFERENCIA"
+	],[
+		"ID" => $id_sce
+	]);
+	$id_tipo_servicio = $datos_sce["ID_TIPO_SERVICIO"];
+	$referencia = $datos_sce["REFERENCIA"];
 	valida_error_medoo_and_die();
-	$datos_auditoria[$i]["ID_TIPO_SERVICIO"] = $sce["ID_TIPO_SERVICIO"];
-	$normas = $database->select("SCE_NORMAS","ID_NORMA",["ID_SCE" => $sce["ID_TIPO_SERVICIO"]]);
+
+	$datos_auditoria[$i]["ID_TIPO_SERVICIO"] = $id_tipo_servicio;
+	$datos_auditoria[$i]["REFERENCIA"] = $referencia;
+	
+	$normas = $database->select("SCE_NORMAS","ID_NORMA",["ID_SCE" => $id_sce]);
 	valida_error_medoo_and_die();
 	$datos_auditoria[$i]["NORMAS"] = $normas;
 
 	$sg_auditoria_grupo_fechas = $database->select("I_SG_AUDITORIA_GRUPO_FECHAS", "FECHA", [
-		"ID_SERVICIO_CLIENTE_ETAPA" => $sce["ID_TIPO_SERVICIO"],
-		"TIPO_AUDITORIA" => $datos_auditoria[$i]["TIPO_AUDITORIA"],
-		"CICLO" => $datos_auditoria[$i]["CICLO"],
-		"ID_PERSONAL_TECNICO_CALIF" => $ids_califs
+		"AND" => [
+			"ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,
+			"TIPO_AUDITORIA" => $datos_auditoria[$i]["TIPO_AUDITORIA"],
+			"CICLO" => $datos_auditoria[$i]["CICLO"],
+			"ID_PERSONAL_TECNICO_CALIF" => $ids_califs
+		]
 	]);
 	valida_error_medoo_and_die();
 	$datos_auditoria[$i]["FECHAS_ASIGNADAS"] = $sg_auditoria_grupo_fechas;

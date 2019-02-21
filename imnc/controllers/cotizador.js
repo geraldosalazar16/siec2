@@ -738,7 +738,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
     }
 
->>>>>>> 4d0bcb46923319aa861b26d6584850f9e3d316bb
+
   $scope.mostrar_enlace = function(url){
     $.dialog({
       title: 'Enlace para cargar participantes',

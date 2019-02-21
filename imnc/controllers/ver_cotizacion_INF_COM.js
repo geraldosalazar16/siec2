@@ -295,7 +295,7 @@ $scope.formData = {};
 			generar_referencia("C1",3,id_tipo_servicio);
 		}
 		else if(id_servicio == 2){
-			generar_referencia("C1",17,id_tipo_servicio);
+			generar_referencia("C1",17,id_tipo_servicio,$scope.obj_cotizacion.NORMAS[0].ID_NORMA,$scope.obj_cotizacion.DICTAMEN_O_CONSTANCIA);
 		}
       $('#modalAddServicio').modal('show');
     } else {
@@ -323,7 +323,7 @@ $scope.formData = {};
     } 
     
   }
-  function generar_referencia(ref,etapa,tipo_servicio){
+  function generar_referencia(ref,etapa,tipo_servicio,norma,dict_const){
     if(!tipo_servicio)
     {
       tipo_servicio = "XXX";
@@ -333,7 +333,7 @@ $scope.formData = {};
       etapa = "XX";
     }    
     
-    $http.get(  global_apiserver + "/tipos_servicio/generarReferencia/?ref="+ref+"&etapa="+etapa+"&id="+tipo_servicio)
+    $http.get(  global_apiserver + "/tipos_servicio/generarReferencia/?ref="+ref+"&etapa="+etapa+"&id="+tipo_servicio+"&norma="+norma+"&dict_const="+dict_const)
       .then(function( response ){        
         $scope.servicio_insertar.REFERENCIA	= response.data;        
     }); 
@@ -342,7 +342,7 @@ $scope.formData = {};
     var ref		=	"C1";
     var id_etapa	=$scope.servicio_insertar.ID_ETAPA;
     var	id_tipo_servicio	=	$scope.servicio_insertar.ID_TIPO_SERVICIO;
-    generar_referencia(ref,id_etapa,id_tipo_servicio);
+    generar_referencia(ref,id_etapa,id_tipo_servicio,$scope.obj_cotizacion.NORMAS[0].ID_NORMA,$scope.obj_cotizacion.DICTAMEN_O_CONSTANCIA);
   }
   $scope.crear_servicio = function () {
     //Solo permitir SG, esto habrá que quitarlo cuando se incluya EC en el cotizador

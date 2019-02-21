@@ -10,7 +10,7 @@ require_once('../../../common/apiserver.php'); //$global_apiserver
 require_once('../../../diff/selector.php'); //$global_diffname
 require_once('../../../diff/'.$global_diffname.'/strings.php'); 
 
-$respuesta = "ID,TIPO_PERSONA,TIPO_ENTIDAD,CLINETE_FACTURARIO,NOMBRE,RFC,TIENE_FACTURARIO,ES_FACTURARIO,FECHA_CREACION,HORA_CREACION,USUARIO_CREACION,FECHA_MODIFICACION,HORA_MODIFICACION,USUARIO_MODIFICACION,CONTACTO,TELEFONO_CELULAR,TELEFONO_FIJO,EMAIL1,EMAIL2,DIRECCION\r\n"; 
+$respuesta = "ID,TIPO_PERSONA,TIPO_ENTIDAD,CLINETE_FACTURARIO,NOMBRE,RFC,TIENE_FACTURARIO,ES_FACTURARIO,FECHA_CREACION,HORA_CREACION,USUARIO_CREACION,FECHA_MODIFICACION,HORA_MODIFICACION,USUARIO_MODIFICACION,CONTACTO,CARGO,TELEFONO_CELULAR,TELEFONO_FIJO,EMAIL1,EMAIL2,DIRECCION\r\n"; 
 
 $clientes = json_decode(file_get_contents($global_apiserver . "/clientes/getAllInfoContacto/"), true);
 
@@ -48,6 +48,7 @@ for ($i=0; $i < count($clientes) ; $i++) {
 	$respuesta .= $usuario_modificacion["NOMBRE"].",";
 	
 	$respuesta .= $clientes[$i]["NOMBRE_CONTACTO"].",";
+	$respuesta .= $clientes[$i]["CARGO"].",";
 	$respuesta .= $clientes[$i]["TELEFONO_MOVIL"].",";
 	$respuesta .= $clientes[$i]["TELEFONO_FIJO"].",";
 	$respuesta .= $clientes[$i]["EMAIL"].",";

@@ -16,6 +16,8 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.resp={};
 	$scope.resp1={};
 	$scope.DatosSitiosEC={};
+	$scope.CICLO1=[];// $scope.NombreCiclo="";
+	$scope.formDataDictaminacion={};
 	$scope.prueba	= "PAGINA EN DESARROLLO";
 	$scope.id_servicio_cliente_etapa = getQueryVariable("id_serv_cli_et");
 	$scope.PrincipalSectores	=	{0:{ID:"S",NOMBRE:"Si"},1:{ID:"N",NOMBRE:"No"}};
@@ -241,9 +243,41 @@ function clear_modal_agregar_informacion(){
 				cargarMetaDatos($scope.DatosServicio.ID_TIPO_SERVICIO,0);
 			}
 			cargarMetaDatosSitios($scope.DatosServicio.ID_TIPO_SERVICIO);
+
+			// Datos para select para filtrar ciclos
+			$scope.CICLO1.push({VAL:0,NOMBRE:"Todos"});
+			for(var i=0;i<$scope.DatosServicio.CICLO;i++){
+				$scope.CICLO1.push({VAL:i+1,NOMBRE:"C"+(i+1)});
+				
+			}
+			$scope.DatosServicio.NombreCiclo	= 0;
+			$scope.funcionDictaminadores($scope.DatosServicio.ID_TIPO_SERVICIO);
 		});
 	
-	}		
+	}	
+
+//	funcion para cambio ciclo
+$scope.cambioCiclo	=	function(){
+	var cc = $scope.DatosServicio.NombreCiclo;
+	if($scope.DatosServicio.ID_SERVICIO == 1){
+		if(cc == 0){
+			cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+		}
+		else{
+			cargarDatosAuditoriasSG_Ciclo($scope.id_servicio_cliente_etapa,cc);
+		
+		}
+	}
+	if($scope.DatosServicio.ID_SERVICIO == 2){
+		if(cc == 0){
+			cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+		}
+		else{
+			cargarDatosAuditoriasEC_Ciclo($scope.id_servicio_cliente_etapa,cc);
+		
+		}
+	}
+}	
 // ==============================================================================
 // ***** 	Funcion para obtener metadatos de este servicio 				*****
 // ==============================================================================
@@ -1146,6 +1180,21 @@ function cargarDatosAuditoriasSG(id_servicio){
 				});				
 		//}
     }
+//
+function cargarDatosAuditoriasSG_Ciclo(id_servicio,cc){
+	$http.get(  global_apiserver + "/i_sg_auditorias/getAllByIdServicioAndCiclo/?id="+id_servicio+"&ciclo="+cc)
+		.then(function( response ){
+            $scope.DatosAuditoriasSG = response.data;
+			
+			$.each($scope.DatosAuditoriasSG, function( i, datos1 ) {
+				$.each(datos1.AUDITORIA_FECHAS, function( j, datos ) {
+						$scope.txtFechasAuditoria[datos.ID]=datos.FECHA.substring(0,4)+"-"+datos.FECHA.substring(4,6)+"-"+datos.FECHA.substring(6,8);
+		 
+					});
+				});	
+		});			
+		//}
+    }	
 $scope.btnInsertaSitiosAuditoria = function(id_servicio_cliente_etapa,id_tipo_auditoria,id_cliente_domicilio,ciclo){
     cargarSitiosParaAuditoria(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo);
 }
@@ -1473,6 +1522,43 @@ $scope.funcion_guardar_datos = function(id_sce,id_ta,ciclo,id_pt,norma_serv_inte
 		$scope.txtInsertarFechasGrupo={};		
 
 }
+// ==============================================================================
+// ***** 			Funcion para eliminar las fechas de un auditor			*****
+// ==============================================================================
+$scope.eliminar_fechasAuditoriaGrupo = function(id){
+
+	var datos	=	{
+					ID:	id,
+					ID_USUARIO:	sessionStorage.getItem("id_usuario")
+				};
+			$http.post(global_apiserver + "/i_sg_auditoria_grupo_fechas/delete/",datos).
+            then(function(response){
+                if(response.data.resultado=="ok"){
+					notify('&Eacutexito','Se han eliminado los datos','success');
+					
+					if($scope.DatosServicio.ID_SERVICIO == 1){
+						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa,0,0);
+					}
+					if($scope.DatosServicio.ID_SERVICIO == 2){	
+						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					}
+					$scope.IdFechaEliminar="";
+                }
+                else{
+                    notify('Error',response.data.mensaje,'error');
+					if($scope.DatosServicio.ID_SERVICIO == 1){
+						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa,0,0);
+					}
+					if($scope.DatosServicio.ID_SERVICIO == 2){	
+						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					}
+					$scope.IdFechaEliminar="";
+                }
+               
+            });
+	 $("#modalConfirmacion").modal("hide");
+	 
+}	
 // ==============================================================
 // *****	FUNCION PARA MOSTRAR NORMA PARA TS INTEGRAL		*****
 // ==============================================================
@@ -1641,6 +1727,21 @@ function cargarDatosAuditoriasEC(id_servicio){
 		});
 		
     }
+//
+function cargarDatosAuditoriasEC_Ciclo(id_servicio,cc){
+	$http.get(  global_apiserver + "/i_ec_auditorias/getAllByIdServicioAndCiclo/?id="+id_servicio+"&ciclo="+cc)
+		.then(function( response ){
+            $scope.DatosAuditoriasSG = response.data;
+			
+			$.each($scope.DatosAuditoriasSG, function( i, datos1 ) {
+				$.each(datos1.AUDITORIA_FECHAS, function( j, datos ) {
+						$scope.txtFechasAuditoria[datos.ID]=datos.FECHA.substring(0,4)+"-"+datos.FECHA.substring(4,6)+"-"+datos.FECHA.substring(6,8);
+		 
+					});
+				});	
+		});			
+		//}
+    }	
 $scope.btnInsertaSitiosAuditoriaEC = function(id_servicio_cliente_etapa,id_tipo_auditoria,id_cliente_domicilio,ciclo){
     cargarSitiosParaAuditoriaEC(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo);
 }	
@@ -2518,6 +2619,99 @@ $scope.showFormConfiguracion = function () {
 // ***** 	            TERMINA  SERVICIO CONTRATADO CIFA	           	 *****
 // ===========================================================================
 // ===========================================================================
+// ===========================================================================
+// ***** 	          		 INICIA DICTAMINACION			           	 *****
+// ===========================================================================
+// ===========================================================================
+//	FUNCION PARA EL MODAL
+  $scope.modal_dictaminacion = function(id_sce,id_ta,ciclo){
+		
+		$scope.formDataDictaminacion = {};
+		$scope.formDataDictaminacion.inputDictIdSCE = id_sce;
+		$scope.formDataDictaminacion.inputDictIdTA = id_ta;
+		$scope.formDataDictaminacion.inputDictCiclo = ciclo;
+		$("#inputIdSCE").val(id_sce);
+		$("#inputIdTA").val(id_ta);
+		$("#inputCiclo").val(ciclo);
+		$scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa);
+//		Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+//		Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+//		Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
+//		Contactos_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
+		
+//		$scope.formDataGenCotizacion.tramites=$scope.arr_tramites_cotizacion;
+//		$scope.formDataGenCotizacion.descripcion=[];
+//		$scope.tarifa_adicional_tramite_cotizacion_by_tramite=[];
+		
+		
+//		for(var key in $scope.formDataGenCotizacion.tramites){
+			
+			/*===========================================================================*/
+//			 tramite_tarifa_adicional_by_tramite($scope.formDataGenCotizacion.tramites[key].ID,key);
+			/*===========================================================================*/
+			
+//		}
+		
+//		$scope.formDataGenCotizacion.descripcion=$scope.tarifa_adicional_tramite_cotizacion_by_tramite;
+		
+  
+    $('#modalDictaminacion').modal('show');
+  }
+  
+	
+/*		
+		FUNCION PARA CARGAR LOS DICTAMINADORES
+*/
+$scope.funcionDictaminadores = function(id_ts){
+	$.ajax({
+		type:'GET',
+		url:global_apiserver+"/dictaminador_tiposervicio/getTipoServicio/?id_ts="+id_ts,
+		success:function(data){
+			$scope.$apply(function(){
+				$scope.Dictaminadores=angular.fromJson(data);
+			})
+
+		}
+	});
+}
+/*
+		Esta función nos sirve para insertar los datos en la tabla dictaminaciones.
+	*/
+	$scope.submitFormDictaminacion = function(formDataDictaminacion) {		
+	
+			
+				var dictaminaciones = {
+					ID_SCE:	$scope.formDataDictaminacion.inputDictIdSCE,
+					ID_TA:	$scope.formDataDictaminacion.inputDictIdTA,
+					CICLO:	$scope.formDataDictaminacion.inputDictCiclo, 
+					ID_DICTAMINADOR:	$scope.formDataDictaminacion.Dictaminador,
+					ID_USUARIO_CREACION : sessionStorage.getItem("id_usuario"),
+					ID_USUARIO_MODIFICACION : 0
+				};
+	
+				$.post(global_apiserver + "/dictaminaciones/insert/", JSON.stringify(dictaminaciones), function(respuesta){
+					respuesta = JSON.parse(respuesta);
+					if (respuesta.resultado == "ok") {
+						
+						notify("Éxito", "Se han enviado la auditoria a dictaminar","success");
+						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					}
+					 else {
+							notify('Error',respuesta.mensaje,'error');
+					}
+					$('#modalDictaminacion').modal("hide");
+				});
+			
+	
+		
+		
+	};
+// ===========================================================================
+// ***** 	          		 TERMINA DICTAMINACION			           	 *****
+// ===========================================================================
+// ===========================================================================
+
 
 
 DatosServicioContratado($scope.id_servicio_cliente_etapa);
