@@ -17,7 +17,6 @@
 			$respuesta["resultado"]="error"; 
 			$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
 			print_r(json_encode($respuesta)); 
-			$mailerror->send("DICTAMINACIONES", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
 			die(); 
 		} 
 	} 
@@ -57,7 +56,7 @@
 									[
 										"AND"=>[
 												"DICTAMINACIONES.ID_DICTAMINADOR"=>$id_usuario,
-												"STATUS"=>'Solicitud enviada'
+												"STATUS"=>'0'
 												]
 									]
 									

@@ -93,23 +93,7 @@ $scope.mostrarFecha = function(fecha){
 	
 	return fecha.substring(0,4)+"-"+fecha.substring(4,6)+"-"+fecha.substring(6,8);
 }
-/*		
-		Función para enviar correos prueba
-*/
-$scope.EnviarCorreoPrueba = function(){
 
-	$.post( global_apiserver + "/dictaminacion/enviarCorreo/", function(respuesta){
-      respuesta = JSON.parse(respuesta);
-      if (respuesta.resultado == "ok") {
-        notify("Éxito", "Se ha enviado correo correctamente", "success");
-        
-      }
-      else{
-          notify("Error", respuesta.mensaje, "error");
-        }
-      
-  });
-}	
 
 
 

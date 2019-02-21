@@ -1,0 +1,9 @@
+[28-Jan-2019 01:33:15 UTC] PHP Warning:  file_get_contents(http://apinube.com/imnc/siec2.0_prueba/api.imnc/imnc/cursos/getReferencia/?id=3 &amp;tipo=P): failed to open stream: HTTP request failed! HTTP/1.1 400 Bad Request
+ in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/cursos_programados/insertDesdeCotizador/index.php on line 34
+[28-Jan-2019 01:33:16 UTC] PHP Warning:  Illegal string offset 'ETAPA' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/cursos_programados/insertDesdeCotizador/index.php on line 54
+[28-Jan-2019 01:35:25 UTC] PHP Warning:  file_get_contents(http://apinube.com/imnc/siec2.0_prueba/api.imnc/imnc/cursos/getReferencia/?id=3 &amp;tipo=P): failed to open stream: HTTP request failed! HTTP/1.1 400 Bad Request
+ in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/cursos_programados/insertDesdeCotizador/index.php on line 34
+[28-Jan-2019 01:35:25 UTC] PHP Warning:  Illegal string offset 'ETAPA' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/cursos_programados/insertDesdeCotizador/index.php on line 54
+[28-Jan-2019 01:39:14 UTC] PHP Warning:  file_get_contents(http://apinube.com/imnc/siec2.0_prueba/api.imnc/imnc/cursos/getReferencia/?id=3 &amp;tipo=P): failed to open stream: HTTP request failed! HTTP/1.1 400 Bad Request
+ in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/cursos_programados/insertDesdeCotizador/index.php on line 34
+[28-Jan-2019 01:39:14 UTC] PHP Warning:  Illegal string offset 'ETAPA' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/cursos_programados/insertDesdeCotizador/index.php on line 54

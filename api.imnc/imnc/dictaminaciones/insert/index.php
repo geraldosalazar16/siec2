@@ -25,15 +25,12 @@
 			$respuesta["resultado"]="error"; 
 			$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
 			print_r(json_encode($respuesta)); 
-			$mailerror->send("DICTAMINACIONES", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
 			die(); 
 		} 
 	} 	
 	
 	$nombre_tabla = "DICTAMINACIONES";
 					 
-	$correo = "lqc347@gmail.com";
-	
 	$respuesta=array(); 
 	$json = file_get_contents("php://input"); 
 
