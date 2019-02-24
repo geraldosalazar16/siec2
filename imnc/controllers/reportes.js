@@ -430,17 +430,20 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
 // =======================================================================================
     $scope.generarEXCEL = function(key){
 
+
         if (typeof key !== "undefined") {
+
             $('#hiddenNombre').val($scope.reportes[key].NOMBRE);
             $('#hiddenArea').val($scope.reportes[key].AREA);
             var array = [];
-            $.each($scope.columns,function (i,n) {
-                array.push(n.COLUMNA);
-            });
+              $.each($scope.reportes[key].COLUMN,function (i,n) {
+                   array.push(n.COLUMNA);
+               });
             $scope.columns = array;
-            $('#hiddenColumnas').val(getArrayColumnas($scope.columns));
+            $('#hiddenColumnas').val(getArrayColumnas($scope.columns,key));
         }
         else {
+
             $('#hiddenNombre').val($scope.formData.nombre);
             $('#hiddenArea').val($scope.formData.select_area.NOMBRE);
 
@@ -453,33 +456,63 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
         //document.getElementById('formReporte').submit();
 
     }
-   function getArrayColumnas(selected)
+   function getArrayColumnas(selected,key)
    {
        var array = [];
-       if($scope.formData.select_area.ID_AREA == 1)
-       {
-           $.each($scope.comercial,function (i,n) {
-               var value = n.value.split("|");
-               $.each(selected,function (j,m) {
-                   if (m.indexOf(value[0]) > -1) {
-                       array.push(n) ;
-                   }
-               });
+       if (typeof key !== "undefined") {
+           if($scope.reportes[key].ID_AREA == 1)
+           {
+               $.each($scope.comercial,function (i,n) {
+                   var value = n.value.split("|");
+                   $.each(selected,function (j,m) {
+                       if (m.indexOf(value[0]) > -1) {
+                           array.push(n) ;
+                       }
+                   });
 
-           });
-       }
-       if($scope.formData.select_area.ID_AREA == 2)
-       {
-           $.each($scope.programacion,function (i,n) {
-               var value = n.value.split("|");
-               $.each(selected,function (j,m) {
-                   if (m.indexOf(value[0]) > -1) {
-                       array.push(n) ;
-                   }
                });
+           }
+           if( $scope.reportes[key].ID_AREA == 1)
+           {
+               $.each($scope.programacion,function (i,n) {
+                   var value = n.value.split("|");
+                   $.each(selected,function (j,m) {
+                       if (m.indexOf(value[0]) > -1) {
+                           array.push(n) ;
+                       }
+                   });
 
-           });
+               });
+           }
        }
+       else
+       {
+           if($scope.formData.select_area.ID_AREA == 1 )
+           {
+               $.each($scope.comercial,function (i,n) {
+                   var value = n.value.split("|");
+                   $.each(selected,function (j,m) {
+                       if (m.indexOf(value[0]) > -1) {
+                           array.push(n) ;
+                       }
+                   });
+
+               });
+           }
+           if($scope.formData.select_area.ID_AREA == 2 )
+           {
+               $.each($scope.programacion,function (i,n) {
+                   var value = n.value.split("|");
+                   $.each(selected,function (j,m) {
+                       if (m.indexOf(value[0]) > -1) {
+                           array.push(n) ;
+                       }
+                   });
+
+               });
+           }
+       }
+
        return JSON.stringify(array);
 
 

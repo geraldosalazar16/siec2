@@ -44,7 +44,7 @@
 										</button>
 										<ul class="dropdown-menu pull-right">
 											<li ng-if='<?php echo $modulo_permisos["REPORTES"]["ver"] == 1 ?>' ng-show="item.ID_USUARIO==id_usuario">
-												<a	ng-click="">
+												<a	ng-click="generarEXCEL(key)">
 												<span class="labelAcordeon"	><i class="fa fa-list"></i> Ver</span></a>
 											</li>
                                             <li ng-if='<?php echo $modulo_permisos["REPORTES"]["editar"] == 1 ?>' ng-show="item.ID_USUARIO==id_usuario">
