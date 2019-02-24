@@ -446,10 +446,9 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
 
             $('#hiddenNombre').val($scope.formData.nombre);
             $('#hiddenArea').val($scope.formData.select_area.NOMBRE);
-
             $('#hiddenColumnas').val(getArrayColumnas($("#column").val()));
         }
-
+          alert($('#hiddenColumnas').val());
         window.open('', 'VentanaReporteXLS');
         $("#formReporte").submit();
 
@@ -472,7 +471,7 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
 
                });
            }
-           if( $scope.reportes[key].ID_AREA == 1)
+           if( $scope.reportes[key].ID_AREA == 2)
            {
                $.each($scope.programacion,function (i,n) {
                    var value = n.value.split("|");
