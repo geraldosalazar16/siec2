@@ -1,4 +1,123 @@
 app.controller('dashboard_controller', ['$scope', function($scope,$http) { 
+/***********************************************************************/
+	var repCertVig = document.getElementById("RepCertVigChart");
+	var repCertVigHist = document.getElementById("RepCertVigHistChart");
+	var hoy = new Date();
+	$scope.ano_actual = hoy.getFullYear();
+// REPORTES CERTIFICADOS VIGENTES	
+$scope.graficaRepCertVig = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_reportes/getCantidadServiciosContratados/",
+		success:function(data){
+			//for(var i = 0 ; i < data.length ; i++){
+			//	x = data.X;
+			//	y = data.Y;
+			//}
+			var mybarChart = new Chart(repCertVig, {
+				type: 'line',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'Calidad',
+						fill : false,
+						borderColor: 'rgba(255, 0, 0, 1)',
+						borderWidth: 1,
+						data: data.Y1,
+					},{
+						label: 'Ambiente',
+						fill : false,
+						borderColor: 'rgba(255, 255, 0, 1)',
+						borderWidth: 1,
+						data: data.Y2,
+					},{
+						label: 'SAST',
+						fill : false,
+						borderColor: 'rgba(0, 255, 0, 1)',
+						borderWidth: 1,
+						data: data.Y3,
+					},{
+						label: 'Integral',
+						fill : false,
+						borderColor: 'rgba(0, 255, 255, 1)',
+						borderWidth: 1,
+						data: data.Y4,
+					},{
+						label: 'Energia',
+						fill : false,
+						borderColor: 'rgba(0, 0, 255, 1)',
+						borderWidth: 1,
+						data: data.Y5,
+					}]
+				},
+
+				options: {
+					scales: {
+						xAxes: [{
+							stacked: true,
+							ticks: {
+								autoSkip: false
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]	
+					}
+					
+				}
+			});
+	
+		}
+	});
+};
+// REPORTES CERTIFICADOS VIGENTES	
+$scope.graficaRepCertVigHist = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_reportes/getCantidadServiciosContratadosHist/",
+		success:function(data){
+			
+			var mybarChart = new Chart(repCertVigHist, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'Calidad',
+						backgroundColor: 'rgba(255, 0, 0, 0.5)',
+						data: data.Y1,
+					},{
+						label: 'Ambiente',
+						backgroundColor: 'rgba(255, 255, 0, 0.5)',
+						data: data.Y2,
+					},{
+						label: 'SAST',
+						backgroundColor: 'rgba(0, 255, 0, 0.5)',
+						data: data.Y3,
+					},{
+						label: 'Integral',
+						backgroundColor: 'rgba(0, 255, 255, 0.5)',
+						data: data.Y4,
+					},{
+						label: 'Energia',
+						backgroundColor: 'rgba(0, 0, 255, 0.5)',
+						data: data.Y5,
+					}]
+				},
+
+				
+			});
+	
+		}
+	});
+};
+
+$scope.graficaRepCertVig();
+$scope.graficaRepCertVigHist();
+/***********************************************************************/	
 var origeng = document.getElementById("origenChart");
 var estatusg = document.getElementById("estatusChart");
 var competenciag = document.getElementById("competenciaChart");

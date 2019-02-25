@@ -248,7 +248,59 @@ if($ID_SERVICIO==3)  //para cifa
     }
 
 }
+/**************************************************************/
+//	AQUI ESTARA EL DISPARADOR PARA GUARDAR LOS DATOS PARA 
+//	REPORTES DE CERTIFICADOS VIGENTES SI ID_ETAPA_PROCESO
+//	PARA DE ETAPA 2 A VIGILANCIA 1 O PASA A CANCELACION
 
+if($ID_ETAPA_ANTERIOR != $ID_ETAPA_PROCESO){
+	if(($ID_ETAPA_ANTERIOR == 2 && $ID_ETAPA_PROCESO == 4)|| ($ID_ETAPA_PROCESO == 16) ){
+		$consulta1 = "SELECT 
+						(SELECT COUNT(`ID_TIPO_SERVICIO`) FROM `SERVICIO_CLIENTE_ETAPA` WHERE `ID_TIPO_SERVICIO`='1' AND `ID_ETAPA_PROCESO` ='4') AS `COUNT_CALIDAD` ,
+						(SELECT COUNT(`ID_TIPO_SERVICIO`) FROM `SERVICIO_CLIENTE_ETAPA` WHERE `ID_TIPO_SERVICIO`='2' AND `ID_ETAPA_PROCESO` ='4') AS `COUNT_AMBIENTE`,
+						(SELECT COUNT(`ID_TIPO_SERVICIO`) FROM `SERVICIO_CLIENTE_ETAPA` WHERE `ID_TIPO_SERVICIO`='12' AND `ID_ETAPA_PROCESO` ='4') AS `COUNT_SAST`,
+						(SELECT COUNT(`ID_TIPO_SERVICIO`) FROM `SERVICIO_CLIENTE_ETAPA` WHERE `ID_TIPO_SERVICIO`='20' AND `ID_ETAPA_PROCESO` ='4') AS `COUNT_INTEGRAL`,
+						(SELECT COUNT(`ID_TIPO_SERVICIO`) FROM `SERVICIO_CLIENTE_ETAPA` WHERE `ID_TIPO_SERVICIO`='21' AND `ID_ETAPA_PROCESO` ='4') AS `COUNT_ENERGIA`";
+        $reporte = $database->query($consulta1)->fetchAll(PDO::FETCH_ASSOC);
+		//AQUI SE INSERTA LA CANTIDAD PARA CALIDAD
+		$idr_CALIDAD	=	$database->insert("REPORTES_CERTIFICADOS_VIGENTES",[
+						"ID_TIPO_SERVICIO"=> '1',
+						"CANTIDAD_CERTIFICADOS"=>$reporte[0]["COUNT_CALIDAD"],
+						"FECHA"=>date("Ymd")
+					]);
+		valida_error_medoo_and_die();
+		//AQUI SE INSERTA LA CANTIDAD PARA AMBIENTE
+		$idr_AMBIENTE	=	$database->insert("REPORTES_CERTIFICADOS_VIGENTES",[
+						"ID_TIPO_SERVICIO"=> '2',
+						"CANTIDAD_CERTIFICADOS"=>$reporte[0]["COUNT_AMBIENTE"],
+						"FECHA"=>date("Ymd")
+					]);
+		valida_error_medoo_and_die();			
+		//AQUI SE INSERTA LA CANTIDAD PARA SAST
+		$idr_SAST	=	$database->insert("REPORTES_CERTIFICADOS_VIGENTES",[
+						"ID_TIPO_SERVICIO"=> '12',
+						"CANTIDAD_CERTIFICADOS"=>$reporte[0]["COUNT_SAST"],
+						"FECHA"=>date("Ymd")
+					]);
+		valida_error_medoo_and_die();
+		//AQUI SE INSERTA LA CANTIDAD PARA INTEGRAL
+		$idr_INTEGRAL	=	$database->insert("REPORTES_CERTIFICADOS_VIGENTES",[
+						"ID_TIPO_SERVICIO"=> '20',
+						"CANTIDAD_CERTIFICADOS"=>$reporte[0]["COUNT_INTEGRAL"],
+						"FECHA"=>date("Ymd")
+					]);
+		valida_error_medoo_and_die();
+		//AQUI SE INSERTA LA CANTIDAD PARA ENERGIA
+		$idr_ENERGIA	=	$database->insert("REPORTES_CERTIFICADOS_VIGENTES",[
+						"ID_TIPO_SERVICIO"=> '21',
+						"CANTIDAD_CERTIFICADOS"=>$reporte[0]["COUNT_ENERGIA"],
+						"FECHA"=>date("Ymd")
+					]);
+		valida_error_medoo_and_die();
+	}
+}
+
+/**************************************************************/
 
 $respuesta["resultado"]="ok";
 
