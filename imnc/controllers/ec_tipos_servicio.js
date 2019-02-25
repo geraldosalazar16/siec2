@@ -2741,16 +2741,17 @@ function notify(titulo, texto, tipo) {
     });
 }
 function getQueryVariable(variable) {
-	  var query = window.location.search.substring(1);
-	  var vars = query.split("&");
-	  for (var i=0;i<vars.length;i++) {
+	var query = window.location.search.substring(1);
+	var vars = query.split("&");
+	for (var i = 0; i < vars.length; i++) {
 		var pair = vars[i].split("=");
 		if (pair[0] == variable) {
-		  return pair[1];
+			return pair[1];
 		}
-	  } 
-	  alert('Query Variable ' + variable + ' not found');
-=======
+	}
+	alert('Query Variable ' + variable + ' not found');
+}
+
 app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope,$http){
 	
 	$scope.titulo	= "Cargando....";
@@ -5504,3 +5505,5 @@ function getQueryVariable(variable) {
 	  } 
 	  alert('Query Variable ' + variable + ' not found');
 	}
+
+
