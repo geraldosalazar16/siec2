@@ -1,0 +1,2 @@
+[24-Jan-2019 18:07:40 UTC] PHP Parse error:  syntax error, unexpected '<<' (T_SL), expecting ']' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/servicio_cliente_etapa/insert/index.php on line 127
+[24-Jan-2019 18:07:48 UTC] PHP Parse error:  syntax error, unexpected '<<' (T_SL), expecting ']' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/servicio_cliente_etapa/insert/index.php on line 127

@@ -356,7 +356,10 @@
 														<i class="fa fa-send" aria-hidden="true"></i> Solicitar Dictaminaci&oacuten 
 													</button>
 												</p>
-												{{x.ESTADO_DICTAMINACION}}
+												<p ng-show="x.ESTADO_DICTAMINACION =='0'">Solicitud enviada</p>
+												<p ng-show="x.ESTADO_DICTAMINACION =='1'">Dictaminaci&oacuten aprobada</p>
+												<p ng-show="x.ESTADO_DICTAMINACION =='2'">Dictaminaci&oacuten negada</p>
+												
 											</td>
 										</tr>
 										
@@ -561,7 +564,10 @@
 														<i class="fa fa-send" aria-hidden="true"></i> Solicitar Dictaminaci&oacuten 
 													</button>
 												</p>
-												{{xx.ESTADO_DICTAMINACION}}
+												<p ng-show="xx.ESTADO_DICTAMINACION =='0'">Solicitud enviada</p>
+												<p ng-show="xx.ESTADO_DICTAMINACION =='1'">Dictaminaci&oacuten aprobada</p>
+												<p ng-show="xx.ESTADO_DICTAMINACION =='2'">Dictaminaci&oacuten negada</p>
+												
 											</td>
 										</tr>
 										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->
