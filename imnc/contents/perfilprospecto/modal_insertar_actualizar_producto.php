@@ -38,13 +38,14 @@
 						</textarea>	
 					</div>
 					<!-- Solo mostrar para CIFA-->
-					<div class="form-group" ng-show="areas == 3">	
+					<div class="form-group" ng-show="areas == 3">
 						<label class="control-label">Tipo de persona</label>
-						<select ng-model="tipo_persona" style="margin-top:10px" class="form-control" ng-disabled="tipoPersona!=''">
+						<select ng-model="tipo_persona" style="margin-top:10px" class="form-control" ng-show="tipoPersona==''" ng-change="onChangeTipoPeresona(tipo_persona)">
 							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
 							<option value="Física" >Física</option>
 							<option value="Moral" >Moral</option>
 						</select>
+                        <input type="text" class="form-control" ng-model="tipo_persona" ng-show="tipoPersona!=''" ng-disabled="true" required>
 		            </div>
 					<!-- Solo mostrar para CIFA-->
 					<div class="form-group" ng-show="areas == 3">	
@@ -57,15 +58,25 @@
 						</select>
 		            </div>
 					<!-- Solo mostrar para CIFA-->
-					<div class="form-group" ng-show="areas == 3 && (modalidades == 'programado' || modalidades == 'insitu')">
+					<div class="form-group" ng-show="areas == 3">
 						<label class="control-label" id="labelCurso">Cursos Programados</label>
 						<select ng-model="cursos_programados" style="margin-top:10px" class="form-control"
 						ng-options="curso.id as curso.nombre  for curso in Cursos">
 							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
 						</select>
 		            </div>
+					<!-- Solo mostrar para CIFA-->
+					<div class="form-group" ng-show="areas == 3 && modalidades == 'programado'">
+						<label class="control-label" id="labelOpcionesParticipantes">Opciones participantes</label>
+						<select ng-model="opciones_participantes" style="margin-top:10px" class="form-control"
+						>
+							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
+							<option value="solo_cliente">Sólo participará el prospecto</option>
+							<option value="participantes">El prospecto agregará sus participantes</option>
+						</select>
+		            </div>
                     <!-- Solo mostrar para CIFA-->
-                    <div class="form-group" ng-show="areas == 3 && modalidades == 'insitu'">
+                    <div class="form-group" ng-show="areas == 3 && ((modalidades == 'programado' && opciones_participantes == 'participantes') || modalidades == 'insitu')">
                         <label for="cantidad_participantes">Cantidad de Participantes<span class="required">*</span></label>
                         <input type="text" class="form-control" name="cantidad_participantes" id="cantidad_participantes" ng-model="cantidad_participantes"   required>
                         <span id="txtcantidad_participanteserror" class="text-danger"></span>

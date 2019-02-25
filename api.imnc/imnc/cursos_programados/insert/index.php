@@ -65,6 +65,8 @@ $id_cp = $database->insert("CURSOS_PROGRAMADOS", [
 valida_error_medoo_and_die();
 
 if($id_cp	!=	0) {
+	$etapa = $database->get("ETAPAS_PROCESO","ETAPA",["ID_ETAPA"=>$ETAPA]);
+	$ETAPA = $etapa["ETAPA"];
     $id1 = $database->insert("CURSOS_PROGRAMADOS_HISTORICO", [
         "ID_CURSO_PROGRAMADO" => $id_cp,
         "MODIFICACION" => "NUEVO CURSO",

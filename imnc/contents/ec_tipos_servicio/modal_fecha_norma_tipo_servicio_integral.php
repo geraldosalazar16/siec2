@@ -9,7 +9,7 @@
       <div class="modal-body">
 		<form name="exampleFormGrupoAuditorFechaNorma" >
 			<div class="form-group">
-				<label>Rol en grupo<span class="required">*</span></label>
+				<label>Norma a auditar<span class="required">*</span></label>
 				<select ng-model="formDataGrupoAuditorFechaNorma.norma" ng-options="norma.ID_NORMA as norma.ID_NORMA for norma in DatosServicio.NORMAS"  class="form-control" ng-change='' required ng-class="{ error: exampleFormGrupoAuditor.cmbRol.$error.required && !exampleFormGrupoAuditor.$pristine}"  ></select>	
 			</div>
 	

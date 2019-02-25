@@ -44,7 +44,7 @@ valida_parametro_and_die($ID_SERVICIO,"Falta ID de SERVICIO");
 $ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO;
 valida_parametro_and_die($ID_TIPO_SERVICIO,"Falta ID de TIPO DE SERVICIO");
 $NORMAS = $objeto->NORMAS;
-if(count($NORMAS) == 0){
+if(count($NORMAS) == 0 && $ID_SERVICIO != 3){ // No se usan normas en CIFA
 		$respuesta['resultado']="error";
 		$respuesta['mensaje']="Es necesario seleccionar una norma";
 		print_r(json_encode($respuesta));
@@ -59,7 +59,25 @@ valida_parametro_and_die($FOLIO_SERVICIO,"Falta FOLIO SERVICIO");
 $FOLIO_INICIALES = $objeto->FOLIO_INICIALES;
 valida_parametro_and_die($FOLIO_INICIALES,"Falta FOLIO INICIALES");
 $TARIFA = $objeto->TARIFA;
-valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
+
+
+if($ID_SERVICIO != 3){
+	//No se necesita para Certificacion Personas,informacion_comercial
+	if($ID_TIPO_SERVICIO != 19 ){
+		valida_parametro_and_die($TARIFA,"Falta seleccionar la Tarifa");
+	} else {
+		if(!$TARIFA){
+			$TARIFA = 0;
+		}
+	}
+	
+} else {
+	if(!$TARIFA){
+		$TARIFA = "";
+
+	}
+}
+
 $DESCUENTO = $objeto->DESCUENTO;
 $AUMENTO = $objeto->AUMENTO;
 $REFERENCIA = $objeto->REFERENCIA;
@@ -98,6 +116,15 @@ if($ID_TIPO_SERVICIO == 16){
 		$ACTIVIDAD_ECONOMICA = 0;
 	}
 }
+//SOLO ES OBLIGATORIO PARA UNIDAD VERIFICACION INFORMACION COMERCIAL
+$DICTAMEN_CONSTANCIA = $objeto->DICTAMEN_CONSTANCIA;
+if($ID_TIPO_SERVICIO == 18){
+	valida_parametro_and_die($DICTAMEN_CONSTANCIA,"Falta el DICTAMEN_CONSTANCIA");
+} else {
+	if(!$DICTAMEN_CONSTANCIA){
+		$DICTAMEN_CONSTANCIA = 0;
+	}
+}
 
 if ($DESCUENTO != "" && ($DESCUENTO < 0 || $DESCUENTO > 100)) {
 	$respuesta["resultado"] = "error";
@@ -115,6 +142,28 @@ if ($AUMENTO != "" && ($AUMENTO < 0 || $AUMENTO > 100)) {
 $ID_USUARIO_CREACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_CREACION,"Falta ID de USUARIO");
 
+//Solo para CIFA
+$MODALIDAD = "";
+$ID_CURSO = "";
+$CANT_PARTICIPANTES = 0;
+$SOLO_CLIENTE = "";
+if($ID_SERVICIO == 3){
+	$MODALIDAD = $objeto->MODALIDAD;
+	valida_parametro_and_die($MODALIDAD,"Falta MODALIDAD");
+	$ID_CURSO = $objeto->ID_CURSO;
+	valida_parametro_and_die($ID_CURSO,"Falta ID CURSO");
+	$SOLO_CLIENTE = $objeto->SOLO_CLIENTE;
+	valida_parametro_and_die($SOLO_CLIENTE,"Falta SOLO_CLIENTE");
+	if($SOLO_CLIENTE == 0){
+		$CANT_PARTICIPANTES = $objeto->CANT_PARTICIPANTES;
+		valida_parametro_and_die($CANT_PARTICIPANTES,"Falta CANT_PARTICIPANTES");
+	} else if($SOLO_CLIENTE == 1){
+		$CANT_PARTICIPANTES = 1;
+	}
+	
+}
+
+
 $FOLIO_MES = date("m");
 $FOLIO_YEAR = date("y");
 
@@ -127,8 +176,9 @@ else
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
 
-//Verificar que el servicio no exista
-$id_cotizacion = $database->get("COTIZACIONES",
+//Verificar que el servicio no exista, excepto para CIFA
+if($ID_SERVICIO != 3){
+	$id_cotizacion = $database->get("COTIZACIONES",
 		"*",
 		[
 			"AND" => [
@@ -136,19 +186,20 @@ $id_cotizacion = $database->get("COTIZACIONES",
 				"ID_SERVICIO" => $ID_SERVICIO,
 				"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO
 		]
-]);
-if( $ID_TIPO_SERVICIO == 17 && ($database->count("COTIZACION_NORMAS",["AND" =>["ID_NORMA" => $NORMAS[0]->ID_NORMA ,"ID_COTIZACION"=> $id_cotizacion["ID"] ]]) ==0)){
-	$id_cotizacion = 0;
+	]);
+	if( $ID_TIPO_SERVICIO == 17 && ($database->count("COTIZACION_NORMAS",["AND" =>["ID_NORMA" => $NORMAS[0]->ID_NORMA ,"ID_COTIZACION"=> $id_cotizacion["ID"] ]]) ==0)){
+		$id_cotizacion = 0;
+	}
+	valida_error_medoo_and_die();
+
+	if($id_cotizacion != 0){
+		$respuesta["resultado"] = "error";
+		$respuesta["mensaje"] = "La cotización que intenta ingresar ya existe";
+		print_r(json_encode($respuesta));
+		die();
+	}
 }
 
-
-valida_error_medoo_and_die();
-if($id_cotizacion != 0){
-	$respuesta["resultado"] = "error";
-	$respuesta["mensaje"] = "La cotización que intenta ingresar ya existe";
-	print_r(json_encode($respuesta));
-	die();
-}
 $id_cotizacion = $database->insert("COTIZACIONES", [
 	"ID_PROSPECTO" => $ID_PROSPECTO,
 	"ID_SERVICIO" => $ID_SERVICIO,
@@ -175,6 +226,7 @@ $id_cotizacion = $database->insert("COTIZACIONES", [
 valida_error_medoo_and_die();
 
 //iNSERTAR LAS NORMAS
+if($ID_SERVICIO != 3){
 	for ($i=0; $i < count($NORMAS); $i++) {
 		$id_norma = $NORMAS[$i]->ID_NORMA;
 		$id_cotizacion_normas = $database->insert("COTIZACION_NORMAS", [
@@ -183,6 +235,68 @@ valida_error_medoo_and_die();
 		]);
 		valida_error_medoo_and_die();
 	}
+
+	//Si la cotizacion tiene algun detalle que deba ser guardado en la tabla cotizacion detalles.
+	switch($ID_TIPO_SERVICIO){
+		case 16:
+			$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+				"ID_COTIZACION" => $id_cotizacion,
+				"DETALLE" => "SECTOR",
+				"VALOR"	=>	$ACTIVIDAD_ECONOMICA
+			]);
+			valida_error_medoo_and_die();
+			break;
+		case 17:
+			
+			break;
+		case 18:
+			$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+				"ID_COTIZACION" => $id_cotizacion,
+				"DETALLE" => "DICTAMEN_O_CONSTANCIA",
+				"VALOR"	=>	$DICTAMEN_CONSTANCIA
+			]);
+			valida_error_medoo_and_die();
+			break;
+		default: 
+			break;
+	}
+
+	
+} else if($ID_SERVICIO == 3) {
+	//para CIFA insertar los detalles MODALIDAD y ID_CURSO
+	//Si MODALIDAD = programado ID_CURSO => columna ID_CURSO en CURSOS_PROGRAMADOS
+	//Si MODALIDAD = insitu ID_CURSO => columna ID_CURSO en CURSOS
+	$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+		"ID_COTIZACION" => $id_cotizacion,
+		"DETALLE" => "MODALIDAD",
+		"VALOR"	=>	$MODALIDAD
+	]);
+	valida_error_medoo_and_die();
+	$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+		"ID_COTIZACION" => $id_cotizacion,
+		"DETALLE" => "ID_CURSO",
+		"VALOR"	=>	$ID_CURSO
+	]);
+	valida_error_medoo_and_die();
+	$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+		"ID_COTIZACION" => $id_cotizacion,
+		"DETALLE" => "CANT_PARTICIPANTES",
+		"VALOR"	=>	$CANT_PARTICIPANTES
+	]);
+	valida_error_medoo_and_die();
+	$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+		"ID_COTIZACION" => $id_cotizacion,
+		"DETALLE" => "SOLO_CLIENTE",
+		"VALOR"	=>	$SOLO_CLIENTE
+	]);
+	valida_error_medoo_and_die();
+    $id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
+        "ID_COTIZACION" => $id_cotizacion,
+        "DETALLE" => "TIENE_SERVICIO",
+        "VALOR"	=>	0
+    ]);
+    valida_error_medoo_and_die();
+}
 
 //Si todo salio bien agregar el id de la cotizacion al producto
 if($id_cotizacion && $id_cotizacion !== 0 && $ID_PRODUCTO){
@@ -194,23 +308,7 @@ if($id_cotizacion && $id_cotizacion !== 0 && $ID_PRODUCTO){
 			"ID" => $ID_PRODUCTO
 		]
 	);
-	valida_error_medoo_and_die();
-}
-//Si la cotizacion tiene algun detalle que deba ser guardado en la tabla cotizacion detalles.
-switch($ID_TIPO_SERVICIO){
-	case 16:
-		$id_cotizacion_detalles = $database->insert("COTIZACION_DETALLES", [
-			"ID_COTIZACION" => $id_cotizacion,
-			"DETALLE" => "SECTOR",
-			"VALOR"	=>	$ACTIVIDAD_ECONOMICA
-		]);
-		valida_error_medoo_and_die();
-		break;
-	case 17:
-		
-		break;
-	default: 
-		break;
+	valida_error_medoo_and_die();		
 }
 
 $respuesta["resultado"]="ok";

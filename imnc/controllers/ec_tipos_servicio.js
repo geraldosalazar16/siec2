@@ -17,6 +17,7 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.resp1={};
 	$scope.DatosSitiosEC={};
 	$scope.CICLO1=[];// $scope.NombreCiclo="";
+	$scope.formDataDictaminacion={};
 	$scope.prueba	= "PAGINA EN DESARROLLO";
 	$scope.id_servicio_cliente_etapa = getQueryVariable("id_serv_cli_et");
 	$scope.PrincipalSectores	=	{0:{ID:"S",NOMBRE:"Si"},1:{ID:"N",NOMBRE:"No"}};
@@ -244,6 +245,7 @@ function clear_modal_agregar_informacion(){
 				cargarMetaDatos($scope.DatosServicio.ID_TIPO_SERVICIO,0);
 			}
 			cargarMetaDatosSitios($scope.DatosServicio.ID_TIPO_SERVICIO);
+
 			// Datos para select para filtrar ciclos
 			$scope.CICLO1.push({VAL:0,NOMBRE:"Todos"});
 			for(var i=0;i<$scope.DatosServicio.CICLO;i++){
@@ -251,6 +253,7 @@ function clear_modal_agregar_informacion(){
 				
 			}
 			$scope.DatosServicio.NombreCiclo	= 0;
+			$scope.funcionDictaminadores($scope.DatosServicio.ID_TIPO_SERVICIO);
 		});
 	
 	}	
@@ -2252,7 +2255,12 @@ $scope.get_domicilio_cliente	= function(id_cliente){
                     CURP: formData.curpParticipante,
                     RFC:formData.rfcParticipante,
                     ESTADO:formData.estadoParticipante,
-                    EJECUTIVO:formData.comercialParticipante
+                    EJECUTIVO:formData.comercialParticipante,
+                    ID_USUARIO:	sessionStorage.getItem("id_usuario"),
+					ID_CURSO:$scope.DatosServicio.ID_CURSO,
+                    CANTIDAD_PARTICIPANTES:$scope.DatosServicio.CANTIDAD_PARTICIPANTES
+
+
                 };
                 $.post(global_apiserver + "/sce_cifa_participantes/insert/", JSON.stringify(participante), function (respuesta) {
                     respuesta = JSON.parse(respuesta);
@@ -2282,7 +2290,9 @@ $scope.get_domicilio_cliente	= function(id_cliente){
             CURP: formData.curpParticipante,
             RFC:formData.rfcParticipante,
             ESTADO:formData.estadoParticipante,
-            EJECUTIVO:formData.comercialParticipante
+            EJECUTIVO:formData.comercialParticipante,
+            ID_USUARIO:	sessionStorage.getItem("id_usuario"),
+            ID_SERVICIO_CLIENTE_ETAPA: $scope.DatosServicio.ID
         };
         $.post(global_apiserver + "/sce_cifa_participantes/update/", JSON.stringify(participante), function (respuesta) {
             respuesta = JSON.parse(respuesta);
@@ -2392,7 +2402,7 @@ $scope.get_domicilio_cliente	= function(id_cliente){
     $scope.submitFormConfiguracion = function (formDataConfiguracion) {
         validar_formulario_configuracion();
         if($scope.respuesta == 1){
-                editarConfiguracion(formDataConfiguracion);
+                validaEditarConfiguracion(formDataConfiguracion);
         }
     }
 // =======================================================================================================
@@ -2451,7 +2461,38 @@ $scope.get_domicilio_cliente	= function(id_cliente){
     }
 
 // ===========================================================================
-// ***** 			FUNCION PARA EDITAR CONFIGURACION				 *****
+// ***** 			FUNCION PARA VALIDAR EDITAR CONFIGURACION				 *****
+// ===========================================================================
+    function validaEditarConfiguracion(formData) {
+
+        var validar = {
+            ID:		          	        $scope.id_instructor,
+            FECHAS:			            formData.fecha_inicio_participante+","+formData.fecha_fin_participante,
+            ID_CURSO_INSITUS:           $scope.DatosServicio.ID
+        };
+
+        $.post( global_apiserver + "/personal_tecnico/isDisponible/", JSON.stringify(validar), function(respuesta){
+            respuesta = JSON.parse(respuesta);
+            if (respuesta.disponible == "si") {
+                editarConfiguracion(formData);
+            }
+            else
+            {
+                if (respuesta.disponible == "no") {
+                    notify("Error", respuesta.razon, "error");
+                    return false;
+
+                }
+
+            }
+        })
+
+
+
+
+    }
+// ===========================================================================
+// ***** 			FUNCION PARA VALIDAR EDITAR CONFIGURACION				 *****
 // ===========================================================================
     function editarConfiguracion(formData) {
         var configuracion = {
@@ -2460,7 +2501,8 @@ $scope.get_domicilio_cliente	= function(id_cliente){
             ID_SITIO: formData.selectSitio,
             FECHA_INICIO: formData.fecha_inicio_participante,
             FECHA_FIN: formData.fecha_fin_participante,
-            ID_INSTRUCTOR: $scope.id_instructor
+            ID_INSTRUCTOR: $scope.id_instructor,
+            ID_USUARIO:	sessionStorage.getItem("id_usuario"),
         };
         $.post(global_apiserver + "/sce_cifa_participantes/updateConfiguracion/", JSON.stringify(configuracion), function (respuesta) {
             respuesta = JSON.parse(respuesta);
@@ -2475,10 +2517,7 @@ $scope.get_domicilio_cliente	= function(id_cliente){
             }
 
         });
-
-
-    }
-
+	}
 
 // ===========================================================================
 // ***** 	    FUNCION PARA CARGAR LOS DATEPICKER DEL MODAL			 *****
@@ -2619,6 +2658,98 @@ $scope.showFormConfiguracion = function () {
 }
 // ===========================================================================
 // ***** 	            TERMINA  SERVICIO CONTRATADO CIFA	           	 *****
+// ===========================================================================
+// ===========================================================================
+// ===========================================================================
+// ***** 	          		 INICIA DICTAMINACION			           	 *****
+// ===========================================================================
+// ===========================================================================
+//	FUNCION PARA EL MODAL
+  $scope.modal_dictaminacion = function(id_sce,id_ta,ciclo){
+		
+		$scope.formDataDictaminacion = {};
+		$scope.formDataDictaminacion.inputDictIdSCE = id_sce;
+		$scope.formDataDictaminacion.inputDictIdTA = id_ta;
+		$scope.formDataDictaminacion.inputDictCiclo = ciclo;
+		$("#inputIdSCE").val(id_sce);
+		$("#inputIdTA").val(id_ta);
+		$("#inputCiclo").val(ciclo);
+		$scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa);
+//		Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+//		Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+//		Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
+//		Contactos_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
+		
+//		$scope.formDataGenCotizacion.tramites=$scope.arr_tramites_cotizacion;
+//		$scope.formDataGenCotizacion.descripcion=[];
+//		$scope.tarifa_adicional_tramite_cotizacion_by_tramite=[];
+		
+		
+//		for(var key in $scope.formDataGenCotizacion.tramites){
+			
+			/*===========================================================================*/
+//			 tramite_tarifa_adicional_by_tramite($scope.formDataGenCotizacion.tramites[key].ID,key);
+			/*===========================================================================*/
+			
+//		}
+		
+//		$scope.formDataGenCotizacion.descripcion=$scope.tarifa_adicional_tramite_cotizacion_by_tramite;
+		
+  
+    $('#modalDictaminacion').modal('show');
+  }
+  
+	
+/*		
+		FUNCION PARA CARGAR LOS DICTAMINADORES
+*/
+$scope.funcionDictaminadores = function(id_ts){
+	$.ajax({
+		type:'GET',
+		url:global_apiserver+"/dictaminador_tiposervicio/getTipoServicio/?id_ts="+id_ts,
+		success:function(data){
+			$scope.$apply(function(){
+				$scope.Dictaminadores=angular.fromJson(data);
+			})
+
+		}
+	});
+}
+/*
+		Esta función nos sirve para insertar los datos en la tabla dictaminaciones.
+	*/
+	$scope.submitFormDictaminacion = function(formDataDictaminacion) {		
+	
+			
+				var dictaminaciones = {
+					ID_SCE:	$scope.formDataDictaminacion.inputDictIdSCE,
+					ID_TA:	$scope.formDataDictaminacion.inputDictIdTA,
+					CICLO:	$scope.formDataDictaminacion.inputDictCiclo, 
+					ID_DICTAMINADOR:	$scope.formDataDictaminacion.Dictaminador,
+					ID_USUARIO_CREACION : sessionStorage.getItem("id_usuario"),
+					ID_USUARIO_MODIFICACION : 0
+				};
+	
+				$.post(global_apiserver + "/dictaminaciones/insert/", JSON.stringify(dictaminaciones), function(respuesta){
+					respuesta = JSON.parse(respuesta);
+					if (respuesta.resultado == "ok") {
+						
+						notify("Éxito", "Se han enviado la auditoria a dictaminar","success");
+						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					}
+					 else {
+							notify('Error',respuesta.mensaje,'error');
+					}
+					$('#modalDictaminacion').modal("hide");
+				});
+			
+	
+		
+		
+	};
+// ===========================================================================
+// ***** 	          		 TERMINA DICTAMINACION			           	 *****
 // ===========================================================================
 // ===========================================================================
 

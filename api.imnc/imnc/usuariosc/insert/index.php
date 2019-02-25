@@ -33,6 +33,8 @@ $NOMBRE = $objeto->NOMBRE;
 $USUARIO = $objeto->USUARIO; 
 $EMAIL = $objeto->EMAIL; 
 $PASSWORD = $objeto->PASSWORD; 
+//Codificar el pwd
+$PASSWORD = sha1($PASSWORD);
 $ID_PERFIL = "ADM1"; 
 
 

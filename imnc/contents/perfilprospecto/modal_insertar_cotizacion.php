@@ -58,9 +58,10 @@
                     </div>
 		          </div>
 
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-if="producto_actual.id_servicio != 3">
 					      <label class="control-label col-md-12">Normas</label>
-                    <div class="col-md-12" ng-repeat="norma in cotizacion_insertar_editar.NORMAS">
+                    <div class="col-md-12" 
+                    ng-repeat="norma in cotizacion_insertar_editar.NORMAS">
                         <span>{{norma.ID_NORMA}}</span>
                     </div>
 				      </div>
@@ -75,7 +76,7 @@
                 </div>
               </div>
               -->
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-if="producto_actual.id_servicio == 1">
                 <label class="control-label col-md-12">Complejidad <span class="required">*</span></label>
                 <div class="col-md-12">
                   <select id="complejidad" ng-model="cotizacion_insertar_editar.COMPLEJIDAD" class="form-control">
@@ -88,7 +89,7 @@
                 </div>
               </div>
 
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-if="producto_actual.id_servicio != 3">
                 <label class="control-label col-md-4 col-sm-4 col-xs-12">Tarifa por Día Auditor<span class="required">*</span></label>
                 <div class="col-md-12">
                   <select ng-model="cotizacion_insertar_editar.TARIFA" required="required" class="form-control" 
@@ -98,12 +99,34 @@
                 </div>
               </div>
 
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-if="producto_actual.id_servicio != 3">
                 <label class="control-label col-md-12">Descuento (%)</label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="cotizacion_insertar_editar.DESCUENTO" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
+
+              <!-- Esta opción es solo para Certificacion de Igualdad Laboral -->
+              <div class="form-group form-vertical" ng-show="producto_actual.id_tipo_servicio == 16">
+                <label class="control-label col-md-12">Actividad Econ&oacutemica </label>
+                <div class="col-md-12">
+                  <select id="complejidad" ng-model="cotizacion_insertar_editar.ACTIVIDAD_ECONOMICA" class="form-control">
+                    <option value="" selected disabled>-- selecciona  la actividad económica --</option>
+                    <option value="Industria">Industria</option>
+                    <option value="Comercio" selected>Comercio</option>
+                    <option value="Servicios" selected>Servicios</option>
+                   </select>
+                </div>
+              </div>
+
+              <!-- Solo mostrar para CIFA-->
+              <div class="form-group form-vertical" ng-show="producto_actual.id_servicio == 3">	
+                <label class="control-label col-md-12">Modalidad del curso: <strong>{{producto_actual.modalidad}}</strong></label>
+                <label class="control-label col-md-12"><strong>{{producto_actual.nombre_curso}}</strong></label>
+                <label ng-if="producto_actual.solo_cliente == 1" class="control-label col-md-12">Participantes: <strong>El curso es para el cliente</strong></label>
+                <label ng-if="producto_actual.solo_cliente == 0" class="control-label col-md-12">Participantes: <strong>El cliente cargará {{producto_actual.cantidad}} participantes</strong></label>
+              </div>
+              
             </form>
         </div>
         <div class="modal-footer">

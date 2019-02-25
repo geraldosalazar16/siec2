@@ -50,12 +50,15 @@ valida_parametro_and_die($REFERENCIA, "Es necesario capturar la referencia");
 
 $ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
-
+$CANTIDAD = "";
 $NORMAS= "";
 $CAMBIO= "";
 if($ID_SERVICIO==3)
 {
-    $NORMAS= $objeto->NORMAS;
+    $NORMAS = $objeto->NORMAS;
+    valida_parametro_and_die($NORMAS, "Es neceario seleccionar un curso");
+    $CANTIDAD = $objeto->CANTIDAD;
+    valida_parametro_and_die($CANTIDAD, "Es neceario seleccionar la cantidad de participantes");
 }else{
     $NORMAS= $objeto->NORMAS;
     if(count($NORMAS) == 0){
@@ -76,10 +79,18 @@ $FECHA_MODIFICACION = date("Ymd");
 $HORA_MODIFICACION = date("His");
 /****************************************************/
 $ID_ETAPA_ANTERIOR	=	$database->get("SERVICIO_CLIENTE_ETAPA","ID_ETAPA_PROCESO",["ID"=>$ID]);
+$consulta = "SELECT SCE.ID,SCE.REFERENCIA,SCE.ID_SERVICIO,
+            (SELECT C.NOMBRE FROM CLIENTES C WHERE C.ID=SCE.ID_CLIENTE) AS CLIENTE,
+            (SELECT S.NOMBRE  FROM SERVICIOS S WHERE S.ID=SCE.ID_SERVICIO) AS SERVICIO,
+            (SELECT TS.NOMBRE FROM TIPOS_SERVICIO TS WHERE TS.ID=SCE.ID_TIPO_SERVICIO) AS TIPO_SERVICIO,
+            (SELECT CU.NOMBRE FROM SCE_CURSOS SCEC INNER JOIN CURSOS CU ON SCEC.ID_CURSO=CU.ID_CURSO WHERE SCEC.ID_SCE=SCE.ID) AS CURSO,
+            (SELECT GROUP_CONCAT(N.ID SEPARATOR ', ')   FROM SCE_NORMAS SCEN INNER JOIN NORMAS N ON SCEN.ID_NORMA=N.ID WHERE SCEN.ID_SCE=SCE.ID GROUP BY SCEN.ID_SCE) AS NORMA,
+            (SELECT EP.ETAPA FROM ETAPAS_PROCESO EP WHERE EP.ID_ETAPA=SCE.ID_ETAPA_PROCESO) AS ETAPA FROM SERVICIO_CLIENTE_ETAPA SCE WHERE SCE.ID =".$ID;
+$sce_anterior = $database->query($consulta)->fetchAll(PDO::FETCH_ASSOC);
 /****************************************************/
 
 
-    $id = $database->update("SERVICIO_CLIENTE_ETAPA", [
+    $id_sce = $database->update("SERVICIO_CLIENTE_ETAPA", [
         "ID_CLIENTE" => $ID_CLIENTE,
         "ID_SERVICIO" => $ID_SERVICIO,
         "ID_TIPO_SERVICIO"=>	$ID_TIPO_SERVICIO,
@@ -90,32 +101,47 @@ $ID_ETAPA_ANTERIOR	=	$database->get("SERVICIO_CLIENTE_ETAPA","ID_ETAPA_PROCESO",
         "HORA_MODIFICACION" => $HORA_MODIFICACION,
         "ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION,
         "CAMBIO"=>$CAMBIO,
+        "CANTIDAD_PARTICIPANTES"=>$CANTIDAD
         //"ID_REFERENCIA_SEG"=>$ID_REFERENCIA_SEG,
         //"OBSERVACION_CAMBIO"=>$OBSERVACION_CAMBIO
     ],
         ["ID"=>$ID]
     );
 
-valida_error_medoo_and_die(); 
-//ACTUALIZAR LAS NORMAS
-	//borro todas las normas asociadas al servicio
-/*	$id = $database->delete("SCE_NORMAS", 
-	[
-		"AND" => [
-			"ID_SCE" => $ID
-		]		
-	]);
-	valida_error_medoo_and_die();*/
-if($ID_SERVICIO==3)
+valida_error_medoo_and_die();
+if($ID_SERVICIO==3)  //para cifa
 {
-    $id = $database->update("SCE_CURSOS", ["ID_CURSO"=>$NORMAS], ["ID_SCE"=>$ID]);
-}
-else{
-//Elimino las normas cargadas
-$database->delete("SCE_NORMAS",[
-    "ID_SCE" => $ID
-]);
-//Inserto las normas capturadas
+    if($id_sce != 0)
+    {
+        $id1 = $database->update("SCE_CURSOS", ["ID_CURSO"=>$NORMAS,"CANTIDAD_PARTICIPANTES"=>$CANTIDAD], ["ID_SCE"=>$ID]);
+
+        $consulta = "SELECT SCE.ID,SCE.REFERENCIA,SCE.ID_SERVICIO,
+                  (SELECT C.NOMBRE FROM CLIENTES C WHERE C.ID=SCE.ID_CLIENTE) AS CLIENTE,
+                  (SELECT S.NOMBRE  FROM SERVICIOS S WHERE S.ID=SCE.ID_SERVICIO) AS SERVICIO,
+                  (SELECT TS.NOMBRE FROM TIPOS_SERVICIO TS WHERE TS.ID=SCE.ID_TIPO_SERVICIO) AS TIPO_SERVICIO,
+                  (SELECT CU.NOMBRE FROM SCE_CURSOS SCEC INNER JOIN CURSOS CU ON SCEC.ID_CURSO=CU.ID_CURSO WHERE SCEC.ID_SCE=SCE.ID) AS CURSO,
+                  (SELECT GROUP_CONCAT(N.ID SEPARATOR ', ')   FROM SCE_NORMAS SCEN INNER JOIN NORMAS N ON SCEN.ID_NORMA=N.ID WHERE SCEN.ID_SCE=SCE.ID GROUP BY SCEN.ID_SCE) AS NORMA,
+                  (SELECT EP.ETAPA FROM ETAPAS_PROCESO EP WHERE EP.ID_ETAPA=SCE.ID_ETAPA_PROCESO) AS ETAPA 
+                  FROM SERVICIO_CLIENTE_ETAPA SCE WHERE SCE.ID =".$ID;
+        $sce_actual = $database->query($consulta)->fetchAll(PDO::FETCH_ASSOC);
+        $estado_actual = "ID: ".$sce_actual[0]["ID"].", Referencia: ".$sce_actual[0]["REFERENCIA"].", Cliente: ".$sce_actual[0]["CLIENTE"].", Servicio: ".$sce_actual[0]["SERVICIO"].", ".($sce_actual[0]["ID_SERVICIO"] == 3 ? "Módulo: ":"Tipo de Servicio: ").$sce_actual[0]["TIPO_SERVICIO"].", ".($sce_actual[0]["ID_SERVICIO"] == 3 ? ("Curso: ".$sce_actual[0]["CURSO"]):("Normas: ".$sce_actual[0]["NORMA"])).", Etapa: ".$sce_actual[0]["ETAPA"];
+        $estado_anterior = "ID: ".$sce_anterior[0]["ID"].", Referencia: ".$sce_anterior[0]["REFERENCIA"].", Cliente: ".$sce_anterior[0]["CLIENTE"].", Servicio: ".$sce_anterior[0]["SERVICIO"].", ".($sce_anterior[0]["ID_SERVICIO"] == 3 ? "Módulo: ":"Tipo de Servicio: ").$sce_anterior[0]["TIPO_SERVICIO"].", ".($sce_anterior[0]["ID_SERVICIO"] == 3 ? ("Curso: ".$sce_anterior[0]["CURSO"]):("Normas: ".$sce_anterior[0]["NORMA"])).", Etapa: ".$sce_anterior[0]["ETAPA"];
+        $id2=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [
+            "ID_SERVICIO_CONTRATADO" => $ID,
+            "MODIFICACION" => "MODIFICANDO CIFA",
+            "ESTADO_ANTERIOR"=>	$estado_anterior,
+            "ESTADO_ACTUAL"=>	$estado_actual,
+            "USUARIO" => $ID_USUARIO_MODIFICACION,
+            "FECHA_USUARIO" => $FECHA_MODIFICACION,
+            "FECHA_MODIFICACION" => date("Ymd")]);
+    }
+} else {
+    //Elimino las normas cargadas
+    $database->delete("SCE_NORMAS",[
+        "ID_SCE" => $ID
+    ]);
+
+    //Inserto las normas capturadas
     for ($i=0; $i < count($NORMAS); $i++) {
         $id_norma = $NORMAS[$i]->ID_NORMA;
         //Validar si ya está insertada la norma
@@ -206,23 +232,25 @@ $database->delete("SCE_NORMAS",[
 
         }
     }
+    /*******************************************************/
+    if($ID_ETAPA_ANTERIOR!=$ID_ETAPA_PROCESO){
+        $idet=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [
+            "ID_SERVICIO_CONTRATADO" => $ID,
+            "MODIFICACION" => "MODIFICACION DE ETAPA",
+            "ESTADO_ANTERIOR"=>	$ID_ETAPA_ANTERIOR,
+            "ESTADO_ACTUAL"=>	$ID_ETAPA_PROCESO,
+            "USUARIO" => $ID_USUARIO_MODIFICACION,
+            "FECHA_USUARIO" => $FECHA_MODIFICACION,
+            "FECHA_MODIFICACION" => date("Ymd"),
+
+        ]);
+
+    }
 
 }
-/*******************************************************/
-if($ID_ETAPA_ANTERIOR!=$ID_ETAPA_PROCESO){
-	$idet=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [ 
-			"ID_SERVICIO_CONTRATADO" => $ID, 
-			"MODIFICACION" => "MODIFICACION DE ETAPA", 
-			"ESTADO_ANTERIOR"=>	$ID_ETAPA_ANTERIOR,
-			"ESTADO_ACTUAL"=>	$ID_ETAPA_PROCESO,
-			"USUARIO" => $ID_USUARIO_MODIFICACION, 
-			"FECHA_USUARIO" => $FECHA_MODIFICACION,
-			"FECHA_MODIFICACION" => date("Ymd"),
-	
-]); 
 
-}
 
+$respuesta["resultado"]="ok";
 
 print_r(json_encode($respuesta)); 
 ?> 

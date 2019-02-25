@@ -2,6 +2,9 @@
 include  '../../common/conn-apiserver.php';  
 include  '../../common/conn-medoo.php';  
 include  '../../common/conn-sendgrid.php';  
+include  '../../common/jwt.php'; 
+
+use \Firebase\JWT\JWT;
 
 function valida_parametro_and_die($parametro, $mensaje_error){ 
 	$parametro = "" . $parametro; 
@@ -45,7 +48,8 @@ $ID_TIPO_SERVICIO	= $objeto->ID_TIPO_SERVICIO;
 valida_parametro_and_die($ID_TIPO_SERVICIO, "Es necesario seleccionar un tipo de servicio");
 
 $NORMAS= $objeto->NORMAS;
-if(count($NORMAS) == 0){
+//ESTA VALIDACION NO ES NECESARIA EN CIFA
+if(count($NORMAS) == 0 && $ID_SERVICIO != 3){
 	$respuesta['resultado']="error";
 	$respuesta['mensaje']="Es necesario seleccionar una norma";
 	print_r(json_encode($respuesta));
@@ -57,9 +61,6 @@ valida_parametro_and_die($ID_ETAPA_PROCESO, "Es neceario seleccionar un trámite
 
 //$SG_INTEGRAL = $objeto->SG_INTEGRAL; // opcional
 
-$REFERENCIA = $objeto->REFERENCIA;
-valida_parametro_and_die($REFERENCIA, "Es necesario capturar la referencia");
-
 $ID_USUARIO_CREACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_CREACION,"Falta ID de USUARIO");
 
@@ -67,6 +68,30 @@ $CAMBIO= $objeto->CAMBIO;
 
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
+
+//parametros solo para cifa
+$MODALIDAD = $objeto->MODALIDAD; 
+$ID_CURSO = $objeto->ID_CURSO; 
+$ID_CURSO_PROGRAMADO = $objeto->ID_CURSO_PROGRAMADO; 
+$tipo = ""; //Esto se usa para generar la referencia
+if($ID_SERVICIO == 3){
+	valida_parametro_and_die($MODALIDAD,"Falta MODALIDAD");
+	if($MODALIDAD == "programado"){
+		valida_parametro_and_die($ID_CURSO_PROGRAMADO,"Falta ID_CURSO_PROGRAMADO");
+		$tipo = "P";
+	} else {
+		valida_parametro_and_die($ID_CURSO,"Falta ID_CURSO");
+		$tipo = "D";
+	}	
+}
+
+$REFERENCIA = $objeto->REFERENCIA;
+if($ID_SERVICIO != 3){
+	valida_parametro_and_die($REFERENCIA, "Es necesario capturar la referencia");
+} else {
+	//Generar la referencia para CIFA
+	$REFERENCIA = file_get_contents($global_apiserver . '/cursos/getReferencia/?id=' .$ID_SERVICIO . '&tipo=' . $tipo);
+}
 
 //Insertar en SERVICIO_CLIENTE_ETAPA
 $ID_FINAL = 0;
@@ -96,18 +121,21 @@ $id_servicio_cliente_etapa = $database->insert("SERVICIO_CLIENTE_ETAPA", [
 	"CAMBIO"=>$CAMBIO,
 ]); 
 valida_error_medoo_and_die(); 
-//Agregar las normas
-for ($i=0; $i < count($NORMAS); $i++) { 
-	$id_norma = $NORMAS[$i]->ID_NORMA;
-	$id_sce_normas = $database->insert("SCE_NORMAS", [ 
-		"ID_SCE" => $id_servicio_cliente_etapa,
-		"ID_NORMA" => $id_norma
-	]); 
-	valida_error_medoo_and_die();
+//Agregar las normas, para todos menos para CIFA
+if($ID_SERVICIO != 3){
+	for ($i=0; $i < count($NORMAS); $i++) { 
+		$id_norma = $NORMAS[$i]->ID_NORMA;
+		$id_sce_normas = $database->insert("SCE_NORMAS", [ 
+			"ID_SCE" => $id_servicio_cliente_etapa,
+			"ID_NORMA" => $id_norma
+		]); 
+		valida_error_medoo_and_die();
+	}
 }
 
-//Insertar en SERVICIO_CLIENTE_ETAPA_HISTÓRICO
+//SI LA OPERACIÓN FUE EXITOSA
 if($id_servicio_cliente_etapa	!=	0){
+	//Insertar en SERVICIO_CLIENTE_ETAPA_HISTÓRICO
 	$id1=$database->insert("SERVICIO_CLIENTE_ETAPA_HISTORICO", [ 
 			"ID_SERVICIO_CONTRATADO" => $id_servicio_cliente_etapa, 
 			"MODIFICACION" => "NUEVO SERVICIO", 
@@ -117,7 +145,7 @@ if($id_servicio_cliente_etapa	!=	0){
 			"FECHA_USUARIO" => $FECHA_CREACION,
 			"FECHA_MODIFICACION" => date("Ymd"),
 	
-	]); 
+	]);
 	valida_error_medoo_and_die(); 
 	//Para Servicios de Certificacion de Sistemas de Gestion
 	if($ID_SERVICIO == 1){
@@ -384,7 +412,323 @@ if($id_servicio_cliente_etapa	!=	0){
 			}
 		}
 	}
+	//Para Servicios de Evaluación de la Conformidad
 	if($ID_SERVICIO == 2){
+		if($ID_TIPO_SERVICIO == 13){
+			//Sitios
+			$tramites = $database->select("COTIZACIONES_TRAMITES_PIND",
+				"*",["ID_COTIZACION" => $ID_COTIZACION]);
+			$ids_tramites = [];
+			$cont = count($tramites);
+			for($i=0;$i<$cont;$i++){
+				$ids_tramites[$i] = $tramites[$i]['ID'];
+			}
+			$domicilios = $database->select("COTIZACION_SITIOS_PIND","*",["ID_COTIZACION" => $ids_tramites]);
+			$ids_sitios = [];
+			$cont1 = count($domicilios);
+			for($i=0;$i<$cont1;$i++){
+				$ids_sitios[$i] = $domicilios[$i]['ID'];
+			}
+			//$productos = $database->select("PROD_IND_SITIO", ["[>]PRODUCTOS_INDUSTRIALES" => ["ID_PI" => "ID"]], ["PRODUCTOS_INDUSTRIALES.NOMBRE","PRODUCTOS_INDUSTRIALES.VALOR"], ["AND"=>["ID_SITIO_PIND"=>$ids_sitios,"ID_TRAMITE"=>$ids_tramites]]);
+			/*$productos1="";
+			for($j=0;$j<count($productos);$j++){
+				$productos1 .= $productos[$j]["NOMBRE"].",";
+			
+			} */
+			if(count($domicilios) > 0){
+				for($i=0;$i<count($domicilios);$i++){
+					$ID_SERVICIO_CLIENTE_ETAPA = $id_servicio_cliente_etapa; 
+					$ID_CLIENTE_DOMICILIO = $domicilios[$i]['ID_DOMICILIO_SITIO'];  
+					$MATRIZ_PRINCIPAL = $domicilios[$i]['MATRIZ_PRINCIPAL']; 
+					$productos = $database->select("PROD_IND_SITIO", ["[>]PRODUCTOS_INDUSTRIALES" => ["ID_PI" => "ID"]], ["PRODUCTOS_INDUSTRIALES.NOMBRE","PRODUCTOS_INDUSTRIALES.VALOR"], ["AND"=>["ID_SITIO_PIND"=>$domicilios[$i]['ID'],"ID_TRAMITE"=>$ids_tramites]]);
+					$productos1="";
+					for($j=0;$j<count($productos);$j++){
+						$productos1 .= $productos[$j]["NOMBRE"].",";
+			
+					} 
+					$id1 = $database->insert("I_EC_SITIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_CLIENTE_DOMICILIO"	=> 	$ID_CLIENTE_DOMICILIO,
+						"ID_META_SITIOS"	=>	15,
+						"VALOR" => $productos1 
+				
+					]);
+					valida_error_medoo_and_die();}
+			} else {
+				$respuesta["resultado"] = "error\n"; 
+				$respuesta["mensaje"] = "Es necesario agregar sitios a la cotización"; 
+				print_r(json_encode($respuesta));
+				die();
+			}
+		
+			//Información adicional
+			// no tenemos datos de informacion adicional.
+				
+			//Sectores
+			//Este tipo de servicio pertenece al Evaluacion de la conformidad y hasta ahora no se le capturan sectores.
+			//
+			
+			//Auditorías
+			//Para cargar una auditoría necesito
+			/*
+			TIPO_AUDITORIA: 
+			CICLO: Si es un prospecto es ciclo 1 
+			DURACION_DIAS: Se obtiene de cotizaciones/getById?id=x
+			STATUS_AUDITORIA: Pendiente
+			NO_USA_METODO: No
+			SITIOS_AUDITAR: Se obtienen de cotizacion_sitios
+			ID_SERVICIO_CLIENTE_ETAPA
+			*/
+			$ruta = $global_apiserver.'/cotizaciones/getById?id='.$ID_COTIZACION;
+			$cotizacion = file_get_contents($ruta);
+			$cotizacion = json_decode($cotizacion);
+			//Recorro todos los trámites e inserto sus auditorías correspondientes
+			foreach ($cotizacion[0]->COTIZACION_TRAMITES as $tramite) {
+				//para cada trámite hay que agregar una auditoría en 
+				//$dias_auditoria = $tramite->DIAS_AUDITORIA;
+				$tipo_auditoria = $tramite->ID_TIPO_AUDITORIA;
+				
+				
+				//Buscar los sitios
+				$sitios = $database->select("COTIZACION_SITIOS_PIND", "*", ["ID_COTIZACION"=>$tramite->ID]);
+				valida_error_medoo_and_die();
+				$dias_auditoria = 1;
+				
+				//Insertar en I_EC_AUDITORIAS
+				$id_ec_auditoria = $database->insert("I_EC_AUDITORIAS", [ 
+					"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+					"TIPO_AUDITORIA" => $tipo_auditoria,  
+					"CICLO" => 1,
+					"DURACION_DIAS" => $dias_auditoria,
+					"STATUS_AUDITORIA" => "1",
+					"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+				]); 
+				valida_error_medoo_and_die();
+
+				//Insertar los sitios en I_SG_AUDITORIA_SITIOS
+				foreach ($sitios as $key => $sitio) {
+					$id_cliente_domicilio = $sitio["ID_DOMICILIO_SITIO"];
+					$id_sg_auditoria_sitios = $database->insert("I_SG_AUDITORIA_SITIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"TIPO_AUDITORIA" => $tipo_auditoria,  
+						"CICLO" => 1,
+						"ID_CLIENTE_DOMICILIO" => $id_cliente_domicilio,
+						"FECHA_CREACION" => $FECHA_CREACION,
+						"HORA_CREACION" => $HORA_CREACION,
+						"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+					]); 
+					valida_error_medoo_and_die();
+				}
+			}
+	
+		}
+		if($ID_TIPO_SERVICIO == 14){
+			//Sitios
+			$tramites = $database->select("COTIZACIONES_TRAMITES_DH",
+				"*",["ID_COTIZACION" => $ID_COTIZACION]);
+			$ids_tramites = [];
+			$cont = count($tramites);
+			for($i=0;$i<$cont;$i++){
+				$ids_tramites[$i] = $tramites[$i]['ID'];
+			}
+			$domicilios = $database->select("COTIZACION_SITIOS_DH","*",["ID_COTIZACION" => $ids_tramites]);
+			
+			if(count($domicilios) > 0){
+				for($i=0;$i<count($domicilios);$i++){
+					$ID_SERVICIO_CLIENTE_ETAPA = $id_servicio_cliente_etapa; 
+					$ID_CLIENTE_DOMICILIO = $domicilios[$i]['ID_DOMICILIO_SITIO'];  
+					$MATRIZ_PRINCIPAL = $domicilios[$i]['MATRIZ_PRINCIPAL']; 
+					if(strtolower($MATRIZ_PRINCIPAL)=='si'){
+						$VALOR = 1;
+					}else{
+						$VALOR = 2;
+					}
+					$id1 = $database->insert("I_EC_SITIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_CLIENTE_DOMICILIO"	=> 	$ID_CLIENTE_DOMICILIO,
+						"ID_META_SITIOS"	=>	2,
+						"VALOR" => $VALOR 
+				
+					]);
+					valida_error_medoo_and_die();}
+			} else {
+				$respuesta["resultado"] = "error\n"; 
+				$respuesta["mensaje"] = "Es necesario agregar sitios a la cotización"; 
+				print_r(json_encode($respuesta));
+				die();
+			}
+		
+			//Información adicional
+			// Se toman 3 datos de informacion adicional.
+			$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+					"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+					"ID_META_SCE" => 6,  
+					"VALOR" => $domicilios[0]['NUM_COCINAS']
+				]); 
+				valida_error_medoo_and_die();
+			$id_ts1 = $database->insert("I_TIPOS_SERVICIOS", [ 
+					"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+					"ID_META_SCE" => 9,  
+					"VALOR" => $domicilios[0]['CENTRO_CONSUMO']
+				]); 
+				valida_error_medoo_and_die();
+			$id_ts2 = $database->insert("I_TIPOS_SERVICIOS", [ 
+					"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+					"ID_META_SCE" => 8,  
+					"VALOR" => $domicilios[0]['UNI_REF_CONG']
+				]); 
+				valida_error_medoo_and_die();	
+			//Sectores
+			//Este tipo de servicio pertenece al Evaluacion de la conformidad y hasta ahora no se le capturan sectores.
+			//
+			
+			//Auditorías
+			//Para cargar una auditoría necesito
+			/*
+			TIPO_AUDITORIA: 
+			CICLO: Si es un prospecto es ciclo 1 
+			DURACION_DIAS: Se obtiene de cotizaciones/getById?id=x
+			STATUS_AUDITORIA: Pendiente
+			NO_USA_METODO: No
+			SITIOS_AUDITAR: Se obtienen de cotizacion_sitios
+			ID_SERVICIO_CLIENTE_ETAPA
+			*/
+			$ruta = $global_apiserver.'/cotizaciones/getById?id='.$ID_COTIZACION;
+			$cotizacion = file_get_contents($ruta);
+			$cotizacion = json_decode($cotizacion);
+			//Recorro todos los trámites e inserto sus auditorías correspondientes
+			foreach ($cotizacion[0]->COTIZACION_TRAMITES as $tramite) {
+				//para cada trámite hay que agregar una auditoría en 
+				//$dias_auditoria = $tramite->DIAS_AUDITORIA;
+				$tipo_auditoria = $tramite->ID_TIPO_AUDITORIA;
+				
+				
+				//Buscar los sitios
+				$sitios = $database->select("COTIZACION_SITIOS_DH", "*", ["ID_COTIZACION"=>$tramite->ID]);
+				valida_error_medoo_and_die();
+				$dias_auditoria = $sitios[0]['CANTIDAD_DIAS'];
+				
+				//Insertar en I_EC_AUDITORIAS
+				$id_ec_auditoria = $database->insert("I_EC_AUDITORIAS", [ 
+					"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+					"TIPO_AUDITORIA" => $tipo_auditoria,  
+					"CICLO" => 1,
+					"DURACION_DIAS" => $dias_auditoria,
+					"STATUS_AUDITORIA" => "1",
+					"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+				]); 
+				valida_error_medoo_and_die();
+
+				//Insertar los sitios en I_SG_AUDITORIA_SITIOS
+				foreach ($sitios as $key => $sitio) {
+					$id_cliente_domicilio = $sitio["ID_DOMICILIO_SITIO"];
+					$id_sg_auditoria_sitios = $database->insert("I_SG_AUDITORIA_SITIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"TIPO_AUDITORIA" => $tipo_auditoria,  
+						"CICLO" => 1,
+						"ID_CLIENTE_DOMICILIO" => $id_cliente_domicilio,
+						"FECHA_CREACION" => $FECHA_CREACION,
+						"HORA_CREACION" => $HORA_CREACION,
+						"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+					]); 
+					valida_error_medoo_and_die();
+				}
+			}
+	
+		}
+		if($ID_TIPO_SERVICIO == 15){
+			//Sitios
+			$tramites = $database->select("COTIZACIONES_TRAMITES_HM",
+				"*",["ID_COTIZACION" => $ID_COTIZACION]);
+			$ids_tramites = [];
+			$cont = count($tramites);
+			for($i=0;$i<$cont;$i++){
+				$ids_tramites[$i] = $tramites[$i]['ID'];
+			}
+			$domicilios = $database->select("COTIZACION_SITIOS_HM","*",["ID_COTIZACION" => $ids_tramites]);
+			
+			if(count($domicilios) > 0){
+				for($i=0;$i<count($domicilios);$i++){
+					$ID_SERVICIO_CLIENTE_ETAPA = $id_servicio_cliente_etapa; 
+					$ID_CLIENTE_DOMICILIO = $domicilios[$i]['ID_DOMICILIO_SITIO'];  
+					
+					
+					$id1 = $database->insert("I_EC_SITIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_CLIENTE_DOMICILIO"	=> 	$ID_CLIENTE_DOMICILIO,
+						"ID_META_SITIOS"	=>	12,
+						"VALOR" => " " 
+				
+					]);
+					valida_error_medoo_and_die();}
+			} else {
+				$respuesta["resultado"] = "error\n"; 
+				$respuesta["mensaje"] = "Es necesario agregar sitios a la cotización"; 
+				print_r(json_encode($respuesta));
+				die();
+			}
+		
+			//Información adicional
+			// Se toman 3 datos de informacion adicional.
+			
+			//Sectores
+			//Este tipo de servicio pertenece al Evaluacion de la conformidad y hasta ahora no se le capturan sectores.
+			//
+			
+			//Auditorías
+			//Para cargar una auditoría necesito
+			/*
+			TIPO_AUDITORIA: 
+			CICLO: Si es un prospecto es ciclo 1 
+			DURACION_DIAS: Se obtiene de cotizaciones/getById?id=x
+			STATUS_AUDITORIA: Pendiente
+			NO_USA_METODO: No
+			SITIOS_AUDITAR: Se obtienen de cotizacion_sitios
+			ID_SERVICIO_CLIENTE_ETAPA
+			*/
+			$ruta = $global_apiserver.'/cotizaciones/getById?id='.$ID_COTIZACION;
+			$cotizacion = file_get_contents($ruta);
+			$cotizacion = json_decode($cotizacion);
+			//Recorro todos los trámites e inserto sus auditorías correspondientes
+			foreach ($cotizacion[0]->COTIZACION_TRAMITES as $tramite) {
+				//para cada trámite hay que agregar una auditoría en 
+				//$dias_auditoria = $tramite->DIAS_AUDITORIA;
+				$tipo_auditoria = $tramite->ID_TIPO_AUDITORIA;
+				
+				
+				//Buscar los sitios
+				$sitios = $database->select("COTIZACION_SITIOS_HM", "*", ["ID_COTIZACION"=>$tramite->ID]);
+				valida_error_medoo_and_die();
+				$dias_auditoria = 1;
+				
+				//Insertar en I_EC_AUDITORIAS
+				$id_ec_auditoria = $database->insert("I_EC_AUDITORIAS", [ 
+					"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+					"TIPO_AUDITORIA" => $tipo_auditoria,  
+					"CICLO" => 1,
+					"DURACION_DIAS" => $dias_auditoria,
+					"STATUS_AUDITORIA" => "1",
+					"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+				]); 
+				valida_error_medoo_and_die();
+
+				//Insertar los sitios en I_SG_AUDITORIA_SITIOS
+				foreach ($sitios as $key => $sitio) {
+					$id_cliente_domicilio = $sitio["ID_DOMICILIO_SITIO"];
+					$id_sg_auditoria_sitios = $database->insert("I_SG_AUDITORIA_SITIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"TIPO_AUDITORIA" => $tipo_auditoria,  
+						"CICLO" => 1,
+						"ID_CLIENTE_DOMICILIO" => $id_cliente_domicilio,
+						"FECHA_CREACION" => $FECHA_CREACION,
+						"HORA_CREACION" => $HORA_CREACION,
+						"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+					]); 
+					valida_error_medoo_and_die();
+				}
+			}
+	
+		}
 		if($ID_TIPO_SERVICIO == 16){
 			//Sitios
 			$tramites = $database->select("COTIZACIONES_TRAMITES_CIL",
@@ -585,7 +929,252 @@ if($id_servicio_cliente_etapa	!=	0){
 			}
 	
 		}
+		if($ID_TIPO_SERVICIO == 18){
+			//Sitios
+			$tramites = $database->select("COTIZACIONES_TRAMITES_INF_COM",
+				"*",["ID_COTIZACION" => $ID_COTIZACION]);
+			$ids_tramites = [];
+			$cont = count($tramites);
+			for($i=0;$i<$cont;$i++){
+				$ids_tramites[$i] = $tramites[$i]['ID'];
+			}
+			$domicilios = $database->select("COTIZACION_SITIOS_INF_COM","*",["ID_COTIZACION" => $ids_tramites]);
+			
+			if(count($domicilios) > 0){
+				for($i=0;$i<count($domicilios);$i++){
+					$ID_SERVICIO_CLIENTE_ETAPA = $id_servicio_cliente_etapa; 
+					$ID_CLIENTE_DOMICILIO = $domicilios[$i]['ID_DOMICILIO_SITIO'];  
+					$MATRIZ_PRINCIPAL = $domicilios[$i]['MATRIZ_PRINCIPAL']; 
+					if(strtolower($MATRIZ_PRINCIPAL)=='si'){
+						$VALOR = 5;
+					}else{
+						$VALOR = 6;
+					}
+					$id1 = $database->insert("I_EC_SITIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_CLIENTE_DOMICILIO"	=> 	$ID_CLIENTE_DOMICILIO,
+						"ID_META_SITIOS"	=>	13,
+						"VALOR" => $VALOR 
+				
+					]);
+					valida_error_medoo_and_die();}
+			} else {
+				$respuesta["resultado"] = "error\n"; 
+				$respuesta["mensaje"] = "Es necesario agregar sitios a la cotización"; 
+				print_r(json_encode($respuesta));
+				die();
+			}
+		
+			//Información adicional
+			
+			
+			//Sectores
+			//Este tipo de servicio pertenece al Evaluacion de la conformidad y hasta ahora no se le capturan sectores.
+			//
+			
+			//Auditorías
+			//Para cargar una auditoría necesito
+			/*
+			TIPO_AUDITORIA: 
+			CICLO: Si es un prospecto es ciclo 1 
+			DURACION_DIAS: Se obtiene de cotizaciones/getById?id=x
+			STATUS_AUDITORIA: Pendiente
+			NO_USA_METODO: No
+			SITIOS_AUDITAR: Se obtienen de cotizacion_sitios
+			ID_SERVICIO_CLIENTE_ETAPA
+			*/
+			$ruta = $global_apiserver.'/cotizaciones/getById?id='.$ID_COTIZACION;
+			$cotizacion = file_get_contents($ruta);
+			$cotizacion = json_decode($cotizacion);
+			//Recorro todos los trámites e inserto sus auditorías correspondientes
+			foreach ($cotizacion[0]->COTIZACION_TRAMITES as $tramite) {
+				//para cada trámite hay que agregar una auditoría en 
+				$dias_auditoria = "";
+				$tipo_auditoria = $tramite->ID_TIPO_AUDITORIA;
+				
+				
+				//Buscar los sitios
+				$sitios = $database->select("COTIZACION_SITIOS_INF_COM", "*", ["ID_COTIZACION"=>$tramite->ID]);
+				valida_error_medoo_and_die();
+		
+				//Insertar en I_EC_AUDITORIAS
+				$id_ec_auditoria = $database->insert("I_EC_AUDITORIAS", [ 
+					"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+					"TIPO_AUDITORIA" => $tipo_auditoria,  
+					"CICLO" => 1,
+					"DURACION_DIAS" => $dias_auditoria,
+					"STATUS_AUDITORIA" => "1",
+					"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+				]); 
+				valida_error_medoo_and_die();
 
+				//Insertar los sitios en I_SG_AUDITORIA_SITIOS
+				foreach ($sitios as $key => $sitio) {
+					$id_cliente_domicilio = $sitio["ID_DOMICILIO_SITIO"];
+					$id_sg_auditoria_sitios = $database->insert("I_SG_AUDITORIA_SITIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"TIPO_AUDITORIA" => $tipo_auditoria,  
+						"CICLO" => 1,
+						"ID_CLIENTE_DOMICILIO" => $id_cliente_domicilio,
+						"FECHA_CREACION" => $FECHA_CREACION,
+						"HORA_CREACION" => $HORA_CREACION,
+						"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+					]); 
+					valida_error_medoo_and_die();
+				}
+			}
+	
+		}
+		if($ID_TIPO_SERVICIO == 19){ //Certificacion de Personas
+			//Sitios
+			$tramites = $database->select("COTIZACIONES_TRAMITES_CPER",
+				"*",["ID_COTIZACION" => $ID_COTIZACION]);
+			$ids_tramites = [];
+			$cont = count($tramites);
+			for($i=0;$i<$cont;$i++){
+				$ids_tramites[$i] = $tramites[$i]['ID'];
+			}
+			$domicilios = $database->select("COTIZACION_SITIOS_CPER","*",["ID_COTIZACION" => $ids_tramites]);
+			
+			if(count($domicilios) > 0){//Aqui de momento no insertaremos sitios pq en PROGRAMACION este tipo de servicio no tiene cargado metadatos y por tanto no se puede insertar sitios.
+				
+				/*for($i=0;$i<count($domicilios);$i++){
+					$ID_SERVICIO_CLIENTE_ETAPA = $id_servicio_cliente_etapa; 
+					$ID_CLIENTE_DOMICILIO = $domicilios[$i]['ID_DOMICILIO_SITIO'];  
+					
+					$id1 = $database->insert("I_EC_SITIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_CLIENTE_DOMICILIO"	=> 	$ID_CLIENTE_DOMICILIO,
+						"ID_META_SITIOS"	=>	17,
+						"VALOR" => " " 
+				
+					]);
+					valida_error_medoo_and_die();
+				}*/
+			} else {
+				$respuesta["resultado"] = "error\n"; 
+				$respuesta["mensaje"] = "Es necesario agregar sitios a la cotización"; 
+				print_r(json_encode($respuesta));
+				die();
+			}
+		
+			//Información adicional
+			// EN CUANTO A LA INFORMACION ADICIONAL PUES AUN NO SE QUE HABRIA QUE PASARLE, ASI QUE NO LE PASO NADA
+			/*if($NORMAS[0]->ID_NORMA == 'NMX-AA-120-SCFI-2006' || $NORMAS[0]->ID_NORMA == 'NMX-AA-120-SCFI-2016'){
+				$id_ts = $database->insert("I_TIPOS_SERVICIOS", [ 
+					"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+					"ID_META_SCE" => 73,  
+					"VALOR" => $domicilios[0]['LONGITUD_PLAYA']
+				]); 
+				valida_error_medoo_and_die();
+			}
+			*/
+			//Sectores
+			//Este tipo de servicio pertenece al Evaluacion de la conformidad y hasta ahora no se le capturan sectores.
+			//
+			
+			//Auditorías
+			//Para cargar una auditoría necesito
+			/*
+			TIPO_AUDITORIA: 
+			CICLO: Si es un prospecto es ciclo 1 
+			DURACION_DIAS: Se obtiene de cotizaciones/getById?id=x
+			STATUS_AUDITORIA: Pendiente
+			NO_USA_METODO: No
+			SITIOS_AUDITAR: Se obtienen de cotizacion_sitios
+			ID_SERVICIO_CLIENTE_ETAPA
+			*/
+			$ruta = $global_apiserver.'/cotizaciones/getById?id='.$ID_COTIZACION;
+			$cotizacion = file_get_contents($ruta);
+			$cotizacion = json_decode($cotizacion);
+			//Recorro todos los trámites e inserto sus auditorías correspondientes
+			foreach ($cotizacion[0]->COTIZACION_TRAMITES as $tramite) {
+				//para cada trámite hay que agregar una auditoría en 
+				$dias_auditoria = 0;//$tramite->DIAS_AUDITORIA;
+				$tipo_auditoria = $tramite->ID_TIPO_AUDITORIA;
+				
+				
+				//Buscar los sitios
+				$sitios = $database->select("COTIZACION_SITIOS_CPER", "*", ["ID_COTIZACION"=>$tramite->ID]);
+				valida_error_medoo_and_die();
+		
+				//Insertar en I_EC_AUDITORIAS
+				$id_ec_auditoria = $database->insert("I_EC_AUDITORIAS", [ 
+					"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+					"TIPO_AUDITORIA" => $tipo_auditoria,  
+					"CICLO" => 1,
+					"DURACION_DIAS" => $dias_auditoria,
+					"STATUS_AUDITORIA" => "1",
+					"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+				]); 
+				valida_error_medoo_and_die();
+
+				//Insertar los sitios en I_SG_AUDITORIA_SITIOS
+				// COMO NO SE PUDIERON INSERTAR SITIOS PUES DE MOMENTO SE VA EN BLANCO ESTA INFORMACION
+		/*		foreach ($sitios as $key => $sitio) {
+					$id_cliente_domicilio = $sitio["ID_DOMICILIO_SITIO"];
+					$id_sg_auditoria_sitios = $database->insert("I_SG_AUDITORIA_SITIOS", [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"TIPO_AUDITORIA" => $tipo_auditoria,  
+						"CICLO" => 1,
+						"ID_CLIENTE_DOMICILIO" => $id_cliente_domicilio,
+						"FECHA_CREACION" => $FECHA_CREACION,
+						"HORA_CREACION" => $HORA_CREACION,
+						"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
+					]); 
+					valida_error_medoo_and_die();
+				} */
+			}
+	
+		}
+	}
+	//Para servicios de CIFA
+	if($ID_SERVICIO == 3){
+		if($MODALIDAD == "programado"){
+
+		} else {
+			//GENERAR TOKEN PARA EL CLIENTE
+
+			//payload
+			$data = [
+				'ID_CLIENTE' => $ID_FINAL,
+				'MODALIDAD' => $MODALIDAD,
+				'ID_CURSO' => $ID_CURSO,
+				'ID_PROGRAMACION' => $id_servicio_cliente_etapa
+			];
+			/*
+			iss = issuer, servidor que genera el token
+			data = payload del JWT
+			*/
+			$token = array(
+				'iss' => $global_apiserver,
+				'aud' => $global_apiserver,
+				'exp' => time() + $duration,
+				'data' => $data
+			);
+
+			//Codifica la información usando el $key definido en jwt.php
+			$jwt = JWT::encode($token, $key);
+
+			//GUARDAR EL URL SCE_CURSOS
+			$url = $insertar_participantes . "?token=" . $jwt;
+
+			//INSERTAR EN SCE_CURSOS
+			$id_sce_cursos = $database->insert("SCE_CURSOS", [
+				"ID_SCE" => $id_servicio_cliente_etapa,
+				"ID_CURSO" => $ID_CURSO,
+				"URL_PARTICIPANTES" => $url
+			]);			
+			valida_error_medoo_and_die();
+
+            //INSERTA ID SCE EN COTIZACION DETALLES
+            $id_sce_cursos = $database->update("COTIZACION_DETALLES", [
+                "VALOR" => $id_servicio_cliente_etapa,
+            ],["AND"=>["DETALLE"=>"TIENE_SERVICIO","ID_COTIZACION"=>$ID_COTIZACION]]);
+            valida_error_medoo_and_die();
+
+			//TODO: Enviar notificación al cliente de que su servicio está listo para cargar participantes
+		}		
 	}
 	$respuesta["resultado"]="ok"; 
 }

@@ -110,12 +110,29 @@ $scope.EditarTipoServicio	=	function(tipo_servicio_id){
 		limpiamos los campos del módelo.
 */
 $scope.cerrar = function() {		
-		$("#txtAcronimoerror").text("");		
-		$("#txtNombreerror").text("");
-		$("#claveServicioerror").text("");
-		$("#txtTextoReferror").text("");
-		$scope.limpiaCampos();
-		$("#modalInsertarActualizar").modal("hide");
+
+	$.confirm({
+		title: 'Confirmación',
+		content: 'Esta seguro de salir sin guardar los datos?',
+		buttons: {
+			Salir: function () {
+
+				$(".modal.fade").modal("hide");
+				$("#txtAcronimoerror").text("");
+				$("#txtNombreerror").text("");
+				$("#claveServicioerror").text("");
+				$("#txtTextoReferror").text("");
+				$scope.limpiaCampos();
+
+			},
+			Cancelar: function () {
+				console.log("cancel");
+
+			}
+		}
+	});
+
+		//$("#modalInsertarActualizar").modal("hide");
 		
 };	
 /*
@@ -348,7 +365,8 @@ $(document).ready(function () {
 	$scope.funcionClaveServicio();
 	$scope.funcionparalistanormas(); 
 	$scope.limpiaCampos();
-	
+
+
 });
 	
 }]);

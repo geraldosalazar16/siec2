@@ -54,7 +54,7 @@
 						<div class="col-md-9 col-sm-9 col-xs-12">
 							<div class="profile_title">
 								<div class="col-md-6">
-									<h2>Actividad del Propecto </h2>
+									<h2>Actividad del Prospecto </h2>
 								</div>
 							</div>
 							<div class="" role="tabpanel" data-example-id="togglable-tabs">
@@ -254,12 +254,12 @@
 																		</td>
 																		<td>																																		
 																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" 
-																			ng-if="producto.sectores_mostrandose == false"
+																			ng-if="producto.sectores_mostrandose == false && producto.id_servicio!=3"
 																			ng-click="verSectores(producto)" style=	"float: right;">
 																				<i class="fa fa-eye"> </i> Ver sectores
 																			</button>
 																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" 
-																			ng-if="producto.sectores_mostrandose == true" 
+																			ng-if="producto.sectores_mostrandose == true && producto.id_servicio!=3"
 																			ng-click="ocultarSectores(producto)" style=	"float: right;">
 																				<i class="fa fa-eye"> </i> Ocultar sectores
 																			</button>

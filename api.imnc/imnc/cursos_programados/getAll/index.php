@@ -54,7 +54,7 @@ for ($i=0; $i < count($eventos) ; $i++) {
     $canttidad_perticipantes = $database->count("CURSOS_PROGRAMADOS_PARTICIPANTES",["ID_CURSO_PROGRAMADO"],["ID_CURSO_PROGRAMADO"=>$eventos[$i]["ID"]]);
     valida_error_medoo_and_die();
 
-    $eventos[$i]["CANTIDAD_PARTICIPANTES"] = $canttidad_perticipantes;
+    $eventos[$i]["CANTIDAD_PARTICIPANTES_REAL"] = $canttidad_perticipantes;
 }
 
 print_r(json_encode($eventos));

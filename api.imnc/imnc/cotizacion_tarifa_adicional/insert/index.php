@@ -13,6 +13,8 @@
 
 	$ID_TARIFA_ADICIONAL = $objeto->ID_TARIFA_ADICIONAL;
 	valida_parametro_and_die($ID_TARIFA_ADICIONAL,"Es necesario capturar la tarifa"); 
+	$ID_COTIZACION = $objeto->ID_COTIZACION; 
+	valida_parametro_and_die($ID_COTIZACION,"Es necesario el ID de la cotizacion");
 	$ID_TRAMITE = $objeto->ID_TRAMITE; 
 	valida_parametro_and_die($ID_TRAMITE,"Es necesario capturar el tramite");
 	$CANTIDAD = $objeto->CANTIDAD; 
@@ -21,6 +23,7 @@
 	$id = $database->insert($nombre_tabla, [
 		"ID" => $ID,	
 		"ID_TARIFA_ADICIONAL" => $ID_TARIFA_ADICIONAL, 
+		"ID_COTIZACION" => $ID_COTIZACION,
 		"ID_TRAMITE" => $ID_TRAMITE,
 		"CANTIDAD" => $CANTIDAD
 	]); 
