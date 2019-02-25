@@ -82,6 +82,7 @@ if (!isset($_SESSION['CREATED'])) {
   <link href="css/multiselect/multiple-select.min.css" rel="stylesheet"/>
 <!-- datepicker -->
   <link href="css/datepicker/angular-datepicker.css" rel="stylesheet"/>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-duallistbox/bootstrap-duallistbox.css"/>
   <link href="css/common.css" rel="stylesheet" type="text/css" />
   
   <script src="js/angular.min.js"></script>
@@ -228,6 +229,8 @@ if (!isset($_SESSION['CREATED'])) {
   <script type="text/javascript" src="js/maps/jquery-jvectormap-us-aea-en.js"></script>
   <script type="text/javascript" src="js/calendar/fullcalendar.min.js"></script>
   <script type="text/javascript" src="js/calendar/lang/es.js"></script>
+  <script type="text/javascript" src="js/bootstrap-duallistbox/jquery.bootstrap-duallistbox.js"></script>
+
   <!-- pace -->
   <script src="js/pace/pace.min.js"></script>
   <!-- apiserver -->
