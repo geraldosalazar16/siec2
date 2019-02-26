@@ -177,7 +177,7 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 	valida_error_medoo_and_die();
 	$i_ec_auditorias["SG_AUDITORIA_SITIOS"] = $i_sg_auditoria_sitios;
 
-	$i_sg_auditoria_fechas = $database->select("i_SG_AUDITORIA_FECHAS", "*", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$id_tipo_auditoria,"CICLO"=>$ciclo], "ORDER"=>"FECHA"]);
+	$i_sg_auditoria_fechas = $database->select("I_SG_AUDITORIA_FECHAS", "*", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$id_tipo_auditoria,"CICLO"=>$ciclo], "ORDER"=>"FECHA"]);
 	valida_error_medoo_and_die();
 	$i_ec_auditorias["SG_AUDITORIA_FECHAS"] = $i_sg_auditoria_fechas;
 
