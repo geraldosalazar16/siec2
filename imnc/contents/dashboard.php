@@ -19,14 +19,14 @@
 				</div>
 				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
 					<h5 align='center'>Reporte Certificados Vigentes {{ano_actual}}</h5>
-					<div >
-						<canvas id="RepCertVigChart" height="40"></canvas>
+					<div style="width: 100%;">
+						<canvas id="RepCertVigChart" height="80"></canvas>
 					</div>
 				</div>
 				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
 					<h5 align='center'>Historicos Reporte Certificados Vigentes</h5>
-					<div >
-						<canvas id="RepCertVigHistChart" height="40"></canvas>
+					<div style="width: 100%;">
+						<canvas id="RepCertVigHistChart" height="80"></canvas>
 					</div>
 				</div>
 
@@ -36,7 +36,7 @@
         </div>
     </div>
 		     <br />
-	<div class="row">
+<!--	<div class="row">
          <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="dashboard_graph" >
 
@@ -129,7 +129,7 @@
         </div>
     </div>
 	<br />
-	
+	-->
 	<!--
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12" style="overflow: auto;overflow-y: hidden;">
@@ -152,7 +152,7 @@
     </div>
 	<br />
 	-->
-			 
+<!--			 
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12" style="overflow: auto;overflow-y: hidden;">
 			<div class="dashboard_graph" id="entidaddivwidth">
@@ -477,7 +477,7 @@
 <div class="clearfix" style="background-color:white;"></div>
             </div>
           </div>
-
+-->
 
 
       </div>

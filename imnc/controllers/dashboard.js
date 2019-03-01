@@ -9,7 +9,7 @@ $scope.graficaRepCertVig = function(){
 	$.ajax({
 		type:'GET',
 		dataType: 'json',
-		url:global_apiserver+"/i_reportes/getCantidadServiciosContratados/",
+		url:global_apiserver+"/i_reportes/getCantidadServiciosContratados1/",
 		success:function(data){
 			//for(var i = 0 ; i < data.length ; i++){
 			//	x = data.X;
@@ -600,13 +600,13 @@ function notify(titulo, texto, tipo) {
     });
 }
 
-$scope.graficaOrigen();
-$scope.graficaEstatus();
-$scope.graficaEntidad();
-$scope.graficaCompetenciaU();
-$scope.graficaOrigenU();
-$scope.graficaEstatusU();
-$scope.graficaEntidadU();
-onCalendar();
+//$scope.graficaOrigen();
+//$scope.graficaEstatus();
+//$scope.graficaEntidad();
+//$scope.graficaCompetenciaU();
+//$scope.graficaOrigenU();
+//$scope.graficaEstatusU();
+//$scope.graficaEntidadU();
+//onCalendar();
  
 }]);
