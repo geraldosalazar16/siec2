@@ -106,7 +106,7 @@ if (!filter_var($EMAIL, FILTER_VALIDATE_EMAIL)) {
 $EMAIL2 = $objeto->EMAIL2;
 $PADRON = $objeto->PADRON;
 valida_error_medoo_and_die($PADRON, "Es necesario escoger una opción");
-
+$PADRON_ANT = $database->get("PERSONAL_TECNICO", ['PADRON'],["ID"=>$ID]); //AQUI BUSCO SI ES EXTERNO O INTERNO ANTES DE ACTUALIZAR
 $STATUS = $objeto->STATUS;
 valida_parametro_and_die($STATUS, "Es necesario capturar un status");
 
@@ -135,7 +135,25 @@ $id = $database->update("PERSONAL_TECNICO", [
 	"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION
 ], ["ID"=>$ID]);
 valida_error_medoo_and_die();
+/**************************************************************/
+//	AQUI ESTARA EL DISPARADOR PARA GUARDAR LOS DATOS PARA 
+//	REPORTES_AUDITORES_CONTRATADOS SI SE MODIFICA EL PADRON
+//	DE ALGUN AUDITOR DE INTERNO A EXTERNO O VICEVERSA
+if($PADRON_ANT != $PADRON){
+	$consulta1 = "SELECT 
+						(SELECT COUNT(`PADRON`) FROM `PERSONAL_TECNICO` WHERE `PADRON`='0') AS `CANT_AUD_INTERNO` ,
+						(SELECT COUNT(`PADRON`) FROM `PERSONAL_TECNICO` WHERE `PADRON`='1') AS `CANT_AUD_EXTERNO`";
+        $reporte = $database->query($consulta1)->fetchAll(PDO::FETCH_ASSOC);
+		//AQUI SE INSERTA LOS DATOS EN LA TABLA
+		$idr	=	$database->insert("REPORTES_AUDITORES_CONTRATADOS",[
+						"AUDITORES_EXTERNOS"=> $reporte[0]["CANT_AUD_EXTERNO"],
+						"AUDITORES_INTERNOS"=>$reporte[0]["CANT_AUD_INTERNO"],
+						"FECHA"=>date("Ymd")
+					]);
+		valida_error_medoo_and_die();
+}
 
+/**************************************************************/
 $respuesta['resultado']="ok";
 print_r(json_encode($respuesta));
 

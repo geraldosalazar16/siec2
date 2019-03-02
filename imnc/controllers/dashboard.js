@@ -2,6 +2,8 @@ app.controller('dashboard_controller', ['$scope', function($scope,$http) {
 /***********************************************************************/
 	var repCertVig = document.getElementById("RepCertVigChart");
 	var repCertVigHist = document.getElementById("RepCertVigHistChart");
+	var repCompContr = document.getElementById("repCompContrChart");
+	var repCompContrHist = document.getElementById("repCompContrHistChart");
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
 // REPORTES CERTIFICADOS VIGENTES	
@@ -73,7 +75,7 @@ $scope.graficaRepCertVig = function(){
 		}
 	});
 };
-// REPORTES CERTIFICADOS VIGENTES	
+// REPORTES CERTIFICADOS VIGENTES HISTORICO	
 $scope.graficaRepCertVigHist = function(){
 	$.ajax({
 		type:'GET',
@@ -107,8 +109,101 @@ $scope.graficaRepCertVigHist = function(){
 						data: data.Y5,
 					}]
 				},
+								
+			});
+	
+		}
+	});
+};
 
-				
+// REPORTES COMPARATIVA CONTRATACION	
+$scope.graficaRepCompContr = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_reportes/getCompContratacion/",
+		success:function(data){
+			//for(var i = 0 ; i < data.length ; i++){
+			//	x = data.X;
+			//	y = data.Y;
+			//}
+			var mybarChart = new Chart(repCompContr, {
+				type: 'line',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'AUDITORES EXTERNOS',
+						fill : false,
+						borderColor: 'rgba(255, 0, 0, 1)',
+						borderWidth: 1,
+						data: data.Y1,
+					},{
+						label: 'AUDITORES INTERNOS',
+						fill : false,
+						borderColor: 'rgba(0, 0, 255, 1)',
+						borderWidth: 1,
+						data: data.Y2,
+					}]
+				},
+
+				options: {
+					scales: {
+						xAxes: [{
+							stacked: true,
+							ticks: {
+								autoSkip: false
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]	
+					}
+					
+				}
+			});
+	
+		}
+	});
+};
+
+// REPORTES COMPARATIVA CONTRATACION HISTORICO	
+$scope.graficaRepCompContrHist = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_reportes/getCompContratacionHist/",
+		success:function(data){
+			
+			var mybarChart = new Chart(repCompContrHist, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'AUDITORES EXTERNOS (%)',
+						backgroundColor: 'rgba(255, 0, 0, 0.7)',
+						data: data.Y1,
+					},{
+						label: 'AUDITORES INTERNOS (%)',
+						backgroundColor: 'rgba(0, 0, 255, 0.7)',
+						data: data.Y2,
+					}]
+				},
+
+				options: {
+					
+					scales: {
+						xAxes: [{
+							stacked: true
+
+						}],
+						yAxes: [{
+							stacked: true
+						}]	
+					}
+					
+				}	
 			});
 	
 		}
@@ -117,6 +212,8 @@ $scope.graficaRepCertVigHist = function(){
 
 $scope.graficaRepCertVig();
 $scope.graficaRepCertVigHist();
+$scope.graficaRepCompContr();
+$scope.graficaRepCompContrHist();
 /***********************************************************************/	
 var origeng = document.getElementById("origenChart");
 var estatusg = document.getElementById("estatusChart");

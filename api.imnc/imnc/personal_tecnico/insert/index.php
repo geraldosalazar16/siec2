@@ -129,7 +129,22 @@ $id = $database->insert("PERSONAL_TECNICO", [
 ]);
 
 valida_error_medoo_and_die();
-
+/**************************************************************/
+//	AQUI ESTARA EL DISPARADOR PARA GUARDAR LOS DATOS PARA 
+//	REPORTES_AUDITORES_CONTRATADOS SI SE INSERTA ALGUN
+//	NUEVO AUDITOR
+$consulta1 = "SELECT 
+						(SELECT COUNT(`PADRON`) FROM `PERSONAL_TECNICO` WHERE `PADRON`='0') AS `CANT_AUD_INTERNO` ,
+						(SELECT COUNT(`PADRON`) FROM `PERSONAL_TECNICO` WHERE `PADRON`='1') AS `CANT_AUD_EXTERNO`";
+        $reporte = $database->query($consulta1)->fetchAll(PDO::FETCH_ASSOC);
+		//AQUI SE INSERTA LOS DATOS EN LA TABLA
+		$idr	=	$database->insert("REPORTES_AUDITORES_CONTRATADOS",[
+						"AUDITORES_EXTERNOS"=> $reporte[0]["CANT_AUD_EXTERNO"],
+						"AUDITORES_INTERNOS"=>$reporte[0]["CANT_AUD_INTERNO"],
+						"FECHA"=>date("Ymd")
+					]);
+		valida_error_medoo_and_die();
+/**************************************************************/
 $respuesta['resultado']="ok";
 $respuesta['id']=$id;
 creacion_expediente_registro($id,2, $rutaExpediente, $database);
