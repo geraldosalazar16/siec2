@@ -24,7 +24,9 @@ function valida_parametro_and_die($parametro, $mensaje_error){
 		if ($database->error()[2]) { 
 			$respuesta["resultado"]="error"; 
 			$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
+
 			print_r(json_encode($respuesta));  
+
 			die(); 
 		} 
 	} 
@@ -33,6 +35,10 @@ function valida_parametro_and_die($parametro, $mensaje_error){
 	
 	
 	$nombre_tabla = "DICTAMINACIONES";
+<<<<<<< HEAD
+=======
+					 
+>>>>>>> 362fb95cd48ba431bd17bd0af882973675518d31
 	
 	$respuesta=array(); 
 	$json = file_get_contents("php://input"); 

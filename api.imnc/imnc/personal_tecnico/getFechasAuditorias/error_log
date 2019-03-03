@@ -5,3 +5,23 @@ Stack trace:
 #2 /home/sistemainterno/public_html/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php(36): valida_error_medoo_and_die()
 #3 {main}
   thrown in /home/sistemainterno/public_html/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[20-Jan-2019 22:59:08 UTC] PHP Warning:  Illegal string offset 'ID_TIPO_SERVICIO' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php on line 71
+[20-Jan-2019 22:59:08 UTC] PHP Warning:  Illegal string offset 'ID_TIPO_SERVICIO' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php on line 72
+[20-Jan-2019 22:59:08 UTC] PHP Warning:  Illegal string offset 'ID_TIPO_SERVICIO' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php on line 77
+[20-Jan-2019 22:59:08 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php(24): MailError->send('certificando', '/home/sistemai/...', 'You have an err...', 'SELECT "FECHA" ...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php(82): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[20-Jan-2019 23:02:45 UTC] PHP Warning:  Illegal string offset 'ID_TIPO_SERVICIO' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php on line 71
+[20-Jan-2019 23:02:45 UTC] PHP Warning:  Illegal string offset 'ID_TIPO_SERVICIO' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php on line 72
+[20-Jan-2019 23:02:45 UTC] PHP Warning:  Illegal string offset 'ID_TIPO_SERVICIO' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php on line 77
+[20-Jan-2019 23:02:45 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php(24): MailError->send('certificando', '/home/sistemai/...', 'You have an err...', 'SELECT "FECHA" ...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/personal_tecnico/getFechasAuditorias/index.php(82): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120

@@ -5,15 +5,7 @@
       <div class="x_panel">
         <div class="x_title">
         <p><h2>{{titulo}}</h2></p>
-        <?php
-          if ($modulo_permisos["SERVICIOS"]["catalogos"] == 1) {
-              echo '<p>';
-              echo '  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-click="EnviarCorreoPrueba()"> ';
-              echo '    <i class="fa fa-plus"> </i> Enviar correo prueba';
-              echo '  </button>';
-              echo '</p>';
-          } 
-        ?>
+       
         
           <div class="clearfix"></div>
         </div>
@@ -113,19 +105,21 @@
 									</button>
 									<ul class="dropdown-menu pull-right">
 										<li>
-											<a	ng-click="editarStatus(x.ID,'Dictaminacion aprobada')"> 
+											<a	ng-click="editarStatus(x.ID,'1')"> 
 											<span class="labelAcordeon"	>Dictaminacion aprobada</span></a>
 											
 										</li>
 										<li >
-											<a	ng-click="editarStatus(x.ID,'Dictaminacion negada')"> 
+											<a	ng-click="editarStatus(x.ID,'2')"> 
 											<span class="labelAcordeon"	>Dictaminacion negada</span></a>
 											
 										</li>
 									</ul>
 								</div>
 								<br ng-show="selectPendientesDictaminadas=='Pendientes'">
-								{{x.STATUS}}
+								<p ng-show="x.STATUS =='0'">Solicitud enviada</p>
+								<p ng-show="x.STATUS =='1'">Dictaminaci&oacuten aprobada</p>
+								<p ng-show="x.STATUS =='2'">Dictaminaci&oacuten negada</p>
 							</td>
 					
 						</tr>
