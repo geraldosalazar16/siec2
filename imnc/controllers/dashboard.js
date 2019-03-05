@@ -4,6 +4,8 @@ app.controller('dashboard_controller', ['$scope', function($scope,$http) {
 	var repCertVigHist = document.getElementById("RepCertVigHistChart");
 	var repCompContr = document.getElementById("repCompContrChart");
 	var repCompContrHist = document.getElementById("repCompContrHistChart");
+	var repMezclaPort = document.getElementById("repMezclaPortChart");
+	var repMezclaPortHist = document.getElementById("repMezclaPortHistChart");
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
 // REPORTES CERTIFICADOS VIGENTES	
@@ -210,10 +212,107 @@ $scope.graficaRepCompContrHist = function(){
 	});
 };
 
+// REPORTES MEZCLA DE PORTAFOLIO	
+$scope.graficaRepMezclaPort = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_reportes/getMezclaPortafolio/",
+		success:function(data){
+			//for(var i = 0 ; i < data.length ; i++){
+			//	x = data.X;
+			//	y = data.Y;
+			//}
+			var mybarChart = new Chart(repMezclaPort, {
+				type: 'line',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'SECTOR PUBLICO',
+						fill : false,
+						borderColor: 'rgba(255, 0, 0, 1)',
+						borderWidth: 1,
+						data: data.Y1,
+					},{
+						label: 'SECTOR PRIVADO',
+						fill : false,
+						borderColor: 'rgba(0, 0, 255, 1)',
+						borderWidth: 1,
+						data: data.Y2,
+					}]
+				},
+
+				options: {
+					scales: {
+						xAxes: [{
+							stacked: true,
+							ticks: {
+								autoSkip: false
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]	
+					}
+					
+				}
+			});
+	
+		}
+	});
+};
+
+// REPORTES COMPARATIVA CONTRATACION HISTORICO	
+$scope.graficaRepMezclaPortHist = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_reportes/getMezclaPortafolioHist/",
+		success:function(data){
+			
+			var mybarChart = new Chart(repMezclaPortHist, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'SECTOR PUBLICO (%)',
+						backgroundColor: 'rgba(255, 0, 0, 0.7)',
+						data: data.Y1,
+					},{
+						label: 'SECTOR PRIVADO (%)',
+						backgroundColor: 'rgba(0, 0, 255, 0.7)',
+						data: data.Y2,
+					}]
+				},
+
+				options: {
+					
+					scales: {
+						xAxes: [{
+							stacked: true
+
+						}],
+						yAxes: [{
+							stacked: true
+						}]	
+					}
+					
+				}	
+			});
+	
+		}
+	});
+};
+
+
 $scope.graficaRepCertVig();
 $scope.graficaRepCertVigHist();
 $scope.graficaRepCompContr();
 $scope.graficaRepCompContrHist();
+$scope.graficaRepMezclaPort();
+$scope.graficaRepMezclaPortHist();
 /***********************************************************************/	
 var origeng = document.getElementById("origenChart");
 var estatusg = document.getElementById("estatusChart");
