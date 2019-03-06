@@ -177,7 +177,15 @@ $modulo_permisos = $_SESSION["permisos"];
                 echo '  </ul>';
                 echo '</li>';
             }
-		  
+            if ($modulo_permisos["EMPLEADOS"]["ver"] == 1) {
+                echo '<li>';
+                echo '  <a><i class="fa fa-user-circle-o"></i> Personal Interno </a>';
+                echo '  <ul class="nav child_menu" style="display: none">';
+                echo '      <li><a href="./?pagina=personal_interno">Ver</a></li>';
+                echo '  </ul>';
+                echo '</li>';
+            }
+
 			echo ' <li>';
             echo '  <a href="./?pagina=lista_usuarios_graficas">';
             echo '    <i class="fa fa-area-chart" aria-hidden="true"></i> Gráficas por usuario ';
