@@ -32,14 +32,18 @@ $ID = $objeto->ID;
 $NOMBRE = $objeto->NOMBRE; 
 $USUARIO = $objeto->USUARIO; 
 $EMAIL = $objeto->EMAIL; 
-$PASSWORD = $objeto->PASSWORD; 
-$PASSWORD = sha1($PASSWORD);
+$PASSWORD = $objeto->PASSWORD;
+if($PASSWORD!="")
+{
+	$PASSWORD = sha1($PASSWORD);
+}
+
 
 if ($PASSWORD == "") {
 	$PASSWORD = $database->get("USUARIOS", "PASSWORD", ["ID"=>$ID]);
 }
 
-$ID_PERFIL = "ADM1";  
+$ID_PERFIL = $objeto->ID_PERFIL;
 $MODULOS = json_decode(json_encode($objeto->MODULOS), True);
 
 
@@ -65,19 +69,36 @@ $FECHA_MODIFICACION = date('Y/m/d H:i:s');
 $modulos_list = $database->select("MODULOS","*");
 for($i = 0 ; $i < sizeof($modulos_list); $i++){
 $index = $modulos_list[$i]["ID"];
-print_r($index);
-echo "-_-";
 	if(isset($MODULOS[$index - 1])){
-		print_r($MODULOS[$index - 1]);
-		echo ":";
-$id_perfil_modulo = $database->update("PERFIL_MODULO_USUARIO", [ 
-	"ID_PERFIL" => $MODULOS[$index - 1]["ID"], 
-	"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
-	"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION],
-	["AND" => ["ID_USUARIO" => $ID, 
-	"ID_MODULO" => $index]]
-); 
-valida_error_medoo_and_die();
+		$count = $database->count("PERFIL_MODULO_USUARIO", ["AND" => ["ID_USUARIO" => $ID,"ID_MODULO" => $index]]);
+
+		if($count > 0)
+		{
+			$id_perfil_modulo = $database->update("PERFIL_MODULO_USUARIO", [
+				"ID_PERFIL" => $MODULOS[$index - 1]["ID"],
+				"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
+				"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION],
+				["AND" => ["ID_USUARIO" => $ID,
+					"ID_MODULO" => $index]]
+			);
+			valida_error_medoo_and_die();
+		}
+		else
+		{
+
+				$id_perfil_modulo = $database->insert("PERFIL_MODULO_USUARIO", [
+					"ID_PERFIL" => $MODULOS[$index - 1]["ID"],
+					"ID_USUARIO" => $ID,
+					"ID_MODULO" => $index,
+					"FECHA_CREACION" => $FECHA_MODIFICACION,
+					"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
+					"ID_USUARIO_CREACION" => $ID_USUARIO_MODIFICACION,
+					"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION
+				]);
+				valida_error_medoo_and_die();
+
+		}
+
 	}
 }
 
