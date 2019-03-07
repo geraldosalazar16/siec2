@@ -221,7 +221,7 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
             if(typeof valor !== "undefined")
             {
                 valor = eliminaEspacios(valor);
-                reg = /(^[0-9]{1,10}$)/;
+                reg = /^[0-9]+([.])?([0-9]+)?$/;
                 if (!reg.test(valor)) {
                     eval('$scope.formDataFicha.' + campo + '=""');
                     // Si hay error muestro el div que contiene el error
