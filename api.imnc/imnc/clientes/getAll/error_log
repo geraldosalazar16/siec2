@@ -1,12 +1,1 @@
-[26-Dec-2018 23:25:53 UTC] PHP Fatal error:  Uncaught exception 'Exception' with message 'SQLSTATE[HY000] [1044] Access denied for user 'sistemai_root'@'localhost' to database 'sistemai_imnc_prueba'' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/medoolib/medoo.php:150
-Stack trace:
-#0 /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/conn-medoo.php(24): medoo->__construct(Array)
-#1 /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/clientes/getAll/index.php(4): include('/home/sistemai/...')
-#2 {main}
-  thrown in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/medoolib/medoo.php on line 150
-[26-Dec-2018 23:26:07 UTC] PHP Fatal error:  Uncaught exception 'Exception' with message 'SQLSTATE[HY000] [1044] Access denied for user 'sistemai_root'@'localhost' to database 'sistemai_imnc_prueba'' in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/medoolib/medoo.php:150
-Stack trace:
-#0 /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/conn-medoo.php(24): medoo->__construct(Array)
-#1 /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/clientes/getAll/index.php(4): include('/home/sistemai/...')
-#2 {main}
-  thrown in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/common/medoolib/medoo.php on line 150
+
