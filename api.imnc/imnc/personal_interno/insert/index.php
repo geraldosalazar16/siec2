@@ -126,6 +126,18 @@ $id = $database->insert("PERSONAL_INTERNO", [
 
 valida_error_medoo_and_die();
 
+    $id_ficha = $database->insert("PERSONAL_INTERNO_FICHA", [
+        "NO_EMPLEADO" => $NO,
+        /*"ANTIGUEDAD"=>0,
+        "SEGURO_GASTOS_MEDICOS"=>"",
+        "DIAS_VACACIONES"=>0,
+        "PRESTAMOS_CAJA"=>0,
+        "PRESTAMOS_IMNC"=>0,*/
+    ]);
+
+    valida_error_medoo_and_die();
+
+
 $respuesta['resultado']="ok";
 $respuesta['id']=$id;
 

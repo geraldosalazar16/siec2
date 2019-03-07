@@ -244,7 +244,6 @@ app.controller('empleados_controller',['$scope','$http',function($scope,$http){
         }
 ////////////////////////////////////////////////////////////////////////////////////
         if(typeof $scope.formData.fecha_nacimiento !== "undefined") {
-            $("#noerror").text("");
             if ($scope.formData.fecha_nacimiento.length == 0) {
                 $scope.respuesta = 0;
                 $scope.fecha_nacimientoerror="No debe estar vacio";
@@ -458,7 +457,7 @@ app.controller('empleados_controller',['$scope','$http',function($scope,$http){
             }
         }).css("display", "inline-block");
 
-        var init = '+0D';
+        var init = '-20Y';
         if(typeof date !== "undefined")
         {
             init = date;
