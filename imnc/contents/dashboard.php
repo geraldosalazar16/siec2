@@ -24,7 +24,7 @@
 					</div>
 				</div>
 				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
-					<h5 align='center'>Historicos Reporte Certificados Vigentes</h5>
+					<h5 align='center'>Hist&oacutericos Reporte Certificados Vigentes</h5>
 					<div style="width: 100%;">
 						<canvas id="RepCertVigHistChart" height="80"></canvas>
 					</div>
@@ -39,7 +39,7 @@
 
 	<div class="row">
 		<div class="col-md-12 col-sm-12 col-xs-12" style="overflow: auto;overflow-y: hidden;">
-			<div class="dashboard_graph" id="pruebaDaniel">
+			<div class="dashboard_graph" id="pruebaDaniel1">
 
 				<div class="row x_title">
 					<div class="col-md-6">
@@ -53,7 +53,7 @@
 					</div>
 				</div>
 				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
-					<h5 align='center'>Historicos Reporte Comparativa de Contrataci&oacuten</h5>
+					<h5 align='center'>Hist&oacutericos Reporte Comparativa de Contrataci&oacuten </h5>
 					<div style="width: 100%;">
 						<canvas id="repCompContrHistChart" height="80"></canvas>
 					</div>
@@ -64,7 +64,63 @@
             <div class="clearfix" style="background-color:white;"></div>
         </div>
     </div>
-		     <br />		 
+		     <br />		
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12" style="overflow: auto;overflow-y: hidden;">
+			<div class="dashboard_graph" id="pruebaDaniel2">
+
+				<div class="row x_title">
+					<div class="col-md-6">
+						<h3>Anexo 3 <small>Indicadores Certificación de Sistemas de Gesti&oacute;n</small></h3>
+					</div>
+				</div>
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+					<h5 align='center'>Reporte Mezcla de Portafolio {{ano_actual}}</h5>
+					<div style="width: 100%;">
+						<canvas id="repMezclaPortChart" height="80"></canvas>
+					</div>
+				</div>
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+					<h5 align='center'>Hist&oacutericos Reporte Mezcla de Portafolio</h5>
+					<div style="width: 100%;">
+						<canvas id="repMezclaPortHistChart" height="80"></canvas>
+					</div>
+				</div>
+
+             </div>
+
+            <div class="clearfix" style="background-color:white;"></div>
+        </div>
+    </div>
+		     <br />	
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12" style="overflow: auto;overflow-y: hidden;">
+			<div class="dashboard_graph" id="pruebaDaniel2">
+
+				<div class="row x_title">
+					<div class="col-md-6">
+						<h3>Anexo 4 <small>Certificados emitidos SG</small></h3>
+					</div>
+				</div>
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+					<h5 align='center'>Reporte Certificados emitidos SG {{ano_actual}}</h5>
+					<div style="width: 100%;">
+						<canvas id="repCertEmitSGChart" height="80"></canvas>
+					</div>
+				</div>
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+					<h5 align='center'> Hist&oacutericos Reporte Certificados emitidos SG </h5>
+					<div style="width: 100%;">
+						<canvas id="repCertEmitSGHistChart" height="80"></canvas>
+					</div>
+				</div>
+
+             </div>
+
+            <div class="clearfix" style="background-color:white;"></div>
+        </div>
+    </div>
+		     <br />			 
 <!--	<div class="row">
          <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="dashboard_graph" >
