@@ -8,6 +8,8 @@ app.controller('dashboard_controller', ['$scope', function($scope,$http) {
 	var repMezclaPortHist = document.getElementById("repMezclaPortHistChart");
 	var repCertEmitSG = document.getElementById("repCertEmitSGChart");
 	var repCertEmitSGHist = document.getElementById("repCertEmitSGHistChart");
+	var repServRealizSG = document.getElementById("repServRealizSGChart");
+	var repServRealizSGHist = document.getElementById("repServRealizSGHistChart");
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
 // REPORTES CERTIFICADOS VIGENTES	
@@ -389,6 +391,88 @@ $scope.graficarepCertEmitSGHist = function(){
 	});
 };
 
+// REPORTES SERVICIOS REALIZADOS SG	
+$scope.graficarepServRealizSG = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_reportes/getServRealizSG/",
+		success:function(data){
+			//for(var i = 0 ; i < data.length ; i++){
+			//	x = data.X;
+			//	y = data.Y;
+			//}
+			var mybarChart = new Chart(repServRealizSG, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'Cantidad Servicios Realizados de SG',
+						backgroundColor: 'rgba(255, 0, 0, 0.5)',
+						data: data.Y1,
+					}]
+				},
+
+				options: {
+					scales: {
+						xAxes: [{
+							stacked: true,
+							ticks: {
+								autoSkip: false
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]	
+					}
+					
+				}
+			});
+	
+		}
+	});
+};
+
+// REPORTES SERVICIOS REALIZADOS SG HISTORICO	
+$scope.graficarepServRealizSGHist = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_reportes/getServRealizSGHist/",
+		success:function(data){
+			
+			var mybarChart = new Chart(repServRealizSGHist, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'Cantidad Servicios Realizados de SG',
+						backgroundColor: 'rgba(255, 0, 0, 0.5)',
+						data: data.Y1,
+					}]
+				},
+
+				options: {
+					
+					scales: {
+						xAxes: [{
+							stacked: true
+
+						}],
+						yAxes: [{
+							stacked: true
+						}]	
+					}
+					
+				}	
+			});
+	
+		}
+	});
+};
+
 $scope.graficaRepCertVig();
 $scope.graficaRepCertVigHist();
 $scope.graficaRepCompContr();
@@ -397,6 +481,8 @@ $scope.graficaRepMezclaPort();
 $scope.graficaRepMezclaPortHist();
 $scope.graficarepCertEmitSG();
 $scope.graficarepCertEmitSGHist();
+$scope.graficarepServRealizSG();
+$scope.graficarepServRealizSGHist();
 /***********************************************************************/	
 var origeng = document.getElementById("origenChart");
 var estatusg = document.getElementById("estatusChart");
