@@ -43,46 +43,41 @@ $objeto = json_decode($json); // Lo transforma de JSON a un objeto de PHP
 $NO_EMPLEADO = $objeto->NO;
 valida_parametro_and_die($NO_EMPLEADO, "Es necesario capturar un No. empleado");
 
-$ANTIGUEDAD = $objeto->ANTIGUEDAD;
-if(!$ANTIGUEDAD){$ANTIGUEDAD=0;}
+$ESCRITORIO= $objeto->ESCRITORIO;
+if(!$ESCRITORIO){$ESCRITORIO="";}
 
-$SEGURO_GASTOS_MEDICOS= $objeto->SEGURO_GASTOS_MEDICOS;
+$SILLA = $objeto->SILLA;
+if(!$SILLA){$SILLA="";}
 
-$DIAS_VACACIONES = $objeto->DIAS_VACACIONES;
-if(!$DIAS_VACACIONES) {$DIAS_VACACIONES = 0;}
+$TELEFONO_FIJO = $objeto->TELEFONO_FIJO;
+if(!$TELEFONO_FIJO){$TELEFONO_FIJO="";}
 
-$PRESTAMOS_CAJA= $objeto->PRESTAMOS_CAJA;
-if(!$PRESTAMOS_CAJA){$PRESTAMOS_CAJA=0;}
-
-$PRESTAMOS_IMNC = $objeto->PRESTAMOS_IMNC;
-if(!$PRESTAMOS_IMNC){$PRESTAMOS_IMNC = 0;}
-
-$count = $database->count("PERSONAL_INTERNO_FICHA",["NO_EMPLEADO" => $NO_EMPLEADO]);
+$MOVIL = $objeto->MOVIL;
+if(!$MOVIL){$MOVIL="";}
+$count = $database->count("PERSONAL_INTERNO_MOBILIARIO",["NO_EMPLEADO" => $NO_EMPLEADO]);
 if($count==0)
 {
-    $id = $database->insert("PERSONAL_INTERNO_FICHA", [
+    $id = $database->insert("PERSONAL_INTERNO_MOBILIARIO", [
         "NO_EMPLEADO" => $NO_EMPLEADO,
-        "ANTIGUEDAD"=>$ANTIGUEDAD,
-        "SEGURO_GASTOS_MEDICOS"=>$SEGURO_GASTOS_MEDICOS,
-        "DIAS_VACACIONES"=>$DIAS_VACACIONES,
-        "PRESTAMOS_CAJA"=>$PRESTAMOS_CAJA,
-        "PRESTAMOS_IMNC"=>$PRESTAMOS_IMNC,
+        "ESCRITORIO"=>$ESCRITORIO,
+        "SILLA"=>$SILLA,
+        "TELEFONO_FIJO"=>$TELEFONO_FIJO,
+        "MOVIL"=>$MOVIL,
 
     ]);
     valida_error_medoo_and_die();
 
 }else
 {
-    $id = $database->update("PERSONAL_INTERNO_FICHA", [
-        "ANTIGUEDAD"=>$ANTIGUEDAD,
-        "SEGURO_GASTOS_MEDICOS"=>$SEGURO_GASTOS_MEDICOS,
-        "DIAS_VACACIONES"=>$DIAS_VACACIONES,
-        "PRESTAMOS_CAJA"=>$PRESTAMOS_CAJA,
-        "PRESTAMOS_IMNC"=>$PRESTAMOS_IMNC,
+    $id = $database->update("PERSONAL_INTERNO_MOBILIARIO", [
+        "ESCRITORIO"=>$ESCRITORIO,
+        "SILLA"=>$SILLA,
+        "TELEFONO_FIJO"=>$TELEFONO_FIJO,
+        "MOVIL"=>$MOVIL,
 
     ],["NO_EMPLEADO" => $NO_EMPLEADO]);
 
-    valida_error_medoo_and_die();
+
 }
 
 

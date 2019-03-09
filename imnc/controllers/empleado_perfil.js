@@ -12,8 +12,10 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
     $scope.tab_selected= getQueryVariable("tab");
     $scope.id= getQueryVariable("id");
     $scope.empleado = null;
+    $scope.activos = null;
     $scope.flag = false;
     $scope.formDataFicha = {};
+    $scope.formDataActivo = {};
 
 // ===================================================================
 // ***** 			FUNCION PARA CARGAR LOS CURSOS				 *****
@@ -24,6 +26,7 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
             .then(function( response ){
                 $scope.empleado = response.data;
                 $scope.cargaFicha();
+                $scope.cargarActivos();
                 var fecha = $scope.empleado.FECHA_NACIMIENTO
                 $scope.empleado.FECHA_NACIMIENTO = $scope.formatFecha(fecha);
                 $(".loading").hide();
@@ -243,6 +246,120 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
             while (cadena.charAt(x) == " ") x++;
             while (cadena.charAt(y) == " ") y--;
             return cadena.substr(x, y - x + 1);
+    }
+// ===================================================================
+// ***** 			FUNCION PARA CARGAR ACTIVOS				 *****
+// ===================================================================
+    $scope.cargarActivos= function(){
+        $(".loading").show();
+        $http.get(  global_apiserver + "/personal_interno/getActivosById/?id="+$scope.id)
+            .then(function( response ){
+                $scope.activos = response.data;
+                $(".loading").hide();
+            });
+    }
+// =======================================================================================
+// ***** 		FUNCION PARA ABRIR MODAL INSERTAR ACTUALIZAR MOBILIARIO	             *****
+// =======================================================================================
+    $scope.openModalInsertUpdateM = function(){
+        clear_mobiliario();
+        $scope.modal_mobiliario = "Editando Mobiliario";
+        $scope.formDataActivo.escritorio = $scope.activos.MOBILIARIO.ESCRITORIO;
+        $scope.formDataActivo.silla = $scope.activos.MOBILIARIO.SILLA;
+        $scope.formDataActivo.telefono = $scope.activos.MOBILIARIO.TELEFONO_FIJO;
+        $scope.formDataActivo.movil = $scope.activos.MOBILIARIO.MOVIL;
+
+        $("#modalInsertUpdateM").modal("show");
+
+    }
+// =======================================================================================
+// ***** 		             FUNCION LIMPIAR MODAL MOBILIARIO                        *****
+// =======================================================================================
+    function clear_mobiliario(){
+        $scope.formDataActivo.escritorio = "";
+        $scope.formDataActivo.silla = "";
+        $scope.formDataActivo.telefono = "";
+        $scope.formDataActivo.movil = "";
+    }
+// ===========================================================================
+// ***** 			FUNCION PARA EDITAR UN MOBILIARIO				 *****
+// ===========================================================================
+    $scope.editarM=function(formDataActivo) {
+
+        var mobiliario = {
+            NO: $scope.empleado.NO_EMPLEADO,
+            ESCRITORIO: formDataActivo.escritorio,
+            SILLA: formDataActivo.silla,
+            TELEFONO_FIJO: formDataActivo.telefono,
+            MOVIL: formDataActivo.movil,
+
+        };
+        $.post(global_apiserver + "/personal_interno/updateMobiliario/", JSON.stringify(mobiliario), function (respuesta) {
+            respuesta = JSON.parse(respuesta);
+            if (respuesta.resultado == "ok") {
+                $scope.cargarActivos();
+                notify("Éxito", "Se ha guardado el mobiliario del empleado", "success");
+                $("#modalInsertUpdateM").modal("hide");
+            }
+            else {
+                notify("Error", respuesta.mensaje, "error");
+            }
+
+        });
+
+
+    }
+
+// =======================================================================================
+// ***** 		FUNCION PARA ABRIR MODAL INSERTAR ACTUALIZAR EQUIPOS	             *****
+// =======================================================================================
+    $scope.openModalInsertUpdateE = function(){
+        clear_equipos();
+        $scope.modal_equipos = "Editando Equipos";
+        $scope.formDataActivo.computadora = $scope.activos.EQUIPOS.COMPUTADORA;
+        $scope.formDataActivo.modelo = $scope.activos.EQUIPOS.MODELO;
+        $scope.formDataActivo.software = $scope.activos.EQUIPOS.SOFTWARE;
+        $scope.formDataActivo.licenciamiento = $scope.activos.EQUIPOS.LICENCIAMIENTO;
+
+        $("#modalInsertUpdateE").modal("show");
+
+    }
+// =======================================================================================
+// ***** 		             FUNCION LIMPIAR MODAL MOBILIARIO                        *****
+// =======================================================================================
+    function clear_equipos(){
+        $scope.formDataActivo.computadora = "";
+        $scope.formDataActivo.modelo = "";
+        $scope.formDataActivo.software = "";
+        $scope.formDataActivo.licenciamiento = "";
+    }
+// ===========================================================================
+// ***** 			FUNCION PARA EDITAR UN MOBILIARIO				 *****
+// ===========================================================================
+    $scope.editarE=function(formDataActivo) {
+
+        var equipos = {
+            NO: $scope.empleado.NO_EMPLEADO,
+            COMPUTADORA: formDataActivo.computadora,
+            MODELO: formDataActivo.modelo,
+            SOFTWARE: formDataActivo.software,
+            LICENCIAMIENTO: formDataActivo.licenciamiento,
+
+        };
+        $.post(global_apiserver + "/personal_interno/updateEquipos/", JSON.stringify(equipos), function (respuesta) {
+            respuesta = JSON.parse(respuesta);
+            if (respuesta.resultado == "ok") {
+                $scope.cargarActivos();
+                notify("Éxito", "Se han guardado los equipos del empleado", "success");
+                $("#modalInsertUpdateE").modal("hide");
+            }
+            else {
+                notify("Error", respuesta.mensaje, "error");
+            }
+
+        });
+
+
     }
 // ================================================================================
 // *****                        Al cargar la página                           *****

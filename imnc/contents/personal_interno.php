@@ -170,7 +170,7 @@
                         <span  ng-repeat="(key, item) in fichas" style="font-size: 12px; line-height: 20px;">
                              <div class="col-md-4 col-sm-4 col-xs-12 animated fadeInDown">
                               <div class="well profile_view">
-                                <div class="col-sm-12" style="min-height: 200px;">
+                                <div class="col-sm-12" style="min-height: 300px;">
                                   <div class="left col-xs-9">
                                     <h4>{{item.NOMBRE+' '+item.APELLIDO_PATERNO+' '+item.APELLIDO_MATERNO}}</h4>
                                     <ul class="list-unstyled">
