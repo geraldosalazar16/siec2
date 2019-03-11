@@ -10,6 +10,8 @@ app.controller('dashboard_controller', ['$scope', function($scope,$http) {
 	var repCertEmitSGHist = document.getElementById("repCertEmitSGHistChart");
 	var repServRealizSG = document.getElementById("repServRealizSGChart");
 	var repServRealizSGHist = document.getElementById("repServRealizSGHistChart");
+	var repDiasAudSG = document.getElementById("repDiasAudSGChart");
+	var repDiasAudSGHist = document.getElementById("repDiasAudSGHistChart");
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
 // REPORTES CERTIFICADOS VIGENTES	
@@ -19,10 +21,7 @@ $scope.graficaRepCertVig = function(){
 		dataType: 'json',
 		url:global_apiserver+"/i_reportes/getCantidadServiciosContratados1/",
 		success:function(data){
-			//for(var i = 0 ; i < data.length ; i++){
-			//	x = data.X;
-			//	y = data.Y;
-			//}
+		
 			var mybarChart = new Chart(repCertVig, {
 				type: 'line',
 				data: {
@@ -129,10 +128,7 @@ $scope.graficaRepCompContr = function(){
 		dataType: 'json',
 		url:global_apiserver+"/i_reportes/getCompContratacion/",
 		success:function(data){
-			//for(var i = 0 ; i < data.length ; i++){
-			//	x = data.X;
-			//	y = data.Y;
-			//}
+			
 			var mybarChart = new Chart(repCompContr, {
 				type: 'line',
 				data: {
@@ -223,10 +219,7 @@ $scope.graficaRepMezclaPort = function(){
 		dataType: 'json',
 		url:global_apiserver+"/i_reportes/getMezclaPortafolio/",
 		success:function(data){
-			//for(var i = 0 ; i < data.length ; i++){
-			//	x = data.X;
-			//	y = data.Y;
-			//}
+			
 			var mybarChart = new Chart(repMezclaPort, {
 				type: 'line',
 				data: {
@@ -317,10 +310,7 @@ $scope.graficarepCertEmitSG = function(){
 		dataType: 'json',
 		url:global_apiserver+"/i_reportes/getCertEmitSG/",
 		success:function(data){
-			//for(var i = 0 ; i < data.length ; i++){
-			//	x = data.X;
-			//	y = data.Y;
-			//}
+			
 			var mybarChart = new Chart(repCertEmitSG, {
 				type: 'bar',
 				data: {
@@ -398,10 +388,7 @@ $scope.graficarepServRealizSG = function(){
 		dataType: 'json',
 		url:global_apiserver+"/i_reportes/getServRealizSG/",
 		success:function(data){
-			//for(var i = 0 ; i < data.length ; i++){
-			//	x = data.X;
-			//	y = data.Y;
-			//}
+			
 			var mybarChart = new Chart(repServRealizSG, {
 				type: 'bar',
 				data: {
@@ -473,6 +460,87 @@ $scope.graficarepServRealizSGHist = function(){
 	});
 };
 
+
+// REPORTES DIAS AUDITOR SG	
+$scope.graficarepDiasAudSG = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_reportes/getDiasAudSG/",
+		success:function(data){
+			
+			var mybarChart = new Chart(repDiasAudSG, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'Cantidad Dias Auditor de SG',
+						backgroundColor: 'rgba(255, 0, 0, 0.5)',
+						data: data.Y1,
+					}]
+				},
+
+				options: {
+					scales: {
+						xAxes: [{
+							stacked: true,
+							ticks: {
+								autoSkip: false
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]	
+					}
+					
+				}
+			});
+	
+		}
+	});
+}
+
+// REPORTES DIAS AUDITOR SG	HISTORICO	
+$scope.graficarepDiasAudSGHist = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_reportes/getDiasAudSGHist/",
+		success:function(data){
+			
+			var mybarChart = new Chart(repDiasAudSGHist, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'Cantidad Dias Auditor de SG',
+						backgroundColor: 'rgba(255, 0, 0, 0.5)',
+						data: data.Y1,
+					}]
+				},
+
+				options: {
+					
+					scales: {
+						xAxes: [{
+							stacked: true
+
+						}],
+						yAxes: [{
+							stacked: true
+						}]	
+					}
+					
+				}	
+			});
+	
+		}
+	});
+};
+
+
 $scope.graficaRepCertVig();
 $scope.graficaRepCertVigHist();
 $scope.graficaRepCompContr();
@@ -483,6 +551,8 @@ $scope.graficarepCertEmitSG();
 $scope.graficarepCertEmitSGHist();
 $scope.graficarepServRealizSG();
 $scope.graficarepServRealizSGHist();
+$scope.graficarepDiasAudSG();
+$scope.graficarepDiasAudSGHist();
 /***********************************************************************/	
 var origeng = document.getElementById("origenChart");
 var estatusg = document.getElementById("estatusChart");
