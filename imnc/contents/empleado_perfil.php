@@ -123,27 +123,63 @@
                   </div>
                   <!-- Tab activos fijos -->
                   <div role="tabpanel" class="tab-pane fade" id="tab_activos_fijos" aria-labelledby="profile-tab">
+                      <div class="x_title">
+                          <h2>Mobiliario</h2>
                       <?php
-                      if ($modulo_permisos["EMPLEADOS"]["registrar"] == 1) {
-                          echo '<button type="button"  class="btn btn-primary btn-xs btn-imnc" style="float: right;"> ';
-                          echo '  <i class="fa fa-plus"> </i> Agregar activo fijo ';
-                          echo '</button>';
-                      }
-                      ?>
-                    
-                     <table class="table table-striped responsive-utilities jambo_table bulk_action">
-                      <thead>
-                        <tr class="headings">
-                          <th class="column-title">#</th>
-                          <th class="column-title"></th>
-                          <th class="column-title"></th>
-						  <th class="column-title"></th>
-                        </tr>
-                      </thead>
-                      <tbody  style="font-size: 12px;" class="ng-scope even pointer" >
-                        
-                      </tbody>
-                    </table>
+                      if ($modulo_permisos["EMPLEADOS"]["registrar"] == 1) {?>
+                          <button type="submit"  class="btn btn-primary pull-right" ng-click="openModalInsertUpdateM()" ng-if="flag==false">Editar Mobiliario</button>
+                      <?php }  ?>
+                          <div class="clearfix"></div>
+                    </div>
+                         <table class="table table-striped responsive-utilities jambo_table bulk_action">
+                          <thead>
+                            <tr class="headings">
+                              <th class="column-title">Escritorio</th>
+                              <th class="column-title">Silla</th>
+                              <th class="column-title">Telefono fijo</th>
+                              <th class="column-title">Movil</th>
+                              <th class="column-title"></th>
+                            </tr>
+                          </thead>
+                          <tbody  style="font-size: 12px;" class="ng-scope even pointer" >
+                          <tr>
+                              <th class="column-title">{{activos.MOBILIARIO.ESCRITORIO}}</th>
+                              <th class="column-title">{{activos.MOBILIARIO.SILLA}}</th>
+                              <th class="column-title">{{activos.MOBILIARIO.TELEFONO_FIJO}}</th>
+                              <th class="column-title">{{activos.MOBILIARIO.MOVIL}}</th>
+                              <th class="column-title"></th>
+                          </tr>
+                          </tbody>
+                        </table>
+
+                         <div class="x_title">
+                          <h2>Equipos</h2>
+                      <?php
+                      if ($modulo_permisos["EMPLEADOS"]["registrar"] == 1) {?>
+                          <button type="submit"  class="btn btn-primary pull-right" ng-click="openModalInsertUpdateE()" ng-if="flag==false">Editar Equipos</button>
+                      <?php }  ?>
+                          <div class="clearfix"></div>
+                    </div>
+                         <table class="table table-striped responsive-utilities jambo_table bulk_action">
+                          <thead>
+                            <tr class="headings">
+                              <th class="column-title">Computadora</th>
+                              <th class="column-title">Modelo</th>
+                              <th class="column-title">Software </th>
+                              <th class="column-title">Licenciamiento</th>
+                              <th class="column-title"></th>
+                            </tr>
+                          </thead>
+                          <tbody  style="font-size: 12px;" class="ng-scope even pointer" >
+                          <tr>
+                              <th class="column-title">{{activos.EQUIPOS.COMPUTADORA}}</th>
+                              <th class="column-title">{{activos.EQUIPOS.MODELO}}</th>
+                              <th class="column-title">{{activos.EQUIPOS.SOFTWARE}}</th>
+                              <th class="column-title">{{activos.EQUIPOS.LICENCIAMIENTO}}</th>
+                              <th class="column-title"></th>
+                          </tr>
+                          </tbody>
+                        </table>
                   </div>
                 </div>
               </div>
@@ -153,35 +189,110 @@
         </div>
       </div>
     </div>
-    <!--MODAL INSERTAR EDITAR-->
-    <div class="modal fade"  id="modalInsertUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    <!--MODAL INSERTAR EDITAR MOBILIARIO-->
+    <div class="modal fade"  id="modalInsertUpdateM" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          data-backdrop="static" data-keyboard="true">
             <div class="modal-dialog" role="document" id="modal-size" >
                 <div class="modal-content">
                    <div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="modalTitulo">{{modal_ficha}}</h4>
+                        <h4 class="modal-title" id="modalTitulo">{{modal_mobiliario}}</h4>
                     </div>
                     <div class="modal-body">
                          <form>
                             <div class="form-group">
-								<label for="no">No.<span class="required">*</span></label>
+								<label for="escritorio">Escritorio</label>
 								<div>
-									<input type="text" class="form-control" id="no" name="no" ng-model="formData.no"
-                                           ng-change="noerror = (formData.no?'':'No debe estar vacio')" required ng-disabled="accion=='editar'">
-									<span class="text-danger" >{{noerror}}</span>
+									<input type="text" class="form-control" id="escritorio" name="escritorio" ng-model="formDataActivo.escritorio"
+                                     required >
+									<span class="text-danger" ></span>
 								</div>
 							</div>
                             <div class="form-group">
-								<label for="no">No.<span class="required">*</span></label>
+								<label for="silla">Silla</label>
 								<div>
-									<input type="text" class="form-control" id="no" name="no" ng-model="formData.no"
-                                           ng-change="noerror = (formData.no?'':'No debe estar vacio')" required ng-disabled="accion=='editar'">
-									<span class="text-danger" >{{noerror}}</span>
+									<input type="text" class="form-control" id="silla" name="silla" ng-model="formDataActivo.silla"
+                                           required >
+									<span class="text-danger" ></span>
 								</div>
 							</div>
+                            <div class="form-group">
+								<label for="telefono">Teléfono Fijo </label>
+								<div>
+									<input type="text" class="form-control" id="telefono" name="telefono" ng-model="formDataActivo.telefono"
+                                           required >
+									<span class="text-danger" ></span>
+								</div>
+							</div>
+                            <div class="form-group">
+								<label for="movil">Movil </label>
+								<div>
+									<input type="text" class="form-control" id="movil" name="movil" ng-model="formDataActivo.movil"
+                                           required >
+									<span class="text-danger" ></span>
+								</div>
+							</div>
+
                          </form>
                     </div>
+                     <div class="modal-footer">
+                         <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cerrar</button>
+                         <button type="button" class="btn btn-primary btn-sm"  ng-click="editarM(formDataActivo)">Guardar</button>
+                     </div>
+                </div>
+            </div>
+    </div>
+
+    <!--MODAL INSERTAR EDITAR EQUIPOS-->
+    <div class="modal fade"  id="modalInsertUpdateE" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         data-backdrop="static" data-keyboard="true">
+            <div class="modal-dialog" role="document" id="modal-size" >
+                <div class="modal-content">
+                   <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalTitulo">{{modal_equipos}}</h4>
+                    </div>
+                    <div class="modal-body">
+                         <form>
+                            <div class="form-group">
+								<label for="computadora">Computadora</label>
+								<div>
+									<input type="text" class="form-control" id="computadora" name="computadora" ng-model="formDataActivo.computadora"
+                                           required >
+									<span class="text-danger" ></span>
+								</div>
+							</div>
+                            <div class="form-group">
+								<label for="modelo">Modelo</label>
+								<div>
+									<input type="text" class="form-control" id="modelo" name="modelo" ng-model="formDataActivo.modelo"
+                                           required >
+									<span class="text-danger" ></span>
+								</div>
+							</div>
+                            <div class="form-group">
+								<label for="software">Software</label>
+								<div>
+									<input type="text" class="form-control" id="software" name="software" ng-model="formDataActivo.software"
+                                           required >
+									<span class="text-danger" ></span>
+								</div>
+							</div>
+                            <div class="form-group">
+								<label for="licenciamiento">Licenciamiento </label>
+								<div>
+									<input type="text" class="form-control" id="licenciamiento" name="licenciamiento" ng-model="formDataActivo.licenciamiento"
+                                           required >
+									<span class="text-danger" ></span>
+								</div>
+							</div>
+
+                         </form>
+                    </div>
+                     <div class="modal-footer">
+                         <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cerrar</button>
+                         <button type="button" class="btn btn-primary btn-sm"  ng-click="editarE(formDataActivo)">Guardar</button>
+                     </div>
                 </div>
             </div>
     </div>

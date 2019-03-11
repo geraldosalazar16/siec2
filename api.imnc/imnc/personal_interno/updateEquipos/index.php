@@ -43,46 +43,41 @@ $objeto = json_decode($json); // Lo transforma de JSON a un objeto de PHP
 $NO_EMPLEADO = $objeto->NO;
 valida_parametro_and_die($NO_EMPLEADO, "Es necesario capturar un No. empleado");
 
-$ANTIGUEDAD = $objeto->ANTIGUEDAD;
-if(!$ANTIGUEDAD){$ANTIGUEDAD=0;}
+$COMPUTADORA = $objeto->COMPUTADORA;
+if(!$COMPUTADORA){$COMPUTADORA="";}
 
-$SEGURO_GASTOS_MEDICOS= $objeto->SEGURO_GASTOS_MEDICOS;
+$MODELO= $objeto->MODELO;
+if(!$MODELO){$MODELO="";}
 
-$DIAS_VACACIONES = $objeto->DIAS_VACACIONES;
-if(!$DIAS_VACACIONES) {$DIAS_VACACIONES = 0;}
+$SOFTWARE = $objeto->SOFTWARE;
+if(!$SOFTWARE){$SOFTWARE="";}
 
-$PRESTAMOS_CAJA= $objeto->PRESTAMOS_CAJA;
-if(!$PRESTAMOS_CAJA){$PRESTAMOS_CAJA=0;}
-
-$PRESTAMOS_IMNC = $objeto->PRESTAMOS_IMNC;
-if(!$PRESTAMOS_IMNC){$PRESTAMOS_IMNC = 0;}
-
-$count = $database->count("PERSONAL_INTERNO_FICHA",["NO_EMPLEADO" => $NO_EMPLEADO]);
+$LICENCIAMIENTO = $objeto->LICENCIAMIENTO;
+if(!$LICENCIAMIENTO){$LICENCIAMIENTO="";}
+$count = $database->count("PERSONAL_INTERNO_EQUIPOS",["NO_EMPLEADO" => $NO_EMPLEADO]);
 if($count==0)
 {
-    $id = $database->insert("PERSONAL_INTERNO_FICHA", [
+    $id = $database->insert("PERSONAL_INTERNO_EQUIPOS", [
         "NO_EMPLEADO" => $NO_EMPLEADO,
-        "ANTIGUEDAD"=>$ANTIGUEDAD,
-        "SEGURO_GASTOS_MEDICOS"=>$SEGURO_GASTOS_MEDICOS,
-        "DIAS_VACACIONES"=>$DIAS_VACACIONES,
-        "PRESTAMOS_CAJA"=>$PRESTAMOS_CAJA,
-        "PRESTAMOS_IMNC"=>$PRESTAMOS_IMNC,
+        "COMPUTADORA"=>$COMPUTADORA,
+        "MODELO"=>$MODELO,
+        "SOFTWARE"=>$SOFTWARE,
+        "LICENCIAMIENTO"=>$LICENCIAMIENTO,
 
     ]);
     valida_error_medoo_and_die();
 
 }else
 {
-    $id = $database->update("PERSONAL_INTERNO_FICHA", [
-        "ANTIGUEDAD"=>$ANTIGUEDAD,
-        "SEGURO_GASTOS_MEDICOS"=>$SEGURO_GASTOS_MEDICOS,
-        "DIAS_VACACIONES"=>$DIAS_VACACIONES,
-        "PRESTAMOS_CAJA"=>$PRESTAMOS_CAJA,
-        "PRESTAMOS_IMNC"=>$PRESTAMOS_IMNC,
+    $id = $database->update("PERSONAL_INTERNO_EQUIPOS", [
+        "COMPUTADORA"=>$COMPUTADORA,
+        "MODELO"=>$MODELO,
+        "SOFTWARE"=>$SOFTWARE,
+        "LICENCIAMIENTO"=>$LICENCIAMIENTO,
 
     ],["NO_EMPLEADO" => $NO_EMPLEADO]);
 
-    valida_error_medoo_and_die();
+
 }
 
 
