@@ -56,25 +56,6 @@ else{
 
 if ($completo == "true") { // Realiza consultas adicionales para regresar un reporte completo
 
-		// SG_TIPOS_SERVICIO => SG_SECTORES
-		/*$sg_sectores = $database->select("I_SG_SECTORES", "*", ["ID_SERVICIO_CLIENTE_ETAPA"=>$id_sce]);
-		valida_error_medoo_and_die();
-		$sg_sectores_array = array();
-
-			// SG_TIPOS_SERVICIO => SG_SECTORES => SECTORES
-			for ($i=0; $i < count($sg_sectores) ; $i++) { 
-				$sectores = $database->get("SECTORES", "*", ["ID_SECTOR"=>$sg_sectores[$i]["ID_SECTOR"]]);
-				valida_error_medoo_and_die();
-				$sg_sectores[$i]["SECTORES"] = $sectores;
-				if (!in_array($sectores["ID_SECTOR"], $sg_sectores_array)) {
-					array_push($sg_sectores_array, $sectores["ID_SECTOR"]);
-				}
-			}
-
-		$servicio_cliente_etapa["SG_SECTORES_ARRAY"] = $sg_sectores_array;
-		$servicio_cliente_etapa["SG_SECTORES"] = $sg_sectores;*/
-
-
 		// EC_TIPOS_SERVICIO => NORMAS
 		$norma = $database->query("SELECT DISTINCT `ID_NORMA` FROM `SCE_NORMAS` WHERE `ID_SCE`= ".$id_sce)->fetchAll(PDO::FETCH_ASSOC);
 		valida_error_medoo_and_die();
@@ -133,7 +114,8 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 
 
 	// EC_AUDITORIA_GRUPO
-	$i_sg_auditoria_grupo = $database->select("I_SG_AUDITORIA_GRUPOS", "*", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$id_tipo_auditoria,"CICLO"=>$ciclo]]);
+	//$i_sg_auditoria_grupo = $database->select("I_SG_AUDITORIA_GRUPOS", "*", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$id_tipo_auditoria,"CICLO"=>$ciclo]]);
+	$i_sg_auditoria_grupo = $database->query("SELECT * FROM I_SG_AUDITORIA_GRUPOS WHERE ID_SERVICIO_CLIENTE_ETAPA= ".$id_sce." AND TIPO_AUDITORIA=".$id_tipo_auditoria." AND CICLO=".$ciclo."  ORDER BY FIELD(ID_ROL,'3','1','6','4','2','8','5','7','11','9','10','12','13','14') ;")->fetchAll();
 	valida_error_medoo_and_die();
 	
 		// EC_AUDITORIA_GRUPO => PT_CALIF y PT_ROL

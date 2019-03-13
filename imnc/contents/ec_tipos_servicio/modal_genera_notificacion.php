@@ -15,64 +15,42 @@
 			<input type="hidden" id="inputServicio" name="SERVICIO" value="" />
             <input type="hidden" id="inputNombreUsuario" name="nombreUsuario" value="" />
             <input type="hidden" id="inputNotas" name="txtNotas" value="" />
+            <input type="hidden" id="inputNotasEdit" name="txtNotasEdit" value="" />
+            <input type="hidden" id="inputDomicilio" name="DOMICILIO" value="" />
+            <input type="hidden" id="inputSave" name="SAVE" value="" />
             <div class="form-group">
 				<label class="control-label"> Domicilio <span class="required">*</span></label>
 				<select class="form-control" name="cmbDomicilioNotificacionPDF" ng-model="formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF" ng-options="Domicilio.ID as Domicilio.NOMBRE_DOMICILIO for Domicilio in Domicilios" required ng-class="{ error: exampleFormGeneraNotificacionPDF.cmbDomicilioNotificacionPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}" ><!---->
                 </select>
 			</div>
-	<!--		<div class="form-group" hidden>
-				<label class="control-label"> Tipo de notificación <span class="required">*</span></label>
-				<select class="form-control" name="cmbTipoNotificacionPDF" ng-model="formDataGeneraNotificacionPDF.cmbTipoNotificacionPDF"  requiredng-class="{ error: exampleFormGeneraNotificacionPDF.cmbTipoNotificacionPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}">
-                  <option value="" selected disabled>-- elige una opción --</option>
-                  <option value="Notificación / Programa de Auditoría">Notificación</option>
-                  <option value="Notificación de Cambios / Programa de Auditoría">Notificación de cambios</option>
-				</select>
-			</div>		--> 
-<!--
-            <div class="form-group" hidden>
-				<label class="control-label"> Tipo de cambios <span class="required">*</span></label>
-				<select class="form-control" name="cmbTipoCambiosPDF" ng-model="formDataGeneraNotificacionPDF.cmbTipoCambiosPDF"   required ng-class="{ error: exampleFormGeneraNotificacionPDF.cmbTipoCambiosPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}">
-					<option value="y" selected>Ninguno</option>
-					<option value="hemos realizado cambios de técnicos">Cambios de técnicos</option>
-					<option value="hemos realizado cambios de fechas">Cambios de fechas</option>
-					<option value="hemos realizado cambios de técnicos y de fechas">Cambios de técnicos y de fechas</option>
-					<option value="y a los cambio solicitados">Cambios solicitados</option>
-                </select>
-            </div>		--> 
-<!--
-            <div class="form-group" hidden>
-              <label class="control-label"> ¿Certificacón o mantenimiento? <span class="required">*</span></label>
-              <select class="form-control" name="cmbCertificacionMantenimientoPDF" ng-model="formDataGeneraNotificacionPDF.cmbCertificacionMantenimientoPDF"   required ng-class="{ error: exampleFormGeneraNotificacionPDF.cmbCertificacionMantenimientoPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}" >
-                  <option value="" selected disabled>-- elige una opción --</option>
-                  <option value="su proceso de certificación">Certificación</option>
-                  <option value="el mantenimiento">Mantenimiento</option>
-                </select> 
-            </div>
--->
             <div class="form-group" style="margin-top: 20px;margin-bottom: 20px;">
                 <label class="control-label"> Seleccione el Tipo de Servicio <span class="required">*</span></label><br>
                     <label class="checkbox-inline">
                         <input  id="chckIMNC" type="checkbox" ng-model="formDataGeneraNotificacionPDF.chckIMNC" class="checkbox"  value="true" name="CHCK1" > Servicio en instalaciones del IMNC
                     </label>
                     <label class="checkbox-inline">
-                        <input  id="chckSitio" type="checkbox" ng-model="formDataGeneraNotificacionPDF.chckSitio" class="checkbox"  value="true" name="CHCK2"> Servicio en Sitio
+                        <input  id="chckSitio" type="checkbox" ng-model="formDataGeneraNotificacionPDF.chckSitio" class="checkbox"  value="true" name="CHCK2" ng-checked="true" ng-init="formDataGeneraNotificacionPDF.chckSitio=true"> Servicio en Sitio
                     </label>
 
                 <label class="text-danger" ng-if="chck_error" style="margin-top: 10px;">Debe seleccionar al menos una opción</label>
             </div>
             <div class="form-group">
               <label class="control-label" >Nota adicional: </label>
-              <textarea name="txtNotaPDF" class="form-control" rows="5" ng-model="formDataGeneraNotificacionPDF.txtNotaPDF" ></textarea>
+              <textarea name="txtNotaPDF" id="txtNotaPDF" class="form-control" rows="5" ng-model="formDataGeneraNotificacionPDF.txtNotaPDF" ></textarea>
               <input type="button" class="btn"  ng-click="addNote(formDataGeneraNotificacionPDF.txtNotaPDF)" value="+ Agregar Nota">
                 <br>
-                <table class="table" ng-if="countnotas>0" >
+                <table class="table" style="width: 100%" ng-if="countnotas>0" >
                     <thead>
-                    <th width="10">#</th>
-                    <th>Nota</th>
+                    <th width="10px">#</th>
+                    <th width="80%">Nota</th>
+                    <th width="10px"></th>
                     </thead>
                     <tr ng-repeat="(index,item) in notas">
-                        <td><strong>{{index+3}}</strong></td>
-                        <td>{{item}}</td>
+                        <td ><strong>{{index+3}}</strong></td>
+                        <td style="text-align: justify">{{item}}</td>
+                        <td>
+                            <input type="button" class="btn btn-default btn-sm pull-right"  ng-click="deleteNote(index)" value=" - ">
+                        </td>
                     </tr>
                     <tr></tr>
                 </table>
@@ -91,6 +69,7 @@
                             <input type="text" name="txtCargoAutorizaPDF"  class="form-control"  ng-model="formDataGeneraNotificacionPDF.txtCargoAutorizaPDF"  required ng-class="{ error: exampleFormGeneraNotificacionPDF.txtCargoAutorizaPDF.$error.required && !exampleFormGeneraNotificacionPDF.$pristine}">
                         </div>
                         -->
+            <input type="button" class="btn btn-success pull-right mt-2" ng-click="submitFormGeneraNotificacionPDF('save')" ng-disabled="!exampleFormGeneraNotificacionPDF.$valid" value="Guardar y Generar PDF"/>
             <input type="button" class="btn btn-success pull-right mt-2" ng-click="submitFormGeneraNotificacionPDF()" ng-disabled="!exampleFormGeneraNotificacionPDF.$valid" value="Generar PDF"/>
           </form>
 		  
