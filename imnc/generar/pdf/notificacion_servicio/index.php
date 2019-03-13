@@ -55,6 +55,7 @@ $chck1 = $_REQUEST["CHCK1"];
 $chck2 = $_REQUEST["CHCK2"];
 $chck1 = ($chck1?'checked="true"':"");
 $chck2 = ($chck2?'checked="true"':"");
+$save = $_REQUEST["SAVE"];
 
 $id_domicilio =$abcde[1] ;
 //$tipoNotificacionPDF = $_REQUEST["cmbTipoNotificacionPDF"];
@@ -66,6 +67,68 @@ if($notasPDF)
     $notasPDF = explode("<|>",$notasPDF);
 }else{
     $notasPDF = [];
+}
+if($save == "save")
+{
+    $object = $database->get("AUDITORIAS_NOTIFICACION",["ID"],["AND"=>["ID_SCE"=>$id_sce,"ID_TA"=>$id_tipo_auditoria,"CICLO"=>$ciclo,"SERVICIO"=>$id_servicio]] );
+    valida_error_medoo_and_die();
+    $Domicilio = $_REQUEST["DOMICILIO"];
+    if(!$object)
+    {
+        $idc = $database->insert("AUDITORIAS_NOTIFICACION", [
+            "ID_SCE" => $id_sce,
+            "ID_TA"=>$id_tipo_auditoria,
+            "CICLO"=>$ciclo,
+            "SERVICIO"=>$id_servicio,
+            "DOMICILIO"=>$Domicilio,
+        ]);
+        valida_error_medoo_and_die();
+    }else{
+        $idc = $database->update("AUDITORIAS_NOTIFICACION", [
+            "DOMICILIO"=>$Domicilio,
+        ]);
+        valida_error_medoo_and_die();
+    }
+
+    $notasPDFEdit = $_REQUEST["txtNotasEdit"];
+    if($notasPDFEdit)
+    {
+        $notasPDFEdit = explode("<|>",$notasPDFEdit);
+        if(!$object)
+        {
+            foreach ($notasPDFEdit as $NOTA)
+            {
+
+                    $idn = $database->insert("AUDITORIAS_NOTIFICACION_NOTAS", [
+                        "ID_AUDITORIAS_NOTIFICACION" => $idc,
+                        "NOTA"=>$NOTA,
+                    ]);
+                    valida_error_medoo_and_die();
+
+            }
+
+        }
+        else
+        {
+
+            foreach ($notasPDFEdit as $NOTA)
+            {
+                $delete = $database->delete("AUDITORIAS_NOTIFICACION_NOTAS",["AND"=>["ID_AUDITORIAS_NOTIFICACION"=>$object["ID"],"NOTA"=>$NOTA]]);
+                if($delete==0)
+                {
+                    $idn = $database->insert("AUDITORIAS_NOTIFICACION_NOTAS", [
+                        "ID_AUDITORIAS_NOTIFICACION" => $object["ID"],
+                        "NOTA"=>$NOTA,
+                    ]);
+                    valida_error_medoo_and_die();
+                }
+
+            }
+
+
+        }
+
+    }
 }
 
 
@@ -90,6 +153,7 @@ valida_isset($json_response, "Error en la conexión a los datos para generar PDF
 
 $json_object = json_decode($json_response);
 
+
 //Datos para notificación
 $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 
@@ -107,11 +171,11 @@ valida_isset($arr_sectores, "Error: No se encuentra arr_sectores en linea: " . _
 $SECTORES = "";
 for ($i=0; $i < count($arr_sectores); $i++) {
 	if (($i+1) ==  count($arr_sectores)) { //Si es el ultimo elemento
-		$SECTORES .= $arr_sectores[$i]->SECTORES->NOMBRE;
+		$SECTORES .= $arr_sectores[$i]->SECTORES->ID;
 		valida_isset($SECTORES, "Error: No se encuentra SECTORES en linea: " . __LINE__);
 	}
 	else{
-		$SECTORES .= $arr_sectores[$i]->SECTORES->NOMBRE . ", ";
+		$SECTORES .= $arr_sectores[$i]->SECTORES->ID . ", ";
 		valida_isset($SECTORES, "Error: No se encuentra SECTORES en linea: " . __LINE__);
 	}
 }
@@ -224,10 +288,10 @@ for ($i=0; $i < count($pts) ; $i++) {
 	valida_isset($pts[$i]->PERSONAL_TECNICO_CALIFICACION->PERSONAL_TECNICO->APELLIDO_MATERNO, "Error: No se encuentra APELLIDO_MATERNO en linea: " . __LINE__);
 
 	$PERSONAL_TECNICO .= '<tr style="text-align:RIGHT;">';
-	$PERSONAL_TECNICO .= '	<td style="font-size: medium;" align="CENTER" width="75"> '.trim($pts[$i]->PERSONAL_TECNICO_ROL->ROL).' </td>';
-	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="225"> '.trim($PT_NOMBRE_COMPLETO).'  </td>';
-	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="75"> '.trim($pts[$i]->PERSONAL_TECNICO_CALIFICACION->REGISTRO).' </td>';
-	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="75"> '.trim($PT_SECTORES).' </td>';
+	$PERSONAL_TECNICO .= '	<td style="font-size: medium;" align="CENTER" width="20%"> '.trim($pts[$i]->PERSONAL_TECNICO_ROL->ROL).' </td>';
+	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="40%"> '.trim($PT_NOMBRE_COMPLETO).'  </td>';
+	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="20%"> '.trim($pts[$i]->PERSONAL_TECNICO_CALIFICACION->REGISTRO).' </td>';
+	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="20%"> '.trim($PT_SECTORES).' </td>';
 	$PERSONAL_TECNICO .= '</tr>';
 
 	valida_isset($pts[$i]->PERSONAL_TECNICO_ROL->ROL, "Error: No se encuentra ROL en linea: " . __LINE__);
@@ -246,11 +310,21 @@ valida_isset($CC_FECHA_FIN, "Error: No se encuentra la fecha final: " . __LINE__
 $FA = $json_object->SG_AUDITORIA_FECHAS;
 valida_isset($FA, "Error: No se encuentra las fechas auditoria " . __LINE__);
 $FECHAS_AUDITORIAS = "";
-for ($i=0; $i < count($FA) ; $i++) {
+if(count($FA)>0)
+{
+    $FECHAS_AUDITORIAS .= substr($FA[0]->FECHA,6,8)."/".substr($FA[0]->FECHA,-4,2)."/".substr($FA[0]->FECHA,0,4);
+    if(count($FA)>1)
+    {
+        $FECHAS_AUDITORIAS .= " - ".substr($FA[count($FA)-1]->FECHA,6,8)."/".substr($FA[count($FA)-1]->FECHA,-4,2)."/".substr($FA[count($FA)-1]->FECHA,0,4);
+    }
+}
+
+/*for ($i=0; $i < count($FA) ; $i++) {
 
 	$FECHAS_AUDITORIAS .= substr($FA[$i]->FECHA,6,8)."/".substr($FA[$i]->FECHA,-4,2)."/".substr($FA[$i]->FECHA,0,4).",";
 }
     $FECHAS_AUDITORIAS = substr($FECHAS_AUDITORIAS,0,strripos($FECHAS_AUDITORIAS,","));
+*/
 
 //Prueba
 // Extend the TCPDF class to create custom Header and Footer
@@ -274,7 +348,7 @@ class MYPDF extends TCPDF {
 		// Title
 		$this->setCellMargins(0,15,0,0);
 		$this->Cell(0, 10, 'NOTIFICACIÓN DE SERVICIO ', 0, false, 'L', 0, '', 0, false, 'M', 'M');
-		
+
 		// Logo
 		$image_file = 'imnc/barra.jpg';
 		$this->Image($image_file, 10, 10, 170, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
@@ -331,7 +405,7 @@ EOD;
 // create new PDF document
 //$pdf1 = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-$str_direccion="Daniel Hernandez Barroso";
+$str_direccion="Brian Perez Castro";
 //$global_diffname="E:/xampp/htdocs/imnc/imnc/generar/pdf/cotizacion/";
 $No5="CERTIFICACIÓN DE SISTEMAS DE GESTIÓN";
 $global_diffname="imnc/";
@@ -360,6 +434,7 @@ $pdf1->SetMargins(PDF_MARGIN_LEFT, 40 , PDF_MARGIN_RIGHT);//PDF_MARGIN_TOP
 $pdf1->SetHeaderMargin(PDF_MARGIN_HEADER);
 $pdf1->SetFooterMargin(PDF_MARGIN_FOOTER);
 
+
 // set auto page breaks
 $pdf1->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
@@ -381,23 +456,27 @@ $pdf1->SetPrintHeader(true);
 $pdf1->AddPage();
 $pdf1->SetPrintFooter(true);
 
-// Titulo de documento (centrado)
-$pdf1->SetXY(0,10);
 
+$pdf1->SetFont('Helvetica', 'B', 14);
+    // Title
+$pdf1->Cell(0, 10, 'Notificación', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+$pdf1->setCellMargins(0,0,0,0);
+// Titulo de documento (centrado)
+$pdf1->SetXY(0,25);
 // set font
-$pdf1->SetFont('Calibri', 'B', 16);
-$html = '<br><br><br><div style="text-align:center;">Notificación &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;</div>';
+$pdf1->SetFont('Calibri', 'B', 12);
+$html = '<br><br><br><br>';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 11);
-$html =  '<br><div style="text-align:right;">Ciudad de México, a</div>';
-$html .= '<br>';
-$pdf1->writeHTML($html, true, false, true, false, '');
+$html =  '<br><div style="text-align:right;"> Ciudad de México, '.$LUGAR_Y_FECHA.', a </div>';
+$html .= '<br><br>';
+$pdf1->writeHTML($html, true, false, true, false, 'L');
 $pdf1->SetFont('Calibri', '', 10);
-$html = '<div style="text-align:left;"><strong><i>Nombre de la Organización:&nbsp;</i></strong> '.$NOMBRE_CLIENTE.'<br>';
-$html .= '<i>Dirección:&nbsp;</i> '.$CALLE_Y_NUMERO.'&nbsp;'.$COLONIA_DELEGACION_Y_CP.'&nbsp;'.$ENTIDAD_FEDERATIVA.'<br>';
+$html = '<div style="text-align:center;"><strong><i>'.$NOMBRE_CLIENTE.'</i></strong><br>';
+$html .= '<strong><i>Dirección:&nbsp;</i></strong> '.$CALLE_Y_NUMERO.'&nbsp;'.$COLONIA_DELEGACION_Y_CP.'&nbsp;'.$ENTIDAD_FEDERATIVA.'<br>';
 $html .= '<br>';
-$html .= '<strong><i>Representante Autorizado:&nbsp;</i></strong> '.$NOMBRE_CONTACTO.'<br>';
-$html .= '<strong><i>Puesto:&nbsp;</i></strong> '.$CARGO_CONTACTO.'<br>';
+$html .= '<strong><i>'.$NOMBRE_CONTACTO.'</i></strong><br>';
+$html .= ''.$CARGO_CONTACTO.'<br><br>';
 $html .= '<strong><i>Teléfono:&nbsp;</i></strong> '.$TELEFONO.'<br>';
 $html .= '<strong><i>Email:&nbsp;</i></strong> '.$CORREO.'</div>';
 $html .= '<br>';
@@ -405,23 +484,23 @@ $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 9);
 $html= <<<EOT
 <br><br>
-<table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;" width="450">
+<table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;">
     <tr>
      <td BGCOLOR="#E0E0E0" colspan="2">
        DATOS DEL CLIENTE
      </td> 
    </tr>
 	<tr>
-		<td style="font-size: medium; text-align:left" width="100" BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;No(s). De Solicitud</strong></td>
-		<td style="font-size: medium; text-align:left" width="350"> &nbsp;&nbsp;$REFERENCIA</td>
+		<td width="20%" style="font-size: medium; text-align:left" BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;No(s). De Solicitud</strong></td>
+		<td width="80%" style="font-size: medium; text-align:left" > &nbsp;&nbsp;$REFERENCIA</td>
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left" width="100" BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;Sector IAF</strong></td>
-		<td style="font-size: medium; text-align:left" width="350"> &nbsp;&nbsp;$SECTORES</td>
+		<td width="20%" style="font-size: medium; text-align:left"  BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;Sector IAF</strong></td>
+		<td width="80%" style="font-size: medium; text-align:left" > &nbsp;&nbsp;$SECTORES</td>
 	</tr>
 	<tr>
-		<td style="font-size: medium; text-align:left" width="100" BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;Número de registro</strong></td>
-		<td style="font-size: medium; text-align:left" width="350"> &nbsp;&nbsp;$CLAVE_CERTIFICADO</td>
+		<td width="20%" style="font-size: medium; text-align:left"  BGCOLOR="#E0E0E0"><strong>&nbsp;&nbsp;Número de registro</strong></td>
+		<td width="80%" style="font-size: medium; text-align:left"> &nbsp;&nbsp;$CLAVE_CERTIFICADO</td>
 	</tr>
 	
 </table>
@@ -429,7 +508,7 @@ EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 11);
 $html= <<<EOT
-<br><br><table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" width="450">
+<br><br><table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;">
 	<tr>
 		<td style="font-size: medium; text-align:center; color: #ffffff"  BGCOLOR="#1F487B"><strong>TIPO DE SERVICIO</strong></td>
 	</tr>
@@ -438,7 +517,7 @@ EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 9);
 $html= <<<EOT
-<table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" width="450">
+<table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" >
 	<tr>
 		<td style="font-size: medium; text-align:center"  width="225"><input type="checkbox" name="chk1" value="1" $chck1 readonly="false">Servicio en instalaciones del IMNC</td>
 		<td style="font-size: medium; text-align:center"  width="225"><input type="checkbox" name="chk2" value="1" $chck2  readonly="false">Servicio en Sitio</td>
@@ -448,10 +527,10 @@ EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 10);
 $html= <<<EOT
-<br><br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000ff style="text-align:center;" width="450">
+<br><br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000ff style="text-align:center;" >
 	<tr>
-		<td style="font-size: medium; text-align:center"  BGCOLOR="#E0E0E0" width="150"><strong>En la(s) fecha(s) siguiente(s):</strong></td>
-		<td style="font-size: medium; text-align:center"   width="300">$FECHAS_AUDITORIAS</td>
+		<td style="font-size: medium; text-align:center"  BGCOLOR="#E0E0E0" width="30%"><strong>En la(s) fecha(s) siguiente(s):</strong></td>
+		<td style="font-size: medium; text-align:center"   width="70%">$FECHAS_AUDITORIAS</td>
 	</tr>
 	
 	
@@ -463,19 +542,19 @@ $pdf1->writeHTML($html, true, false, true, false, '');
 
 $html= <<<EOT
 <br><br><strong>Con el siguiente equipo asignado:</strong>
-<br><br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000ff style="text-align:center;" width="450">
+<br><br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000ff style="text-align:center;" >
 	<tr>
-		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0" width="75"><strong>FUNCIÓN</strong></td>
-		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0"  width="225"><strong>NOMBRE</strong></td>
-		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0"  width="75"><strong>VALIDACIÓN</strong></td>
-		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0"  width="75"><strong>SECTOR(ES)</strong></td>
+		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0" width="20%"><strong>FUNCIÓN</strong></td>
+		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0"  width="40%"><strong>NOMBRE</strong></td>
+		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0"  width="20%"><strong>VALIDACIÓN</strong></td>
+		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0"  width="20%"><strong>SECTOR(ES)</strong></td>
 	</tr>
 	$PERSONAL_TECNICO
 </table>
 
 <br>
-<br><br>
-<table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" width="450">
+<br><br><br>
+<table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" >
     <tr>
      <td BGCOLOR="#1F487B" style="color: #ffffff; text-align: left;"> Bajo el/los siguiente (s) lineamiento (s) de referencia: </td>
     </tr>
@@ -484,13 +563,19 @@ $html= <<<EOT
     </tr>
 
 </table>
+
+
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
+$pdf1->SetPrintHeader(true);
+$pdf1->AddPage();
+$pdf1->SetPrintFooter(true);
+
 $pdf1->SetFont('Calibri', '', 10);
 $html= <<<EOT
-<br><br><strong>NOTA 1:</strong> El servicio que se describe en la presente Notificación, ha sido programado en apego a las “Condiciones generales” vigentes del servicio contratado, dadas a conocer previamente por el IMNC y publicadas en <a>www.imnc.org.mx</a>
+<br><br><p style="text-align: justify"><strong>NOTA 1:</strong> El servicio que se describe en la presente Notificación, ha sido programado en apego a las “Condiciones generales” vigentes del servicio contratado, dadas a conocer previamente por el IMNC y publicadas en <a>www.imnc.org.mx</a></p>
 
-<br><br><strong>NOTA 2:</strong> En caso de no estar de acuerdo con la designación de algún miembro del equipo y/o fecha, el cliente debe notificarlo por escrito al IMNC, presentando las razones correspondientes, en un plazo no mayor a 3 días hábiles a partir de la recepción de esta notificación. En caso contrario se considerará como aceptado el equipo y/o fecha propuesta.
+<br><p style="text-align: justify"><strong>NOTA 2:</strong> En caso de no estar de acuerdo con la designación de algún miembro del equipo y/o fecha, el cliente debe notificarlo por escrito al IMNC, presentando las razones correspondientes, en un plazo no mayor a 3 días hábiles a partir de la recepción de esta notificación. En caso contrario se considerará como aceptado el equipo y/o fecha propuesta.</p>
 EOT;
  $index = 3;
  foreach ($notasPDF as $nota)
@@ -498,26 +583,28 @@ EOT;
      if($nota)
      {
 $html .= <<<EOT
-<br><br><strong>NOTA $index:</strong> $nota
+<br><p style="text-align: justify"><strong>NOTA $index:</strong> $nota</p>
 EOT;
 $index ++;
      }
 
  }
 
-$pdf1->writeHTML($html, true, false, true, false, '');
+$pdf1->writeHTML($html, true, false, true, false, 'J');
 
 
-// Espacio para firmas
+
 $html = <<<EOT
-<table cellpadding="15" cellspacing="0" border="0" style="text-align:center;">
+<br><br><br><table cellpadding="1" cellspacing="0" border="0" style="text-align:center;">
 	<tr>
-		<td style="font-size: medium; text-align:center" ><strong> Atentamente,  $nombreAuxiliar</strong></td>
+		<td style="font-size: medium; text-align:center" >Atentamente, </td>
 	</tr>
-
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
+    $pdf1->SetFont('Calibri', 'B', 10);
+$pdf1->Cell(0, 0, $nombreAuxiliar, 0, false, 'C', 0, '', 0, false, 'M', 'M');
+// Espacio para firmas
 
 
 // ---------------------------------------------------------
