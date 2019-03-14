@@ -21,8 +21,8 @@
                 <div id="crop-avatar">
                   <!-- Current avatar -->
                   <div class="avatar-view" title="Change the avatar">
-                    <img ng-if="empleado.IMAGEN_BASE64 === null" src="./pictures/user.png" alt="Avatar" >
-                    <img ng-if="empleado.IMAGEN_BASE64 !== null" src="{{empleado.IMAGEN_BASE64}}" alt="Avatar" >
+                   <img ng-if="empleado.IMAGEN_BASE64 === null" src="./pictures/user.png" style=" cursor: pointer;" alt=""  ng-click="uploadImageShow(empleado.NO_EMPLEADO)">
+                   <img ng-if="empleado.IMAGEN_BASE64 !== null" src="{{empleado.IMAGEN_BASE64}}" style="cursor: pointer;" alt=""  ng-click="uploadImageShow(empleado.NO_EMPLEADO)">
                   </div>
                   <!-- Loading state -->
                   <div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
@@ -299,6 +299,26 @@
                 </div>
             </div>
     </div>
+    <!-- Modal insertar/actualizar-->
+    <div class="modal fade" id="modalSubirImagen" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Subir imagen</h4>
+          </div>
+          <div class="modal-body">
+              <div class="ajax-file-upload" style="position: relative; overflow: hidden; cursor: default;">
+                Upload
+                <form id="singleupload" method="POST"  enctype="multipart/form-data" style="margin: 0px; padding: 0px;">
+                    <input type="file" id="ajax-upload-id-1460599196294" name="myfile" name="myfile" onchange="angular.element(this).scope().uploadFile(this.files)" accept="*" style="position: absolute; cursor: pointer; top: 0px; width: 100%; height: 100%; left: 0px; z-index: 100; opacity: 0;">
+                </form>
+              </div>
+              <!--es necesario este div-->
+              </div>
+            </div>
+          </div>
+        </div>
 </div>
 
 <script type="text/javascript">

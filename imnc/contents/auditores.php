@@ -254,7 +254,7 @@
                   <table class="table">
                       <tr>
                           <td> <label> Traer los datos de Personal Interno </label></td>
-                          <td> <input  id="personal_interno" type="checkbox"  class="checkbox"  value="true" name="personal_interno" ng-model="personal_interno" ng-change="show_personal_interno()"></td>
+                          <td> <input  id="personal_interno" type="checkbox"  class="checkbox"  name="personal_interno" ng-model="personal_interno" ng-change="show_personal_interno()"></td>
                       </tr>
                       <tr ng-show="show">
                           <td colspan="2">
@@ -762,11 +762,11 @@ app.controller('auditor_controller',['$scope','$http',function($scope,$http){
     $scope.insert = false;
 
     $scope.show_personal_interno = function(){
+        $scope.clear_datos();
         $scope.cmb_personal_interno = "";
         if($scope.show)
         {
             $scope.show = false;
-            $scope.clear_datos();
         }else {
             $scope.show = true;
             $scope.fill_cmb_personal_interno();
@@ -800,6 +800,8 @@ app.controller('auditor_controller',['$scope','$http',function($scope,$http){
         $("#txtCurp").val("");
         $("#txtTelefonoFijo").val("");
         $("#txtIniciales").val("");
+
+
     }
     $scope.show_insert = function () {
         $scope.insert = true;

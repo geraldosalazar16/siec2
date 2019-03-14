@@ -360,7 +360,7 @@
                          </form>
                     </div>
                     <div class="modal-footer">
-                 <button type="button" class="btn btn-default btn-sm pull-left"  ng-click="eliminar()">Eliminar</button>
+                 <button type="button" class="btn btn-default btn-sm pull-left" ng-show="accion=='editar'" ng-click="eliminar()">Eliminar</button>
                  <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cerrar</button>
                  <button type="button" class="btn btn-primary btn-sm"  ng-click="submitForm(formData)">Guardar</button>
             </div>

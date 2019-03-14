@@ -482,6 +482,58 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
             $('#'+setfocus).focus();
         }
     }
+
+// ===========================================================================
+// ***** 	              FUNCION PARA UPLOAD IMAGEN           			 *****
+// ===========================================================================
+    $scope.uploadImageShow = function(id){
+        $scope.id_upload = id;
+        $("#modalSubirImagen").modal("show");
+
+    }
+
+    $scope.uploadFile = function(files) {
+        var url = global_apiserver + "/personal_interno/uploadImagen/";
+        var fd = new FormData();
+
+        var validExtensions = ['jpg','png','jpeg']; //array of valid extensions
+        var fileName = files[0].name;
+        var fileNameExt = fileName.substr(fileName.lastIndexOf('.') + 1);
+        if ($.inArray(fileNameExt, validExtensions) == -1) {
+
+            notify("Error", "Solo se permiten imagenes", "error");
+        }
+        else
+        {
+            //Take the first selected file
+            fd.append("myfile", files[0]);
+            fd.append("no", $scope.id_upload);
+
+
+            $http.post(url, fd, {
+                withCredentials: true,
+                headers: {'Content-Type': undefined },
+                transformRequest: angular.identity
+            }).success(function (response) {
+                if(response.resultado == "ok")
+                {
+                    $scope.cargarDatosEmpleado();
+                    $("#modalSubirImagen").modal("hide");
+                    notify("Éxito", "Se a subido la imagen", "success");
+                }
+                else
+                {
+                    notify("Error", response.mensaje, "error");
+                }
+            }).error(function (response) {
+                notify("Error", response.mensaje, "error");
+
+            });
+        }
+
+
+
+    };
 // ================================================================================
 // *****                        Al cargar la página                           *****
 // ================================================================================

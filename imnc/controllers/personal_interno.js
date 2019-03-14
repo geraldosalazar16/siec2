@@ -52,7 +52,6 @@ app.controller('empleados_controller',['$scope','$http',function($scope,$http){
             ALTA_BAJA: $("#cmbEstado").val()
 
         };
-        console.log("filtors",JSON.stringify(filtros));
         $.post(global_apiserver + "/personal_interno/getByFiltro/", JSON.stringify(filtros), function(respuesta){
             response = JSON.parse(respuesta);
             $scope.total = response.length;
