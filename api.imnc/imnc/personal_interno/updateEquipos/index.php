@@ -54,8 +54,11 @@ if(!$SOFTWARE){$SOFTWARE="";}
 
 $LICENCIAMIENTO = $objeto->LICENCIAMIENTO;
 if(!$LICENCIAMIENTO){$LICENCIAMIENTO="";}
-$count = $database->count("PERSONAL_INTERNO_EQUIPOS",["NO_EMPLEADO" => $NO_EMPLEADO]);
-if($count==0)
+
+$ACCION = $objeto->ACCION;
+
+$ID =  $objeto->ID;
+if($ACCION=='insertar')
 {
     $id = $database->insert("PERSONAL_INTERNO_EQUIPOS", [
         "NO_EMPLEADO" => $NO_EMPLEADO,
@@ -75,7 +78,7 @@ if($count==0)
         "SOFTWARE"=>$SOFTWARE,
         "LICENCIAMIENTO"=>$LICENCIAMIENTO,
 
-    ],["NO_EMPLEADO" => $NO_EMPLEADO]);
+    ],["ID" => $ID]);
 
 
 }

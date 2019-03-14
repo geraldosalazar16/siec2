@@ -313,13 +313,19 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
 // =======================================================================================
 // ***** 		FUNCION PARA ABRIR MODAL INSERTAR ACTUALIZAR EQUIPOS	             *****
 // =======================================================================================
-    $scope.openModalInsertUpdateE = function(){
+    $scope.openModalInsertUpdateE = function(key){
         clear_equipos();
-        $scope.modal_equipos = "Editando Equipos";
-        $scope.formDataActivo.computadora = $scope.activos.EQUIPOS.COMPUTADORA;
-        $scope.formDataActivo.modelo = $scope.activos.EQUIPOS.MODELO;
-        $scope.formDataActivo.software = $scope.activos.EQUIPOS.SOFTWARE;
-        $scope.formDataActivo.licenciamiento = $scope.activos.EQUIPOS.LICENCIAMIENTO;
+        $scope.modal_equipos = "Agregar Equipos";
+        $scope.accion = 'insertar';
+        if(typeof key !== "undefined") {
+            $scope.modal_equipos = "Editando Equipos";
+            $scope.accion = 'editar';
+            $scope.formDataActivo.computadora = $scope.activos.EQUIPOS[key].COMPUTADORA;
+            $scope.formDataActivo.modelo = $scope.activos.EQUIPOS[key].MODELO;
+            $scope.formDataActivo.software = $scope.activos.EQUIPOS[key].SOFTWARE;
+            $scope.formDataActivo.licenciamiento = $scope.activos.EQUIPOS[key].LICENCIAMIENTO;
+            $scope.ID_EQUIPO = $scope.activos.EQUIPOS[key].ID;
+        }
 
         $("#modalInsertUpdateE").modal("show");
 
@@ -332,35 +338,202 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
         $scope.formDataActivo.modelo = "";
         $scope.formDataActivo.software = "";
         $scope.formDataActivo.licenciamiento = "";
+        $scope.ID_EQUIPO = "";
     }
 // ===========================================================================
-// ***** 			FUNCION PARA EDITAR UN MOBILIARIO				 *****
+// ***** 			FUNCION PARA EDITAR UN EQUIPO				 *****
 // ===========================================================================
-    $scope.editarE=function(formDataActivo) {
+    $scope.editarE=function(formDataActivo,key) {
 
-        var equipos = {
-            NO: $scope.empleado.NO_EMPLEADO,
-            COMPUTADORA: formDataActivo.computadora,
-            MODELO: formDataActivo.modelo,
-            SOFTWARE: formDataActivo.software,
-            LICENCIAMIENTO: formDataActivo.licenciamiento,
+        $scope.valida_form();
 
+        if($scope.respuesta ==  1)
+        {
+            var equipos = {
+                NO: $scope.empleado.NO_EMPLEADO,
+                COMPUTADORA: formDataActivo.computadora,
+                MODELO: formDataActivo.modelo,
+                SOFTWARE: formDataActivo.software,
+                LICENCIAMIENTO: formDataActivo.licenciamiento,
+                ACCION: $scope.accion,
+                ID:$scope.ID_EQUIPO
+            };
+            $.post(global_apiserver + "/personal_interno/updateEquipos/", JSON.stringify(equipos), function (respuesta) {
+                respuesta = JSON.parse(respuesta);
+                if (respuesta.resultado == "ok") {
+                    $scope.cargarActivos();
+                    notify("Éxito", "Se han guardado los equipos del empleado", "success");
+                    $("#modalInsertUpdateE").modal("hide");
+                }
+                else {
+                    notify("Error", respuesta.mensaje, "error");
+                }
+
+            });
+        }
+
+
+
+    }
+// ===========================================================================
+// ***** 			FUNCION PARA ELIMINAR UN EQUIPO				 *****
+// ===========================================================================
+    $scope.eliminarE=function(key)
+    {
+        var equipo = {
+            ID:$scope.activos.EQUIPOS[key].ID
         };
-        $.post(global_apiserver + "/personal_interno/updateEquipos/", JSON.stringify(equipos), function (respuesta) {
-            respuesta = JSON.parse(respuesta);
-            if (respuesta.resultado == "ok") {
-                $scope.cargarActivos();
-                notify("Éxito", "Se han guardado los equipos del empleado", "success");
-                $("#modalInsertUpdateE").modal("hide");
-            }
-            else {
-                notify("Error", respuesta.mensaje, "error");
-            }
+        $.confirm({
+            title: 'Confirmación',
+            content: 'Esta seguro que desea eliminar el siguiente equipo: '+$scope.activos.EQUIPOS[key].COMPUTADORA+'?',
+            buttons: {
+                Eliminar: function () {
+                    $.post(global_apiserver + "/personal_interno/deleteEquipo/", JSON.stringify(equipo), function (respuesta) {
+                        respuesta = JSON.parse(respuesta);
+                        if (respuesta.resultado == "ok") {
+                            $scope.cargarActivos();
+                            notify("Éxito", "Se han eliminado el equipo", "success");
+                        }
+                        else {
+                            notify("Error", respuesta.mensaje, "error");
+                        }
 
+                    });
+
+                },
+                Cancelar: function () {
+                    console.log("cancel");
+
+                }
+            }
         });
 
+    }
+// ===========================================================================
+// ***** 			FUNCION PARA ELIMINAR UN EQUIPO				 *****
+// ===========================================================================
+    $scope.valida_form = function(){
+        $scope.respuesta =  1;
+        var setfocus = null;
+
+////////////////////////////////////////////////////////////////////////////////
+        if(typeof $scope.formDataActivo.licenciamiento !== "undefined") {
+            $("#noerror").text("");
+            if ($scope.formDataActivo.licenciamiento.length == 0) {
+                $scope.respuesta = 0;
+                $scope.licenciamiento_error="No debe estar vacio";
+                setfocus = "no";
+            } else {
+                $scope.licenciamiento_error="";
+            }
+        }else {
+            $scope.respuesta = 0;
+            $scope.licenciamiento_error="No debe estar vacio";
+            setfocus = "no";
+        }
+////////////////////////////////////////////////////////////////////////////////
+        if(typeof $scope.formDataActivo.software !== "undefined") {
+            $("#noerror").text("");
+            if ($scope.formDataActivo.software.length == 0) {
+                $scope.respuesta = 0;
+                $scope.software_error="No debe estar vacio";
+                setfocus = "no";
+            } else {
+                $scope.software_error="";
+            }
+        }else {
+            $scope.respuesta = 0;
+            $scope.software_error="No debe estar vacio";
+            setfocus = "no";
+        }
+////////////////////////////////////////////////////////////////////////////////
+        if(typeof $scope.formDataActivo.modelo !== "undefined") {
+            $("#noerror").text("");
+            if ($scope.formDataActivo.modelo.length == 0) {
+                $scope.respuesta = 0;
+                $scope.modelo_error="No debe estar vacio";
+                setfocus = "no";
+            } else {
+                $scope.modelo_error="";
+            }
+        }else {
+            $scope.respuesta = 0;
+            $scope.modelo_error="No debe estar vacio";
+            setfocus = "no";
+        }
+////////////////////////////////////////////////////////////////////////////////
+        if(typeof $scope.formDataActivo.computadora !== "undefined") {
+            $("#noerror").text("");
+            if ($scope.formDataActivo.computadora.length == 0) {
+                $scope.respuesta = 0;
+                $scope.computadora_error="No debe estar vacio";
+                setfocus = "no";
+            } else {
+                $scope.computadora_error="";
+            }
+        }else {
+            $scope.respuesta = 0;
+            $scope.computadora_error="No debe estar vacio";
+            setfocus = "no";
+        }
+
+        if(setfocus != null)
+        {
+            $('#'+setfocus).focus();
+        }
+    }
+
+// ===========================================================================
+// ***** 	              FUNCION PARA UPLOAD IMAGEN           			 *****
+// ===========================================================================
+    $scope.uploadImageShow = function(id){
+        $scope.id_upload = id;
+        $("#modalSubirImagen").modal("show");
 
     }
+
+    $scope.uploadFile = function(files) {
+        var url = global_apiserver + "/personal_interno/uploadImagen/";
+        var fd = new FormData();
+
+        var validExtensions = ['jpg','png','jpeg']; //array of valid extensions
+        var fileName = files[0].name;
+        var fileNameExt = fileName.substr(fileName.lastIndexOf('.') + 1);
+        if ($.inArray(fileNameExt, validExtensions) == -1) {
+
+            notify("Error", "Solo se permiten imagenes", "error");
+        }
+        else
+        {
+            //Take the first selected file
+            fd.append("myfile", files[0]);
+            fd.append("no", $scope.id_upload);
+
+
+            $http.post(url, fd, {
+                withCredentials: true,
+                headers: {'Content-Type': undefined },
+                transformRequest: angular.identity
+            }).success(function (response) {
+                if(response.resultado == "ok")
+                {
+                    $scope.cargarDatosEmpleado();
+                    $("#modalSubirImagen").modal("hide");
+                    notify("Éxito", "Se a subido la imagen", "success");
+                }
+                else
+                {
+                    notify("Error", response.mensaje, "error");
+                }
+            }).error(function (response) {
+                notify("Error", response.mensaje, "error");
+
+            });
+        }
+
+
+
+    };
 // ================================================================================
 // *****                        Al cargar la página                           *****
 // ================================================================================
