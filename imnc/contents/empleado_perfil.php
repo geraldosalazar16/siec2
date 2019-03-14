@@ -127,7 +127,7 @@
                           <h2>Mobiliario</h2>
                       <?php
                       if ($modulo_permisos["EMPLEADOS"]["registrar"] == 1) {?>
-                          <button type="submit"  class="btn btn-primary pull-right" ng-click="openModalInsertUpdateM()" ng-if="flag==false">Editar Mobiliario</button>
+                          <button type="submit"  class="btn btn-primary pull-right" ng-click="openModalInsertUpdateM()" >Editar Mobiliario</button>
                       <?php }  ?>
                           <div class="clearfix"></div>
                     </div>
@@ -156,13 +156,13 @@
                           <h2>Equipos</h2>
                       <?php
                       if ($modulo_permisos["EMPLEADOS"]["registrar"] == 1) {?>
-                          <button type="submit"  class="btn btn-primary pull-right" ng-click="openModalInsertUpdateE()" ng-if="flag==false">Editar Equipos</button>
+                          <button type="submit"  class="btn btn-primary pull-right" ng-click="openModalInsertUpdateE()" >Agregar Equipo</button>
                       <?php }  ?>
                           <div class="clearfix"></div>
                     </div>
                          <table class="table table-striped responsive-utilities jambo_table bulk_action">
                           <thead>
-                            <tr class="headings">
+                            <tr  class="headings">
                               <th class="column-title">Computadora</th>
                               <th class="column-title">Modelo</th>
                               <th class="column-title">Software </th>
@@ -170,13 +170,16 @@
                               <th class="column-title"></th>
                             </tr>
                           </thead>
-                          <tbody  style="font-size: 12px;" class="ng-scope even pointer" >
+                          <tbody  ng-repeat="(key, item) in activos.EQUIPOS" style="font-size: 12px;" class="ng-scope even pointer" >
                           <tr>
-                              <th class="column-title">{{activos.EQUIPOS.COMPUTADORA}}</th>
-                              <th class="column-title">{{activos.EQUIPOS.MODELO}}</th>
-                              <th class="column-title">{{activos.EQUIPOS.SOFTWARE}}</th>
-                              <th class="column-title">{{activos.EQUIPOS.LICENCIAMIENTO}}</th>
-                              <th class="column-title"></th>
+                              <th class="column-title">{{item.COMPUTADORA}}</th>
+                              <th class="column-title">{{item.MODELO}}</th>
+                              <th class="column-title">{{item.SOFTWARE}}</th>
+                              <th class="column-title">{{item.LICENCIAMIENTO}}</th>
+                              <th class="column-title">
+                                  <button type="submit"  class="btn btn-primary btn-sm pull-right" ng-click="eliminarE(key)" ><i class="fa fa-remove"></i></button>
+                                  <button type="submit"  class="btn btn-primary btn-sm pull-right" ng-click="openModalInsertUpdateE(key)" ><i class="fa fa-pencil"></i></button>
+                              </th>
                           </tr>
                           </tbody>
                         </table>
@@ -259,7 +262,7 @@
 								<div>
 									<input type="text" class="form-control" id="computadora" name="computadora" ng-model="formDataActivo.computadora"
                                            required >
-									<span class="text-danger" ></span>
+									<span class="text-danger" >{{computadora_error}}</span>
 								</div>
 							</div>
                             <div class="form-group">
@@ -267,7 +270,7 @@
 								<div>
 									<input type="text" class="form-control" id="modelo" name="modelo" ng-model="formDataActivo.modelo"
                                            required >
-									<span class="text-danger" ></span>
+									<span class="text-danger" >{{modelo_error}}</span>
 								</div>
 							</div>
                             <div class="form-group">
@@ -275,7 +278,7 @@
 								<div>
 									<input type="text" class="form-control" id="software" name="software" ng-model="formDataActivo.software"
                                            required >
-									<span class="text-danger" ></span>
+									<span class="text-danger" >{{software_error}}</span>
 								</div>
 							</div>
                             <div class="form-group">
@@ -283,7 +286,7 @@
 								<div>
 									<input type="text" class="form-control" id="licenciamiento" name="licenciamiento" ng-model="formDataActivo.licenciamiento"
                                            required >
-									<span class="text-danger" ></span>
+									<span class="text-danger" >{{licenciamiento_error}}</span>
 								</div>
 							</div>
 

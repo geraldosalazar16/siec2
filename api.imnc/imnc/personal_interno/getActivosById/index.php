@@ -32,7 +32,7 @@ $id = $_REQUEST["id"];
 $personal_interno_mobiliario = $database->get("PERSONAL_INTERNO_MOBILIARIO", "*", ["NO_EMPLEADO"=>$id]);
 valida_error_medoo_and_die();
 
-$personal_interno_equipos = $database->get("PERSONAL_INTERNO_EQUIPOS", "*", ["NO_EMPLEADO"=>$id]);
+$personal_interno_equipos = $database->select("PERSONAL_INTERNO_EQUIPOS", "*", ["NO_EMPLEADO"=>$id]);
 valida_error_medoo_and_die();
 
 $resultado["MOBILIARIO"] = $personal_interno_mobiliario;

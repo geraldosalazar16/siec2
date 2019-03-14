@@ -646,31 +646,56 @@ app.controller('empleados_controller',['$scope','$http',function($scope,$http){
 // ===========================================================================
 // ***** 	              FUNCION PARA UPLOAD IMAGEN           			 *****
 // ===========================================================================
-    $scope.uploadImage = function(id){
-             $scope.url = global_apiserver + "/personal_interno/uploadImagen/";
+    $scope.uploadImageShow = function(id){
 
-            var uploadObj = $("#singleupload").uploadFile({
-                url:$scope.url,
-                multiple:false,
-                dragDrop:false,
-                maxFileCount:1,
-                acceptFiles:"image/*",
-                fileName:"myfile",
-                formData: {"no":id},
-                onSuccess:function(files,data,xhr,pd)
-                {
-                    $("#modalSubirImagen").modal("hide");
-                    notify("Éxito", "La imagen ha cambiado", "success");
-                    draw_all_fichas();
-                    uploadObj.reset();
-                    //document.location = "./?pagina=auditores";
-                }
-            });
+          $scope.id_upload = id;
             $("#modalSubirImagen").modal("show");
 
     }
-$(document).ready(function () {
 
+    $scope.uploadFile = function(files) {
+        var url = global_apiserver + "/personal_interno/uploadImagen/";
+        var fd = new FormData();
+
+        var validExtensions = ['jpg','png','jpeg']; //array of valid extensions
+        var fileName = files[0].name;
+        var fileNameExt = fileName.substr(fileName.lastIndexOf('.') + 1);
+        if ($.inArray(fileNameExt, validExtensions) == -1) {
+
+            notify("Error", "Solo se permiten imagenes", "error");
+        }
+        else
+        {
+            //Take the first selected file
+            fd.append("myfile", files[0]);
+            fd.append("no", $scope.id_upload);
+
+
+            $http.post(url, fd, {
+                withCredentials: true,
+                headers: {'Content-Type': undefined },
+                transformRequest: angular.identity
+            }).success(function (response) {
+                if(response.resultado == "ok")
+                {
+                    $scope.cargaFichas();
+                    $("#modalSubirImagen").modal("hide");
+                    notify("Éxito", "Se a subido la imagen", "success");
+                }
+                else
+                {
+                    notify("Error", response.mensaje, "error");
+                }
+            }).error(function (response) {
+                notify("Error", response.mensaje, "error");
+
+            });
+        }
+
+
+
+    };
+$(document).ready(function () {
 
 
 

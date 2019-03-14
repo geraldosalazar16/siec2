@@ -136,10 +136,10 @@ valida_error_medoo_and_die();
      ]);
     valida_error_medoo_and_die();
 
-    $id_equipos = $database->insert("PERSONAL_INTERNO_EQUIPOS", [
+   /* $id_equipos = $database->insert("PERSONAL_INTERNO_EQUIPOS", [
         "NO_EMPLEADO" => $NO,
     ]);
-    valida_error_medoo_and_die();
+    valida_error_medoo_and_die();*/
 
 
 $respuesta['resultado']="ok";

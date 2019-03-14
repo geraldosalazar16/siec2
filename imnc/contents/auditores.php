@@ -1,3 +1,4 @@
+
 <div class="right_col" role="main">
         <div class="">
           <div class="page-title">
@@ -238,7 +239,7 @@
     </div>
   </div>
 </div>
-
+<span ng-controller="auditor_controller">
 <!-- Modal insertar/actualizar-->
 <div class="modal fade" id="modalInsertarActualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -249,7 +250,25 @@
       </div>
       <div class="modal-body">
           <form id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate>
-            <div class="form-group">
+              <div class="form-group"  id="show_personal">
+                  <table class="table">
+                      <tr>
+                          <td> <label> Traer los datos de Personal Interno </label></td>
+                          <td> <input  id="personal_interno" type="checkbox"  class="checkbox"  value="true" name="personal_interno" ng-model="personal_interno" ng-change="show_personal_interno()"></td>
+                      </tr>
+                      <tr ng-show="show">
+                          <td colspan="2">
+                              <select ng-model="cmb_personal_interno" ng-options="item.NO_EMPLEADO+'- '+item.NOMBRE+' '+item.APELLIDO_PATERNO+' '+item.APELLIDO_MATERNO  for item in personal"
+                                      class="form-control" id="cmb_personal_interno" name="cmb_personal_interno" ng-change='cambio_personal(cmb_personal_interno)' required>
+                              <option value="">---Seleccione una Persona---</option>
+              </select>
+                          </td>
+                      </tr>
+                  </table>
+
+                  <label class="text-danger" ng-if="chck_error" style="margin-top: 10px;">Debe seleccionar al menos una opción</label>
+              </div>
+              <div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12" for="txtNombre">Nombre(s) <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
@@ -360,6 +379,8 @@
     </div>
   </div>
 </div>
+</span>
+
 
 <script type="text/javascript">
 
@@ -370,6 +391,7 @@
   echo "var str_tipo_entidad = '" . $str_tipo_entidad . "';";
   echo "var str_tipo_persona = '" . $str_tipo_persona . "';";
 ?>
+
 
 function draw_ficha_personal_tecnico(objeto)
 {
@@ -585,6 +607,7 @@ function listener_btn_filtrar(){
 function listener_btn_nuevo(){
   $( "#btnNuevo" ).click(function() {
     $("#btnGuardar").attr("accion","insertar");
+    $("#show_personal").show();
     $("#modalTitulo").html("Insertar nuevo registro");
     clear_modal_insertar_actualizar();
     $("#modalInsertarActualizar").modal("show");
@@ -593,6 +616,7 @@ function listener_btn_nuevo(){
 
 function listener_btn_editar(){
   $( ".btnEditar" ).click(function() {
+      $("#show_personal").hide();
     $("#btnGuardar").attr("accion","editar");
     $("#btnGuardar").attr("idPersonalTecnico",$(this).attr("auditor"));
     $("#modalTitulo").html("Editar registro");
@@ -716,6 +740,8 @@ function fill_cmb_sectores(seleccionado){
     $("#cmbSectoresIAF").val(seleccionado);
   });
 }
+
+
   $( window ).load(function() {
       //draw_all_fichas();
       listener_btn_nuevo();
@@ -728,5 +754,57 @@ function fill_cmb_sectores(seleccionado){
       listener_txt_rfc();
       listener_txt_iniciales();
 	  fill_cmb_sectores("TODOS");
+
   });
+app.controller('auditor_controller',['$scope','$http',function($scope,$http){
+    $scope.show = false;
+    $scope.personal = [];
+    $scope.insert = false;
+
+    $scope.show_personal_interno = function(){
+        $scope.cmb_personal_interno = "";
+        if($scope.show)
+        {
+            $scope.show = false;
+            $scope.clear_datos();
+        }else {
+            $scope.show = true;
+            $scope.fill_cmb_personal_interno();
+        }
+
+    }
+    $scope.fill_cmb_personal_interno = function(){
+        $scope.personal = [];
+        //$("#cmbPersonal").html('<option value="TODOS" selected disabled>-- elige una opción --</option>');
+        $.getJSON(  global_apiserver + "/personal_interno/getAll/", function( response ) {
+            $scope.personal = response;
+            $scope.$apply();
+
+        });
+    }
+    $scope.cambio_personal = function(personal_interno){
+            $("#txtNombre").val(personal_interno.NOMBRE);
+            $("#txtMaterno").val(personal_interno.APELLIDO_PATERNO);
+            $("#txtPaterno").val(personal_interno.APELLIDO_MATERNO);
+            $("#txtIniciales").val(personal_interno.NOMBRE[0]+personal_interno.APELLIDO_PATERNO[0]+personal_interno.APELLIDO_MATERNO[0]);
+            var fecha = personal_interno.FECHA_NACIMIENTO.split('-');
+            $("#txtFecNac").val(fecha[2]+fecha[1]+fecha[0]);
+            $("#txtCurp").val(personal_interno.CURP);
+            $("#txtTelefonoFijo").val(personal_interno.TELEFONO);
+    }
+    $scope.clear_datos = function(){
+        $("#txtNombre").val("");
+        $("#txtMaterno").val("");
+        $("#txtPaterno").val("");
+        $("#txtFecNac").val("");
+        $("#txtCurp").val("");
+        $("#txtTelefonoFijo").val("");
+        $("#txtIniciales").val("");
+    }
+    $scope.show_insert = function () {
+        $scope.insert = true;
+
+    }
+}]);
+
 </script>
