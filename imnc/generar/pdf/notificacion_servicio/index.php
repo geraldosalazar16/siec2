@@ -459,7 +459,7 @@ $pdf1->SetPrintFooter(true);
 
 $pdf1->SetFont('Helvetica', 'B', 14);
     // Title
-$pdf1->Cell(0, 10, 'Notificación', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+$pdf1->Cell(0, 5, 'Notificación', 0, false, 'C', 0, '', 0, false, 'M', 'M');
 $pdf1->setCellMargins(0,0,0,0);
 // Titulo de documento (centrado)
 $pdf1->SetXY(0,25);
@@ -468,8 +468,8 @@ $pdf1->SetFont('Calibri', 'B', 12);
 $html = '<br><br><br><br>';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 11);
-$html =  '<br><div style="text-align:right;"> Ciudad de México, '.$LUGAR_Y_FECHA.', a </div>';
-$html .= '<br><br>';
+$html =  '<br><div style="text-align:right;"> Ciudad de México, a  '.$LUGAR_Y_FECHA.'</div>';
+$html .= '<br>';
 $pdf1->writeHTML($html, true, false, true, false, 'L');
 $pdf1->SetFont('Calibri', '', 10);
 $html = '<div style="text-align:center;"><strong><i>'.$NOMBRE_CLIENTE.'</i></strong><br>';
@@ -483,7 +483,7 @@ $html .= '<br>';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 9);
 $html= <<<EOT
-<br><br>
+<br>
 <table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;">
     <tr>
      <td BGCOLOR="#E0E0E0" colspan="2">
@@ -508,7 +508,7 @@ EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 11);
 $html= <<<EOT
-<br><br><table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;">
+<br><table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;">
 	<tr>
 		<td style="font-size: medium; text-align:center; color: #ffffff"  BGCOLOR="#1F487B"><strong>TIPO DE SERVICIO</strong></td>
 	</tr>
@@ -527,7 +527,7 @@ EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 10);
 $html= <<<EOT
-<br><br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000ff style="text-align:center;" >
+<br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000ff style="text-align:center;" >
 	<tr>
 		<td style="font-size: medium; text-align:center"  BGCOLOR="#E0E0E0" width="30%"><strong>En la(s) fecha(s) siguiente(s):</strong></td>
 		<td style="font-size: medium; text-align:center"   width="70%">$FECHAS_AUDITORIAS</td>
@@ -541,8 +541,8 @@ $pdf1->writeHTML($html, true, false, true, false, '');
 
 
 $html= <<<EOT
-<br><br><strong>Con el siguiente equipo asignado:</strong>
-<br><br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000ff style="text-align:center;" >
+<br><strong>Con el siguiente equipo asignado:</strong>
+<br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000ff style="text-align:center;" >
 	<tr>
 		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0" width="20%"><strong>FUNCIÓN</strong></td>
 		<td style="font-size: medium; text-align:center" BGCOLOR="#E0E0E0"  width="40%"><strong>NOMBRE</strong></td>
@@ -551,9 +551,7 @@ $html= <<<EOT
 	</tr>
 	$PERSONAL_TECNICO
 </table>
-
-<br>
-<br><br><br>
+<br><br>
 <table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" >
     <tr>
      <td BGCOLOR="#1F487B" style="color: #ffffff; text-align: left;"> Bajo el/los siguiente (s) lineamiento (s) de referencia: </td>
@@ -567,13 +565,13 @@ $html= <<<EOT
 
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
-$pdf1->SetPrintHeader(true);
+/*$pdf1->SetPrintHeader(true);
 $pdf1->AddPage();
-$pdf1->SetPrintFooter(true);
+$pdf1->SetPrintFooter(true);*/
 
 $pdf1->SetFont('Calibri', '', 10);
 $html= <<<EOT
-<br><br><p style="text-align: justify"><strong>NOTA 1:</strong> El servicio que se describe en la presente Notificación, ha sido programado en apego a las “Condiciones generales” vigentes del servicio contratado, dadas a conocer previamente por el IMNC y publicadas en <a>www.imnc.org.mx</a></p>
+<p style="text-align: justify"><strong>NOTA 1:</strong> El servicio que se describe en la presente Notificación, ha sido programado en apego a las “Condiciones generales” vigentes del servicio contratado, dadas a conocer previamente por el IMNC y publicadas en <a>www.imnc.org.mx</a></p>
 
 <br><p style="text-align: justify"><strong>NOTA 2:</strong> En caso de no estar de acuerdo con la designación de algún miembro del equipo y/o fecha, el cliente debe notificarlo por escrito al IMNC, presentando las razones correspondientes, en un plazo no mayor a 3 días hábiles a partir de la recepción de esta notificación. En caso contrario se considerará como aceptado el equipo y/o fecha propuesta.</p>
 EOT;
@@ -595,7 +593,7 @@ $pdf1->writeHTML($html, true, false, true, false, 'J');
 
 
 $html = <<<EOT
-<br><br><br><table cellpadding="1" cellspacing="0" border="0" style="text-align:center;">
+<br><br><table cellpadding="1" cellspacing="0" border="0" style="text-align:center;">
 	<tr>
 		<td style="font-size: medium; text-align:center" >Atentamente, </td>
 	</tr>
