@@ -1379,13 +1379,19 @@ $scope.btnInsertaGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_aud
 		$scope.grupo_ciclo=ciclo;
 		$http.get(  global_apiserver + "/i_sg_auditorias/getAllAudWithSectorCalif/?idsce="+id_servicio+"&idtipoauditoria="+id_tipo_auditoria+"&ciclo="+ciclo)
 		.then(function( response ){
-			$scope.AuditoresParaAuditoria = response.data.CON_CALIFICACION;
-			$scope.AuditoresParaAuditoria1 = response.data.SIN_CALIFICACION;
-			$scope.cant_auditores = $scope.AuditoresParaAuditoria.length;
-			//$scope.grupo_id_tipo_auditoria = id_tipo_auditoria;
-			//$scope.grupo_ciclo=ciclo;
-            $("#modalExplorarGrupo").modal("show");
-			//$("#modalInsertarActualizarGrupoAuditoria").modal("show");
+			if(response.data.resultado == 'ok'){
+				$scope.AuditoresParaAuditoria = response.data.CON_CALIFICACION;
+				$scope.AuditoresParaAuditoria1 = response.data.SIN_CALIFICACION;
+				$scope.cant_auditores = $scope.AuditoresParaAuditoria.length;
+				//$scope.grupo_id_tipo_auditoria = id_tipo_auditoria;
+				//$scope.grupo_ciclo=ciclo;
+				$("#modalExplorarGrupo").modal("show");
+				//$("#modalInsertarActualizarGrupoAuditoria").modal("show");
+				
+			}
+			else if(response.data.resultado == 'error'){
+				notify('Error',response.data.mensaje,'error');
+			}
 		});
 		
     }
