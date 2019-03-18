@@ -22,7 +22,7 @@ function valida_error_medoo_and_die(){
 		$mailerror->send("I_SG_AUDITORIAS", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
 		die(); 
 	} 
-} 
+}
 
 $id_sce = $_REQUEST["id_sce"];
 $id_tipo_auditoria = $_REQUEST["id_ta"];
@@ -132,7 +132,9 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 
 
 	// SG_AUDITORIA_GRUPO
-	$i_sg_auditoria_grupo = $database->select("I_SG_AUDITORIA_GRUPOS", "*", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$id_tipo_auditoria,"CICLO"=>$ciclo]]);
+	//$i_sg_auditoria_grupo = $database->select("I_SG_AUDITORIA_GRUPOS", "*", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$id_tipo_auditoria,"CICLO"=>$ciclo]]);
+	$i_sg_auditoria_grupo = $database->query("SELECT * FROM I_SG_AUDITORIA_GRUPOS WHERE ID_SERVICIO_CLIENTE_ETAPA= ".$id_sce." AND TIPO_AUDITORIA=".$id_tipo_auditoria." AND CICLO=".$ciclo."  ORDER BY FIELD(ID_ROL,'3','1','6','4','2','8','5','7','11','9','10','12','13','14') ;")->fetchAll();
+	//$i_sg_auditoria_grupo = $i_sg_auditoria_grupo[0];
 	valida_error_medoo_and_die();
 	
 		// SG_AUDITORIA_GRUPO => PT_CALIF y PT_ROL
@@ -146,7 +148,7 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 				valida_error_medoo_and_die();
 
 				if (count($pt_calif_sectores) != 0) {
-					$pt_calif_sectores_aif = $database->select("SECTORES", "NOMBRE", ["ID_SECTOR"=>$pt_calif_sectores]);
+					$pt_calif_sectores_aif = $database->select("SECTORES", "ID", ["ID_SECTOR"=>$pt_calif_sectores]);
 					valida_error_medoo_and_die();
 					$pt_calificacion["PERSONAL_TECNICO_CALIF_SECTORES"] = $pt_calif_sectores_aif;
 				}else{
@@ -186,5 +188,5 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 
 }
 
-print_r(json_encode($i_sg_auditorias)); 
+print_r(json_encode($i_sg_auditorias,JSON_PRETTY_PRINT));
 ?> 

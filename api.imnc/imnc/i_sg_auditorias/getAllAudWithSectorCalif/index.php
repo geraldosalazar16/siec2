@@ -360,6 +360,7 @@ $respuesta_final["SIN_CALIFICACION"] = array();
 
 //print_r($respuesta);
 //print_r(json_encode($all_pt));
+$respuesta_final["resultado"] = "ok";
 print_r(json_encode($respuesta_final));
 //print_r(json_encode($tiene_fechas));
 

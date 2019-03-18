@@ -35,6 +35,14 @@ $modulo_permisos = $_SESSION["permisos"];
           
                 
     <?php
+		 if ($modulo_permisos["SERVICIOS"]["ver"] == 1) {
+            echo ' <li>';
+            echo '  <a href="./?pagina=indicadores">';
+            echo '    <i class="fa fa-area-chart" aria-hidden="true"></i> Indicadores ';
+            echo '  </a>';
+            echo '</li>';
+          }
+		  
         echo '<li><a><i class="fa fa-book"></i> Catálogos </a>';
         echo '   <ul class="nav child_menu" style="display: none">';
         if ($modulo_permisos["SERVICIOS"]["catalogos"] == 1) {
@@ -143,7 +151,7 @@ $modulo_permisos = $_SESSION["permisos"];
 		  if ($modulo_permisos["SERVICIOS"]["ver"] == 1) {
             echo ' <li>';
             echo '  <a href="./?pagina=dictaminacion">';
-            echo '    <i class="fa fa-usd" aria-hidden="true"></i> Dictaminación ';
+            echo '    <i class="fa fa-gear" aria-hidden="true"></i> Dictaminación ';
             echo '  </a>';
             echo '</li>';
           }
@@ -185,7 +193,6 @@ $modulo_permisos = $_SESSION["permisos"];
                 echo '  </ul>';
                 echo '</li>';
             }
-		  
 			echo ' <li>';
             echo '  <a href="./?pagina=lista_usuarios_graficas">';
             echo '    <i class="fa fa-area-chart" aria-hidden="true"></i> Gráficas por usuario ';

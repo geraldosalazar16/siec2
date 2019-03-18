@@ -92,7 +92,7 @@ valida_parametro_and_die($ID_TIPO_PERSONA,"Es necesario capturar el tipo de pers
 
 $ID_TIPO_ENTIDAD = $objeto->ID_TIPO_ENTIDAD;
 valida_parametro_and_die($ID_TIPO_ENTIDAD,"Es necesario capturar el tipo de entidad");
-
+$ID_TIPO_ENTIDAD_ANT = $database->get("CLIENTES", ['ID_TIPO_ENTIDAD'],["ID"=>$ID_CLIENTE]); //AQUI BUSCO SI ES PRIVADO O PUBLICO ANTES DE ACTUALIZAR
 //$UNICA_RAZON_SOCIAL = "N";
 
 
@@ -125,7 +125,25 @@ valida_error_medoo_and_die();
 $id = $database->delete("CLIENTES_RAZONES_SOCIALES", ["ID_CLIENTE" => $ID_CLIENTE]); 
 valida_error_medoo_and_die(); 
 
+/**************************************************************/
+//	AQUI ESTARA EL DISPARADOR PARA GUARDAR LOS DATOS PARA 
+//	REPORTES_CLIENTES SI SE MODIFICA EL ID_TIPO_ENTIDAD
+//	DE ALGUN CLIENTE DE PUBLICO A PRIVADO
+if($ID_TIPO_ENTIDAD_ANT != $ID_TIPO_ENTIDAD){
+	$consulta1 = "SELECT 
+						(SELECT COUNT(`ID_TIPO_ENTIDAD`) FROM `CLIENTES` WHERE `ID_TIPO_ENTIDAD`='SC') AS `CANT_SECTOR_PUBLICO` ,
+						(SELECT COUNT(`ID_TIPO_ENTIDAD`) FROM `CLIENTES` WHERE `ID_TIPO_ENTIDAD`='IP') AS `CANT_SECTOR_PRIVADO`";
+        $reporte = $database->query($consulta1)->fetchAll(PDO::FETCH_ASSOC);
+		//AQUI SE INSERTA LOS DATOS EN LA TABLA
+		$idr	=	$database->insert("REPORTES_CLIENTES",[
+						"SECTOR_PRIVADO"=> $reporte[0]["CANT_SECTOR_PRIVADO"],
+						"SECTOR_PUBLICO"=>$reporte[0]["CANT_SECTOR_PUBLICO"],
+						"FECHA"=>date("Ymd")
+					]);
+		valida_error_medoo_and_die();
+}
 
+/**************************************************************/
 
 $respuesta['resultado']="ok";
 $respuesta['mensaje']="Los datos del cliente han sido actualizados";

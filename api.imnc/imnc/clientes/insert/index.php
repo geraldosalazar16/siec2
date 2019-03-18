@@ -88,7 +88,22 @@ $idCliente = $database->insert("CLIENTES", [
 ]);
 valida_error_medoo_and_die("", "leovardo.quintero@dhttecno.com");
 
-
+/**************************************************************/
+//	AQUI ESTARA EL DISPARADOR PARA GUARDAR LOS DATOS PARA 
+//	REPORTES_CLIENTES SI SE INSERTA ALGUN NUEVO CLIENTE
+//	
+$consulta1 = "SELECT 
+						(SELECT COUNT(`ID_TIPO_ENTIDAD`) FROM `CLIENTES` WHERE `ID_TIPO_ENTIDAD`='SC') AS `CANT_SECTOR_PUBLICO` ,
+						(SELECT COUNT(`ID_TIPO_ENTIDAD`) FROM `CLIENTES` WHERE `ID_TIPO_ENTIDAD`='IP') AS `CANT_SECTOR_PRIVADO`";
+        $reporte = $database->query($consulta1)->fetchAll(PDO::FETCH_ASSOC);
+		//AQUI SE INSERTA LOS DATOS EN LA TABLA
+		$idr	=	$database->insert("REPORTES_CLIENTES",[
+						"SECTOR_PUBLICO"=> $reporte[0]["CANT_SECTOR_PUBLICO"],
+						"SECTOR_PRIVADO"=> $reporte[0]["CANT_SECTOR_PRIVADO"],
+						"FECHA"=>date("Ymd")
+					]);
+//		valida_error_medoo_and_die();
+/**************************************************************/
 $respuesta['resultado']="ok";
 $respuesta['id']=$idCliente;
 
