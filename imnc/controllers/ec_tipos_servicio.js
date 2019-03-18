@@ -1833,59 +1833,77 @@ cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 /*============================================================================================*/
 //GENERAR NOTIFICACION
   $scope.modal_generar_notificacion = function(id_servicio,id_sce,id_ta,ciclo){
+
+	    $scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa);
+	    $scope.get_notificacion(id_servicio,id_sce,id_ta,ciclo);
 		$("#inputIdSCE").val(id_sce);
 		$("#inputIdTA").val(id_ta);
 		$("#inputCiclo").val(ciclo);
 		$("#inputServicio").val(id_servicio);
+		$("#inputSave").val('');
 		$("#inputNombreUsuario").val(sessionStorage.getItem("nombre_usuario"));
-		$scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa);
-		$scope.notas = [];
-		$scope.countnotas = 0;
-//		Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
-//		Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
-//		Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
-//		Contactos_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
-		
-//		$scope.formDataGenCotizacion.tramites=$scope.arr_tramites_cotizacion;
-//		$scope.formDataGenCotizacion.descripcion=[];
-//		$scope.tarifa_adicional_tramite_cotizacion_by_tramite=[];
-		
-		
-//		for(var key in $scope.formDataGenCotizacion.tramites){
-			
-			/*===========================================================================*/
-//			 tramite_tarifa_adicional_by_tramite($scope.formDataGenCotizacion.tramites[key].ID,key);
-			/*===========================================================================*/
-			
-//		}
-		
-//		$scope.formDataGenCotizacion.descripcion=$scope.tarifa_adicional_tramite_cotizacion_by_tramite;
-		
-  
+		$scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF = "";
     $('#modalGeneraNotificacion').modal('show');
   }
 
 // Agredar notas adicionales
 $scope.addNote = function(value)
 {
-	$scope.notas[$scope.countnotas++] =value ;
-	$scope.formDataGeneraNotificacionPDF.txtNotaPDF = "";
-	$("#inputNotas").val($("#inputNotas").val()+value+"<|>");
+	if(value!="")
+	{
+		$scope.notas[$scope.countnotas++] =value ;
+		$scope.formDataGeneraNotificacionPDF.txtNotaPDF = "";
+		$('#txtNotaPDF').focus();
 
+	}
 
+}
+// Agredar notas adicionales
+$scope.deleteNote = function(pos)
+{
+	var aux = [];
+	var cont = 0;
+	$("#inputNotas").val("");
+	$.each($scope.notas,function(indice,elemento) {
+		if(indice!=pos)
+		{
+			aux[cont++]= elemento;
 
+		}
+	}) ;
+	$scope.notas = aux ;
+	$scope.countnotas = cont;
 
 }
   
  //	FUNCIONES PARA OBTENER LOS DOMICILIOS DEL CLIENTE 
-$scope.get_domicilio_cliente	= function(id_cliente){
-  $http.get(  global_apiserver + "/servicio_cliente_etapa/getDomicilioByIDSCE/?id="+id_cliente)
+$scope.get_notificacion	= function(id_servicio,id_sce,id_ta,ciclo){
+	$scope.notas = [];
+	$scope.countnotas = 0;
+  	var noti = {
+		ID_SCE:id_sce,
+		ID_TA:id_ta,
+		CICLO:ciclo,
+		SERVICIO:id_servicio,
+	};
+  $http.post(global_apiserver + "/servicio_cliente_etapa/getNotas/",JSON.stringify(noti))
 	.then(function( response ){
-		$scope.Domicilios	= response.data;
-			
+		$scope.saveNotas = response.data.NOTAS.map(function(item){
+			$scope.notas[$scope.countnotas++] = item.NOTA;
+			return item.NOTA;
+		});
+		$scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF = response.data.DOMICILIO;
 	});
 	
   }
+//	FUNCIONES PARA OBTENER LOS DOMICILIOS DEL CLIENTE
+	$scope.get_domicilio_cliente	= function(id_cliente){
+		$http.get(  global_apiserver + "/servicio_cliente_etapa/getDomicilioByIDSCE/?id="+id_cliente)
+			.then(function( response ){
+				$scope.Domicilios	= response.data;
+			});
+
+	}
  $scope.validar_chck = function()
  {
 	 if(typeof $scope.formDataGeneraNotificacionPDF.chckIMNC !== "undefined" && $scope.formDataGeneraNotificacionPDF.chckIMNC)
@@ -1902,20 +1920,37 @@ $scope.get_domicilio_cliente	= function(id_cliente){
  	return false;
  }
   
- $scope.submitFormGeneraNotificacionPDF = function () {
-  	    if(typeof $scope.formDataGeneraNotificacionPDF.txtNotaPDF !== "undefined" && $scope.formDataGeneraNotificacionPDF.txtNotaPDF.length > 0)
+ $scope.submitFormGeneraNotificacionPDF = function (save) {
+	 var diff1 = [];
+	 var diff2 = [];
+  	if(typeof $scope.formDataGeneraNotificacionPDF.txtNotaPDF !== "undefined" && $scope.formDataGeneraNotificacionPDF.txtNotaPDF.length > 0)
 		{
 			$scope.addNote($scope.formDataGeneraNotificacionPDF.txtNotaPDF);
 		}
+	     $("#inputSave").val("");
+		 if(typeof save !== "undefined")
+		 {
+			 $("#inputSave").val(save);
+		 }
+
+		 diff1 = $($scope.saveNotas).not($scope.notas).get();
+		 diff2 = $($scope.notas).not($scope.saveNotas).get();
+		 $("#inputNotas").val($scope.notas.join("<|>"));
+		 $("#inputNotasEdit").val(diff2.concat(diff1).join("<|>"));
+		 $("#inputDomicilio").val($scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF);
 
 
-		//window.open('', 'VentanaNotificacionPDF');
 	    if($scope.validar_chck())
 		{
+			window.open('', 'VentanaNotificacionPDF');
 			document.getElementById('exampleFormGeneraNotificacionPDF').submit();
+			$scope.saveNotas = [];
+			$.each($scope.notas,function (index,element) {
+				$scope.saveNotas[index]=element;
+			})
+			//$scope.get_notificacion($("#inputServicio").val(),$("#inputIdSCE").val(),$("#inputIdTA").val(),$("#inputCiclo").val())
 		}
 
- // submitFormGeneraNotificacionPDF(formGeneraNotificacionPDF)
   }
 
 // ===========================================================================

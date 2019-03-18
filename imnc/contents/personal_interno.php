@@ -187,8 +187,8 @@
                                     </ul>
                                   </div>
                                   <div class="right col-xs-3 text-center" style="padding: 0px;">
-                                   <img ng-if="item.IMAGEN_BASE64 === null" src="./pictures/user.png" style="width: 95px; height: 95px; cursor: pointer;" alt="" class="img-circle img-responsive " ng-click="uploadImage(item.NO_EMPLEADO)">
-                                   <img ng-if="item.IMAGEN_BASE64 !== null" src="{{item.IMAGEN_BASE64}}" style="width: 95px; height: 95px; cursor: pointer;" alt="" class="img-circle img-responsive " ng-click="uploadImage(item.NO_EMPLEADO)">
+                                   <img ng-if="item.IMAGEN_BASE64 === null" src="./pictures/user.png" style="width: 95px; height: 95px; cursor: pointer;" alt="" class="img-circle img-responsive " ng-click="uploadImageShow(item.NO_EMPLEADO)">
+                                   <img ng-if="item.IMAGEN_BASE64 !== null" src="{{item.IMAGEN_BASE64}}" style="width: 95px; height: 95px; cursor: pointer;" alt="" class="img-circle img-responsive " ng-click="uploadImageShow(item.NO_EMPLEADO)">
                                   </div>
                                 </div>
                                 <div class="col-xs-12 bottom text-center">
@@ -360,7 +360,7 @@
                          </form>
                     </div>
                     <div class="modal-footer">
-                 <button type="button" class="btn btn-default btn-sm pull-left"  ng-click="eliminar()">Eliminar</button>
+                 <button type="button" class="btn btn-default btn-sm pull-left" ng-show="accion=='editar'" ng-click="eliminar()">Eliminar</button>
                  <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cerrar</button>
                  <button type="button" class="btn btn-primary btn-sm"  ng-click="submitForm(formData)">Guardar</button>
             </div>
@@ -380,11 +380,12 @@
             <h4 class="modal-title">Subir imagen</h4>
           </div>
           <div class="modal-body">
-            <div id="singleupload">
-                <form  method="POST"  action="{{url}}" enctype="multipart/form-data" style="margin: 0px; padding: 0px;">
-                    <input type="file" id="ajax-upload-id-1460599196294" name="myfile" accept="image/*" >
+              <div class="ajax-file-upload" style="position: relative; overflow: hidden; cursor: default;">
+                Upload
+                <form id="singleupload" method="POST"  enctype="multipart/form-data" style="margin: 0px; padding: 0px;">
+                    <input type="file" id="ajax-upload-id-1460599196294" name="myfile" name="myfile" onchange="angular.element(this).scope().uploadFile(this.files)" accept="*" style="position: absolute; cursor: pointer; top: 0px; width: 100%; height: 100%; left: 0px; z-index: 100; opacity: 0;">
                 </form>
-              <div>
+              </div>
               <!--es necesario este div-->
               </div>
             </div>
