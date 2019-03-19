@@ -92,17 +92,11 @@ app.controller("usuariosc_controller", ['$scope','$window', '$http','$document',
     $scope.usuario_insertar_editar.ID_USUARIO = sessionStorage.getItem("id_usuario");
     $scope.usuario_insertar_editar.MODULOS = {};
 	console.log("entra for");
-	for(var i = 0 ; i < $scope.arr_modulos.length; i++){
-		console.log(i);
-		$scope.usuario_insertar_editar.MODULOS[i] = $scope.arr_modulos[i].VALOR;
-		console.log($scope.arr_modulos[i].VALOR);
-	}
+      for(var i = 0 ; i < $scope.arr_modulos.length; i++){
+          $scope.usuario_insertar_editar.MODULOS[i] = $scope.arr_modulos[i].VALOR;
+      }
 
-console.log($scope.usuario_insertar_editar);
     if ($scope.opcion_guardar_usuario == 'insertar') {
-for(var i = 0 ; i < $scope.arr_modulos.length; i++){
-		$scope.usuario_insertar_editar.MODULOS[i] = $scope.arr_modulos[i].VALOR;
-	}
 		 $.post(global_apiserver + "/usuariosc/insert/",angular.toJson($scope.usuario_insertar_editar), function(respuesta){
 			 notify("Éxito", "Se han guardado los cambios", "success");
            $('#modalInsertarActualizarUsuarios').modal('hide');

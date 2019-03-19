@@ -193,7 +193,6 @@ $modulo_permisos = $_SESSION["permisos"];
                 echo '  </ul>';
                 echo '</li>';
             }
-
 			echo ' <li>';
             echo '  <a href="./?pagina=lista_usuarios_graficas">';
             echo '    <i class="fa fa-area-chart" aria-hidden="true"></i> Gráficas por usuario ';

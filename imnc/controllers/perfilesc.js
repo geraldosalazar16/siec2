@@ -129,12 +129,101 @@ app.controller('perfilesc_controller', ['$scope',function($scope) {
 		}
 		$scope.limpiaCampos();
 		
-	};	
-	
-	
+	};
+
+	/*
+		Función para actualizar la tabla con los registros en la BD.
+	*/
+	$scope.actualizaModulos = function(){
+		$.ajax({
+			type:'GET',
+			url:global_apiserver + "/perfiles/getAllModulos/",
+			success: function(data){
+				$scope.$apply(function(){
+					$scope.modulos = angular.fromJson(data);
+				});
+			}
+		});
+	};
+
+	$scope.openModalModulos = function(key) {
+		$scope.accion = "insertar";
+		$scope.modal_title = "Nuevo Módulo";
+		clear_modulo();
+		if(typeof key !== "undefined") {
+			$scope.accion = "editar";
+			$scope.modal_title = "Editando Módulo";
+			$scope.modulo = $scope.modulos[key].MODULO;
+			$scope.ID = $scope.modulos[key].ID;
+		}
+		/*$("#btnGuardar").attr("accion","insertar");
+		$("#modalTitulo").html("Insertar Porcentaje");
+		$("#nombre").attr("readonly",false);*/
+		$("#modalInsertarModulo").modal("show");
+
+	};
+
+	$scope.guardarModulo = function(){
+		if(typeof $scope.modulo !== "undefined") {
+			if ($scope.modulo.length == 0) {
+				$scope.modulo_error="No debe estar vacio";
+				setfocus = "modulo";
+			} else {
+				$scope.modulo_error="";
+				if($scope.accion == "insertar")
+				{
+					var add = {
+						MODULO: $scope.modulo
+					};
+					$.post( global_apiserver + "/perfiles/insertModulo/", JSON.stringify(add), function(respuesta){
+						respuesta = JSON.parse(respuesta);
+						if (respuesta.resultado == "ok") {
+							$("#modalInsertarModulo").modal("hide");
+							notify_success("Éxito", "Se guardado el modulo");
+							$scope.actualizaModulos();
+						}
+						else {
+							notify_success(respuesta.error, respuesta.mensaje);
+						}
+					});
+				}
+				if($scope.accion == "editar")
+				{
+					var add = {
+						ID: $scope.ID,
+						MODULO: $scope.modulo
+					};
+					$.post( global_apiserver + "/perfiles/updateModulo/", JSON.stringify(add), function(respuesta){
+						respuesta = JSON.parse(respuesta);
+						if (respuesta.resultado == "ok") {
+							$("#modalInsertarModulo").modal("hide");
+							notify_success("Éxito", "Se editado el modulo");
+							$scope.actualizaModulos();
+						}
+						else {
+							notify_success(respuesta.error, respuesta.mensaje);
+						}
+					});
+				}
+
+
+			}
+		}else {
+			$scope.modulo_error="No debe estar vacio";
+			setfocus = "modulo";
+		}
+	}
+
+	function clear_modulo()
+	{
+		$scope.modulo_error="";
+		$scope.modulo = "";
+		$scope.ID = "";
+	}
 	
 	
 	$scope.actualizaTabla();
+	$scope.actualizaModulos();
 	
 }]);
 	/*
