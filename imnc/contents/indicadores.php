@@ -23,7 +23,12 @@
 						<canvas id="IndEnvPlanAudChart" height="80"></canvas>
 					</div>
 				</div>
-				
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+					<h5 align='center'> Indicador Env&iacuteo Plan Auditor&iacutea {{ano_actual}} </h5>
+					<div style="width: 100%;">
+						<canvas id="IndEnvPlanAudChart1" height="80"></canvas>
+					</div>
+				</div>
              </div>
 
             <div class="clearfix" style="background-color:white;"></div>

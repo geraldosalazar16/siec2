@@ -212,12 +212,12 @@ $mes_curso = date('m')-1;
 			}
 		}
 		else{
-			$fecha2 =  substr($datos2[0]['FECHA_CREACION'],8,2).'/'.substr($datos2[0]['FECHA_CREACION'],5,2).'/'.substr($datos2[0]['FECHA_CREACION'],0,4);
-			$fecha1 =  substr($datos[$i]['FECHA'],6,2).'/'.substr($datos[$i]['FECHA'],4,2).'/'.substr($datos[$i]['FECHA'],0,4);
+			$fecha1 =  substr($datos2[0]['FECHA_CREACION'],8,2).'/'.substr($datos2[0]['FECHA_CREACION'],5,2).'/'.substr($datos2[0]['FECHA_CREACION'],0,4);
+			$fecha2 =  substr($datos[$i]['FECHA'],6,2).'/'.substr($datos[$i]['FECHA'],4,2).'/'.substr($datos[$i]['FECHA'],0,4);
 			//Funcion para determinar si existe diferencia de 5 dias
 			$dif_dias = compararFechas($fecha1,$fecha2);
 			$aa = 'no esta_vacio';
-			if(abs($dif_dias)<6){
+			if($dif_dias<6 && $dif_dias>0){
 			switch($mes){
 				case 1:
 					$datos1['Y1'][0]++;
@@ -302,76 +302,135 @@ $mes_curso = date('m')-1;
 	}
 	//  PARTIR DE AQUI ES NECESARIO CALCULAMOS EN % CUANTOS CUMPLEN CON LA REGLA DE 5 DIAS SOBRE EL TOTAL POR MES
 	if(($datos1['Y1'][0]+$datos1['Y2'][0]+$datos1['Y3'][0])==0){
-		$datos1['Z'][0] = 0;
+		$datos1['Z1'][0] = 0;
+		$datos1['Z2'][0] = 0;
+		$datos1['Z3'][0] = 0;
 	}
 	else{
-		$datos1['Z'][0] = ($datos1['Y1'][0] * 100)/($datos1['Y1'][0]+$datos1['Y2'][0]+$datos1['Y3'][0]);
+		$datos1['Z1'][0] = ($datos1['Y1'][0] * 100)/($datos1['Y1'][0]+$datos1['Y2'][0]+$datos1['Y3'][0]);
+		$datos1['Z2'][0] = ($datos1['Y2'][0] * 100)/($datos1['Y1'][0]+$datos1['Y2'][0]+$datos1['Y3'][0]);
+		$datos1['Z3'][0] = ($datos1['Y3'][0] * 100)/($datos1['Y1'][0]+$datos1['Y2'][0]+$datos1['Y3'][0]);
 	}
+	
 	if(($datos1['Y1'][1]+$datos1['Y2'][1]+$datos1['Y3'][1])==0){
-		$datos1['Z'][1] = 0;
+		$datos1['Z1'][1] = 0;
+		$datos1['Z2'][1] = 0;
+		$datos1['Z3'][1] = 0;
 	}
 	else{
-		$datos1['Z'][1] = ($datos1['Y1'][1] * 100)/($datos1['Y1'][1]+$datos1['Y2'][1]+$datos1['Y3'][1]);
+		$datos1['Z1'][1] = ($datos1['Y1'][1] * 100)/($datos1['Y1'][1]+$datos1['Y2'][1]+$datos1['Y3'][1]);
+		$datos1['Z2'][1] = ($datos1['Y2'][1] * 100)/($datos1['Y1'][1]+$datos1['Y2'][1]+$datos1['Y3'][1]);
+		$datos1['Z3'][1] = ($datos1['Y3'][1] * 100)/($datos1['Y1'][1]+$datos1['Y2'][1]+$datos1['Y3'][1]);
 	}
+	
 	if(($datos1['Y1'][2]+$datos1['Y2'][2]+$datos1['Y3'][2])==0){
-		$datos1['Z'][2] = 0;
+		$datos1['Z1'][2] = 0;
+		$datos1['Z2'][2] = 0;
+		$datos1['Z3'][2] = 0;
 	}
 	else{
-		$datos1['Z'][2] = ($datos1['Y1'][2] * 100)/($datos1['Y1'][2]+$datos1['Y2'][2]+$datos1['Y3'][2]);
+		$datos1['Z1'][2] = ($datos1['Y1'][2] * 100)/($datos1['Y1'][2]+$datos1['Y2'][2]+$datos1['Y3'][2]);
+		$datos1['Z2'][2] = ($datos1['Y2'][2] * 100)/($datos1['Y1'][2]+$datos1['Y2'][2]+$datos1['Y3'][2]);
+		$datos1['Z3'][2] = ($datos1['Y3'][2] * 100)/($datos1['Y1'][2]+$datos1['Y2'][2]+$datos1['Y3'][2]);
 	}
+	
 	if(($datos1['Y1'][3]+$datos1['Y2'][3]+$datos1['Y3'][3])==0){
-		$datos1['Z'][3] = 0;
+		$datos1['Z1'][3] = 0;
+		$datos1['Z2'][3] = 0;
+		$datos1['Z3'][3] = 0;
 	}
 	else{
-		$datos1['Z'][3] = ($datos1['Y1'][3] * 100)/($datos1['Y1'][3]+$datos1['Y2'][3]+$datos1['Y3'][3]);
+		$datos1['Z1'][3] = ($datos1['Y1'][3] * 100)/($datos1['Y1'][3]+$datos1['Y2'][3]+$datos1['Y3'][3]);
+		$datos1['Z2'][3] = ($datos1['Y2'][3] * 100)/($datos1['Y1'][3]+$datos1['Y2'][3]+$datos1['Y3'][3]);
+		$datos1['Z3'][3] = ($datos1['Y3'][3] * 100)/($datos1['Y1'][3]+$datos1['Y2'][3]+$datos1['Y3'][3]);
 	}
+	
 	if(($datos1['Y1'][4]+$datos1['Y2'][4]+$datos1['Y3'][4])==0){
-		$datos1['Z'][4] = 0;
+		$datos1['Z1'][4] = 0;
+		$datos1['Z2'][4] = 0;
+		$datos1['Z3'][4] = 0;
 	}
 	else{
-		$datos1['Z'][4] = ($datos1['Y1'][4] * 100)/($datos1['Y1'][4]+$datos1['Y2'][4]+$datos1['Y3'][4]);
+		$datos1['Z1'][4] = ($datos1['Y1'][4] * 100)/($datos1['Y1'][4]+$datos1['Y2'][4]+$datos1['Y3'][4]);
+		$datos1['Z2'][4] = ($datos1['Y2'][4] * 100)/($datos1['Y1'][4]+$datos1['Y2'][4]+$datos1['Y3'][4]);
+		$datos1['Z3'][4] = ($datos1['Y3'][4] * 100)/($datos1['Y1'][4]+$datos1['Y2'][4]+$datos1['Y3'][4]);
 	}
+	
 	if(($datos1['Y1'][5]+$datos1['Y2'][5]+$datos1['Y3'][5])==0){
-		$datos1['Z'][5] = 0;
+		$datos1['Z1'][5] = 0;
+		$datos1['Z2'][5] = 0;
+		$datos1['Z3'][5] = 0;
 	}
 	else{
-		$datos1['Z'][5] = ($datos1['Y1'][5] * 100)/($datos1['Y1'][5]+$datos1['Y2'][5]+$datos1['Y3'][5]);
+		$datos1['Z1'][5] = ($datos1['Y1'][5] * 100)/($datos1['Y1'][5]+$datos1['Y2'][5]+$datos1['Y3'][5]);
+		$datos1['Z2'][5] = ($datos1['Y2'][5] * 100)/($datos1['Y1'][5]+$datos1['Y2'][5]+$datos1['Y3'][5]);
+		$datos1['Z3'][5] = ($datos1['Y3'][5] * 100)/($datos1['Y1'][5]+$datos1['Y2'][5]+$datos1['Y3'][5]);
 	}
+	
 	if(($datos1['Y1'][6]+$datos1['Y2'][6]+$datos1['Y3'][6])==0){
-		$datos1['Z'][6] = 0;
+		$datos1['Z1'][6] = 0;
+		$datos1['Z2'][6] = 0;
+		$datos1['Z3'][6] = 0;
 	}
 	else{
-		$datos1['Z'][6] = ($datos1['Y1'][6] * 100)/($datos1['Y1'][6]+$datos1['Y2'][6]+$datos1['Y3'][6]);
+		$datos1['Z1'][6] = ($datos1['Y1'][6] * 100)/($datos1['Y1'][6]+$datos1['Y2'][6]+$datos1['Y3'][6]);
+		$datos1['Z2'][6] = ($datos1['Y2'][6] * 100)/($datos1['Y1'][6]+$datos1['Y2'][6]+$datos1['Y3'][6]);
+		$datos1['Z3'][6] = ($datos1['Y3'][6] * 100)/($datos1['Y1'][6]+$datos1['Y2'][6]+$datos1['Y3'][6]);
 	}
+	
 	if(($datos1['Y1'][7]+$datos1['Y2'][7]+$datos1['Y3'][7])==0){
-		$datos1['Z'][7] = 0;
+		$datos1['Z1'][7] = 0;
+		$datos1['Z2'][7] = 0;
+		$datos1['Z3'][7] = 0;
 	}
 	else{
-		$datos1['Z'][7] = ($datos1['Y1'][7] * 100)/($datos1['Y1'][7]+$datos1['Y2'][7]+$datos1['Y3'][7]);
+		$datos1['Z1'][7] = ($datos1['Y1'][7] * 100)/($datos1['Y1'][7]+$datos1['Y2'][7]+$datos1['Y3'][7]);
+		$datos1['Z2'][7] = ($datos1['Y2'][7] * 100)/($datos1['Y1'][7]+$datos1['Y2'][7]+$datos1['Y3'][7]);
+		$datos1['Z3'][7] = ($datos1['Y3'][7] * 100)/($datos1['Y1'][7]+$datos1['Y2'][7]+$datos1['Y3'][7]);
 	}
+	
 	if(($datos1['Y1'][8]+$datos1['Y2'][8]+$datos1['Y3'][8])==0){
-		$datos1['Z'][8] = 0;
+		$datos1['Z1'][8] = 0;
+		$datos1['Z2'][8] = 0;
+		$datos1['Z3'][8] = 0;
 	}
 	else{
-		$datos1['Z'][8] = ($datos1['Y1'][8] * 100)/($datos1['Y1'][8]+$datos1['Y2'][8]+$datos1['Y3'][8]);
+		$datos1['Z1'][8] = ($datos1['Y1'][8] * 100)/($datos1['Y1'][8]+$datos1['Y2'][8]+$datos1['Y3'][8]);
+		$datos1['Z2'][8] = ($datos1['Y2'][8] * 100)/($datos1['Y1'][8]+$datos1['Y2'][8]+$datos1['Y3'][8]);
+		$datos1['Z3'][8] = ($datos1['Y3'][8] * 100)/($datos1['Y1'][8]+$datos1['Y2'][8]+$datos1['Y3'][8]);
 	}
+	
 	if(($datos1['Y1'][9]+$datos1['Y2'][9]+$datos1['Y3'][9])==0){
-		$datos1['Z'][9] = 0;
+		$datos1['Z1'][9] = 0;
+		$datos1['Z2'][9] = 0;
+		$datos1['Z3'][9] = 0;
 	}
 	else{
-		$datos1['Z'][9] = ($datos1['Y1'][9] * 100)/($datos1['Y1'][9]+$datos1['Y2'][9]+$datos1['Y3'][9]);
+		$datos1['Z1'][9] = ($datos1['Y1'][9] * 100)/($datos1['Y1'][9]+$datos1['Y2'][9]+$datos1['Y3'][9]);
+		$datos1['Z2'][9] = ($datos1['Y2'][9] * 100)/($datos1['Y1'][9]+$datos1['Y2'][9]+$datos1['Y3'][9]);
+		$datos1['Z3'][9] = ($datos1['Y3'][9] * 100)/($datos1['Y1'][9]+$datos1['Y2'][9]+$datos1['Y3'][9]);
 	}
+	
 	if(($datos1['Y1'][10]+$datos1['Y2'][10]+$datos1['Y3'][10])==0){
-		$datos1['Z'][10] = 0;
+		$datos1['Z1'][10] = 0;
+		$datos1['Z2'][10] = 0;
+		$datos1['Z3'][10] = 0;
 	}
 	else{
-		$datos1['Z'][10] = ($datos1['Y1'][10] * 100)/($datos1['Y1'][10]+$datos1['Y2'][10]+$datos1['Y3'][10]);
+		$datos1['Z1'][10] = ($datos1['Y1'][10] * 100)/($datos1['Y1'][10]+$datos1['Y2'][10]+$datos1['Y3'][10]);
+		$datos1['Z2'][10] = ($datos1['Y2'][10] * 100)/($datos1['Y1'][10]+$datos1['Y2'][10]+$datos1['Y3'][10]);
+		$datos1['Z3'][10] = ($datos1['Y3'][10] * 100)/($datos1['Y1'][10]+$datos1['Y2'][10]+$datos1['Y3'][10]);
 	}
+	
 	if(($datos1['Y1'][11]+$datos1['Y2'][11]+$datos1['Y3'][11])==0){
-		$datos1['Z'][11] = 0;
+		$datos1['Z1'][11] = 0;
+		$datos1['Z2'][11] = 0;
+		$datos1['Z3'][11] = 0;
 	}
 	else{
-		$datos1['Z'][11] = ($datos1['Y1'][11] * 100)/($datos1['Y1'][11]+$datos1['Y2'][11]+$datos1['Y3'][11]);
+		$datos1['Z1'][11] = ($datos1['Y1'][11] * 100)/($datos1['Y1'][11]+$datos1['Y2'][11]+$datos1['Y3'][11]);
+		$datos1['Z2'][11] = ($datos1['Y2'][11] * 100)/($datos1['Y1'][11]+$datos1['Y2'][11]+$datos1['Y3'][11]);
+		$datos1['Z3'][11] = ($datos1['Y3'][11] * 100)/($datos1['Y1'][11]+$datos1['Y2'][11]+$datos1['Y3'][11]);
 	}
 	
 	

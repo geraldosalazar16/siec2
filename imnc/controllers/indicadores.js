@@ -1,17 +1,8 @@
 app.controller('indicadores_controller', ['$scope', function($scope,$http) { 
 /***********************************************************************/
 	var IndEnvPlanAud = document.getElementById("IndEnvPlanAudChart");
-	var repCertVigHist = document.getElementById("RepCertVigHistChart");
-	var repCompContr = document.getElementById("repCompContrChart");
-	var repCompContrHist = document.getElementById("repCompContrHistChart");
-	var repMezclaPort = document.getElementById("repMezclaPortChart");
-	var repMezclaPortHist = document.getElementById("repMezclaPortHistChart");
-	var repCertEmitSG = document.getElementById("repCertEmitSGChart");
-	var repCertEmitSGHist = document.getElementById("repCertEmitSGHistChart");
-	var repServRealizSG = document.getElementById("repServRealizSGChart");
-	var repServRealizSGHist = document.getElementById("repServRealizSGHistChart");
-	var repDiasAudSG = document.getElementById("repDiasAudSGChart");
-	var repDiasAudSGHist = document.getElementById("repDiasAudSGHistChart");
+	var IndEnvPlanAud1 = document.getElementById("IndEnvPlanAudChart1");
+	
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
 // REPORTES CERTIFICADOS VIGENTES	
@@ -29,7 +20,7 @@ $scope.graficaIndEnvPlanAud = function(){
 					datasets: [{
 						label: 'Auditorias enviadas con su plan (%)',
 						backgroundColor: 'rgba(255, 0, 0, 0.5)',
-						data: data.Z,
+						data: data.Z1,
 					}]
 				},
 				options: {
@@ -58,10 +49,61 @@ $scope.graficaIndEnvPlanAud = function(){
 		}
 	});
 };
+// REPORTES CERTIFICADOS VIGENTES PRUEBA 1	
+$scope.graficaIndEnvPlanAud1 = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_indicadores/getEnvioPlanAuditoria/",
+		success:function(data){
+		
+			var mybarChart = new Chart(IndEnvPlanAud1, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'Auditorias enviadas con su plan que cumplen los 5 dias (%)',
+						backgroundColor: 'rgba(255, 0, 0, 0.5)',
+						data: data.Z1,
+					},{
+						label: 'Auditorias enviadas con su plan que no cumplen los 5 dias(%)',
+						backgroundColor: 'rgba(0, 255, 0, 0.5)',
+						data: data.Z2,
+					},{
+						label: 'Auditorias enviadas sin su plan (%)',
+						backgroundColor: 'rgba(0, 0, 255, 0.5)',
+						data: data.Z3,
+					}]
+				},
+				options: {
+					
+					scales: {
+						xAxes: [{
+							stacked: true
 
+						}],
+						yAxes: [{
+							stacked: true,
+							ticks: {
+								beginAtZero: true,   
+								steps: 10,
+								stepValue: 5,
+								max: 100
+							}
+						}]	
+					}
+					
+				}	
+				
+			});
+			
+		
+		}
+	});
+};
 
 $scope.graficaIndEnvPlanAud();
-
+$scope.graficaIndEnvPlanAud1();
 /***********************************************************************/	
 
 function notify(titulo, texto, tipo) {
