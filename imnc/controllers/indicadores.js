@@ -2,10 +2,11 @@ app.controller('indicadores_controller', ['$scope', function($scope,$http) {
 /***********************************************************************/
 	var IndEnvPlanAud = document.getElementById("IndEnvPlanAudChart");
 	var IndEnvPlanAud1 = document.getElementById("IndEnvPlanAudChart1");
+	var IndProgOportVig = document.getElementById("IndProgOportVigChart");
 	
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
-// REPORTES CERTIFICADOS VIGENTES	
+// REPORTES ENVIO PLAN AUDITORIA	
 $scope.graficaIndEnvPlanAud = function(){
 	$.ajax({
 		type:'GET',
@@ -49,7 +50,7 @@ $scope.graficaIndEnvPlanAud = function(){
 		}
 	});
 };
-// REPORTES CERTIFICADOS VIGENTES PRUEBA 1	
+// REPORTES ENVIO PLAN AUDITORIA	
 $scope.graficaIndEnvPlanAud1 = function(){
 	$.ajax({
 		type:'GET',
@@ -101,9 +102,58 @@ $scope.graficaIndEnvPlanAud1 = function(){
 		}
 	});
 };
+// REPORTES PROGRAMACIONES OPORTUNAS VIGILANCIAS	
+$scope.graficaIndProgOportVigChart = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_indicadores/getProgramacionesOportunasVig/",
+		success:function(data){
+		
+			var mybarChart = new Chart(IndProgOportVig, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'Auditorias de vigilancias con programacion oportuna que cumplen con la regla de los 30 dias(%)',
+						backgroundColor: 'rgba(255, 0, 0, 0.5)',
+						data: data.Z1,
+					},{
+						label: 'Auditorias de vigilancias con programacion oportuna que no cumplen con la regla de los 30 dias(%)',
+						backgroundColor: 'rgba(0, 0, 255, 0.5)',
+						data: data.Z2,
+					}]
+				},
+				options: {
+					
+					scales: {
+						xAxes: [{
+							stacked: true
+
+						}],
+						yAxes: [{
+							stacked: true,
+							ticks: {
+								beginAtZero: true,   
+								steps: 10,
+								stepValue: 5,
+								max: 100
+							}
+						}]	
+					}
+					
+				}	
+				
+			});
+			
+		
+		}
+	});
+};
 
 $scope.graficaIndEnvPlanAud();
 $scope.graficaIndEnvPlanAud1();
+$scope.graficaIndProgOportVigChart();
 /***********************************************************************/	
 
 function notify(titulo, texto, tipo) {
