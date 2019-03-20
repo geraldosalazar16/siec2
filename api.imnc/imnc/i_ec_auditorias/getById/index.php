@@ -37,7 +37,7 @@ $ec_tipo_servicio = $database->select("I_TIPOS_SERVICIOS",
 											["[><]I_META_SCE"=>["I_TIPOS_SERVICIOS.ID_META_SCE"=>"ID"]],
 										
 											["I_TIPOS_SERVICIOS.ID_SERVICIO_CLIENTE_ETAPA","I_TIPOS_SERVICIOS.ID_META_SCE","I_TIPOS_SERVICIOS.VALOR","I_META_SCE.NOMBRE(NOMBRE_META_SCE)","I_META_SCE.TIPO(TIPO_META_SCE)"],
-											["ID_SERVICIO_CLIENTE_ETAPA"=>$id_sce]); 
+											["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$id_sce,"I_META_SCE.NOMBRE"=>"Número de registro"]]);
 valida_error_medoo_and_die(); 
 // SG_TIPOS_SERVICIO => SERVICIO_CLIENTE_ETAPA
 $servicio_cliente_etapa = $database->get("SERVICIO_CLIENTE_ETAPA", "*", ["ID"=>$id_sce]);
