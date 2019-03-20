@@ -211,8 +211,8 @@ $mes_curso = date('m')-1;
 			}
 		}
 		else{
-			$fecha1 =  substr($datos2[0]['FECHA_CREACION'],8,2).'/'.substr($datos2[0]['FECHA_CREACION'],5,2).'/'.substr($datos2[0]['FECHA_CREACION'],0,4);
-			$fecha2 =  substr($datos[$i]['FECHA'],6,2).'/'.substr($datos[$i]['FECHA'],4,2).'/'.substr($datos[$i]['FECHA'],0,4);
+			$fecha2 =  substr($datos2[0]['FECHA_CREACION'],8,2).'/'.substr($datos2[0]['FECHA_CREACION'],5,2).'/'.substr($datos2[0]['FECHA_CREACION'],0,4);
+			$fecha1 =  substr($datos[$i]['FECHA'],6,2).'/'.substr($datos[$i]['FECHA'],4,2).'/'.substr($datos[$i]['FECHA'],0,4);
 			//Funcion para determinar si existe diferencia de 5 dias
 			$dif_dias = compararFechas($fecha1,$fecha2);
 			if($dif_dias>5 ){
