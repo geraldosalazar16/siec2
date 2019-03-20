@@ -171,7 +171,6 @@ $mes_curso = date('m')-1;
 		$datos2 = $database->query($consulta)->fetchAll();
 		
 		if(empty($datos2)){
-			$aa = 'esta_vacio';
 			switch($mes){
 				case 1:
 					$datos1['Y3'][0]++;
@@ -216,8 +215,7 @@ $mes_curso = date('m')-1;
 			$fecha2 =  substr($datos[$i]['FECHA'],6,2).'/'.substr($datos[$i]['FECHA'],4,2).'/'.substr($datos[$i]['FECHA'],0,4);
 			//Funcion para determinar si existe diferencia de 5 dias
 			$dif_dias = compararFechas($fecha1,$fecha2);
-			$aa = 'no esta_vacio';
-			if($dif_dias<6 && $dif_dias>0){
+			if($dif_dias>5 ){
 			switch($mes){
 				case 1:
 					$datos1['Y1'][0]++;
