@@ -50,11 +50,7 @@ $scope.graficaIndEnvPlanAud = function(){
 		}
 	});
 };
-<<<<<<< HEAD
-// REPORTES CERTIFICADOS VIGENTES PRUEBA 1	
-=======
 // REPORTES ENVIO PLAN AUDITORIA	
->>>>>>> desarrollo
 $scope.graficaIndEnvPlanAud1 = function(){
 	$.ajax({
 		type:'GET',
@@ -106,11 +102,6 @@ $scope.graficaIndEnvPlanAud1 = function(){
 		}
 	});
 };
-<<<<<<< HEAD
-
-$scope.graficaIndEnvPlanAud();
-$scope.graficaIndEnvPlanAud1();
-=======
 // REPORTES PROGRAMACIONES OPORTUNAS VIGILANCIAS	
 $scope.graficaIndProgOportVigChart = function(){
 	$.ajax({
@@ -163,7 +154,6 @@ $scope.graficaIndProgOportVigChart = function(){
 $scope.graficaIndEnvPlanAud();
 $scope.graficaIndEnvPlanAud1();
 $scope.graficaIndProgOportVigChart();
->>>>>>> desarrollo
 /***********************************************************************/	
 
 function notify(titulo, texto, tipo) {
