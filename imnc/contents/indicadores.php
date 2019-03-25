@@ -57,7 +57,28 @@
         </div>
     </div>
 		     <br />
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12" style="overflow: auto;overflow-y: hidden;">
+			<div class="dashboard_graph" id="pruebaDaniel">
 
+				<div class="row x_title">
+					<div class="col-md-6">
+						<h3>Anexo 3 <small>Indicadores Certificación de Sistemas de Gesti&oacute;n</small></h3>
+					</div>
+				</div>
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+					<h5 align='center'>Indicador Programaci&oacuten Oportuna Renovaci&oacuten {{ano_actual}}</h5>
+					<div style="width: 100%;">
+						<canvas id="IndProgOportRenChart" height="80"></canvas>
+					</div>
+				</div>
+				
+             </div>
+
+            <div class="clearfix" style="background-color:white;"></div>
+        </div>
+    </div>
+		     <br />
 
       </div>
 	  

@@ -3,6 +3,7 @@ app.controller('indicadores_controller', ['$scope', function($scope,$http) {
 	var IndEnvPlanAud = document.getElementById("IndEnvPlanAudChart");
 	var IndEnvPlanAud1 = document.getElementById("IndEnvPlanAudChart1");
 	var IndProgOportVig = document.getElementById("IndProgOportVigChart");
+	var IndProgOportRen = document.getElementById("IndProgOportRenChart");
 	
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
@@ -150,10 +151,58 @@ $scope.graficaIndProgOportVigChart = function(){
 		}
 	});
 };
+// REPORTES PROGRAMACIONES OPORTUNAS RENOVACION	
+$scope.graficaIndProgOportRenChart = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_indicadores/getProgramacionesOportunasRen/",
+		success:function(data){
+		
+			var mybarChart = new Chart(IndProgOportRen, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'Auditorias de renovacion con programacion oportuna que cumplen con la regla de los 30 dias(%)',
+						backgroundColor: 'rgba(255, 0, 0, 0.5)',
+						data: data.Z1,
+					},{
+						label: 'Auditorias de renovacion con programacion oportuna que no cumplen con la regla de los 30 dias(%)',
+						backgroundColor: 'rgba(0, 0, 255, 0.5)',
+						data: data.Z2,
+					}]
+				},
+				options: {
+					
+					scales: {
+						xAxes: [{
+							stacked: true
 
+						}],
+						yAxes: [{
+							stacked: true,
+							ticks: {
+								beginAtZero: true,   
+								steps: 10,
+								stepValue: 5,
+								max: 100
+							}
+						}]	
+					}
+					
+				}	
+				
+			});
+			
+		
+		}
+	});
+};
 $scope.graficaIndEnvPlanAud();
 $scope.graficaIndEnvPlanAud1();
 $scope.graficaIndProgOportVigChart();
+$scope.graficaIndProgOportRenChart();
 /***********************************************************************/	
 
 function notify(titulo, texto, tipo) {
