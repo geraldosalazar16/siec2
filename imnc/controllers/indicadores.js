@@ -4,6 +4,7 @@ app.controller('indicadores_controller', ['$scope', function($scope,$http) {
 	var IndEnvPlanAud1 = document.getElementById("IndEnvPlanAudChart1");
 	var IndProgOportVig = document.getElementById("IndProgOportVigChart");
 	var IndProgOportRen = document.getElementById("IndProgOportRenChart");
+	var IndTiempoEntregInf = document.getElementById("IndTiempoEntregInfChart");
 	
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
@@ -199,10 +200,63 @@ $scope.graficaIndProgOportRenChart = function(){
 		}
 	});
 };
+// REPORTES TIEMPO DE ENTREGA DEL INFORME	
+$scope.graficaIndTiempoEntregInf = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_indicadores/getTiempoEntregaInforme/",
+		success:function(data){
+		
+			var mybarChart = new Chart(IndTiempoEntregInf, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+						label: 'Reportes de auditoria con su informe que cumplen los 7 dias (%)',
+						backgroundColor: 'rgba(255, 0, 0, 0.5)',
+						data: data.Z1,
+					},{
+						label: 'Reportes de auditoria con su informe que no cumplen los 7 dias(%)',
+						backgroundColor: 'rgba(0, 255, 0, 0.5)',
+						data: data.Z2,
+					},{
+						label: 'Reportes de auditoria sin su informe (%)',
+						backgroundColor: 'rgba(0, 0, 255, 0.5)',
+						data: data.Z3,
+					}]
+				},
+				options: {
+					
+					scales: {
+						xAxes: [{
+							stacked: true
+
+						}],
+						yAxes: [{
+							stacked: true,
+							ticks: {
+								beginAtZero: true,   
+								steps: 10,
+								stepValue: 5,
+								max: 100
+							}
+						}]	
+					}
+					
+				}	
+				
+			});
+			
+		
+		}
+	});
+};
 $scope.graficaIndEnvPlanAud();
 $scope.graficaIndEnvPlanAud1();
 $scope.graficaIndProgOportVigChart();
 $scope.graficaIndProgOportRenChart();
+$scope.graficaIndTiempoEntregInf();
 /***********************************************************************/	
 
 function notify(titulo, texto, tipo) {
