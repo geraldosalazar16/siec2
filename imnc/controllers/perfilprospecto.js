@@ -1312,13 +1312,13 @@ $scope.eliminar = function(id){
 				domicilio = 0;
 			var correo = $scope.correo;
 			if(!correo)
-				correo = " ";
+				correo = "";
 			var telefono = $scope.telefono;
 			if(!telefono)
-				telefono = " ";
+				telefono = "";
 			var puesto = $scope.puesto;
 			if(!puesto)
-				puesto = " ";
+				puesto = "";
 			if($scope.respuesta == 1){
 				var contacto = {
 					ID_PROSPECTO: $scope.id_prospecto,
