@@ -449,19 +449,17 @@ app.controller('empleados_controller',['$scope','$http',function($scope,$http){
 
         var fecha_nacimiento = $('#fecha_nacimiento').datepicker({
             dateFormat: "dd/mm/yy",
-            minDate: init,
             language: "es",
             onSelect: function (dateText, ins) {
                 $scope.formData.fecha_nacimiento = dateText;
             }
         }).css("display", "inline-block");
 
-        var init = '-20Y';
         if(typeof date !== "undefined")
         {
-            init = date;
+            $scope.formData.fecha_nacimiento = date;
         }
-        fecha_nacimiento.datepicker("option", "minDate", init);
+
     }
 
 // =======================================================================================

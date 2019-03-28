@@ -210,11 +210,56 @@ $scope.graficaEntidadU = function(){
 	
 };
 
+$scope.graficaLoginU = function(){
+		$.ajax({
+			type:'GET',
+			dataType: 'json',
+			url:global_apiserver+"/reporte/getLogins/?usuario="+usuarioID,
+			success:function(data){
+				var logins = data;
+				var meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+				var mybarChart = new Chart(loginChartU, {
+
+					type: 'bar',
+					data: {
+						labels: meses,
+						datasets: [{
+
+							label: 'Cantidad',
+							backgroundColor: "#915a08",
+							data: logins,
+						}]
+					},
+
+					options: {
+						scales: {
+							xAxes: [{
+								stacked: true,
+								ticks: {
+									autoSkip: false
+								}
+							}],
+							yAxes: [{
+								ticks: {
+									beginAtZero: true
+								}
+							}]
+						}
+
+					}
+				});
+
+			}
+		});
+
+	};
+
 $scope.graficaCompetenciaU();
 $scope.graficaOrigenU();
 $scope.graficaEstatusU();
 $scope.graficaEntidadU();
 $scope.getUsuario();
+$scope.graficaLoginU();
 }]);
 
 
