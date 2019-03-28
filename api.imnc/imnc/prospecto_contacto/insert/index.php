@@ -18,17 +18,20 @@
     valida_parametro_and_die($NOMBRE, "Falta nombre del contacto");
 	$CORREO = $objeto->CORREO;
 	valida_parametro_and_die($CORREO, "Falta el correo");
-	
-	if($CORREO !== " ")
-    	if (!filter_var($CORREO, FILTER_VALIDATE_EMAIL)) {
-    		imprime_error_and_die("El correo debe tener un formato válido (e.j. tu.nombre@tuempresa.com)");
-    	}
+	if (!filter_var($CORREO, FILTER_VALIDATE_EMAIL)) {
+		imprime_error_and_die("El correo debe tener un formato válido (e.j. tu.nombre@tuempresa.com)");
+	}
+    	
     	
 	$CORREO2 = $objeto->CORREO2;
-    if($CORREO2 !== " ")
-    	if (!filter_var($CORREO2, FILTER_VALIDATE_EMAIL)) {
-    		imprime_error_and_die("El correo2 debe tener un formato válido (e.j. tu.nombre@tuempresa.com)");
-    	}
+		if($CORREO2 && $CORREO2 !== "") {
+			if (!filter_var($CORREO2, FILTER_VALIDATE_EMAIL)) {
+				imprime_error_and_die("El correo2 debe tener un formato válido (e.j. tu.nombre@tuempresa.com)");
+			}
+		} else {
+			$CORREO2 = "";
+		}
+			
     	
 	$TELEFONO= $objeto->TELEFONO;
 	valida_parametro_and_die($TELEFONO, "Falta el teléfono");
