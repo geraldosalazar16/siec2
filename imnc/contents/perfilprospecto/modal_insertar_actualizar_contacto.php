@@ -9,7 +9,7 @@
 			<div class="modal-body">
 				<form name="form2" id="form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
 					<div class="form-group">
-						<label class="control-label col-md-4 col-sm-4 col-xs-12">Nombre:<span class="required">*</span>
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Nombre<span class="required">*</span>
               </label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<input type="text" class="form-control col-md-7 col-xs-12" ng-model="nombre_contacto">
@@ -18,7 +18,7 @@
 					</div>
 
 					 <div class="form-group">
-		              <label class="control-label col-md-4 col-sm-4 col-xs-12">Domicilio del Contacto
+		              <label class="control-label col-md-4 col-sm-4 col-xs-12">Domicilio del Contacto<span class="required">*</span>
 		              </label>
 		              <div class="col-md-6 col-sm-6 col-xs-12">
 		                <select class="form-control col-md-7 col-xs-12" id="domicilioContacto" ng-model="domicilioContacto"
@@ -29,7 +29,7 @@
 		            </div>
 
 					<div class="form-group">
-						<label class="control-label col-md-4 col-sm-4 col-xs-12">Correo:
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Correo<span class="required">*</span>
               </label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="correo">
@@ -37,14 +37,14 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-md-4 col-sm-4 col-xs-12">Correo2:</label>
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Correo2</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="correo2">
 							<span id="correoerror" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-md-4 col-sm-4 col-xs-12">Telefono:
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Telefono<span class="required">*</span>
               </label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<input type="tel" required="required" class="form-control col-md-7 col-xs-12" ng-model="telefono">
@@ -52,14 +52,14 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-md-4 col-sm-4 col-xs-12">Celular:
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Celular
               </label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<input type="tel" required="required" class="form-control col-md-7 col-xs-12" ng-model="celular">
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-md-4 col-sm-4 col-xs-12">Puesto:
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Puesto<span class="required">*</span>
               </label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="puesto">

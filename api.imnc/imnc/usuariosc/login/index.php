@@ -47,6 +47,8 @@ if (!$usuario) {
 
 if ($usuario) {
 	if ($password == $usuario["PASSWORD"]) {
+		$datetime = date("Y-m-d H:i:s");
+		$login = $database->insert("USUARIOS_LOGIN",["ID_USUARIO"=>$usuario["ID"],"FECHA_LOGIN"=>$datetime]);
 		$perfil = $database->get("TIPOS_PERFILES", "*", ["ID"=>$usuario["ID_PERFIL"]]); 
 		valida_error_medoo_and_die();
 		
@@ -66,7 +68,9 @@ if ($usuario) {
 		$usuario["PERFIL2"] = $perfil2;
 		$respuesta["resultado"] = "ok"; 
 		$respuesta["mensaje"] = "Bienvenido"; 
-		$respuesta["usuario"] = $usuario; 
+		$respuesta["usuario"] = $usuario;
+
+
 		print_r(json_encode($respuesta)); 
 		die();
 	}

@@ -27,7 +27,7 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
                 $scope.empleado = response.data;
                 $scope.cargaFicha();
                 $scope.cargarActivos();
-                var fecha = $scope.empleado.FECHA_NACIMIENTO
+                var fecha = $scope.empleado.FECHA_NACIMIENTO;
                 $scope.empleado.FECHA_NACIMIENTO = $scope.formatFecha(fecha);
                 $(".loading").hide();
             });
@@ -73,8 +73,8 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
         $.getJSON( global_apiserver + "/personal_interno/getFicha/?id="+$scope.empleado.NO_EMPLEADO, function( response ) {
             //console.log();
             $scope.ficha = response;
-
-            if($scope.ficha.ANTIGUEDAD!==null)
+            onDatePicker();
+            if(typeof $scope.ficha.ANTIGUEDAD !== "undefined" && $scope.ficha.ANTIGUEDAD!==null)
             {
                 $scope.flag = false;
             }else {  $scope.flag = true; }
@@ -199,7 +199,17 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
                 $scope.antiguedad_error="No debe estar vacio";
                 setfocus = "antiguedad";
             } else {
-                $scope.antiguedad_error="";
+                   if($scope.validar_fecha($scope.formDataFicha.antiguedad))
+                   {
+                       $scope.antiguedad_error="";
+                   }
+                   else
+                   {
+                       $scope.respuesta = 0;
+                       $scope.antiguedad_error="Fecha inválida 00/00/0000";
+                       setfocus = "antiguedad";
+                   }
+
             }
         }else {
             $scope.respuesta = 0;
@@ -534,6 +544,70 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
 
 
     };
+
+// ===========================================================================
+// ***** 	    FUNCION PARA CARGAR LOS DATEPICKER DEL MODAL			 *****
+// ===========================================================================
+    function onDatePicker(date) {
+
+
+        var antiguedad = $('#antiguedad').datepicker({
+            dateFormat: "dd/mm/yy",
+            language: "es",
+            onSelect: function (dateText, ins) {
+                $scope.formDataFicha.antiguedad = dateText;
+            }
+        }).css("display", "inline-block");
+
+        if(typeof date !== "undefined")
+        {
+            $scope.formDataFicha.antiguedad = date;
+        }
+
+    }
+
+// ================================================================================
+// *****                  Funcion validar fecha                  *****
+// ================================================================================
+    $scope.validar_fecha = function(fecha) {
+        if (typeof fecha !== "undefined") {
+            if (validar_formato_fecha(fecha)) {
+                    if (existe_fecha(fecha)) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+
+            } else {
+
+                return false;;
+            }
+        }else{
+            return false;
+        }
+
+
+
+    }
+    function validar_formato_fecha(fecha) {
+        var RegExPattern = /^\d{2}\/\d{2}\/\d{4}$/;
+        if ((fecha.match(RegExPattern)) && (fecha!='')) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+    function existe_fecha(fecha){
+        var fechaf = fecha.split("/");
+        var d = fechaf[0];
+        var m = fechaf[1];
+        var y = fechaf[2];
+        return m > 0 && m < 13 && y > 0 && y < 32768 && d > 0 && d <= (new Date(y, m, 0)).getDate();
+
+    }
+
 // ================================================================================
 // *****                        Al cargar la página                           *****
 // ================================================================================
@@ -549,7 +623,11 @@ app.controller('empleado_perfil_controller',['$scope','$http',function($scope,$h
 
         $scope.cargarDatosEmpleado();
 
+
     });
+
+
+
 
 }]);
 // ================================================================================

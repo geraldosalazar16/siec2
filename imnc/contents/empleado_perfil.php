@@ -72,12 +72,13 @@
                        <div  style="margin-left: 30px; margin-top: 30px;">
                          <form class="form-horizontal" role="form">
                             <div class="form-group">
-								<label for="antiguedad">Antigüedad<span class="required">*</span></label>
+								<label for="antiguedad">Fecha de Ingreso<span class="required">*</span></label>
 								<div>
-									<input type="text" class="form-control" id="antiguedad" name="antiguedad" ng-model="formDataFicha.antiguedad"
-                                           ng-change="antiguedad_error = (validar_numeros('antiguedad')?'':'No debe estar vacio')" required ng-show="flag==true" >
+									<input type="text" class="form-control" id="antiguedad" name="antiguedad" ng-model="formDataFicha.antiguedad" placeholder="dia / mes / año"
+                                           ng-change="antiguedad_error = (validar_fecha(formDataFicha.antiguedad)?'':'Fecha inválida 00/00/0000')" required ng-show="flag==true" >
 									<span class="text-danger" >{{antiguedad_error}}</span>
-                                    <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false">{{ (ficha.ANTIGUEDAD?ficha.ANTIGUEDAD:0)}} años</label>
+                                    <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false"> {{ (ficha.ANTIGUEDAD?ficha.ANTIGUEDAD:0)}} </label><br>
+                                    <label  class="control-label" style="color: #1b1613;text-align: left;" ng-show="flag==false">Antigüedad: {{ (ficha.ANTIGUEDAD?calcular_edad(ficha.ANTIGUEDAD):0)}} años</label>
 								</div>
 							</div>
                             <div class="form-group">
