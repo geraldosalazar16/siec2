@@ -103,6 +103,29 @@
           </div>
 		  
 		         <br />
+
+         <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="dashboard_graph" >
+
+              <div class="row x_title">
+                <div class="col-md-6">
+                  <h3>Anexo 2 <small>Inicios de Sesión del usuario por meses</small></h3>
+                </div>
+              </div>
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+                <div style="width: 100%;">
+                   <canvas id="loginChartU" ></canvas>
+                </div>
+              </div>
+
+
+              </div>
+
+              <div class="clearfix" style="background-color:white;"></div>
+            </div>
+          </div>
+          <br>
 				 
 		
 

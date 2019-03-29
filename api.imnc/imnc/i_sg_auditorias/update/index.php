@@ -115,60 +115,115 @@ else{
 	$respuesta["resultado"]="ok";
 }
 /*====================================================================================*/
-// A PARTIR DE AQUI TRABAJO EN I_PROGRAMACIONES_OPORTUNAS_VIGILANCIAS
+
 $ano_actual = date('Y');
 $mes_actual = date('m');
 $dia_actual = date('d');
 $ta = (int)$TIPO_AUDITORIA;
-if($STATUS_AUDITORIA_ANT == '1' && $STATUS_AUDITORIA == '2' && $ta>5 && $ta<13){
-	// CONSULTA PARA BUSCAR LA MINIMA FECHA DE LA AUDITORIA
-	$consulta = "SELECT MIN(`ISAF`.`FECHA`) AS FECHA
+if($STATUS_AUDITORIA_ANT == '1' && $STATUS_AUDITORIA == '2'){
+	// A PARTIR DE AQUI TRABAJO EN I_PROGRAMACIONES_OPORTUNAS_VIGILANCIAS
+	if($ta>5 && $ta<13){
+		// CONSULTA PARA BUSCAR LA MINIMA FECHA DE LA AUDITORIA
+		$consulta = "SELECT MIN(`ISAF`.`FECHA`) AS FECHA
                                               		FROM `I_SG_AUDITORIA_FECHAS` `ISAF` 
                                               		WHERE `ISAF`.`ID_SERVICIO_CLIENTE_ETAPA` =".$ID_SERVICIO_CLIENTE_ETAPA." AND `ISAF`.`TIPO_AUDITORIA` = ".$TIPO_AUDITORIA." AND `ISAF`.`CICLO` = ".$CICLO." ";
-	$datos = $database->query($consulta)->fetchAll();
-	// AQUI VERIFICO QUE EXISTA FECHA PARA ESTE AUDITORIA
-	if($datos[0]['FECHA'] == null){
-		//SINO EXISTE FECHA PROGRAMADA PARA ESTA AUDITORIA PUES NO SE DEBERIA DEJAR CAMBIAR A CONFIRMADA Y SE DEBERIA REPORTAR EL ERROR
-		$id1 = $database->update("I_SG_AUDITORIAS",["STATUS_AUDITORIA" => $STATUS_AUDITORIA_ANT], 
-					["AND"=>["TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"CICLO"=>$CICLO]]
-				); 
-		valida_parametro_and_die("", "Debe existir por lo menos una fecha de esta auditoria para pasarla a estado CONFIRMADA");
-	}
-	else{
-		//SI TIENE FECHAS CARGADAS PUES ENTONCES REALIZAMOS LAS OPERACIONES
-		//1er PASO BUSCAR SI EN EL MES EN CURSO AHI ALGUN REGISTRO GUARDADO
-		$consulta = "SELECT `IPOV`.`CANT_AUD_PROG_A_TIEMPO`,`IPOV`.`CANT_AUD_PROG_F_TIEMPO`
+		$datos = $database->query($consulta)->fetchAll();
+		// AQUI VERIFICO QUE EXISTA FECHA PARA ESTE AUDITORIA
+		if($datos[0]['FECHA'] == null){
+			//SINO EXISTE FECHA PROGRAMADA PARA ESTA AUDITORIA PUES NO SE DEBERIA DEJAR CAMBIAR A CONFIRMADA Y SE DEBERIA REPORTAR EL ERROR
+			$id1 = $database->update("I_SG_AUDITORIAS",["STATUS_AUDITORIA" => $STATUS_AUDITORIA_ANT], 
+						["AND"=>["TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"CICLO"=>$CICLO]]
+					); 
+			valida_parametro_and_die("", "Debe existir por lo menos una fecha de esta auditoria para pasarla a estado CONFIRMADA");
+		}
+		else{
+			//SI TIENE FECHAS CARGADAS PUES ENTONCES REALIZAMOS LAS OPERACIONES
+			//1er PASO BUSCAR SI EN EL MES EN CURSO AHI ALGUN REGISTRO GUARDADO
+			$consulta = "SELECT `IPOV`.`CANT_AUD_PROG_A_TIEMPO`,`IPOV`.`CANT_AUD_PROG_F_TIEMPO`
                                               		FROM `I_PROGRAMACIONES_OPORTUNAS_VIGILANCIAS_SG` `IPOV` 
                                               		WHERE `IPOV`.`FECHA` LIKE '".$ano_actual.$mes_actual."%' ORDER BY `IPOV`.`ID` DESC";
-		$datos1 = $database->query($consulta)->fetchAll();	
-		if(empty($datos1)){
-			//si no existen datos guardado en este mes pues se inicializan las variables en 0
-			$cant_aud_prog_a_tiempo = 0;
-			$cant_aud_prog_f_tiempo = 0;
-		}
-		else{
-			// si existen datos pues se toma el primero ya que se ordeno desde el ultimo hacia el primero
-			$cant_aud_prog_a_tiempo = $datos1[0]['CANT_AUD_PROG_A_TIEMPO'];
-			$cant_aud_prog_f_tiempo = $datos1[0]['CANT_AUD_PROG_F_TIEMPO'];
-		}	
-		//2do PASO SE CALCULA LA DIFERENCIA EN DIAS PARA SABER SI ESTA A TIEMPO O FUERA DE TIEMPO
-		$fecha2 = $dia_actual.'/'.$mes_actual.'/'.$ano_actual;  //Fecha de hoy
-		$fecha1 = substr($datos[0]['FECHA'],6,2).'/'.substr($datos[0]['FECHA'],4,2).'/'.substr($datos[0]['FECHA'],0,4);
-		$dif_dias = compararFechas($fecha1,$fecha2);
-		if($dif_dias > 30 ){
-			$cant_aud_prog_a_tiempo +=1;
-		}
-		else{
-			$cant_aud_prog_f_tiempo +=1;
-		}
-		$id2 = $database->insert("I_PROGRAMACIONES_OPORTUNAS_VIGILANCIAS_SG",
+			$datos1 = $database->query($consulta)->fetchAll();	
+			if(empty($datos1)){
+				//si no existen datos guardado en este mes pues se inicializan las variables en 0
+				$cant_aud_prog_a_tiempo = 0;
+				$cant_aud_prog_f_tiempo = 0;
+			}
+			else{
+				// si existen datos pues se toma el primero ya que se ordeno desde el ultimo hacia el primero
+				$cant_aud_prog_a_tiempo = $datos1[0]['CANT_AUD_PROG_A_TIEMPO'];
+				$cant_aud_prog_f_tiempo = $datos1[0]['CANT_AUD_PROG_F_TIEMPO'];
+			}		
+			//2do PASO SE CALCULA LA DIFERENCIA EN DIAS PARA SABER SI ESTA A TIEMPO O FUERA DE TIEMPO
+			$fecha2 = $dia_actual.'/'.$mes_actual.'/'.$ano_actual;  //Fecha de hoy
+			$fecha1 = substr($datos[0]['FECHA'],6,2).'/'.substr($datos[0]['FECHA'],4,2).'/'.substr($datos[0]['FECHA'],0,4);
+			$dif_dias = compararFechas($fecha1,$fecha2);
+			if($dif_dias > 30 ){
+				$cant_aud_prog_a_tiempo +=1;
+			}
+			else{
+				$cant_aud_prog_f_tiempo +=1;
+			}
+			$id2 = $database->insert("I_PROGRAMACIONES_OPORTUNAS_VIGILANCIAS_SG",
 											
 											[
 												"CANT_AUD_PROG_A_TIEMPO"=>$cant_aud_prog_a_tiempo,
 												"CANT_AUD_PROG_F_TIEMPO" => $cant_aud_prog_f_tiempo,
 												"FECHA" => $FECHA_MODIFICACION]
 												); 
-valida_error_medoo_and_die(); 
+			valida_error_medoo_and_die(); 
+		}
+	}
+	// A PARTIR DE AQUI TRABAJO EN I_PROGRAMACIONES_OPORTUNAS_RENOVACION
+	if($ta == 4 ){
+		// CONSULTA PARA BUSCAR LA MINIMA FECHA DE LA AUDITORIA
+		$consulta = "SELECT MIN(`ISAF`.`FECHA`) AS FECHA
+                                              		FROM `I_SG_AUDITORIA_FECHAS` `ISAF` 
+                                              		WHERE `ISAF`.`ID_SERVICIO_CLIENTE_ETAPA` =".$ID_SERVICIO_CLIENTE_ETAPA." AND `ISAF`.`TIPO_AUDITORIA` = ".$TIPO_AUDITORIA." AND `ISAF`.`CICLO` = ".$CICLO." ";
+		$datos = $database->query($consulta)->fetchAll();
+		// AQUI VERIFICO QUE EXISTA FECHA PARA ESTE AUDITORIA
+		if($datos[0]['FECHA'] == null){
+			//SINO EXISTE FECHA PROGRAMADA PARA ESTA AUDITORIA PUES NO SE DEBERIA DEJAR CAMBIAR A CONFIRMADA Y SE DEBERIA REPORTAR EL ERROR
+			$id1 = $database->update("I_SG_AUDITORIAS",["STATUS_AUDITORIA" => $STATUS_AUDITORIA_ANT], 
+						["AND"=>["TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"CICLO"=>$CICLO]]
+					); 
+			valida_parametro_and_die("", "Debe existir por lo menos una fecha de esta auditoria para pasarla a estado CONFIRMADA");
+		}
+		else{
+			//SI TIENE FECHAS CARGADAS PUES ENTONCES REALIZAMOS LAS OPERACIONES
+			//1er PASO BUSCAR SI EN EL MES EN CURSO AHI ALGUN REGISTRO GUARDADO
+			$consulta = "SELECT `IPOR`.`CANT_AUD_PROG_A_TIEMPO`,`IPOR`.`CANT_AUD_PROG_F_TIEMPO`
+                                              		FROM `I_PROGRAMACIONES_OPORTUNAS_RENOVACION_SG` `IPOR` 
+                                              		WHERE `IPOR`.`FECHA` LIKE '".$ano_actual.$mes_actual."%' ORDER BY `IPOR`.`ID` DESC";
+			$datos1 = $database->query($consulta)->fetchAll();	
+			if(empty($datos1)){
+				//si no existen datos guardado en este mes pues se inicializan las variables en 0
+				$cant_aud_prog_a_tiempo = 0;
+				$cant_aud_prog_f_tiempo = 0;
+			}
+			else{
+				// si existen datos pues se toma el primero ya que se ordeno desde el ultimo hacia el primero
+				$cant_aud_prog_a_tiempo = $datos1[0]['CANT_AUD_PROG_A_TIEMPO'];
+				$cant_aud_prog_f_tiempo = $datos1[0]['CANT_AUD_PROG_F_TIEMPO'];
+			}		
+			//2do PASO SE CALCULA LA DIFERENCIA EN DIAS PARA SABER SI ESTA A TIEMPO O FUERA DE TIEMPO
+			$fecha2 = $dia_actual.'/'.$mes_actual.'/'.$ano_actual;  //Fecha de hoy
+			$fecha1 = substr($datos[0]['FECHA'],6,2).'/'.substr($datos[0]['FECHA'],4,2).'/'.substr($datos[0]['FECHA'],0,4);
+			$dif_dias = compararFechas($fecha1,$fecha2);
+			if($dif_dias > 30 ){
+				$cant_aud_prog_a_tiempo +=1;
+			}
+			else{
+				$cant_aud_prog_f_tiempo +=1;
+			}
+			$id2 = $database->insert("I_PROGRAMACIONES_OPORTUNAS_RENOVACION_SG",
+											
+											[
+												"CANT_AUD_PROG_A_TIEMPO"=>$cant_aud_prog_a_tiempo,
+												"CANT_AUD_PROG_F_TIEMPO" => $cant_aud_prog_f_tiempo,
+												"FECHA" => $FECHA_MODIFICACION]
+												); 
+			valida_error_medoo_and_die(); 
+		}
 	}
 }
 /*====================================================================================*/

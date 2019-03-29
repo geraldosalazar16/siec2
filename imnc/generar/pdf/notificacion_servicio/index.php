@@ -291,7 +291,7 @@ for ($i=0; $i < count($pts) ; $i++) {
 	$PERSONAL_TECNICO .= '	<td style="font-size: medium;" align="CENTER" width="20%"> '.trim($pts[$i]->PERSONAL_TECNICO_ROL->ROL).' </td>';
 	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="40%"> '.trim($PT_NOMBRE_COMPLETO).'  </td>';
 	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="20%"> '.trim($pts[$i]->PERSONAL_TECNICO_CALIFICACION->REGISTRO).' </td>';
-	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="20%"> '.trim($PT_SECTORES).' </td>';
+	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="20%"> '.(trim($PT_SECTORES)?trim($PT_SECTORES):'S/C').' </td>';
 	$PERSONAL_TECNICO .= '</tr>';
 
 	valida_isset($pts[$i]->PERSONAL_TECNICO_ROL->ROL, "Error: No se encuentra ROL en linea: " . __LINE__);
