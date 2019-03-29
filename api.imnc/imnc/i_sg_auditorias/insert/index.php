@@ -54,6 +54,8 @@ $idd = $database->insert("I_SG_AUDITORIAS",
 												"SITIOS_AUDITAR" => $SITIOS_AUDITAR,
 												"ID_USUARIO_CREACION"=>$ID_USUARIO,
 												"ID_USUARIO_MODIFICACION"=>"",
+												"FECHA_CREACION"=>date("Y-m-d H:i:s"),
+												"FECHA_MODIFICACION"=>""
 												
 												
 											]); 
