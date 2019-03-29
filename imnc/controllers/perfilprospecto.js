@@ -658,7 +658,8 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 				modalidad:modalidad,
 				curso:curso,
 				cantidad:cantidad,
-				solo_cliente: solo_cliente
+				solo_cliente: solo_cliente,
+				id_usuario: sessionStorage.getItem("id_usuario"),
 			};
 			$.post(global_apiserver + "/prospecto_producto/insert/", JSON.stringify(info), function(respuesta){
 				respuesta = JSON.parse(respuesta);
@@ -686,7 +687,8 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
                 modalidad:modalidad,
                 curso:curso,
 				cantidad:cantidad,
-				solo_cliente: solo_cliente
+				solo_cliente: solo_cliente,
+				id_usuario: sessionStorage.getItem("id_usuario"),
 			};
 			$.post(global_apiserver + "/prospecto_producto/update/", JSON.stringify(info), function(respuesta){
 				respuesta = JSON.parse(respuesta);
@@ -828,9 +830,24 @@ $scope.eliminar = function(id){
 	}
 	$scope.ActualizarAreas = function(){
 		//recibe la url del php que se ejecutará
+		 var SG = [0,0,0,0,0,0,0,0,0,0,0,0];
+		 var EC = [0,0,0,0,0,0,0,0,0,0,0,0];;
+		 var CIFA = [0,0,0,0,0,0,0,0,0,0,0,0];
 		$http.get(  global_apiserver + "/prospecto_producto/getByIdProspecto/?id="+$scope.id_prospecto)
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
-	  			$scope.ProductosProspecto = response.data.map(function(item){
+	  			$scope.ProductosProspecto = response.data.map(function(item,index){
+	  				  if(item.ID_SERVICIO==1)
+					  {
+						  SG[parseInt(item.MES)-1] += 1;
+					  }
+	  				  if(item.ID_SERVICIO==2)
+	  				  {
+						  EC[parseInt(item.MES)-1] += 1;
+	  				  }
+	  				  if(item.ID_SERVICIO==3)
+	  				  {
+						  CIFA[parseInt(item.MES)-1] += 1;
+	  				  }
 					  var normas_string = '';
 					  item.NORMAS.forEach(norma => {
 						  normas_string = normas_string+norma.ID_NORMA+'; ';
@@ -859,8 +876,75 @@ $scope.eliminar = function(id){
 
 	  				}
 	  			});
+	  			    if($scope.ProductosProspecto.length>0)
+					{
+						$scope.updateGrafica(SG,EC,CIFA);
+					}
+
 			},
 			function (response){});
+	}
+	$scope.updateGrafica = function(SG,EC,CIFA)
+	{
+		var meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+
+		var ctx = document.getElementById('grafico');
+		ctx.innerHTML= '<canvas  id="graficaServicios" height="130"></canvas>';
+		var myChart = new Chart(document.getElementById("graficaServicios"), {
+		type: 'bar',
+		data: {
+			labels: meses,
+			datasets: [
+				{
+					label: "SG",
+					backgroundColor: "rgba(205,145,14,0.5)",
+					data: SG
+				}, {
+					label: "EC",
+					backgroundColor: "rgba(17,89,205,0.5)",
+					data: EC
+				},
+				 {
+					label: "CIFA",
+					backgroundColor: "rgba(44,205,12,0.5)",
+					data: CIFA
+				}
+
+			]
+		},
+			options: {
+				title: {
+					display: true,
+					text: 'Cantidad de Servicios por Meses'
+				},
+				scales: {
+					xAxes: [{
+						stacked: true
+
+					}],
+					yAxes: [{
+						stacked: true
+					}]
+				}
+
+			}
+			/*options: {
+                title: {
+                    display: true,
+                    text: 'Cantidad de Servicios por Meses'
+                },
+				responsive: true,
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true,
+						}
+					}]
+				}
+            }*/
+	});
+
+
 	}
 	$scope.OrigenLista = function(){
 		//recibe la url del php que se ejecutará

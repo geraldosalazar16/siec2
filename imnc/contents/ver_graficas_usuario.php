@@ -85,7 +85,7 @@
             <div class="dashboard_graph" >
 
               <div class="row x_title">
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <h3>Anexo 1 <small>Indicadores Certificación de Sistemas de Gesti&oacute;n</small></h3>
                 </div>
               </div>
@@ -110,7 +110,7 @@
 
               <div class="row x_title">
                 <div class="col-md-6">
-                  <h3>Anexo 2 <small>Inicios de Sesión del usuario por meses</small></h3>
+                  <h3>Anexo 2 <small>Inicios de Sesión</small></h3>
                 </div>
               </div>
 				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
@@ -119,6 +119,73 @@
                 </div>
               </div>
 
+
+              </div>
+
+              <div class="clearfix" style="background-color:white;"></div>
+            </div>
+          </div>
+          <br>
+
+          <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="dashboard_graph" >
+
+              <div class="row x_title">
+                <div class="col-md-12">
+                  <h3>Anexo 3 <small>Productos Agregados</small></h3>
+                </div>
+              </div>
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+                <div style="width: 100%;">
+                   <canvas id="productosChartU" ></canvas>
+                </div>
+              </div>
+
+
+              </div>
+
+              <div class="clearfix" style="background-color:white;"></div>
+            </div>
+          </div>
+         <br>
+          <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="dashboard_graph">
+
+              <div class="row x_title">
+                <div class="col-md-12">
+                  <h3>Anexo 4 <small>Cotizaciones</small></h3>
+                </div>
+              </div>
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+                <div style="width: 100%;">
+                   <canvas id="cotizacionesChartU" ></canvas>
+                </div>
+              </div>
+
+
+              </div>
+
+              <div class="clearfix" style="background-color:white;"></div>
+            </div>
+          </div>
+          <br>
+
+          <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="dashboard_graph">
+
+              <div class="row x_title">
+                <div class="col-md-12">
+                  <h3>Anexo 5 <small>Auditorías</small></h3>
+                </div>
+              </div>
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+                <div style="width: 100%;">
+                   <canvas id="auditoriasChartU"></canvas>
+                </div>
+              </div>
 
               </div>
 
