@@ -96,8 +96,7 @@ $scope.mostrar_cerrar = true;
 								//Azul para las tareas completadas
 								color = "#0000FF";
 							}
-							//Guardo el id de la tarea
-							$("#btnGuardarTarea").attr("id_tarea",item.id);
+							
 			  				return{
 			  					id: item.id,
                                 title: item.nombre_prospecto,
@@ -138,7 +137,8 @@ $scope.mostrar_cerrar = true;
 								fecha : item.fecha_inicio,
 								asunto : item.desc_asunto,
 								descripcion: item.desc_tarea,
-								estado: item.estado_tarea
+								estado: item.estado_tarea,
+								id: item.id_tarea
 							}
 						});
 					},
@@ -300,7 +300,7 @@ $scope.mostrar_cerrar = true;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//	FUNCION PARA EDITAR TAREA
-	$scope.editarTarea = function(fecha_inicio,hora_inicio,fecha_fin,hora_fin,asunto,descripcion)
+	$scope.editarTarea = function(fecha_inicio,hora_inicio,fecha_fin,hora_fin,asunto,descripcion,id)
 	{
 		$("#fecha_inicio").val(fecha_inicio);
 		$("#hora_inicio").val(hora_inicio);
@@ -308,7 +308,9 @@ $scope.mostrar_cerrar = true;
 		$("#hora_fin").val(hora_fin);
 		$("#cmbTipoAsunto").val("string:"+asunto);
 		$("#descripcion").val(descripcion);
-		
+		$("#btnGuardarTarea").attr("accion","editar");
+		//Guardo el id de la tarea
+		$("#btnGuardarTarea").attr("id_tarea",id);
 	}
 	////////////////////////////////////////////////////////////////////////////////////	
 	$scope.cerrarTarea = function()

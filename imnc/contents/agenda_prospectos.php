@@ -250,7 +250,7 @@
 								<td>{{ x.descripcion }}</td>
 								<td>{{ x.estado }}</td>
 								<td>
-									<button type="button" class="btn btn-primary" ng-click='editarTarea(x.fecha,x.hora_inicio,x.fecha_fin,x.hora_fin,x.tipo_asunto,x.descripcion )' ng-if="x.estado=='PENDIENTE'" id="btnEditarTarea" ><i class="fa fa-edit"> </i>
+									<button type="button" class="btn btn-primary" ng-click='editarTarea(x.fecha,x.hora_inicio,x.fecha_fin,x.hora_fin,x.tipo_asunto,x.descripcion,x.id )' ng-if="x.estado=='PENDIENTE'" id="btnEditarTarea" ><i class="fa fa-edit"> </i>
 									Editar
 									</button>
 								</td>
