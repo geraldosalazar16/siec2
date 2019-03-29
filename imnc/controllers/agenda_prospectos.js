@@ -7,12 +7,18 @@ var allEvents = true;
 var id_user = sessionStorage.getItem("id_usuario");
 $scope.mostrar_guardar = true;
 $scope.mostrar_cerrar = true;
+$scope.prospectoActual;
+$scope.calendar;
 		
 
 
         function setCalendar() {
-            moment.locale('es');
-            var calendar = $('#calendario').fullCalendar({
+			moment.locale('es');
+			if($scope.calendar !== undefined)
+			{
+				$scope.calendar.fullCalendar('destroy');
+			}
+            $scope.calendar = $('#calendario').fullCalendar({
                 header: {
                     left: 'prev,next today',
                     center: 'title',
@@ -32,7 +38,8 @@ $scope.mostrar_cerrar = true;
 					var hora_inicio = ("0"+fecha_inicio_total.getHours()).substr(-2)+":"+("0"+fecha_inicio_total.getMinutes()).substr(-2);
 					var hora_fin = ("0"+fecha_fin_total.getHours()).substr(-2)+":"+("0"+fecha_fin_total.getMinutes()).substr(-2);
 					
-					$("#cmbProspecto").val("string:"+calEvent.id_prospecto).trigger('change.select2');
+					// $("#cmbProspecto").val("string:"+calEvent.id_prospecto).trigger('change.select2');
+					cambioProspecto();
 					$("#fecha_inicio").val(fecha_inicio);
 					$("#hora_inicio").val(hora_inicio);
 					$("#fecha_fin").val(fecha_fin);
@@ -311,8 +318,21 @@ $scope.mostrar_cerrar = true;
 		$("#btnGuardarTarea").attr("accion","editar");
 		//Guardo el id de la tarea
 		$("#btnGuardarTarea").attr("id_tarea",id);
+		$("#modalEvento").modal("show");
 	}
-	////////////////////////////////////////////////////////////////////////////////////	
+	////////////////////////////////////////////////////////////////////////////////////
+	
+	$scope.mostrarModalEvento = function() {
+		$("#fecha_inicio").val('');
+		$("#hora_inicio").val('');
+		$("#fecha_fin").val('');
+		$("#hora_fin").val('');
+		$("#cmbTipoAsunto").val('');
+		$("#descripcion").val('');
+		$("#btnGuardarTarea").attr("accion","guardar");
+		$("#modalEvento").modal("show");
+	}
+
 	$scope.cerrarTarea = function()
 	{
 		var tipo_accion = $("#btnGuardarTarea").attr("accion");
@@ -350,10 +370,12 @@ $scope.mostrar_cerrar = true;
 						if (respuesta.resultado == "ok") {
 							//uploadFile(respuesta.id);
 							notify_success("Éxito", "Se ha insertado la tarea");
+							cambioProspecto();
 						}
 						else{
 							notify("Error", respuesta.mensaje, "error");
 						}
+						$("#modalEvento").modal("hide");
 				});
 			}
 			if(tipo_accion == "editar")
@@ -374,13 +396,15 @@ $scope.mostrar_cerrar = true;
 						if (respuesta.resultado == "ok") {
 							//uploadFile(respuesta.id);
 							notify_success("Éxito", "Se ha actualizado la tarea");
+							cambioProspecto();
 						}
 						else{
-							notify("Error", respuesta.mensaje, "error");
+							notify("Error", respuesta.mensaje, "error");							
 						}
+						$("#modalEvento").modal("hide");
 				});
 			}
-			$scope.limpiarEditor();
+			// $scope.limpiarEditor();
 		}
 	}
 	$scope.guardarTarea = function()
@@ -420,10 +444,13 @@ $scope.mostrar_cerrar = true;
 						if (respuesta.resultado == "ok") {
 							//uploadFile(respuesta.id);
 							notify_success("Éxito", "Se ha insertado la tarea");
+							cambioProspecto();
 						}
 						else{
 							notify("Error", respuesta.mensaje, "error");
 						}
+						$("#modalEvento").modal("hide");
+						$scope.limpiarEditor();
 				});
 			}
 			if(tipo_accion=="editar")
@@ -448,9 +475,11 @@ $scope.mostrar_cerrar = true;
 						else{
 							notify("Error", respuesta.mensaje, "error");
 						}
+						$("#modalEvento").modal("hide");
+						$scope.limpiarEditor();
 				});
 			}
-			$scope.limpiarEditor();
+			//$scope.limpiarEditor();
 		}
 	}
 	$scope.cambioPorcentaje = function(){
@@ -470,7 +499,8 @@ $scope.mostrar_cerrar = true;
 			});
 	}
     $scope.limpiarEditor = function(){
-        $("#cmbProspecto").val("").trigger('change.select2');
+		//$("#cmbProspecto").val("").trigger('change.select2');
+		/*
 		$("#fecha_inicio").val("");
 		$("#hora_inicio").val("");
 		$("#fecha_fin").val("");
@@ -486,7 +516,7 @@ $scope.mostrar_cerrar = true;
 		$('#calendario').fullCalendar('refetchEvents');
 		$('#calendario').fullCalendar('rerenderEvents');
 		*/
-		window.location.href = './?pagina=agenda_prospectos';
+		//window.location.href = './?pagina=agenda_prospectos';
 		
     }
 	$scope.filtrarEventos = function(op){
@@ -555,9 +585,14 @@ $scope.mostrar_cerrar = true;
 			$scope.UsuariosLista();
         });
 		$('.select2_single').on('select2:select', function (evt) {
-			var id = $("#cmbProspecto").val().substring(7);
+			cambioProspecto();
+		});
+	function cambioProspecto() {
+		var id = $("#cmbProspecto").val().substring(7);
+		$scope.prospectoActual = id;
 			cargarHistorial(id);
 			cargarContactos(id);
+			setCalendar();
 			
 			$scope.mostrar_guardar = true;
 			$scope.mostrar_cerrar = true;
@@ -576,7 +611,7 @@ $scope.mostrar_cerrar = true;
 						$scope.usuariosS = response.data.ID_USUARIO_SECUNDARIO;
 					},
 					function (response){});
-		});
+	}
 }]);
 function notify(titulo, texto, tipo) {
     new PNotify({

@@ -35,10 +35,7 @@ function valida_parametro_and_die($parametro, $mensaje_error){
 	
 	
 	$nombre_tabla = "DICTAMINACIONES";
-<<<<<<< HEAD
-=======
 					 
->>>>>>> 362fb95cd48ba431bd17bd0af882973675518d31
 	
 	$respuesta=array(); 
 	$json = file_get_contents("php://input"); 
