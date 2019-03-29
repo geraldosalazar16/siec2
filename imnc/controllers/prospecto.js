@@ -450,7 +450,6 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 					TIPO_CONTRATO : $scope.tipo_contrato,
 					TIPO_SERVICIO:$scope.tipo_servicio,
 					ID_USUARIO:$scope.usuariosP,
-					//ID_USUARIO:sessionStorage.getItem("id_usuario"),
 					ID_USUARIO_SECUNDARIO:$scope.usuarios,
 					DEPARTAMENTO:$scope.departamentos,
                     TIPO_PERSONA:tipo_persona

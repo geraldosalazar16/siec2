@@ -75,6 +75,11 @@ function valida_error_medoo_and_die(){
 	}
 	$TIPO_PERSONA = $objeto->tipo_persona;
 
+	$ID_USUARIO = $objeto->id_usuario;
+    valida_parametro_and_die($ID_USUARIO,"Es necesario el id del usuario");
+	$FECHA = date("Y-m-d H:i:s");
+
+
 	if($ID_SERVICIO!=3) {
         $existe = $database->select(
             "PROSPECTO_PRODUCTO",
@@ -98,7 +103,11 @@ function valida_error_medoo_and_die(){
 	    "ID_PROSPECTO" => $ID_PROSPECTO,
 		"ID_SERVICIO" => $ID_SERVICIO, 
 		"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
-		"ALCANCE" => $ALCANCE
+		"ALCANCE" => $ALCANCE,
+		"ID_USUARIO_CREACION"=>$ID_USUARIO,
+		"FECHA_CREACION"=>$FECHA,
+		"ID_USUARIO_MODIFICACION"=>$ID_USUARIO,
+		"FECHA_MODIFICACION"=>$FECHA
 	]); 
 	valida_error_medoo_and_die();
 	//iNSERTAR LAS NORMAS

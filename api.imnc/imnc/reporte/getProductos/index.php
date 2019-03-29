@@ -27,18 +27,21 @@ $respuesta =  array();
 	
 	if(isset($_REQUEST["usuario"])){
 		$id_usuario = $_REQUEST["usuario"];
-		$logins  = $database->select("USUARIOS_LOGIN",["FECHA_LOGIN"],["ID_USUARIO"=>$id_usuario]);
-
-		$respuesta = array(0=>0,1=>0,2=>0,3=>0,4=>0,5=>0,6=>0,7=>0,8=>0,9=>0,10=>0,11=>0,12=>0);
-		foreach ($logins as $item)
+		$productos  = $database->select("PROSPECTO_PRODUCTO",["FECHA_CREACION","ID_SERVICIO"],["ID_USUARIO_CREACION"=>$id_usuario]);
+		valida_error_medoo_and_die();
+		$respuesta[1] = array(0=>0,1=>0,2=>0,3=>0,4=>0,5=>0,6=>0,7=>0,8=>0,9=>0,10=>0,11=>0,12=>0);
+		$respuesta[2] = array(0=>0,1=>0,2=>0,3=>0,4=>0,5=>0,6=>0,7=>0,8=>0,9=>0,10=>0,11=>0,12=>0);
+		$respuesta[3] = array(0=>0,1=>0,2=>0,3=>0,4=>0,5=>0,6=>0,7=>0,8=>0,9=>0,10=>0,11=>0,12=>0);
+		foreach ($productos as $item)
 		{
-			$fecha =  substr($item["FECHA_LOGIN"],5,2);
+
+			$fecha =  substr($item["FECHA_CREACION"],5,2);
 			if((int) $fecha > 0) {
-				$respuesta [((int)$fecha) - 1] += 1;
+				$respuesta[$item["ID_SERVICIO"]] [((int)$fecha) - 1] += 1;
 			}
 
 		}
-		valida_error_medoo_and_die();
+
 
 	}
 	

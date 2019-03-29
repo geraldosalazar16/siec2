@@ -13,7 +13,8 @@
     PROSPECTO_PRODUCTO.ID_PROSPECTO AS ID_PROSPECTO,
     PROSPECTO_PRODUCTO.ALCANCE AS ALCANCE,
     PROSPECTO_PRODUCTO.ID AS ID,
-    PROSPECTO_PRODUCTO.ID_COTIZACION AS ID_COTIZACION
+    PROSPECTO_PRODUCTO.ID_COTIZACION AS ID_COTIZACION,
+    PROSPECTO_PRODUCTO.FECHA_CREACION AS MES
     FROM 
     PROSPECTO_PRODUCTO 
     INNER JOIN SERVICIOS 
@@ -28,6 +29,8 @@
     //Agregar informacion adicional al producto
     $nombre_tabla = 'PROSPECTO_PRODUCTO_NORMAS'; 
     for($i=0;$i<count($prospecto_productos);$i++){
+        $fecha =  substr($prospecto_productos[$i]["MES"],5,2);
+        $prospecto_productos[$i]["MES"] = $fecha;
         if($prospecto_productos[$i]["ID_SERVICIO"]==3)
         {
             $query = 
