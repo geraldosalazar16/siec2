@@ -62,16 +62,15 @@ $id = $database->insert("USUARIOS", [
 	"ID_USUARIO_MODIFICACION" => $ID_USUARIO_CREACION
 ]); 
 
-valida_error_medoo_and_die(); 
-$FECHA_CREACION = date('Y/m/d H:i:s');
-$modulos_list = $database->select("MODULOS","*");
-
-for($i = 0 ; $i < sizeof($modulos_list); $i++){
+valida_error_medoo_and_die();
+$FECHA_MODIFICACION = date('Y-m-d H:i:s');
+foreach ($MODULOS as $MODULO)
+{
 
 $id_perfil_modulo = $database->insert("PERFIL_MODULO_USUARIO", [ 
-	"ID_PERFIL" => $MODULOS[$i]["ID"], 
+	"ID_PERFIL" => $MODULO["ID"],
 	"ID_USUARIO" => $id, 
-	"ID_MODULO" => $modulos_list[$i]["ID"], 
+	"ID_MODULO" => $MODULO["MODULO"],
 	"FECHA_CREACION" => $FECHA_CREACION,
 	"FECHA_MODIFICACION" => $FECHA_CREACION,
 	"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION,
