@@ -42,7 +42,7 @@
 			<div class="dashboard_graph" id="pruebaDaniel1">
 
 				<div class="row x_title">
-					<div class="col-md-6">
+					<div class="col-md-6 ">
 						<h3>Anexo 2 <small>Indicadores Certificación de Sistemas de Gesti&oacute;n</small></h3>
 					</div>
 				</div>

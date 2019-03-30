@@ -225,28 +225,177 @@ $scope.graficaLoginU = function(){
 						labels: meses,
 						datasets: [{
 
-							label: 'Cantidad',
-							backgroundColor: "#915a08",
+							label: 'Total',
+							fill: false,
+							backgroundColor: "rgba(190,112,8,0.8)",
 							data: logins,
 						}]
 					},
 
 					options: {
+						title: {
+							display: true,
+							text: 'Inicios de Sesión por Meses'
+						},
+						responsive: true,
 						scales: {
-							xAxes: [{
-								stacked: true,
-								ticks: {
-									autoSkip: false
-								}
-							}],
 							yAxes: [{
 								ticks: {
 									beginAtZero: true
 								}
 							}]
 						}
-
 					}
+				});
+
+			}
+		});
+
+	};
+	$scope.graficaProductosU = function(){
+		$.ajax({
+			type:'GET',
+			dataType: 'json',
+			url:global_apiserver+"/reporte/getProductos/?usuario="+usuarioID,
+			success:function(data){
+				var productos = data;
+				var meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+				var mybarChart = new Chart(productosChartU, {
+
+					type: 'bar',
+					data: {
+						labels: meses,
+						datasets: [
+							{
+								label: "CSG",
+								backgroundColor: "rgba(205,145,14,0.5)",
+								data: productos[1]
+							}, {
+								label: "EC",
+								backgroundColor: "rgba(17,89,205,0.5)",
+								data: productos[2]
+							},
+							{
+								label: "CIFA",
+								backgroundColor: "rgba(44,205,12,0.5)",
+								data: productos[3]
+							}
+
+						]
+					},
+
+					options: {
+						responsive: true,
+						title: {
+							display: true,
+							text: 'Productos creados por Servicios / Meses'
+						},
+						scales: {
+							xAxes: [{
+								stacked: true
+
+							}],
+							yAxes: [{
+								stacked: true
+							}]
+						}
+					}
+				});
+
+			}
+		});
+
+	};
+
+	$scope.graficaCotizacionesU = function(){
+		$.ajax({
+			type:'GET',
+			dataType: 'json',
+			url:global_apiserver+"/reporte/getCotizaciones/?usuario="+usuarioID,
+			success:function(data){
+				var cotizaciones = data;
+				var meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+				var mybarChart = new Chart(cotizacionesChartU, {
+
+					type: 'bar',
+					data: {
+						labels: meses,
+						datasets: [
+							{
+								label: "CSG",
+								backgroundColor: "rgba(204,25,6,0.5)",
+								data: cotizaciones[1]
+							}, {
+								label: "EC",
+								backgroundColor: "rgba(12,7,204,0.5)",
+								data: cotizaciones[2]
+							},
+							{
+								label: "CIFA",
+								backgroundColor: "rgba(14,92,204,0.5)",
+								data: cotizaciones[3]
+							}
+
+						]
+					},
+
+					options: {
+						title: {
+							display: true,
+							text: 'Cotizaciones creadas por Servicios / Meses'
+						},
+						responsive: true,
+						scales: {
+							xAxes: [{
+								stacked: true
+
+							}],
+							yAxes: [{
+								stacked: true
+							}]
+						}
+					},
+				});
+
+			}
+		});
+
+	};
+
+	$scope.graficaAuditoriasU = function(){
+		$.ajax({
+			type:'GET',
+			dataType: 'json',
+			url:global_apiserver+"/reporte/getAuditorias/?usuario="+usuarioID,
+			success:function(data){
+				var auditorias = data;
+				var meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+				var mybarChart = new Chart(auditoriasChartU, {
+
+					type: 'bar',
+					data: {
+						labels: meses,
+						datasets: [
+							{
+								label: "CSG",
+								backgroundColor: "rgba(190,42,25,0.81)",
+								data: auditorias[1]
+							}, {
+								label: "EC",
+								backgroundColor: "rgba(6,7,190,0.81)",
+								data: auditorias[2]
+							}
+						]
+					},
+
+					options: {
+						title: {
+							display: true,
+							text: 'Auditoeias creadas por Servicios / Meses'
+						},
+						responsive: true,
+
+					},
 				});
 
 			}
@@ -260,6 +409,9 @@ $scope.graficaEstatusU();
 $scope.graficaEntidadU();
 $scope.getUsuario();
 $scope.graficaLoginU();
+$scope.graficaProductosU();
+$scope.graficaCotizacionesU();
+$scope.graficaAuditoriasU();
 }]);
 
 

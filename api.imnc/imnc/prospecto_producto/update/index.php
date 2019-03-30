@@ -25,6 +25,10 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 	valida_parametro_and_die1($ID_SERVICIO,"Es necesario seleccionar un servicio");
 	$ID_TIPO_SERVICIO = $objeto->departamento; 
 	valida_parametro_and_die1($ID_TIPO_SERVICIO,"Es necesario seleccionar un tipo de servicio");
+	$ID_USUARIO = $objeto->id_usuario;
+	valida_parametro_and_die1($ID_USUARIO,"Es necesario el id del usuario");
+	$FECHA = date("Y-m-d H:i:s");
+
     $NORMAS= "";
 	$MODALIDAD = "";
 	$CURSO = "";
@@ -60,7 +64,9 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 	$id_producto = $database->update($nombre_tabla, [ 
 		"ID_SERVICIO" => $ID_SERVICIO, 
 		"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
-		"ALCANCE" => $ALCANCE
+		"ALCANCE" => $ALCANCE,
+		"ID_USUARIO_MODIFICACION"=>$ID_USUARIO,
+		"FECHA_MODIFICACION"=>$FECHA
 	], ["ID" => $ID_PRODUCTO]); 	
 	valida_error_medoo_and_die($nombre_tabla,$correo);
     if($ID_SERVICIO!=3) {

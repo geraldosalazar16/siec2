@@ -191,7 +191,7 @@ if (!isset($_SESSION['CREATED'])) {
   <script type="text/javascript" src="js/moment/moment.min.js"></script>
   <script type="text/javascript" src="js/datepicker/daterangepicker.js"></script>
   <!-- chart js -->
-  <script src="js/chartjs/chart.min.js"></script>
+  <script src="js/chartjs/2.8.0/chart.min.js"></script>
 
   <!-- select2 -->
   <script src="js/select/select2.full.js"></script>

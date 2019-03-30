@@ -55,6 +55,7 @@ $id1 = $database->update("I_EC_AUDITORIAS",
 												//"NO_USA_METODO" => $NO_USA_METODO,
 												//"SITIOS_AUDITAR" => $SITIOS_AUDITAR,
 												"ID_USUARIO_MODIFICACION"=>$ID_USUARIO,
+												"FECHA_MODIFICACION"=>date("Y-m-d H:i:s")
 												
 												
 											], 
