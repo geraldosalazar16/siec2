@@ -1381,6 +1381,7 @@ $scope.btnInsertaGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_aud
 		.then(function( response ){
 			if(response.data.resultado == 'ok'){
 				$scope.AuditoresParaAuditoria = response.data.CON_CALIFICACION;
+				console.log($scope.AuditoresParaAuditoria);
 				$scope.AuditoresParaAuditoria1 = response.data.SIN_CALIFICACION;
 				$scope.cant_auditores = $scope.AuditoresParaAuditoria.length;
 				//$scope.grupo_id_tipo_auditoria = id_tipo_auditoria;
