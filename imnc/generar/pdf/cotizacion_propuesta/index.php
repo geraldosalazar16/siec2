@@ -627,7 +627,7 @@ for($i=0;$i<count($datos);$i++){
 EOT;
 			$tarifa=0;
 			$suma_tarifa=0;
-			if(count($datos1[$i])>0){
+			if(count($datos1[$i])>0||count($datos1[$i+1])>0){
 				for($j=0;$j<count($datos1[$i]);$j++){
 				$descripcion = $datos1[$i][$j]->DESCRIPCION;
 				$tarifa	=	$datos1[$i][$j]->TARIFA;

@@ -5,6 +5,7 @@ app.controller('indicadores_controller', ['$scope', function($scope,$http) {
 	var IndProgOportVig = document.getElementById("IndProgOportVigChart");
 	var IndProgOportRen = document.getElementById("IndProgOportRenChart");
 	var IndTiempoEntregInf = document.getElementById("IndTiempoEntregInfChart");
+	var IndTomDeDec = document.getElementById("IndTomDeDecChart").getContext('2d');
 	
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
@@ -252,11 +253,52 @@ $scope.graficaIndTiempoEntregInf = function(){
 		}
 	});
 };
+// REPORTES TOMA DE DECISION	
+$scope.graficaIndTomDeDec = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_indicadores/getTomaDeDecision/",
+		success:function(data){
+		
+			var mybarChart = new Chart(IndTomDeDec, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: data.Y
+				},
+				options: {
+				
+					scales: {
+						xAxes: [{
+							stacked: true
+
+						}],
+						yAxes: [{
+							stacked: true,
+							ticks: {
+								beginAtZero: true,   
+								steps: 10,
+								stepValue: 5,
+								max: 100
+							}
+						}]	
+					}
+					
+				}	
+				
+			});
+			
+		
+		}
+	});
+};
 $scope.graficaIndEnvPlanAud();
 $scope.graficaIndEnvPlanAud1();
 $scope.graficaIndProgOportVigChart();
 $scope.graficaIndProgOportRenChart();
 $scope.graficaIndTiempoEntregInf();
+$scope.graficaIndTomDeDec();
 /***********************************************************************/	
 
 function notify(titulo, texto, tipo) {
