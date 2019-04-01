@@ -27,7 +27,9 @@ $respuesta =  array();
 	
 	if(isset($_REQUEST["usuario"])){
 		$id_usuario = $_REQUEST["usuario"];
-		$logins  = $database->select("USUARIOS_LOGIN",["FECHA_LOGIN"],["ID_USUARIO"=>$id_usuario]);
+		$start_year  = date("Y-m-d H:i:s",mktime(0, 0, 0, 12  , 31, date("Y")-1));
+		$logins  = $database->select("USUARIOS_LOGIN",["FECHA_LOGIN"],["AND"=>["ID_USUARIO"=>$id_usuario,"FECHA_LOGIN[>]"=>$start_year]]);
+
 
 		$respuesta = array(0=>0,1=>0,2=>0,3=>0,4=>0,5=>0,6=>0,7=>0,8=>0,9=>0,10=>0,11=>0,12=>0);
 		foreach ($logins as $item)
