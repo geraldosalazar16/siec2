@@ -172,7 +172,7 @@
 											<li  ng-show="x.ID_SERVICIO == 1" >
 												<a	ng-show="x.ID_ETAPA_PROCESO !=13" href="./?pagina=ver_expediente&id={{x.ID}}&id_entidad=5"> 
 												<span class="labelAcordeon"	>Ver expedientes</span></a>
-												<a	ng-show="x.ID_ETAPA_PROCESO ==13" href="./?pagina=ver_expediente&id={{x.ID_REFERENCIA_SEG}}&id_entidad=5"> 
+												<a	ng-show="x.ID_ETAPA_PROCESO ==13" href="./?pagina=ver_expediente&id={{x.ID}}&id_entidad=5"> 
 												<span class="labelAcordeon"	>Ver expedientes</span></a>
 											</li>
 											<li >
