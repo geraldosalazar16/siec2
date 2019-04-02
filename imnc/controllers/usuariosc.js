@@ -38,7 +38,6 @@ app.controller("usuariosc_controller", ['$scope','$window', '$http','$document',
     $http(http_request).success(function(data) {
       if(data) {
         $scope.arr_usuarios = data;
-		console.log($scope.arr_usuarios);
       } 
       else  {
         console.log("No hay datos");
@@ -69,9 +68,9 @@ app.controller("usuariosc_controller", ['$scope','$window', '$http','$document',
     };
 
     $http(http_request).success(function(data) {
-      if(data) { 
-	  console.log(data);
-		
+      if(data) {
+
+
         $scope.usuario_insertar_editar = data;
 		for(var i = 0 ; i < data.PERFIL.length;i++){
 			$("#"+data.PERFIL[i].MODULO).val(data.PERFIL[i].ID_PERFIL);
@@ -91,9 +90,15 @@ app.controller("usuariosc_controller", ['$scope','$window', '$http','$document',
   $scope.usuario_guardar = function(){
     $scope.usuario_insertar_editar.ID_USUARIO = sessionStorage.getItem("id_usuario");
     $scope.usuario_insertar_editar.MODULOS = {};
-	console.log("entra for");
+      var j = 0;
       for(var i = 0 ; i < $scope.arr_modulos.length; i++){
-          $scope.usuario_insertar_editar.MODULOS[i] = $scope.arr_modulos[i].VALOR;
+          if(typeof $scope.arr_modulos[i].VALOR !== "undefined")
+          {
+              var object = $scope.arr_modulos[i].VALOR;
+              object.MODULO = $scope.arr_modulos[i].ID;
+              $scope.usuario_insertar_editar.MODULOS[j++] = object;
+          }
+
       }
 
     if ($scope.opcion_guardar_usuario == 'insertar') {
