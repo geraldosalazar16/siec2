@@ -6,6 +6,7 @@ app.controller('indicadores_controller', ['$scope', function($scope,$http) {
 	var IndProgOportRen = document.getElementById("IndProgOportRenChart");
 	var IndTiempoEntregInf = document.getElementById("IndTiempoEntregInfChart");
 	var IndTomDeDec = document.getElementById("IndTomDeDecChart").getContext('2d');
+	var IndTiempEmisCert = document.getElementById("IndTiempEmisCertChart");
 	
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
@@ -293,12 +294,70 @@ $scope.graficaIndTomDeDec = function(){
 		}
 	});
 };
+// REPORTES TIEMPO DE EMISION DE CERTIFICADO	
+$scope.graficaIndTiempEmisCert = function(){
+	$.ajax({
+		type:'GET',
+		dataType: 'json',
+		url:global_apiserver+"/i_indicadores/getTiempoEmisionCertificado/",
+		success:function(data){
+			if(data.resultado == 'ok'){
+				var mybarChart = new Chart(IndTiempEmisCert, {
+				type: 'bar',
+				data: {
+					labels: data.X,
+					datasets: [{
+							label: 'Certificados emitidos y que cumplen los 7 dias (%)',
+							backgroundColor: 'rgba(255, 0, 0, 0.5)',
+							data: data.Z1,
+						},{
+							label: 'Certificados emitidos y que no cumplen los 7 dias(%)',
+							backgroundColor: 'rgba(0, 255, 0, 0.5)',
+							data: data.Z2,
+						},{
+							label: 'Certificados emitidos y que no estan en dictaminacion (%)',
+							backgroundColor: 'rgba(0, 0, 255, 0.5)',
+							data: data.Z3,
+						}]
+					},
+					options: {
+					
+						scales: {
+							xAxes: [{
+								stacked: true
+
+							}],
+							yAxes: [{
+								stacked: true,
+								ticks: {
+									beginAtZero: true,   
+									steps: 10,
+									stepValue: 5,
+									max: 100
+								}
+							}]	
+						}
+						
+					}	
+				
+				});
+			}
+			 else {
+				notify('Error',data.mensaje,'error');
+			}
+			
+			
+		
+		}
+	});
+};
 $scope.graficaIndEnvPlanAud();
 $scope.graficaIndEnvPlanAud1();
 $scope.graficaIndProgOportVigChart();
 $scope.graficaIndProgOportRenChart();
 $scope.graficaIndTiempoEntregInf();
 $scope.graficaIndTomDeDec();
+$scope.graficaIndTiempEmisCert();
 /***********************************************************************/	
 
 function notify(titulo, texto, tipo) {
