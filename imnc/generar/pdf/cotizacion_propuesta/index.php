@@ -122,8 +122,14 @@ $servicio = $database->get("SERVICIOS", "*", ["ID"=>$cotizacion[0]["ID_SERVICIO"
 valida_error_medoo_and_die(); 
 $tipos_servicio = $database->get("TIPOS_SERVICIO", "*", ["ID"=>$cotizacion[0]["ID_TIPO_SERVICIO"]]);
 valida_error_medoo_and_die(); 
-$norma = $database->get("NORMAS", "*", ["ID"=>$tipos_servicio["ID_NORMA"]]);
+//AQUI TRABAJO LO DE LAS NORMAS POR SI TIENE CARGADAS MAS DE UNA
+$normas = $database->select("COTIZACION_NORMAS", "*", ["ID_COTIZACION"=>$id_cotizacion]);
 valida_error_medoo_and_die();
+//aqui concateno las normas
+$norma2 = $normas[0]['ID_NORMA'];//$nombrearea[0]["PNOMBRE"];//$norma=$datos->norma;;//
+for($z=1;$z<count($normas);$z++){
+	$norma2 .= ";".$normas[$z]['ID_NORMA'];
+}
 $estado = $database->get("PROSPECTO_ESTATUS_SEGUIMIENTO", "*", ["ID"=>$cotizacion[0]["ESTADO_COTIZACION"]]);
 valida_error_medoo_and_die(); 
 $campos_tramite = [
@@ -160,23 +166,6 @@ $cotizacion[0]["FOLIO"] = $FOLIO;
 /*===========================================================================*/
 /*===========================================================================*/
 
-/*
-$where = "";
-if($id_producto == 0 or is_null($id_producto))
-{
-	$nombrearea[0]["NOMBRE"] = "ID PRODUCTO 0";
-    $where = "WHERE ID_PROSPECTO = ".$id_prospecto;
-}
-else
-{
-	// NOMBRE AREA
-	$nombrearea = $database->select("PROSPECTO_PRODUCTO",["[><]AREAS"=>["PROSPECTO_PRODUCTO.ID_AREA"=>"ID"],"[><]PRODUCTOS"=>["PROSPECTO_PRODUCTO.ID_PRODUCTO"=>"ID"]],["AREAS.NOMBRE","PRODUCTOS.NOMBRE(PNOMBRE)"],["PROSPECTO_PRODUCTO.ID"=>$id_producto]);
-    $where = "WHERE ID_PROSPECTO = ".$id_prospecto." AND ID_PRODUCTO = ".$id_producto;
-}
-$cant_cotizaciones = $database->query("SELECT COUNT(*) as cantidad FROM COTIZACION_RAPIDA ".$where)->fetchAll();
-$cotizacion = 0;
-if($cant_cotizaciones[0]["cantidad"] > 0)
-    $cotizacion = $database->query("SELECT * FROM COTIZACION_RAPIDA ".$where)->fetchAll(); */
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //CONTACTO
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,7 +284,7 @@ for($i=0;$i<count($respuesta);$i++){
 }
 /*=======================================================================================*/
 
-$norma = $cotizacion[0]["NORMA"]['ID'];//$nombrearea[0]["PNOMBRE"];//$norma=$datos->norma;;//
+//$norma = $cotizacion[0]["NORMA"]['ID'];//$nombrearea[0]["PNOMBRE"];//$norma=$datos->norma;;//
 $NoEmpleados = $suma_emple;//$NoEmpleados = $cotizacion[0]["NO_EMPLEADOS"];//"3";
 $NoSitios =count($respuesta);//$NoSitios = $cotizacion[0]["NO_SITIOS"];//"3";
 $Importe_Certificado = "";//$Importe_Certificado = $cotizacion[0]["IMPORTE_CERTIFICADO"];//"3";
@@ -574,7 +563,7 @@ $html = <<<EOT
 	</tr>
 	<tr>
 		<td style="font-size: medium; text-align:right" width="100">Norma:</td>
-		<td style="font-size: medium;  text-align:left" width="350"> $norma</td>
+		<td style="font-size: medium;  text-align:left" width="350"> $norma2</td>
 	</tr>
 	<tr>
 		<td style="font-size: medium; text-align:right" width="100">No. Empleados:</td>
