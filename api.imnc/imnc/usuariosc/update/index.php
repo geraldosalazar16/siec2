@@ -65,43 +65,38 @@ $id = $database->update("USUARIOS", [
 ],["ID"=>$ID]); 
 valida_error_medoo_and_die(); 
 
-$FECHA_MODIFICACION = date('Y/m/d H:i:s');
-$modulos_list = $database->select("MODULOS","*");
-for($i = 0 ; $i < sizeof($modulos_list); $i++){
-$index = $modulos_list[$i]["ID"];
-	if(isset($MODULOS[$index - 1])){
-		$count = $database->count("PERFIL_MODULO_USUARIO", ["AND" => ["ID_USUARIO" => $ID,"ID_MODULO" => $index]]);
+$FECHA_MODIFICACION = date('Y-m-d H:i:s');
+foreach ($MODULOS as $MODULO)
+{
+	$count = $database->count("PERFIL_MODULO_USUARIO", ["AND" => ["ID_USUARIO" => $ID,"ID_MODULO" => $MODULO["MODULO"]]]);
+	if($count > 0)
+	{
+		$id_perfil_modulo = $database->update("PERFIL_MODULO_USUARIO", [
+			"ID_PERFIL" => $MODULO["ID"],
+			"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
+			"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION],
+			["AND" => ["ID_USUARIO" => $ID,
+				"ID_MODULO" => $MODULO["MODULO"]
+			]]
+		);
+		valida_error_medoo_and_die();
+	}
+	else
+	{
 
-		if($count > 0)
-		{
-			$id_perfil_modulo = $database->update("PERFIL_MODULO_USUARIO", [
-				"ID_PERFIL" => $MODULOS[$index - 1]["ID"],
-				"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
-				"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION],
-				["AND" => ["ID_USUARIO" => $ID,
-					"ID_MODULO" => $index]]
-			);
-			valida_error_medoo_and_die();
-		}
-		else
-		{
-
-				$id_perfil_modulo = $database->insert("PERFIL_MODULO_USUARIO", [
-					"ID_PERFIL" => $MODULOS[$index - 1]["ID"],
-					"ID_USUARIO" => $ID,
-					"ID_MODULO" => $index,
-					"FECHA_CREACION" => $FECHA_MODIFICACION,
-					"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
-					"ID_USUARIO_CREACION" => $ID_USUARIO_MODIFICACION,
-					"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION
-				]);
-				valida_error_medoo_and_die();
-
-		}
+		$id_perfil_modulo = $database->insert("PERFIL_MODULO_USUARIO", [
+			"ID_PERFIL" => $MODULO["ID"],
+			"ID_USUARIO" => $ID,
+			"ID_MODULO" => $MODULO["MODULO"],
+			"FECHA_CREACION" => $FECHA_MODIFICACION,
+			"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
+			"ID_USUARIO_CREACION" => $ID_USUARIO_MODIFICACION,
+			"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION
+		]);
+		valida_error_medoo_and_die();
 
 	}
 }
-
 
 $respuesta["resultado"]="ok"; 
 $respuesta["id"]=$id; 
