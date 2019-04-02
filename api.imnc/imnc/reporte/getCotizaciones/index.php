@@ -27,7 +27,8 @@ $respuesta =  array();
 	
 	if(isset($_REQUEST["usuario"])){
 		$id_usuario = $_REQUEST["usuario"];
-		$productos  = $database->select("COTIZACIONES",["FECHA_CREACION","ID_SERVICIO"],["ID_USUARIO_CREACION"=>$id_usuario]);
+		$start_year  = date("Ymd",mktime(0, 0, 0, 12  , 31, date("Y")-1));
+		$productos  = $database->select("COTIZACIONES",["FECHA_CREACION","ID_SERVICIO"],["AND"=>["ID_USUARIO_CREACION"=>$id_usuario,"FECHA_CREACION[>]"=>$start_year]]);
 		valida_error_medoo_and_die();
 		$respuesta[1] = array(0=>0,1=>0,2=>0,3=>0,4=>0,5=>0,6=>0,7=>0,8=>0,9=>0,10=>0,11=>0,12=>0);
 		$respuesta[2] = array(0=>0,1=>0,2=>0,3=>0,4=>0,5=>0,6=>0,7=>0,8=>0,9=>0,10=>0,11=>0,12=>0);

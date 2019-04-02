@@ -1380,7 +1380,9 @@ $scope.btnInsertaGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_aud
 		$http.get(  global_apiserver + "/i_sg_auditorias/getAllAudWithSectorCalif/?idsce="+id_servicio+"&idtipoauditoria="+id_tipo_auditoria+"&ciclo="+ciclo)
 		.then(function( response ){
 			if(response.data.resultado == 'ok'){
+				console.log(response.data);
 				$scope.AuditoresParaAuditoria = response.data.CON_CALIFICACION;
+				console.log($scope.AuditoresParaAuditoria);
 				$scope.AuditoresParaAuditoria1 = response.data.SIN_CALIFICACION;
 				$scope.cant_auditores = $scope.AuditoresParaAuditoria.length;
 				//$scope.grupo_id_tipo_auditoria = id_tipo_auditoria;

@@ -60,72 +60,21 @@
 							<div class="" role="tabpanel" data-example-id="togglable-tabs">
 								<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
 									<li role="presentation" class="active">
-										<a href="#tab_contacto" id="tab_contacto-tab"  role="tab" data-toggle="tab" aria-expanded="true" ng-click="listaDomiciliosForContacto()">
-										Contacto</a>
-									</li>
-									
-									<li role="presentation" class="">
 										<a href="#tab_domicilio" id="home-tab"  role="tab"  data-toggle="tab" aria-expanded="false">
 										Domicilio</a>
-									</li>		
+									</li>
 
+									<li role="presentation" class="">
+										<a href="#tab_contacto" id="tab_contacto-tab"  role="tab" data-toggle="tab" aria-expanded="true" ng-click="listaDomiciliosForContacto()">
+										Contacto</a>
+									</li>	
+											
 									<li role="presentation" class="">
 									<a href="#tab_areas" id="tab_areas-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
 										Servicios</a>
 									</li>				
 								</ul>
 								<div id="myTabContent" class="tab-content">
-									<!-- Tab contacto -->
-									<div role="tabpanel" class="tab-pane fade active in" id="tab_contacto" aria-labelledby="home-tab">
-										<p>
-											<button type="button" ng-click="agregarContacto()" class="btn btn-primary btn-xs btn-imnc"
-												ng-if='modulo_permisos["registrar"] == 1' style="float: right;"> 
-												<i class="fa fa-plus"> </i> Agregar 
-											</button>
-										</p>
-										<div id="contactos-list" ng-repeat="x in contactoprospecto">
-											<div class="message_wrapper">
-												<h3 class="heading">{{x.NOMBRE}}</h3>
-												<blockquote class="message">
-													<div class="col-lg-7">
-														<p><strong>Correo :</strong> {{x.CORREO}}</p>
-													</div>
-													<div class="col-lg-5">
-														<p><strong>Puesto :</strong>{{x.PUESTO}}</p>
-													</div>
-													<div class="col-lg-7">
-														<p><strong>Teléfono :</strong>{{x.TELEFONO}}</p>
-													</div>
-													<div class="col-lg-5">
-														<p><strong>Celular:</strong>{{x.CELULAR}}</p>
-													</div>
-													<div class="col-lg-7">
-														<p><strong>Domicilio:</strong>{{x.NOMBRE_DOMICILIO}}</p>
-													</div>
-													<div class="col-lg-5">
-														<p ng-if="x.ACTIVO == 0"><strong>Activo:</strong>No</p>
-														<p ng-if="x.ACTIVO == 1"><strong>Activo:</strong>S&iacute;</p>	
-													</div>
-
-													<div class="col-lg-12">
-														<button type="button" ng-click="editarContacto(x.ID)" class="btn btn-primary btn-xs btn-imnc btnEditar"
-														ng-if='modulo_permisos["editar"] == 1' style="float: right;"><i class="fa fa-edit"> </i> Editar
-															</button>
-														<button type="button" ng-click="detallesContacto(x.ID)" class="btn btn-primary btn-xs btn-info">Detalles </button>
-													</div>
-													<!--
-													<div class="col-lg-12">
-														<button type="button" ng-click="editarContacto(x.ID)" class="btn btn-primary btn-xs btn-imnc btnEditar"
-														ng-if='modulo_permisos["editar"] == 1 && id_cliente==0' style="float: right;"><i class="fa fa-edit"> </i> Editar
-															</button>
-														<button type="button" ng-click="detallesContacto(x.ID)" class="btn btn-primary btn-xs btn-info">Detalles </button>
-													</div>
-													-->
-												</blockquote>
-											</div>
-										</div>
-									</div>
-									<!-- Fin Tab Contacto-->
 									<!-- Tab domicilio-->
 									<div role="tabpanel" class="tab-pane fade" id="tab_domicilio" aria-labelledby="profile-tab">
 										<p>
@@ -195,6 +144,59 @@
 										</div>
 									</div>
 									<!-- Fin Tab Domicilio-->
+
+									<!-- Tab contacto -->
+									<div role="tabpanel" class="tab-pane fade active in" id="tab_contacto" aria-labelledby="home-tab">
+										<p>
+											<button type="button" ng-click="agregarContacto()" class="btn btn-primary btn-xs btn-imnc"
+												ng-if='modulo_permisos["registrar"] == 1' style="float: right;"> 
+												<i class="fa fa-plus"> </i> Agregar 
+											</button>
+										</p>
+										<div id="contactos-list" ng-repeat="x in contactoprospecto">
+											<div class="message_wrapper">
+												<h3 class="heading">{{x.NOMBRE}}</h3>
+												<blockquote class="message">
+													<div class="col-lg-7">
+														<p><strong>Correo :</strong> {{x.CORREO}}</p>
+													</div>
+													<div class="col-lg-5">
+														<p><strong>Puesto :</strong>{{x.PUESTO}}</p>
+													</div>
+													<div class="col-lg-7">
+														<p><strong>Teléfono :</strong>{{x.TELEFONO}}</p>
+													</div>
+													<div class="col-lg-5">
+														<p><strong>Celular:</strong>{{x.CELULAR}}</p>
+													</div>
+													<div class="col-lg-7">
+														<p><strong>Domicilio:</strong>{{x.NOMBRE_DOMICILIO}}</p>
+													</div>
+													<div class="col-lg-5">
+														<p ng-if="x.ACTIVO == 0"><strong>Activo:</strong>No</p>
+														<p ng-if="x.ACTIVO == 1"><strong>Activo:</strong>S&iacute;</p>	
+													</div>
+
+													<div class="col-lg-12">
+														<button type="button" ng-click="editarContacto(x.ID)" class="btn btn-primary btn-xs btn-imnc btnEditar"
+														ng-if='modulo_permisos["editar"] == 1' style="float: right;"><i class="fa fa-edit"> </i> Editar
+															</button>
+														<button type="button" ng-click="detallesContacto(x.ID)" class="btn btn-primary btn-xs btn-info">Detalles </button>
+													</div>
+													<!--
+													<div class="col-lg-12">
+														<button type="button" ng-click="editarContacto(x.ID)" class="btn btn-primary btn-xs btn-imnc btnEditar"
+														ng-if='modulo_permisos["editar"] == 1 && id_cliente==0' style="float: right;"><i class="fa fa-edit"> </i> Editar
+															</button>
+														<button type="button" ng-click="detallesContacto(x.ID)" class="btn btn-primary btn-xs btn-info">Detalles </button>
+													</div>
+													-->
+												</blockquote>
+											</div>
+										</div>
+									</div>
+									<!-- Fin Tab Contacto-->
+									
 									<!-- Tab Areas-->
 									<div role="tabpanel" class="tab-pane fade" id="tab_areas" aria-labelledby="profile-tab">
 										<div id="areas">

@@ -132,20 +132,26 @@ if(sizeof($all_pt) > 0 ){
 
 $array_pt_califs = array();
 
-for ($i=0; $i < count($all_pt) ; $i++) { 
+for ($i=0; $i < count($all_pt) ; $i++) {
+
 	if (array_key_exists($all_pt[$i]["ID_PERSONAL_TECNICO"], $respuesta)) { //Agregar al arreglo
-		$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CANT_SECTORES"] += 1;
-		$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["TOTAL"] = $respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CANT_SECTORES"] . " de " . $total_sectores;
-		$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["JERARQUIA"] = $database->get("PERSONAL_TECNICO_ROLES", "JERARQUIA", ["ID" => $all_pt[$i]["ID_ROL"]]);
-		$detalles_de_califs = array();
-		$detalles_de_califs["ID_SECTOR"] = $all_pt[$i]["ID"]."-".$all_pt[$i]["ID_REFERENCIA"]."-".$all_pt[$i]["ANHIO"];
-		$detalles_de_califs["NOMBRE_SECTOR"] = $all_pt[$i]["NOMBRE_SECTOR"];
-		$detalles_de_califs["ANHIO"] = $all_pt[$i]["ANHIO"];
-		$detalles_de_califs["SECTOR_NACE"] = $all_pt[$i]["SECTOR_NACE"];
-		$detalles_de_califs["ALCANCE"] = $all_pt[$i]["ALCANCE"];
-		$detalles_de_califs["ROL"] = $database->get("PERSONAL_TECNICO_ROLES", "ROL", ["ID" => $all_pt[$i]["ID_ROL"]]);
-		
-		array_push($respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CALIFICACIONES"], $detalles_de_califs);
+		$anterior = $respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CALIFICACIONES"][count($respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CALIFICACIONES"])-1]["ID_SECTOR"];
+		$actual = $all_pt[$i]["ID"]."-".$all_pt[$i]["ID_REFERENCIA"]."-".$all_pt[$i]["ANHIO"];
+		if($anterior != $actual)
+		{
+			$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CANT_SECTORES"] += 1;
+			$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["TOTAL"] = $respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CANT_SECTORES"] . " de " . $total_sectores;
+			$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["JERARQUIA"] = $database->get("PERSONAL_TECNICO_ROLES", "JERARQUIA", ["ID" => $all_pt[$i]["ID_ROL"]]);
+			$detalles_de_califs = array();
+			$detalles_de_califs["ID_SECTOR"] = $all_pt[$i]["ID"]."-".$all_pt[$i]["ID_REFERENCIA"]."-".$all_pt[$i]["ANHIO"];
+			$detalles_de_califs["NOMBRE_SECTOR"] = $all_pt[$i]["NOMBRE_SECTOR"];
+			$detalles_de_califs["ANHIO"] = $all_pt[$i]["ANHIO"];
+			$detalles_de_califs["SECTOR_NACE"] = $all_pt[$i]["SECTOR_NACE"];
+			$detalles_de_califs["ALCANCE"] = $all_pt[$i]["ALCANCE"];
+			$detalles_de_califs["ROL"] = $database->get("PERSONAL_TECNICO_ROLES", "ROL", ["ID" => $all_pt[$i]["ID_ROL"]]);
+			array_push($respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CALIFICACIONES"], $detalles_de_califs);
+		}
+
 	}
 	else{ // Insertar nuevo al arreglo
 		$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]] = array();
@@ -168,54 +174,12 @@ for ($i=0; $i < count($all_pt) ; $i++) {
 
 		// Verfica que auditor no tenga las fechas de la auditoria asignadas
 
-		$id_pt_calif = $respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["PT_CALIF_ID"];
+		/*$id_pt_calif = $respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["PT_CALIF_ID"];
 		$id_pt = $database->get("PERSONAL_TECNICO_CALIFICACIONES", "ID_PERSONAL_TECNICO", ["ID"=>$id_pt_calif]);
 		valida_error_medoo_and_die();
 		$ids_pt_calif =  $database->select("PERSONAL_TECNICO_CALIFICACIONES", "ID", ["ID_PERSONAL_TECNICO"=>$id_pt]);
-		valida_error_medoo_and_die();
+		valida_error_medoo_and_die();*/
 
-		$consulta = "SELECT 
-	PT.ID,
-	PT.NOMBRE,
-	PT.APELLIDO_MATERNO,
-	PT.APELLIDO_PATERNO,
-	PT.INICIALES,
-	PT.FECHA_NACIMIENTO,
-	SGAG.ID_SERVICIO_CLIENTE_ETAPA AS ID_SERVICIO_CLIENTE_ETAPA_SGAG,
-	SGAG.TIPO_AUDITORIA AS TIPO_AUDITORIA_SGAG,
-	SGAG.CICLO AS CICLO_SGAG,
-	SGAGF.ID AS ID_SGAGF,
-	SGAGF.FECHA 
-	FROM 
-		PERSONAL_TECNICO AS PT
-	INNER JOIN 	
-		PERSONAL_TECNICO_CALIFICACIONES AS PTC ON PTC.ID_PERSONAL_TECNICO = PT.ID
-	INNER JOIN 	
-		I_SG_AUDITORIA_GRUPOS AS SGAG ON SGAG.ID_PERSONAL_TECNICO_CALIF = PTC.ID
-	INNER JOIN	
-		I_SG_AUDITORIA_GRUPO_FECHAS AS SGAGF ON 
-												SGAGF.ID_SERVICIO_CLIENTE_ETAPA = SGAG.ID_SERVICIO_CLIENTE_ETAPA
-											AND SGAGF.TIPO_AUDITORIA = SGAG.TIPO_AUDITORIA
-											AND SGAGF.CICLO = SGAG.CICLO
-											AND SGAGF.ID_PERSONAL_TECNICO_CALIF = SGAG.ID_PERSONAL_TECNICO_CALIF
-											
-	WHERE 
-		PT.ID = ".$database->quote($id_pt)." 
-		AND SGAGF.FECHA NOT IN (SELECT FECHA 
-										FROM I_SG_AUDITORIA_FECHAS WHERE 
-																			ID_SERVICIO_CLIENTE_ETAPA = ".$database->quote($id_sce)."
-																		AND TIPO_AUDITORIA = ".$database->quote($idtipoauditoria)."
-																		AND CICLO = ".$database->quote($ciclo).")";
-	/*	$consulta = "SELECT PT.ID,PT.NOMBRE,PT.APELLIDO_MATERNO,PT.APELLIDO_PATERNO,PT.INICIALES,PT.FECHA_NACIMIENTO,SGAG.ID AS ID_SGAG,SGAGF.ID AS ID_SGAGF,SGAGF.FECHA FROM PERSONAL_TECNICO AS PT,PERSONAL_TECNICO_CALIFICACIONES AS PTC ,SG_AUDITORIA_GRUPOS AS SGAG, SG_AUDITORIA_GRUPO_FECHAS AS SGAGF WHERE PT.ID = ".$database->quote($id_pt)." AND PTC.ID_PERSONAL_TECNICO = PT.ID AND SGAG.ID_PERSONAL_TECNICO_CALIF = PTC.ID AND SGAGF.ID_SG_AUDITORIA_GRUPO = SGAG.ID AND SGAGF.FECHA NOT IN (SELECT FECHA FROM SG_AUDITORIA_FECHAS WHERE ID_SG_AUDITORIA = ".$database->quote($id_sg_auditoria).")";*/
-	
-		//echo $consulta;
-		//$tiene_fechas = array();
-/*		$tiene_fechas = $database->query($consulta)->fetchAll();
-		valida_error_medoo_and_die();
-		if (sizeof($tiene_fechas) == 0) {
-			$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["STATUS"] = "asignado";
-		}
-*/
 		// Detalles de las calificaciones del auditor
 		
 		$detalles_de_califs = array();
@@ -284,55 +248,11 @@ for ($i=0; $i < count($otras_califs); $i++) {
 
 	// Verfica que auditor no tenga las fechas de la auditoria asignadas
 
-	$id_pt_calif = $otras_califs[$i]["PT_CALIF_ID"];
+	/*$id_pt_calif = $otras_califs[$i]["PT_CALIF_ID"];
 	$id_pt = $database->get("PERSONAL_TECNICO_CALIFICACIONES", "ID_PERSONAL_TECNICO", ["ID"=>$id_pt_calif]);
 	valida_error_medoo_and_die();
 	$ids_pt_calif =  $database->select("PERSONAL_TECNICO_CALIFICACIONES", "ID", ["ID_PERSONAL_TECNICO"=>$id_pt]);
-	valida_error_medoo_and_die();
-
-		$consulta = "SELECT 
-	PT.ID,
-	PT.NOMBRE,
-	PT.APELLIDO_MATERNO,
-	PT.APELLIDO_PATERNO,
-	PT.INICIALES,
-	PT.FECHA_NACIMIENTO,
-	SGAG.ID_SERVICIO_CLIENTE_ETAPA AS ID_SERVICIO_CLIENTE_ETAPA_SGAG,
-	SGAG.TIPO_AUDITORIA AS TIPO_AUDITORIA_SGAG,
-	SGAG.CICLO AS CICLO_SGAG,
-	SGAGF.ID AS ID_SGAGF,
-	SGAGF.FECHA 
-	FROM 
-		PERSONAL_TECNICO AS PT
-	INNER JOIN 	
-		PERSONAL_TECNICO_CALIFICACIONES AS PTC ON PTC.ID_PERSONAL_TECNICO = PT.ID
-	INNER JOIN 	
-		I_SG_AUDITORIA_GRUPOS AS SGAG ON SGAG.ID_PERSONAL_TECNICO_CALIF = PTC.ID
-	INNER JOIN	
-		I_SG_AUDITORIA_GRUPO_FECHAS AS SGAGF ON 
-												SGAGF.ID_SERVICIO_CLIENTE_ETAPA = SGAG.ID_SERVICIO_CLIENTE_ETAPA
-											AND SGAGF.TIPO_AUDITORIA = SGAG.TIPO_AUDITORIA
-											AND SGAGF.CICLO = SGAG.CICLO
-											AND SGAGF.ID_PERSONAL_TECNICO_CALIF = SGAG.ID_PERSONAL_TECNICO_CALIF
-											
-	WHERE 
-		PT.ID = ".$database->quote($id_pt)." 
-		AND SGAGF.FECHA NOT IN (SELECT FECHA 
-										FROM I_SG_AUDITORIA_FECHAS WHERE 
-																			ID_SERVICIO_CLIENTE_ETAPA = ".$database->quote($id_sce)."
-																		AND TIPO_AUDITORIA = ".$database->quote($idtipoauditoria)."
-																		AND CICLO = ".$database->quote($ciclo).")";
-	/*	$consulta = "SELECT PT.ID,PT.NOMBRE,PT.APELLIDO_MATERNO,PT.APELLIDO_PATERNO,PT.INICIALES,PT.FECHA_NACIMIENTO,SGAG.ID AS ID_SGAG,SGAGF.ID AS ID_SGAGF,SGAGF.FECHA FROM PERSONAL_TECNICO AS PT,PERSONAL_TECNICO_CALIFICACIONES AS PTC ,SG_AUDITORIA_GRUPOS AS SGAG, SG_AUDITORIA_GRUPO_FECHAS AS SGAGF WHERE PT.ID = ".$database->quote($id_pt)." AND PTC.ID_PERSONAL_TECNICO = PT.ID AND SGAG.ID_PERSONAL_TECNICO_CALIF = PTC.ID AND SGAGF.ID_SG_AUDITORIA_GRUPO = SGAG.ID AND SGAGF.FECHA NOT IN (SELECT FECHA FROM SG_AUDITORIA_FECHAS WHERE ID_SG_AUDITORIA = ".$database->quote($id_sg_auditoria).")";*/
-		//$consulta = "SELECT PT.ID,PT.NOMBRE,PT.APELLIDO_MATERNO,PT.APELLIDO_PATERNO,PT.INICIALES,PT.FECHA_NACIMIENTO,SGAG.ID AS ID_SGAG,SGAGF.ID AS ID_SGAGF,SGAGF.FECHA FROM PERSONAL_TECNICO AS PT,PERSONAL_TECNICO_CALIFICACIONES AS PTC ,SG_AUDITORIA_GRUPOS AS SGAG, SG_AUDITORIA_GRUPO_FECHAS AS SGAGF WHERE PT.ID = ".$database->quote($id_pt)." AND PTC.ID_PERSONAL_TECNICO = PT.ID AND SGAG.ID_PERSONAL_TECNICO_CALIF = PTC.ID AND SGAGF.ID_SG_AUDITORIA_GRUPO = SGAG.ID AND SGAGF.FECHA NOT IN (SELECT FECHA FROM SG_AUDITORIA_FECHAS )";
-		//$consulta = "SELECT * FROM PERSONAL_TECNICO,PERSONAL_TECNICO_CALIFICACIONES,SG_AUDITORIA_GRUPOS, SG_AUDITORIA_GRUPO_FECHAS ";
-		
-		//echo $consulta;
-/*		$tiene_fechas = $database->query($consulta)->fetchAll();
-		valida_error_medoo_and_die();
-		if (sizeof($tiene_fechas) == 0) {
-			//$respuesta[$otras_califs[$i]["ID_PERSONAL_TECNICO"]]["STATUS"] = "asignado";
-			$otras_califs[$i]["STATUS"] = "asignado";
-		}*/
+	valida_error_medoo_and_die();*/
 }
 
 // ==============================================================
