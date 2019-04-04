@@ -75,6 +75,9 @@
                                  <select ng-model="formData.etapa" ng-options="etapa.ID_ETAPA as etapa.ETAPA for etapa in Etapas"
                                          class="form-control" id="etapa" name="etapa" ng-change='cambioEtapa()' required
                                          ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}" ng-if="accion == 'insertar' && formData.claveServicio==3" ng-disabled="!formData.claveServicio || accion == 'insertar'"></select>
+								<select ng-model="formData.etapa" ng-options="etapa.ID_ETAPA as etapa.ETAPA for etapa in Etapas4" 
+                                class="form-control" id="etapa" name="etapa" ng-change='cambioEtapa()' required
+                                ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}" ng-if="accion == 'insertar' && formData.claveServicio==4" ng-disabled="!formData.claveServicio"></select>		 
                             </div>
 							     <!-- Esta opción es solo para Unidad de verificación de información comercial -->
 							<div class="form-group" ng-show="formData.sel_tipoServicio == 18">
