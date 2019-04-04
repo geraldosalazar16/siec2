@@ -20,7 +20,7 @@
 
         <div class="x_content">
 			
-				<ul class="list-unstyled user_data" style="display: inline-block !important;">
+				<ul class="list-unstyled user_data">
 					<li ><b>
 					Cliente:<i> {{DatosServicio.NOMBRE_CLIENTE}}</i></b>
 					</li>
@@ -48,13 +48,9 @@
                      <li ng-if="DatosServicio.ID_SERVICIO == 3" ><b>
                             URL Generada: <i><textarea style="width: 100%; border: transparent;" type="text" ng-model="url" ng-init="url = DatosServicio.URL_PARTICIPANTES"></textarea></i></b>
 					</li>
+
+
 				</ul>
-				<div class="pull-right subir">
-					<a	class="btn" ng-show="DatosServicio.ID_ETAPA_PROCESO !=13" href="./?pagina=ver_expediente&id={{DatosServicio.ID}}&id_entidad=5"> 
-						<span class="labelAcordeon"	>Ver expedientes</span></a>
-					<a	class="btn" ng-show="DatosServicio.ID_ETAPA_PROCESO ==13" href="./?pagina=ver_expediente&id={{DatosServicio.ID_REFERENCIA_SEG}}&id_entidad=5"> 
-						<span class="labelAcordeon"	>Ver expedientes</span></a>
-				</div>
 			
 				
 				

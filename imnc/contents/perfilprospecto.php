@@ -216,9 +216,6 @@
 														</div>
 													</div>
 													<div class = "row">
-
-                                                        <div id="grafico" ng-show="ProductosProspecto.length>0"></div>
-
                                                          <br>
 														<table class="table table-striped">
 																<thead class="thead-dark">

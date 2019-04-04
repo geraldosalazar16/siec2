@@ -876,76 +876,12 @@ $scope.eliminar = function(id){
 
 	  				}
 	  			});
-	  			    if($scope.ProductosProspecto.length>0)
-					{
-						$scope.updateGrafica(SG,EC,CIFA);
-					}
+
 
 			},
 			function (response){});
 	}
-	$scope.updateGrafica = function(SG,EC,CIFA)
-	{
-		var meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
-		var ctx = document.getElementById('grafico');
-		ctx.innerHTML= '<canvas  id="graficaServicios" height="130"></canvas>';
-		var myChart = new Chart(document.getElementById("graficaServicios"), {
-		type: 'bar',
-		data: {
-			labels: meses,
-			datasets: [
-				{
-					label: "SG",
-					backgroundColor: "rgba(205,145,14,0.5)",
-					data: SG
-				}, {
-					label: "EC",
-					backgroundColor: "rgba(17,89,205,0.5)",
-					data: EC
-				},
-				 {
-					label: "CIFA",
-					backgroundColor: "rgba(44,205,12,0.5)",
-					data: CIFA
-				}
-
-			]
-		},
-			options: {
-				title: {
-					display: true,
-					text: 'Cantidad de Servicios por Meses'
-				},
-				scales: {
-					xAxes: [{
-						stacked: true
-
-					}],
-					yAxes: [{
-						stacked: true
-					}]
-				}
-
-			}
-			/*options: {
-                title: {
-                    display: true,
-                    text: 'Cantidad de Servicios por Meses'
-                },
-				responsive: true,
-				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero: true,
-						}
-					}]
-				}
-            }*/
-	});
-
-
-	}
 	$scope.OrigenLista = function(){
 		//recibe la url del php que se ejecutará
 		$http.get(  global_apiserver + "/prospecto/getOrigen/")
