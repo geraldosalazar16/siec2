@@ -35,14 +35,6 @@ $modulo_permisos = $_SESSION["permisos"];
           
                 
     <?php
-		 if ($modulo_permisos["SERVICIOS"]["ver"] == 1) {
-            echo ' <li>';
-            echo '  <a href="./?pagina=indicadores">';
-            echo '    <i class="fa fa-area-chart" aria-hidden="true"></i> Indicadores ';
-            echo '  </a>';
-            echo '</li>';
-          }
-		  
         echo '<li><a><i class="fa fa-book"></i> Catálogos </a>';
         echo '   <ul class="nav child_menu" style="display: none">';
         if ($modulo_permisos["SERVICIOS"]["catalogos"] == 1) {
@@ -57,7 +49,7 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
            echo '     <li><a href="./?pagina=servicios_tipo">Tipos de servicio</a>';
            echo '     </li>';
-		   echo '     <li><a href="./?pagina=dictaminador_tiposervicio">Dictaminadores</a>';
+		   echo '     <li><a href="./?pagina=normas_tiposervicio">Normas-Tipo de servicio</a>';
            echo '     </li>';
 		   echo '     <li><a href="./?pagina=i_servicios_contratados_tipos_cambios">Tipos de cambio para servicios contratados</a>';
            echo '     </li>';
@@ -117,12 +109,11 @@ $modulo_permisos = $_SESSION["permisos"];
           }
 
           if ($modulo_permisos["CRM"]["ver"] == 1) {
-            echo '<li><a><i class="fa fa-industry"></i> CRM </a>';
+            echo '<li><a><i class="fa fa-industry"></i> Prospecto </a>';
             echo '  <ul class="nav child_menu" style="display: none">';
             echo '      <li><a href="./?pagina=prospecto">Prospectos</a></li>';
             echo '      <li><a href="./?pagina=agenda_prospectos">Agenda de Prospectos</a></li>';
             echo '     <li><a href="./?pagina=reporte_prospecto">Reporte de Prospectos</a></li>';
-            echo '     <li><a href="./?pagina=ventas_objetivos">Objetivos de ventas</a></li>';
             echo '     <li><a href="./?pagina=tipo_asunto">Tipo Asunto</a></li>';
             echo '  </ul>';
             echo '</li>';
@@ -148,14 +139,6 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '</li>';
           }
           
-		  if ($modulo_permisos["SERVICIOS"]["ver"] == 1) {
-            echo ' <li>';
-            echo '  <a href="./?pagina=dictaminacion">';
-            echo '    <i class="fa fa-gear" aria-hidden="true"></i> Dictaminación ';
-            echo '  </a>';
-            echo '</li>';
-          }
-		  
           if ($modulo_permisos["EXPEDIENTES"]["ver"] == 1) {
             echo '<li><a><i class="fa fa-folder-open"></i> Expediente </a>';
             echo '         <ul class="nav child_menu" style="display: none">';
@@ -177,35 +160,30 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '  </ul>';
             echo '</li>';
           }
-            if ($modulo_permisos["REPORTES"]["ver"] == 1) {
-                echo '<li>';
-                echo '  <a><i class="fa fa-list-alt"></i> Reportes </a>';
-                echo '  <ul class="nav child_menu" style="display: none">';
-                echo '      <li><a href="./?pagina=reportes">Ver</a></li>';
-                echo '  </ul>';
-                echo '</li>';
-            }
-            if ($modulo_permisos["EMPLEADOS"]["ver"] == 1) {
-                echo '<li>';
-                echo '  <a><i class="fa fa-user-circle-o"></i> Personal Interno </a>';
-                echo '  <ul class="nav child_menu" style="display: none">';
-                echo '      <li><a href="./?pagina=personal_interno">Ver</a></li>';
-                echo '  </ul>';
-                echo '</li>';
-            }
-			echo ' <li>';
-            echo '  <a href="./?pagina=lista_usuarios_graficas">';
-            echo '    <i class="fa fa-area-chart" aria-hidden="true"></i> Gráficas por usuario ';
-            echo '  </a>';
+
+        if ($modulo_permisos["REPORTES"]["ver"] == 1) {
+            echo '<li>';
+            echo '  <a><i class="fa fa-list-alt"></i> Reportes </a>';
+            echo '  <ul class="nav child_menu" style="display: none">';
+            echo '      <li><a href="./?pagina=reportes">Ver</a></li>';
+            echo '  </ul>';
             echo '</li>';
-
-
-
+        }
+        if ($modulo_permisos["EMPLEADOS"]["ver"] == 1) {
+            echo '<li>';
+            echo '  <a><i class="fa fa-user-circle-o"></i> Personal Interno </a>';
+            echo '  <ul class="nav child_menu" style="display: none">';
+            echo '      <li><a href="./?pagina=personal_interno">Ver</a></li>';
+            echo '  </ul>';
+            echo '</li>';
+        }
+        echo ' <li>';
+        echo '  <a href="./?pagina=lista_usuarios_graficas">';
+        echo '    <i class="fa fa-area-chart" aria-hidden="true"></i> Gráficas por usuario ';
+        echo '  </a>';
+        echo '</li>';
 
         ?>
-
-
-
 
         
       </div>

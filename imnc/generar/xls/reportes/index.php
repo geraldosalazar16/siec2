@@ -97,7 +97,7 @@ if(strtolower($AREA)=="comercial")
             ON P.ID_ESTATUS_SEGUIMIENTO = PES.ID";
 
     //$sql = "SELECT ".$SELECT.$FROM." ORDER BY ".$ORDER;
-    $sql = "SELECT ".$SELECT.$FROM;
+    $sql = "SELECT DISTINCT ".$SELECT.$FROM;
 
 }
 
@@ -122,7 +122,7 @@ if(strtolower($AREA)=="programación")
                 ON SECTORES.ID_SECTOR = SGS.ID_SECTOR 
                 LEFT JOIN ETAPAS_PROCESO 
                 ON SCE.ID_ETAPA_PROCESO = ETAPAS_PROCESO.ID_ETAPA";
-    $sql = "SELECT ".$SELECT.$FROM;
+    $sql = "SELECT DISTINCT ".$SELECT.$FROM;
 }
 
 $consulta = $database->query($sql)->fetchAll(PDO::FETCH_ASSOC);
