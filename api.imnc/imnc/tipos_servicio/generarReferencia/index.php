@@ -57,6 +57,9 @@ if($id != 18){
 		case 2:
 			$texto_servicio	=	"S";
 			break;
+		case 4:
+			$texto_servicio	=	"S";
+			break;	
 		default:
 			$texto_servicio	=	$id_servicio;
 			break;
