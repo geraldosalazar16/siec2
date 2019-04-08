@@ -54,6 +54,7 @@
                   
                 </select>
                 <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
+                <a class="btn btn-block" href="./?pagina=ec_tipos_servicio&id_serv_cli_et={{ <?php echo $_REQUEST["id"];?> }}">Ver Detalles del servicio</a>
               </div>
     </div>
 

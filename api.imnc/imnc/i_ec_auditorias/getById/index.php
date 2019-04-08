@@ -166,6 +166,8 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 	//$i_sg_auditoria_certificado = $database->get("SG_CERTIFICADO", "*", ["ID_SG_TIPOS_SERVICIO"=>$ec_tipo_servicio["ID"]]);
 	//valida_error_medoo_and_die();
 	//$sg_auditorias["SG_AUDITORIA_CERTIFICADO"] = $sg_auditoria_certificado;
+	$i_sg_auditoria_tipo =  $database->get("I_SG_AUDITORIAS_TIPOS",["TIPO"],["ID"=>$id_tipo_auditoria]);
+	$i_sg_auditorias["TIPO_AUDITORIA"] = $i_sg_auditoria_tipo["TIPO"];
 
 }
 

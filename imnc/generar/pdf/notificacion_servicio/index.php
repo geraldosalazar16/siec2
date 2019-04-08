@@ -165,6 +165,8 @@ $LUGAR_Y_FECHA = date("d")." de ".$meses[date('n')-1]." de ". date("Y");
 $REFERENCIA = $json_object->SERVICIO_CLIENTE_ETAPA->REFERENCIA;
 valida_isset($REFERENCIA, "Error: No se encuentra la REFERENCIA en linea: " . __LINE__);
 
+$TIPO_SERVICIO = $json_object->TIPO_AUDITORIA;
+
 $arr_sectores = $json_object->SERVICIO_CLIENTE_ETAPA->SG_SECTORES; //Es arreglo
 valida_isset($arr_sectores, "Error: No se encuentra arr_sectores en linea: " . __LINE__);
 
@@ -508,19 +510,16 @@ EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 11);
 $html= <<<EOT
-<br><table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;">
+<br><table cellpadding="2" cellspacing="0"  border="1" bordercolor=#1F487B style="text-align:center;">
 	<tr>
-		<td style="font-size: medium; text-align:center; color: #ffffff"  BGCOLOR="#1F487B"><strong>TIPO DE SERVICIO</strong></td>
+		<td colspan="1" style="font-size: medium; text-align:center; color: #ffffff"  BGCOLOR="#1F487B"><strong>TIPO DE SERVICIO</strong></td>
 	</tr>
-</table>
-EOT;
-$pdf1->writeHTML($html, true, false, true, false, '');
-$pdf1->SetFont('Calibri', '', 9);
-$html= <<<EOT
-<table cellpadding="2" cellspacing="0"  border="0" bordercolor=#ffffff style="text-align:center;" >
 	<tr>
-		<td style="font-size: medium; text-align:center"  width="225"><input type="checkbox" name="chk1" value="1" $chck1 readonly="false">Servicio en instalaciones del IMNC</td>
-		<td style="font-size: medium; text-align:center"  width="225"><input type="checkbox" name="chk2" value="1" $chck2  readonly="false">Servicio en Sitio</td>
+		<td colspan="1" style="font-size: medium; text-align:center; color: #000000" BGCOLOR="#E0E0E0"><strong> $TIPO_SERVICIO </strong></td>
+	</tr>
+	<tr>
+		<td style="font-size: medium; text-align:center"  width="50%"><input type="checkbox" name="chk1" value="1" $chck1 readonly="false">Servicio en instalaciones del IMNC</td>
+		<td style="font-size: medium; text-align:center"  width="50%"><input type="checkbox" name="chk2" value="1" $chck2  readonly="false">Servicio en Sitio</td>
 	</tr>
 </table>
 EOT;
