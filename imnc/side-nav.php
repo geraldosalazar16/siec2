@@ -109,7 +109,7 @@ $modulo_permisos = $_SESSION["permisos"];
           }
 
           if ($modulo_permisos["CRM"]["ver"] == 1) {
-            echo '<li><a><i class="fa fa-industry"></i> Prospecto </a>';
+            echo '<li><a><i class="fa fa-industry"></i> CRM </a>';
             echo '  <ul class="nav child_menu" style="display: none">';
             echo '      <li><a href="./?pagina=prospecto">Prospectos</a></li>';
             echo '      <li><a href="./?pagina=agenda_prospectos">Agenda de Prospectos</a></li>';
