@@ -11,6 +11,7 @@ app.controller('servicio_cliente_etapa_controller',['$scope','$http',function($s
 	$scope.datos	=	{};
 	$scope.Etapas1	=	{0:{ID_ETAPA:"3",ETAPA:"Asignación"},1:{ID_ETAPA:"12",ETAPA:"Transferencia"}};
 	$scope.Etapas2	=	{0:{ID_ETAPA:"17",ETAPA:"Asignación"}};
+	$scope.Etapas4	=	{0:{ID_ETAPA:"50",ETAPA:"Asignación"}};
 	
 	/*AQUI VOY A INICIALIZAR LAS VARIABLES A USAR EN LOS FILTROS*/
 // =======================================================================================

@@ -306,7 +306,6 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
 // ***** 			          FUNCION INSERTAR REPORTE      	                   *****
 // =======================================================================================
     $scope.insertar = function(save){
-
         $scope.save = save;
          $scope.add = {
             NOMBRE: $scope.formData.nombre,
@@ -316,7 +315,7 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
             COLUMN: $("#column").val(),
             };
 
-         //alert(JSON.stringify($scope.add));
+
         if($scope.save)
         {
             $.post(global_apiserver + "/reportes/insert/", JSON.stringify($scope.add), function (respuesta) {
@@ -430,7 +429,6 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
 // =======================================================================================
     $scope.generarEXCEL = function(key){
 
-
         if (typeof key !== "undefined") {
 
             $('#hiddenNombre').val($scope.reportes[key].NOMBRE);
@@ -448,7 +446,7 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
             $('#hiddenArea').val($scope.formData.select_area.NOMBRE);
             $('#hiddenColumnas').val(getArrayColumnas($("#column").val()));
         }
-          alert($('#hiddenColumnas').val());
+
         window.open('', 'VentanaReporteXLS');
         $("#formReporte").submit();
 
