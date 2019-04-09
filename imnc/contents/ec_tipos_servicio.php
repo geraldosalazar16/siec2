@@ -20,7 +20,7 @@
 
         <div class="x_content">
 			
-				<ul class="list-unstyled user_data" style="display: inline-block !important;>
+				<ul class="list-unstyled user_data" style="display: inline-block !important;">
 					<li ><b>
 					Cliente:<i> {{DatosServicio.NOMBRE_CLIENTE}}</i></b>
 					</li>
@@ -74,7 +74,7 @@
                           			Sitios</a>
 								</li>
 								
-								<li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
 								<a href="#tab_auditorias" id="tab_auditorias-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
                           			Auditor&iacuteas </a>
 								</li>
@@ -186,7 +186,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr ng-repeat="x in SitiosServicio" class="ng-scope  even pointer" ng-if="DatosServicio.ID_SERVICIO == 2">
+										<tr ng-repeat="x in SitiosServicio" class="ng-scope  even pointer" ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4">
 											<td> {{x.ACRONIMO}}<br>{{x.NOMBRE_DOMICILIO}}</td>
 											<td ng-init="CargarDatosSitiosEC(x.ID_CLIENTE_DOMICILIO)">
 												<ul class="list-unstyled user_data">
@@ -242,7 +242,7 @@
 									</tbody>
 								</table>
 								</div>
-								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO ==2"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" -->
+								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab" ng-show="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO ==2 || DatosServicio.ID_SERVICIO ==4"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" -->
 									<div class="x_title">
 										<p><h2>Auditor&iacuteas </h2></p>
 											<p ng-if='modulo_permisos["registrar"] == 1'>
@@ -485,7 +485,7 @@
 												</table>
 											</td>
 										</tr>
-										<tr ng-repeat-start="xx in DatosAuditoriasEC" ng-if="DatosServicio.ID_SERVICIO == 2" class="ng-scope  even pointer"  >
+										<tr ng-repeat-start="xx in DatosAuditoriasEC" ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4" class="ng-scope  even pointer"  >
 											<td>	
 												<table>
 													<tr>
@@ -494,7 +494,8 @@
 																<input type="text"  ng-model="txtInsertarFechas[xx.TIPO_AUDITORIA]" placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" />
 															</datepicker>
 															
-														</td>
+														</td> 
+															
 														<td>
 															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,'insertar',xx.CICLO)" >Agregar Fechas</button>
 														</td>
@@ -574,7 +575,7 @@
 											</td>
 										</tr>
 										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->
-										<tr  ng-if="DatosServicio.ID_SERVICIO == 2" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-sitios-auditoria_ec">
+										<tr  ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-sitios-auditoria_ec">
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Sitios de auditor&iacutea
@@ -620,7 +621,7 @@
 										</tr>	
 
 										<!--++++++++++++++++++++GRUPO DE AUDITORES++++++++++++++++++-->
-										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 2" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-grupo-auditoria_ec">	
+										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-grupo-auditoria_ec">	
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Grupo de auditores
