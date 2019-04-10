@@ -271,7 +271,7 @@ $scope.graficaLoginU = function(){
 								backgroundColor: "rgba(205,145,14,0.5)",
 								data: productos[1]
 							}, {
-								label: "EC",
+								label: "ES",
 								backgroundColor: "rgba(17,89,205,0.5)",
 								data: productos[2]
 							},
@@ -279,7 +279,13 @@ $scope.graficaLoginU = function(){
 								label: "CIFA",
 								backgroundColor: "rgba(44,205,12,0.5)",
 								data: productos[3]
+							},
+							{
+								label: "EP",
+								backgroundColor: "rgba(88,14,12,0.5)",
+								data: productos[4]
 							}
+
 
 						]
 					},
@@ -326,7 +332,7 @@ $scope.graficaLoginU = function(){
 								backgroundColor: "rgba(204,25,6,0.5)",
 								data: cotizaciones[1]
 							}, {
-								label: "EC",
+								label: "ES",
 								backgroundColor: "rgba(12,7,204,0.5)",
 								data: cotizaciones[2]
 							},
@@ -334,6 +340,11 @@ $scope.graficaLoginU = function(){
 								label: "CIFA",
 								backgroundColor: "rgba(14,92,204,0.5)",
 								data: cotizaciones[3]
+							},
+							{
+								label: "EP",
+								backgroundColor: "rgba(190,150,8,0.8)",
+								data: cotizaciones[4]
 							}
 
 						]
@@ -381,9 +392,14 @@ $scope.graficaLoginU = function(){
 								backgroundColor: "rgba(190,42,25,0.81)",
 								data: auditorias[1]
 							}, {
-								label: "EC",
+								label: "ES",
 								backgroundColor: "rgba(6,7,190,0.81)",
 								data: auditorias[2]
+							}
+							, {
+								label: "EP",
+								backgroundColor: "rgba(6,7,190,0.81)",
+								data: auditorias[4]
 							}
 						]
 					},
@@ -391,7 +407,7 @@ $scope.graficaLoginU = function(){
 					options: {
 						title: {
 							display: true,
-							text: 'Auditoeias creadas por Servicios / Meses'
+							text: 'Auditorias creadas por Servicios / Meses'
 						},
 						responsive: true,
 

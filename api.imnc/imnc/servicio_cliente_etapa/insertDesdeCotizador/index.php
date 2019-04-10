@@ -413,7 +413,7 @@ if($id_servicio_cliente_etapa	!=	0){
 		}
 	}
 	//Para Servicios de Evaluación de la Conformidad
-	if($ID_SERVICIO == 2){
+	if($ID_SERVICIO == 2 || $ID_SERVICIO == 4){
 		if($ID_TIPO_SERVICIO == 13){
 			//Sitios
 			$tramites = $database->select("COTIZACIONES_TRAMITES_PIND",
