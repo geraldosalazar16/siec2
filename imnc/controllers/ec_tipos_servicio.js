@@ -2887,6 +2887,7 @@ $scope.agregar_editar_gastos	=	function(aud_o_exptec,id_servicio_cliente_etapa,i
                    
 					cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
 				   
+		
                 }
                 else{
                     notify('Error','No se pudo guardar los cambios','error');
