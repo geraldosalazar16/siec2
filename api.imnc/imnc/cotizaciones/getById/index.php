@@ -299,7 +299,7 @@ if($cotizacion[0]["ID_SERVICIO"] == 1){
 
 }
 //Codigo si el tipo de servicio pertenece a evaluacion de la conformidad
-if($cotizacion[0]["ID_SERVICIO"] == 2){
+if($cotizacion[0]["ID_SERVICIO"] == 2 || $cotizacion[0]["ID_SERVICIO"] == 4){
 	if($cotizacion[0]["BANDERA"] != "0"){
 		//$id_cliente = $database->get("PROSPECTO", "ID_CLIENTE", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
 		$cliente = $database->get("CLIENTES", "*", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);

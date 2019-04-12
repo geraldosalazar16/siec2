@@ -468,7 +468,7 @@ $scope.agregar_editar_sitio	=	function(accion_sitio,id)	{
 		if($scope.DatosServicio.ID_SERVICIO == 1){
 			llenar_modal_sitiosSG($scope.id_servicio_cliente_etapa,id);
 		}
-		if($scope.DatosServicio.ID_SERVICIO == 2){
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){
 			llenar_modal_sitiosEC($scope.id_servicio_cliente_etapa,id);
 		}
 		//llenar_modal_sitio(id);
@@ -477,7 +477,7 @@ $scope.agregar_editar_sitio	=	function(accion_sitio,id)	{
 		
 		$("#modalInsertarActualizarSitios").modal("show");
 	}
-	if($scope.DatosServicio.ID_SERVICIO == 2){
+	if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){
 		
 		//cargarMetaDatosSitios($scope.DatosServicio.ID_TIPO_SERVICIO);
 		$("#modalInsertarActualizarSitiosEC").modal("show");

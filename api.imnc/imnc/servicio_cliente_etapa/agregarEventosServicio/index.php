@@ -153,7 +153,7 @@ if($id_servicio_cliente_etapa	!=	0){
 		}
     
 	}
-	if($ID_SERVICIO == 2){
+	if($ID_SERVICIO == 2 || $ID_SERVICIO == 4){
 		if($ID_TIPO_SERVICIO == 13){
 			//Auditorías
 			//Para cargar una auditoría necesito
