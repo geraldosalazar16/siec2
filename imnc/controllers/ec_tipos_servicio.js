@@ -5,6 +5,8 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.formData = {};
 	$scope.formDataSector = {};
 	$scope.formDataSitiosEC = {};
+	$scope.formDataGastosAud={};
+	$scope.formDataViaticosAud={};
 	$scope.formDataSitio = {};
 	$scope.formDataAuditoria = {};
 	$scope.formDataAuditoriaEC = {};
@@ -1132,6 +1134,7 @@ cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
                 if(response.data.resultado=="ok"){
 					notify('&Eacutexito','Se han actualizado los datos','success');
 					cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+					
 
                 }
                 else{
@@ -1149,7 +1152,7 @@ cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
                 if(response.data.resultado=="ok"){
 					notify('&Eacutexito','Se han actualizado los datos','success');
                    cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
-
+					
 					
                 }
                 else{
@@ -1196,6 +1199,7 @@ function cargarDatosAuditoriasSG(id_servicio){
 		 
 					});
 				});	
+				cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
 		});
 		//if($scope.DatosServicio.ID_TIPO_SERVICIO == 20){
 				$http.get(  global_apiserver + "/sce_normas/getAll/")
@@ -1203,6 +1207,7 @@ function cargarDatosAuditoriasSG(id_servicio){
 						$scope.DatosAuditoriasSGIntegral = response.data;
 				});				
 		//}
+		
     }
 //
 function cargarDatosAuditoriasSG_Ciclo(id_servicio,cc){
@@ -1723,6 +1728,7 @@ $scope.GenerarArregloFecha = function(fechas){
                 if(response.data.resultado=="ok"){
 					notify('&Eacutexito','Se han actualizado los datos','success');
 					cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					
 
                 }
                 else{
@@ -1740,7 +1746,7 @@ $scope.GenerarArregloFecha = function(fechas){
                 if(response.data.resultado=="ok"){
 					notify('&Eacutexito','Se han actualizado los datos','success');
                    cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
-
+				   
 					
                 }
                 else{
@@ -1767,6 +1773,7 @@ function cargarDatosAuditoriasEC(id_servicio){
 		 
 					});
 				});	
+				cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
 		});
 		
     }
@@ -2829,7 +2836,243 @@ $scope.funcionDictaminadores = function(id_ts){
 // ***** 	          		 TERMINA DICTAMINACION			           	 *****
 // ===========================================================================
 // ===========================================================================
+// ===========================================================================
+// ***** 	          		 INICIA GASTOS AUDITORIA		           	 *****
+// ===========================================================================
+// ===========================================================================
+// ======================================================================
+// *****			FUNCION CARGAR CATALOGO GASTOS					*****
+// ======================================================================
+function cargarCatalogoGastosAuditorias(){
+	$http.get(  global_apiserver + "/i_cat_auditorias_costos/getAll/")
+		.then(function( response ){
+            $scope.CATALOGO_GASTOS = response.data;
+			
+		});
+		
+    }
+// ======================================================================
+// *****			FUNCION CARGAR GASTOS AUDITORIAS				*****
+// ======================================================================
+function cargarGastosAuditorias(id_servicio){
+	$http.get(  global_apiserver + "/i_auditorias_costos/getAllByIdServicio/?id="+id_servicio)
+		.then(function( response ){
+            $scope.GastosAuditorias = response.data;
+			
+		});
+		
+    }
+// =======================================================================
+// ***** 		FUNCION PARA EL BOTON AGREGAR EDITAR GASTOS			 *****
+// =======================================================================
+$scope.agregar_editar_gastos	=	function(aud_o_exptec,id_servicio_cliente_etapa,id_ta,ciclo,id_pt)	{
+	
+	clear_modal_gastos();
+	$scope.accion_gastos	=	'editar';
+	$scope.aud_o_exptec	=	aud_o_exptec;
+	if($scope.accion_gastos == 'insertar'){
+		$scope.modal_titulo_gastos = "INSERTAR GASTOS DE SERVICIO";
+	}
+	if($scope.accion_gastos == 'editar'){
+		$scope.modal_titulo_gastos = "EDITAR GASTOS DE SERVICIO";
+		llenar_modal_gastos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt);
+		$scope.formDataGastosAud.TA = id_ta;
+		$scope.formDataGastosAud.CICLO = ciclo;
+		$scope.formDataGastosAud.ID_PT = id_pt;
+	}
+	$("#modalInsertarActualizarGastosAuditoria").modal("show");
+}
+// ===========================================================================
+// ***** 		FUNCION PARA EL BOTON GUARDAR DEL MODAL	GASTOS AUDITORIAS *****
+// ===========================================================================
+	$scope.submitFormGastosAud = function (formDataGastosAud) {
+						
+		var input = "";	
+		input = JSON.stringify(formDataGastosAud.input);
+			var datos	=	{
+				ID	:	$scope.id_servicio_cliente_etapa,
+				TA	:	$scope.formDataGastosAud.TA,
+				CICLO: $scope.formDataGastosAud.CICLO,
+				ID_PT	:	$scope.formDataGastosAud.ID_PT,
+				INPUT	:	input,
+				ID_USUARIO:	sessionStorage.getItem("id_usuario")
+			};
+		if($scope.accion_gastos == 'insertar'){
+			
+			$http.post(global_apiserver + "/i_auditorias_costos/insert/",datos).
+            then(function(response){
+                if(response){
+					notify('&Eacutexito','Se han actualizado los datos','success');
+					cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
+				   
+                }
+                else{
+                    notify('Error','No se pudo guardar los cambios','error');
+                }
+                
+            });
+		 }
+		if($scope.accion_gastos == 'editar'){	
+			
+			$http.post(global_apiserver + "/i_auditorias_costos/update/",datos).
+            then(function(response){
+                if(response){
+					notify('&Eacutexito','Se han actualizado los datos','success');
+                   
+					cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
+				   
+                }
+                else{
+                    notify('Error','No se pudo guardar los cambios','error');
+                }
+                
+            });
+		}
+		$("#modalInsertarActualizarGastosAuditoria").modal("hide");
+		
+	};
+// ===========================================================================
+// ***** 		Funcion para limpiar las variables del modal gastos		 *****
+// ===========================================================================
+function clear_modal_gastos(){
+$scope.formDataGastosAud.input = {};
+$scope.formDataGastosAud.TA ="";	
+$scope.formDataGastosAud.CICLO ="";
+$scope.formDataGastosAud.ID_PT = "";
+	
+}
+// ===========================================================================
+// ***** 		Funcion para llenar las variables del modal gastos		 *****
+// ===========================================================================
+function llenar_modal_gastos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
+		datos_Auditorias = "";
+		datos_Auditores = "";
+		var datos_Auditorias	=	$scope.GastosAuditorias.AUDITORIAS.find(function(element,index,array){
+				return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_ta && element.CICLO == ciclo )
+			});
+			if(typeof datos_Auditorias != 'undefined'){
+				if($scope.aud_o_exptec == 'auditor'){
+					var datos_Auditores	=	datos_Auditorias.AUDITORES.find(function(element,index,array){
+						return (element.ID_PERSONAL_TECNICO_CALIF == id_pt )
+					});
+				}	
+				if($scope.aud_o_exptec == 'exptec'){
+					var datos_Auditores	=	datos_Auditorias.EXP_TECNICOS.find(function(element,index,array){
+						return (element.ID_PERSONAL_TECNICO_CALIF == id_pt )
+					});
+				}	
+				if(typeof datos_Auditores != 'undefined'){
+					
+						$scope.formDataGastosAud.input	= datos_Auditores.MONTO;
+					
+				}
+				
+					
+				
+			}
+	
+	
+	
+}
+// =======================================================================
+// ***** 		FUNCION PARA EL BOTON AGREGAR EDITAR VIATICOS		 *****
+// =======================================================================
+$scope.agregar_editar_viaticos	=	function(id_servicio_cliente_etapa,id_ta,ciclo)	{
+	
+	clear_modal_viaticos();
+	$scope.accion_viaticos	=	'editar';
+	if($scope.accion_viaticos == 'insertar'){
+		$scope.modal_titulo_viaticos = "INSERTAR VIATICOS DE SERVICIO";
+	}
+	if($scope.accion_viaticos == 'editar'){
+		$scope.modal_titulo_viaticos = "EDITAR VIATICOS DE SERVICIO";
+		llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo);
+		$scope.formDataViaticosAud.TA = id_ta;
+		$scope.formDataViaticosAud.CICLO = ciclo;
+		
+	}
+	$("#modalInsertarActualizarViaticosAuditoria").modal("show");
+}
+// ===========================================================================
+// ***** 		Funcion para limpiar las variables del modal viaticos	 *****
+// ===========================================================================
+function clear_modal_viaticos(){
+	$scope.formDataViaticosAud.MONTO = "";
+	$scope.formDataViaticosAud.TA ="";	
+	$scope.formDataViaticosAud.CICLO ="";
+	
 
+}
+// ===========================================================================
+// ***** 		Funcion para llenar las variables del modal gastos		 *****
+// ===========================================================================
+function llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
+		datos_Auditorias = "";
+		datos_Auditores = "";
+		var datos_Auditorias	=	$scope.GastosAuditorias.AUDITORIAS.find(function(element,index,array){
+				return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_ta && element.CICLO == ciclo )
+			});
+			if(typeof datos_Auditorias != 'undefined'){
+				
+					
+						$scope.formDataViaticosAud.MONTO	= datos_Auditorias.TOTAL_VIATICOS;
+					
+				
+			}
+	
+	
+	
+}
+// ===========================================================================
+// ***** 	FUNCION PARA EL BOTON GUARDAR DEL MODAL	VIATICOS AUDITORIAS *****
+// ===========================================================================
+	$scope.submitFormViaticosAud = function (formDataViaticosAud) {
+						
+			var datos	=	{
+				ID	:	$scope.id_servicio_cliente_etapa,
+				TA	:	$scope.formDataViaticosAud.TA,
+				CICLO: $scope.formDataViaticosAud.CICLO,
+				MONTO	:	$scope.formDataViaticosAud.MONTO,
+				ID_USUARIO:	sessionStorage.getItem("id_usuario")
+			};
+		if($scope.accion_viaticos == 'insertar'){
+			
+			$http.post(global_apiserver + "/i_auditorias_viaticos/insert/",datos).
+            then(function(response){
+                if(response){
+					notify('&Eacutexito','Se han actualizado los datos','success');
+					cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
+				   
+                }
+                else{
+                    notify('Error','No se pudo guardar los cambios','error');
+                }
+                
+            });
+		 }
+		if($scope.accion_viaticos == 'editar'){	
+			
+			$http.post(global_apiserver + "/i_auditorias_viaticos/update/",datos).
+            then(function(response){
+                if(response){
+					notify('&Eacutexito','Se han actualizado los datos','success');
+                   
+					cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
+				   
+                }
+                else{
+                    notify('Error','No se pudo guardar los cambios','error');
+                }
+                
+            });
+		}
+		$("#modalInsertarActualizarViaticosAuditoria").modal("hide");
+		
+	};
+// ===========================================================================
+// ***** 	          		 TERMINA GASTOS AUDITORIA		           	 *****
+// ===========================================================================
+// ===========================================================================
 DatosServicioContratado($scope.id_servicio_cliente_etapa);
 cargarValoresMetaDatosServicio($scope.id_servicio_cliente_etapa);
 cargarSectoresServicio($scope.id_servicio_cliente_etapa);
@@ -2838,6 +3081,8 @@ cargarSitiosSGServicio($scope.id_servicio_cliente_etapa);
 cargarTodosSitiosECServicio($scope.id_servicio_cliente_etapa);
 cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+//cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
+cargarCatalogoGastosAuditorias();
 $scope.cargarParticipantes($scope.id_servicio_cliente_etapa);
 
 //cargarRolesAuditor();

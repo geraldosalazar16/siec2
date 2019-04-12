@@ -1,4 +1,5 @@
 <span ng-controller="ec_tipos_servicio_controller">
+<link rel="stylesheet" type="text/css" href="css/css-xpanel-fa-chevron.css">
 <div class="right_col" role="main" >
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -88,7 +89,10 @@
 								<a href="#tab_configuracion" id="tab_configuracion-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
                           			Configuración </a>
 								</li>
-								
+								<li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<a href="#tab_gastos_auditorias" id="tab_gastos_auditorias-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
+                          			Gastos Auditor&iacuteas </a>
+								</li>
 							</ul>
 							<div id="myTabContent" class="tab-content">
 								<div role="tabpanel" class="tab-pane fade active in" id="tab_informacion" aria-labelledby="home-tab">
@@ -808,7 +812,131 @@
                                          </form>
 										</div>
                                 </div>
-								
+								<div role="tabpanel" class="tab-pane fade" id="tab_gastos_auditorias" aria-labelledby="profile-tab"	ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4">
+									<div class="x_title">
+										<p><h2>Gastos de auditor&iacuteas </h2></p>
+									<!--	<p ng-if='modulo_permisos["registrar"] == 1'>
+											<button type="button" ng-click="agregar_editar_gastos_auditoria('insertar')" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+												<i class="fa fa-plus"> </i> Agregar gastos auditor&iacuteas 
+											</button>
+										</p> -->
+										<div class="clearfix"></div>
+									</div>
+									<div>
+										<ul class="list-unstyled user_data" style="display: inline-block !important;">
+											<li >
+												<p><b>
+												Total Vi&aacuteticos Servicio:</b> {{GastosAuditorias.TOTAL_VIATICOS}} </p>
+												
+											</li>
+
+											<li ><b>
+												Total Gastos Servicio:</b> &nbsp;&nbsp;{{GastosAuditorias.TOTAL_GASTOS}}
+											</li>
+										</ul>
+									</div>
+									<div class='panel-group' id='accordion' role='tablist' aria-multiselectable='true'>
+										<div class='panel panel-default' ng-repeat="xyz in GastosAuditorias.AUDITORIAS">
+											<div class='panel-heading' id='heading{{$index}}' role='tab'>
+												<h4 class='panel-title' >
+													<a data-toggle='collapse' data-parent='#accordion' href='#collapse{{$index}}' aria-expanded='false' aria-controls='collapse{{$index}}'></a>
+												</h4>
+												<b>Ciclo:</b> {{xyz.CICLO}}<br>
+												<b>Tipo Auditoria:</b> {{xyz.TIPO}} <br>
+												<b>Total Gastos:</b> {{xyz.TOTAL_GASTOS}}<br>
+												<b>Total Vi&aacuteticos:</b> {{xyz.TOTAL_VIATICOS}} <br>
+												<b>Diferencia:</b> {{xyz.TOTAL_GASTOS-xyz.TOTAL_VIATICOS}}<br>
+												<p ng-if='modulo_permisos["registrar"] == 1'>
+														<button type="button" ng-click="agregar_editar_viaticos(xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO)" class="btn btn-primary btn-xs btn-imnc" style="float: left;"> 
+															<i class="fa fa-plus"> </i> Editar vi&aacuteticos auditor&iacuteas 
+														</button>
+													</p> <br>
+											</div>
+											<div id='collapse{{$index}}' class='panel-collapse collapse' role='tabpanel' aria-labelledby='heading{{$index}}'>
+												<div class='panel-body'>
+													<p>
+														<h2>Auditores </h2>
+													</p>
+															
+													<table class="table table-striped responsive-utilities jambo_table bulk_action">
+														<thead>
+															<tr class="headings">
+																<th class="column-title">Auditor</th>
+																<th class="column-title" ng-repeat="xyz2 in CATALOGO_GASTOS">{{xyz2.NOMBRE}}</th>
+															<!--	<th class="column-title">Cargo por cambio</th>
+																<th class="column-title">Terrestre</th>
+																<th class="column-title">Terrestre sin IVA</th>		
+																<th class="column-title">Hospedaje</th>
+																<th class="column-title">Hospedaje sin IVA</th>	
+																<th class="column-title">Cargo por cambio</th>
+																<th class="column-title">Vi&aacutetico asignado</th>	
+																<th class="column-title">Gastos reportados</th>	-->	
+																<th class="column-title">Total auditor</th>	
+																<th class="column-title">Total auditor sin IVA</th>															
+																<th class="column-title"></th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat='xyz1 in xyz.AUDITORES' class="ng-scope  even pointer">
+																<td>{{xyz1.NOMBRE}} {{xyz1.APELLIDO_MATERNO}} {{xyz1.APELLIDO_PATERNO}}</td>
+																<td ng-repeat="xyz3 in xyz1.MONTO">{{xyz3.VALOR}}</td>
+															
+																<td>{{xyz1.TOTAL_AUDITOR}}</td>
+																<td>{{xyz1.TOTAL_AUDITOR_SIN_IVA}}</td>
+																<td>
+																	<p ng-if='modulo_permisos["registrar"] == 1'>
+																		<button type="button"  ng-click="agregar_editar_gastos('auditor',xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO,xyz1.ID_PERSONAL_TECNICO_CALIF)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+																			<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar gastos 
+																		</button>
+																	</p>
+																</td>
+																
+															</tr>
+														</tbody>
+													</table>
+													<p><h2>Experto T&eacutecnico </h2></p>
+										
+													<table class="table table-striped responsive-utilities jambo_table bulk_action">
+														<thead>
+															<tr class="headings">
+																<th class="column-title">Experto T&eacutecnico </th>
+																<th class="column-title" ng-repeat="xyz2 in CATALOGO_GASTOS">{{xyz2.NOMBRE}}</th>
+														<!--		<th class="column-title">Cargo por cambio</th>
+																<th class="column-title">Terrestre</th>
+																<th class="column-title">Terrestre sin IVA</th>		
+																<th class="column-title">Hospedaje</th>
+																<th class="column-title">Hospedaje sin IVA</th>	
+																<th class="column-title">Cargo por cambio</th>	
+																<th class="column-title">Vi&aacutetico asignado</th>	
+																<th class="column-title">Gastos reportados</th>	 -->
+																<th class="column-title">Total experto t&eacutecnico </th>	
+																<th class="column-title">Total experto t&eacutecnico sin IVA</th>																	
+																<th class="column-title"></th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat='xyz1 in xyz.EXP_TECNICOS' class="ng-scope  even pointer">
+																<td>{{xyz1.NOMBRE}} {{xyz1.APELLIDO_MATERNO}} {{xyz1.APELLIDO_PATERNO}}</td>
+																<td ng-repeat="xyz3 in xyz1.MONTO">{{xyz3.VALOR}}</td>
+																<td>{{xyz1.TOTAL_AUDITOR}}</td>
+																<td>{{xyz1.TOTAL_AUDITOR_SIN_IVA}}</td>
+																<td>
+																	<p ng-if='modulo_permisos["registrar"] == 1'>
+																		<button type="button"  ng-click="agregar_editar_gastos('exptec',xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO,xyz1.ID_PERSONAL_TECNICO_CALIF)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+																			<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar gastos 
+																		</button>
+																	</p>
+																</td>
+																
+															</tr>
+														</tbody>
+													</table>
+												</div>	
+											</div>
+										</div>
+										
+									</div>
+								</div>
 				
         </div>
       </div>
@@ -831,6 +959,8 @@
   include "ec_tipos_servicio/modal_inserta_actualiza_auditoria_grupo_auditores.php";
   include "ec_tipos_servicio/modal_fecha_norma_tipo_servicio_integral.php";
   include "ec_tipos_servicio/modal_genera_notificacion.php";
+  include "ec_tipos_servicio/modal_inserta_actualiza_gastos_auditoria.php";
+   include "ec_tipos_servicio/modal_inserta_actualiza_viaticos_auditoria.php";
   include "ec_tipos_servicio/modal_dictaminacion.php";
   include "ec_tipos_servicio/modal_confirmacion.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_participante.php";

@@ -1,0 +1,13 @@
+.panel-title > a{
+	display: block; 
+	position: relative;
+}
+.panel-title > a:after{
+	content: "\f078"; /*fa fa-chevron-down*/
+	font-family: 'Fontawesome';
+	position: absolute;
+	right: 0;
+}
+.panel-title > a[aria-expanded='true']:after {
+	content: "\f077"; /*fa fa-chevron-up*/
+}
