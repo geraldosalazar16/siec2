@@ -33,6 +33,9 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.notas = [];
 	$scope.countnotas = 0;
 
+	$scope.colapseActual; // Para guardar si hay un colapse activo
+	$scope.estatusAuditoria; // Para guardar el estatus de las auditorías
+
 // =======================================================================================
 // ***** 			FUNCION PARA EL BOTON AGREGAR INFORMACION AUDITORIA				 *****
 // =======================================================================================	
@@ -1166,7 +1169,26 @@ cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 function cargarDatosAuditoriasSG(id_servicio){
 	$http.get(  global_apiserver + "/i_sg_auditorias/getAllByIdServicio/?id="+id_servicio)
 		.then(function( response ){
-            $scope.DatosAuditoriasSG = response.data;
+			$scope.DatosAuditoriasSG = response.data;
+			const temp = [];
+			let auditoriaSalvada;
+			$scope.DatosAuditoriasSG.forEach(auditoria => {
+				if ($scope.estatusAuditoria) {
+					auditoriaSalvada = $scope.estatusAuditoria.find(aud => {
+						return aud.SERVICIO_CLIENTE_ETAPA == auditoria.SERVICIO_CLIENTE_ETAPA && aud.TIPO_AUDITORIA == auditoria.TIPO_AUDITORIA && aud.CICLO == auditoria.CICLO;
+					});
+				}
+				
+				let mostrar = false;
+				if (auditoriaSalvada) {
+					mostrar = auditoriaSalvada.mostrandoSectores;
+				}
+				temp.push({
+					mostrandoSectores: mostrar,
+					...auditoria
+				});
+			});
+			$scope.DatosAuditoriasSG = temp;
 			
 			$.each($scope.DatosAuditoriasSG, function( i, datos1 ) {
 				$.each(datos1.AUDITORIA_FECHAS, function( j, datos ) {
@@ -1362,8 +1384,18 @@ $scope.EliminarFecha = function(){
 // ======================================================================
 // *****		FUNCION PARA EL BOTON GRUPOS AUDITORIAS				*****
 // ======================================================================
-$scope.btnGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo){
-	$("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-grupo-auditoria").collapse("show");	
+$scope.btnGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo){	
+	// $("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-grupo-auditoria").collapse("toggle");
+	
+	var datos_auditoriasSG	=	$scope.DatosAuditoriasSG.find(function(element,index,array){
+		return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_tipo_auditoria && element.CICLO == ciclo)
+	});
+	
+	if (datos_auditoriasSG) {
+		const index = $scope.DatosAuditoriasSG.indexOf(datos_auditoriasSG);
+		$scope.DatosAuditoriasSG[index].mostrandoSectores = !$scope.DatosAuditoriasSG[index].mostrandoSectores;
+	}
+	
 }
 // ======================================================================
 // *****	FUNCION PARA EL BOTON INSERTAR GRUPOS AUDITORIAS		*****
@@ -1447,7 +1479,7 @@ function clear_modal_auditorias_grupos(){
 // ==============================================================================================
 $scope.submitFormGrupoAuditor = function (formDataGrupoAuditor) {
 		
-		
+		$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
 		var grupo = {
             ID_SERVICIO_CLIENTE_ETAPA:$scope.id_servicio_cliente_etapa ,
             TIPO_AUDITORIA:	$scope.grupo_id_tipo_auditoria ,
@@ -1590,7 +1622,8 @@ $scope.eliminar_grupo_auditoria = function(id_sce,id_ta,ciclo,id_pt){
 			CICLO:	ciclo,
             ID_PERSONAL_TECNICO_CALIF: id_pt,
 			ID_USUARIO:sessionStorage.getItem("id_usuario")
-          };
+		  };
+	$scope.estatusAuditoria = $scope.DatosAuditoriasSG;
 	$http.post(global_apiserver + "/i_sg_auditoria_grupos/delete/",auditor).
             then(function(response){
 			
@@ -1779,8 +1812,9 @@ $scope.btnSitiosAuditoriaEC = function(id_servicio_cliente_etapa,id_tipo_auditor
 // *****		FUNCION PARA EL BOTON GRUPOS AUDITORIAS	EC			*****
 // ======================================================================
 $scope.btnGrupoAuditoriaEC = function(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo){
-	$("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-grupo-auditoria_ec").collapse("show");	
+	$("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-grupo-auditoria_ec").collapse("toggle");	
 }
+
 // ======================================================================
 // *****	FUNCION PARA EL BOTON INSERTAR GRUPOS AUDITORIAS EC		*****
 // ======================================================================
