@@ -282,14 +282,13 @@
 									<tbody>
 										<tr ng-repeat-start="x in DatosAuditoriasSG" ng-if="DatosServicio.ID_SERVICIO == 1" class="ng-scope  even pointer"  >
 											<td> 
-											<p>mostrar sectores: {{x.mostrandoSectores}}</p>
 												<table>
 													<tr>
 														<td>
-															<datepicker date-format="yyyy-MM-dd" date-min-limit="{{FechaHoy}}" date-typer="true" button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' >
-																<input type="text"  ng-model="txtInsertarFechas[x.TIPO_AUDITORIA]" placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" />
+															<input type='text' ng-model="txtInsertarFechas[x.TIPO_AUDITORIA]" jqdatepicker/>
+															<datepicker date-format="yyyy-MM-dd" date-min-limit="{{FechaHoy}}" ng-model="txtInsertarFechas[x.TIPO_AUDITORIA]" date-typer="true" button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' >
+																<input type="text"   placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" />
 															</datepicker>
-															
 														</td>
 														<td>
 															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,'insertar',x.CICLO)" >Agregar Fechas</button>
