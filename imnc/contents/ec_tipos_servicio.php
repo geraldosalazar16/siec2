@@ -282,6 +282,7 @@
 									<tbody>
 										<tr ng-repeat-start="x in DatosAuditoriasSG" ng-if="DatosServicio.ID_SERVICIO == 1" class="ng-scope  even pointer"  >
 											<td> 
+											<p>mostrar sectores: {{x.mostrandoSectores}}</p>
 												<table>
 													<tr>
 														<td>
@@ -417,7 +418,7 @@
 										</tr>
 										<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 										<!--++++++++++++++++++++GRUPO DE AUDITORES++++++++++++++++++-->
-										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 1" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{x.TIPO_AUDITORIA}}-{{x.CICLO}}-grupo-auditoria">
+										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 1" ng-show="x.mostrandoSectores" >
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Grupo de auditores
