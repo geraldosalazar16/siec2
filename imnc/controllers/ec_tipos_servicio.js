@@ -37,6 +37,7 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 
 	$scope.colapseActual; // Para guardar si hay un colapse activo
 	$scope.estatusAuditoria; // Para guardar el estatus de las auditorías
+	$scope.estatusGastosAuditoria; // Para guardar el estatus de las auditorías
 
 // =======================================================================================
 // ***** 			FUNCION PARA EL BOTON AGREGAR INFORMACION AUDITORIA				 *****
@@ -3018,9 +3019,33 @@ function cargarCatalogoGastosAuditorias(){
 // *****			FUNCION CARGAR GASTOS AUDITORIAS				*****
 // ======================================================================
 function cargarGastosAuditorias(id_servicio){
+	if ($scope.GastosAuditorias) {
+		$scope.estatusGastosAuditoria = $scope.GastosAuditorias;
+	}
 	$http.get(  global_apiserver + "/i_auditorias_costos/getAllByIdServicio/?id="+id_servicio)
 		.then(function( response ){
             $scope.GastosAuditorias = response.data;
+			
+			const temp = [];
+			let auditoriaSalvada;
+			$scope.GastosAuditorias.AUDITORIAS.forEach(auditoria => {
+				if ($scope.estatusGastosAuditoria) {
+					auditoriaSalvada = $scope.estatusGastosAuditoria.AUDITORIAS.find(aud => {
+						return aud.ID_SERVICIO_CLIENTE_ETAPA == auditoria.ID_SERVICIO_CLIENTE_ETAPA && aud.TIPO_AUDITORIA == auditoria.TIPO_AUDITORIA && aud.CICLO == auditoria.CICLO;
+					});
+				}
+				
+				let mostrar = false;
+				if (auditoriaSalvada) {
+					mostrar = auditoriaSalvada.mostrandoSectoresGastosAuditor;
+					
+				}
+				temp.push({
+					mostrandoSectoresGastosAuditor: mostrar,
+					...auditoria
+				});
+			});
+			$scope.GastosAuditorias.AUDITORIAS = temp;
 			
 		});
 		
@@ -3233,6 +3258,18 @@ function llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
 		$("#modalInsertarActualizarViaticosAuditoria").modal("hide");
 		
 	};
+	// FUNCION PARA MOSTRAR U OCULTAR LOS DATOS DE GASTOS AUDITORES
+	$scope.changePrueba = function(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo){
+
+	var datos_auditoriasSG	=	$scope.GastosAuditorias.AUDITORIAS.find(function(element,index,array){
+		return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_tipo_auditoria && element.CICLO == ciclo)
+	});
+	
+	if (datos_auditoriasSG) {
+		const index = $scope.GastosAuditorias.AUDITORIAS.indexOf(datos_auditoriasSG);
+		$scope.GastosAuditorias.AUDITORIAS[index].mostrandoSectoresGastosAuditor = !$scope.GastosAuditorias.AUDITORIAS[index].mostrandoSectoresGastosAuditor;
+	}
+}	
 // ===========================================================================
 // ***** 	          		 TERMINA GASTOS AUDITORIA		           	 *****
 // ===========================================================================

@@ -1,5 +1,5 @@
 <span ng-controller="ec_tipos_servicio_controller">
-<link rel="stylesheet" type="text/css" href="css/css-xpanel-fa-chevron.css">
+<!--<link rel="stylesheet" type="text/css" href="css/css-xpanel-fa-chevron.css">  -->
 <div class="right_col" role="main" >
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -814,32 +814,34 @@
 								<div role="tabpanel" class="tab-pane fade" id="tab_gastos_auditorias" aria-labelledby="profile-tab"	ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4">
 									<div class="x_title">
 										<p><h2>Gastos de auditor&iacuteas </h2></p>
-									<!--	<p ng-if='modulo_permisos["registrar"] == 1'>
-											<button type="button" ng-click="agregar_editar_gastos_auditoria('insertar')" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
-												<i class="fa fa-plus"> </i> Agregar gastos auditor&iacuteas 
-											</button>
-										</p> -->
+									
 										<div class="clearfix"></div>
 									</div>
 									<div>
 										<ul class="list-unstyled user_data" style="display: inline-block !important;">
-											<li >
+											<li>
 												<p><b>
 												Total Vi&aacuteticos Servicio:</b> {{GastosAuditorias.TOTAL_VIATICOS}} </p>
 												
 											</li>
 
-											<li ><b>
+											<li><b>
 												Total Gastos Servicio:</b> &nbsp;&nbsp;{{GastosAuditorias.TOTAL_GASTOS}}
 											</li>
 										</ul>
-									</div>
+									</div> 
+									
 									<div class='panel-group' id='accordion' role='tablist' aria-multiselectable='true'>
 										<div class='panel panel-default' ng-repeat="xyz in GastosAuditorias.AUDITORIAS">
 											<div class='panel-heading' id='heading{{$index}}' role='tab'>
-												<h4 class='panel-title' >
-													<a data-toggle='collapse' data-parent='#accordion' href='#collapse{{$index}}' aria-expanded='false' aria-controls='collapse{{$index}}'></a>
-												</h4>
+												<ul class="nav navbar-right panel_toolbox">
+												<li ng-show="xyz.mostrandoSectoresGastosAuditor == false">
+													<a class="collapse-link" ng-click="changePrueba(xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO)"><i class="fa fa-chevron-down"></i></a>
+												</li>
+												<li ng-show="xyz.mostrandoSectoresGastosAuditor == true">
+													<a class="collapse-link" ng-click="changePrueba(xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO)"><i class="fa fa-chevron-up"></i></a>
+												</li>
+											</ul>
 												<b>Ciclo:</b> {{xyz.CICLO}}<br>
 												<b>Tipo Auditoria:</b> {{xyz.TIPO}} <br>
 												<b>Total Gastos:</b> {{xyz.TOTAL_GASTOS}}<br>
@@ -851,7 +853,7 @@
 														</button>
 													</p> <br>
 											</div>
-											<div id='collapse{{$index}}' class='panel-collapse collapse' role='tabpanel' aria-labelledby='heading{{$index}}'>
+											<div ng-show="xyz.mostrandoSectoresGastosAuditor == true" role='tabpanel' aria-labelledby='heading{{$index}}'>
 												<div class='panel-body'>
 													<p>
 														<h2>Auditores </h2>
@@ -862,14 +864,6 @@
 															<tr class="headings">
 																<th class="column-title">Auditor</th>
 																<th class="column-title" ng-repeat="xyz2 in CATALOGO_GASTOS">{{xyz2.NOMBRE}}</th>
-															<!--	<th class="column-title">Cargo por cambio</th>
-																<th class="column-title">Terrestre</th>
-																<th class="column-title">Terrestre sin IVA</th>		
-																<th class="column-title">Hospedaje</th>
-																<th class="column-title">Hospedaje sin IVA</th>	
-																<th class="column-title">Cargo por cambio</th>
-																<th class="column-title">Vi&aacutetico asignado</th>	
-																<th class="column-title">Gastos reportados</th>	-->	
 																<th class="column-title">Total auditor</th>	
 																<th class="column-title">Total auditor sin IVA</th>															
 																<th class="column-title"></th>
@@ -900,14 +894,6 @@
 															<tr class="headings">
 																<th class="column-title">Experto T&eacutecnico </th>
 																<th class="column-title" ng-repeat="xyz2 in CATALOGO_GASTOS">{{xyz2.NOMBRE}}</th>
-														<!--		<th class="column-title">Cargo por cambio</th>
-																<th class="column-title">Terrestre</th>
-																<th class="column-title">Terrestre sin IVA</th>		
-																<th class="column-title">Hospedaje</th>
-																<th class="column-title">Hospedaje sin IVA</th>	
-																<th class="column-title">Cargo por cambio</th>	
-																<th class="column-title">Vi&aacutetico asignado</th>	
-																<th class="column-title">Gastos reportados</th>	 -->
 																<th class="column-title">Total experto t&eacutecnico </th>	
 																<th class="column-title">Total experto t&eacutecnico sin IVA</th>																	
 																<th class="column-title"></th>
@@ -935,7 +921,7 @@
 										</div>
 										
 									</div>
-								</div>
+								</div>		
 				
         </div>
       </div>
