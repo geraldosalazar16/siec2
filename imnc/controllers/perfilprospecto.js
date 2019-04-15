@@ -354,6 +354,7 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 			}
 		});
 	};
+	/*
 	$scope.actualizarCotizacion = function(){
 		//recibe la url del php que se ejecutará
 		$http.get(  global_apiserver + "/cotizacion_rapida/getByIdProspecto/?id_prospecto="+$scope.id_prospecto+"&id_producto="+$scope.id_producto)
@@ -370,6 +371,7 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 				},
 				function (response){});
 	}
+	*/
 	$scope.agregarCotizacion = function(){
 		
 		$scope.accion_cotizacion = "insertar";
@@ -377,6 +379,7 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 		$scope.mostrar_cotizacion = true;
 		$scope.GenerarReferenciaProspecto();
 	}
+	/*
 	$scope.guardarCotizacion = function(){
 		//Validaciones
 		if(!$scope.nombreCotizacion)
@@ -502,6 +505,7 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 			}
 		}
 	}
+	*/
 	$scope.cambioProducto = function(){
 		$("#productoerror").text("");
 		if($scope.productosCotizacion)
@@ -512,7 +516,7 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 		{
 			$scope.id_producto = 0;
 		}
-		$scope.actualizarCotizacion();
+		// $scope.actualizarCotizacion();
 		$scope.AreaCotizacion();
 		$scope.limpiarDatosCotizacion();
 		$scope.mostrar_cotizacion = false;
@@ -2116,7 +2120,7 @@ $scope.cotizacion_guardar = function(){
 	/* Cargar información inicial */
 	$scope.actualizaTablaContacto();
 	$scope.actualizaTablaDomicilio();
-	$scope.actualizarCotizacion();
+	// $scope.actualizarCotizacion();
 	$scope.obtenerProspecto();
 	$scope.listaDomiciliosForContacto();
 	$scope.autocompleteListPais("");
