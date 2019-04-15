@@ -282,8 +282,7 @@
 									<tbody>
 										<tr ng-repeat-start="x in DatosAuditoriasSG" ng-if="DatosServicio.ID_SERVICIO == 1" class="ng-scope  even pointer"  >
 											<td> 
-											<p>mostrar sectores: {{x.mostrandoSectores}}</p>
-												<table>
+											<table>
 													<tr>
 														<td>
 															<datepicker date-format="yyyy-MM-dd" date-min-limit="{{FechaHoy}}" date-typer="true" button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' >
@@ -372,7 +371,7 @@
 										</tr>
 										
 										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->
-										<tr  ng-if="DatosServicio.ID_SERVICIO == 1" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{x.TIPO_AUDITORIA}}-{{x.CICLO}}-sitios-auditoria">
+										<tr  ng-if="DatosServicio.ID_SERVICIO == 1" ng-show="x.mostrandoSectoresSitios">
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Sitios de auditor&iacutea
@@ -418,7 +417,7 @@
 										</tr>
 										<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 										<!--++++++++++++++++++++GRUPO DE AUDITORES++++++++++++++++++-->
-										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 1" ng-show="x.mostrandoSectores" >
+										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 1" ng-show="x.mostrandoSectoresAuditor" >
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Grupo de auditores
@@ -580,7 +579,7 @@
 											</td>
 										</tr>
 										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->
-										<tr  ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-sitios-auditoria_ec">
+										<tr  ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4" ng-show="xx.mostrandoSectoresSitios">
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Sitios de auditor&iacutea
@@ -626,7 +625,7 @@
 										</tr>	
 
 										<!--++++++++++++++++++++GRUPO DE AUDITORES++++++++++++++++++-->
-										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-grupo-auditoria_ec">	
+										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4" ng-show="xx.mostrandoSectoresAuditor">	
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Grupo de auditores
