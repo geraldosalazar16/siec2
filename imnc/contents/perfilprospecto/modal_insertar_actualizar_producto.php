@@ -50,11 +50,11 @@
 					<!-- Solo mostrar para CIFA-->
 					<div class="form-group" ng-show="areas == 3">	
 						<label class="control-label">Modalidad del curso</label>
-						<select ng-model="modalidades" style="margin-top:10px" class="form-control" ng-change="onChangeModalidades(departamentos)">
+						<select ng-model="modalidades" style="margin-top:10px" class="form-control" ng-change="onChangeModalidades(departamentos)" ng-disabled="tipo_persona == 'Física'">
 							<option  value="" ng-selected="tipo_persona == 'Moral'" disabled>Seleccione una opción</option>
 							<option value="programado" ng-selected="tipo_persona == 'Física' || modalidades=='programado'">Programado</option>
 							<option value="insitu" ng-selected="modalidades == 'insitu'" ng-disabled="tipo_persona == 'Física'">In Situ</option>
-							<option value="diplomado" disabled >Diplomado</option>
+							<!--<option value="diplomado" disabled >Diplomado</option>-->
 						</select>
 		            </div>
 					<!-- Solo mostrar para CIFA-->
