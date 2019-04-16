@@ -1,5 +1,4 @@
 <span ng-controller="ec_tipos_servicio_controller">
-<!--<link rel="stylesheet" type="text/css" href="css/css-xpanel-fa-chevron.css">  -->
 <div class="right_col" role="main" >
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">

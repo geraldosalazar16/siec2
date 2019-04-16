@@ -2918,26 +2918,7 @@ $scope.showFormConfiguracion = function () {
 		$("#inputIdTA").val(id_ta);
 		$("#inputCiclo").val(ciclo);
 		$scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa);
-//		Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
-//		Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
-//		Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
-//		Contactos_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
-		
-//		$scope.formDataGenCotizacion.tramites=$scope.arr_tramites_cotizacion;
-//		$scope.formDataGenCotizacion.descripcion=[];
-//		$scope.tarifa_adicional_tramite_cotizacion_by_tramite=[];
-		
-		
-//		for(var key in $scope.formDataGenCotizacion.tramites){
-			
-			/*===========================================================================*/
-//			 tramite_tarifa_adicional_by_tramite($scope.formDataGenCotizacion.tramites[key].ID,key);
-			/*===========================================================================*/
-			
-//		}
-		
-//		$scope.formDataGenCotizacion.descripcion=$scope.tarifa_adicional_tramite_cotizacion_by_tramite;
-		
+
   
     $('#modalDictaminacion').modal('show');
   }
