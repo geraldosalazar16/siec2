@@ -5,6 +5,8 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.formData = {};
 	$scope.formDataSector = {};
 	$scope.formDataSitiosEC = {};
+	$scope.formDataGastosAud={};
+	$scope.formDataViaticosAud={};
 	$scope.formDataSitio = {};
 	$scope.formDataAuditoria = {};
 	$scope.formDataAuditoriaEC = {};
@@ -32,6 +34,10 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
     $scope.flag = true;
 	$scope.notas = [];
 	$scope.countnotas = 0;
+
+	$scope.colapseActual; // Para guardar si hay un colapse activo
+	$scope.estatusAuditoria; // Para guardar el estatus de las auditorías
+	$scope.estatusGastosAuditoria; // Para guardar el estatus de las auditorías
 
 // =======================================================================================
 // ***** 			FUNCION PARA EL BOTON AGREGAR INFORMACION AUDITORIA				 *****
@@ -260,6 +266,12 @@ function clear_modal_agregar_informacion(){
 
 //	funcion para cambio ciclo
 $scope.cambioCiclo	=	function(){
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}
 	var cc = $scope.DatosServicio.NombreCiclo;
 	if($scope.DatosServicio.ID_SERVICIO == 1){
 		if(cc == 0){
@@ -270,7 +282,7 @@ $scope.cambioCiclo	=	function(){
 		
 		}
 	}
-	if($scope.DatosServicio.ID_SERVICIO == 2){
+	if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){
 		if(cc == 0){
 			cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 		}
@@ -554,7 +566,7 @@ $scope.agregar_editar_sitio	=	function(accion_sitio,id)	{
 		if($scope.DatosServicio.ID_SERVICIO == 1){
 			llenar_modal_sitiosSG($scope.id_servicio_cliente_etapa,id);
 		}
-		if($scope.DatosServicio.ID_SERVICIO == 2){
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){
 			llenar_modal_sitiosEC($scope.id_servicio_cliente_etapa,id);
 		}
 		//llenar_modal_sitio(id);
@@ -563,7 +575,7 @@ $scope.agregar_editar_sitio	=	function(accion_sitio,id)	{
 		
 		$("#modalInsertarActualizarSitios").modal("show");
 	}
-	if($scope.DatosServicio.ID_SERVICIO == 2){
+	if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){
 		
 		cargarMetaDatosSitios($scope.DatosServicio.ID_TIPO_SERVICIO);
 		$("#modalInsertarActualizarSitiosEC").modal("show");
@@ -590,7 +602,7 @@ $scope.eliminar_sitio = function(id_cliente_domicilio){
 					if($scope.DatosServicio.ID_SERVICIO == 1){
 						url = global_apiserver + "/i_sg_sitios/delete/";
 					}
-					if($scope.DatosServicio.ID_SERVICIO == 2){
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){
 						url = global_apiserver + "/i_ec_sitios/delete/";
 					}
 					
@@ -926,7 +938,14 @@ function InsertarActividad(newActiv){
 		
     }
     $scope.agregar_sitio_auditoria = function(id_cliente_domicilio,id_sce,id_tipo_auditoria,ciclo){
-        var sitio = {
+		
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}
+		 var sitio = {
             ID_SERVICIO_CLIENTE_ETAPA:id_sce,
             TIPO_AUDITORIA:id_tipo_auditoria,
 			CICLO:ciclo,
@@ -951,6 +970,13 @@ function InsertarActividad(newActiv){
           
     }
     $scope.eliminar_sitio_auditoria = function(id_sce,id_tipo_auditoria,id_cliente_domicilio,ciclo){
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}
+		
         var sitio = {
             ID_SERVICIO_CLIENTE_ETAPA:id_sce,
             TIPO_AUDITORIA:id_tipo_auditoria,
@@ -958,7 +984,7 @@ function InsertarActividad(newActiv){
             ID_CLIENTE_DOMICILIO:id_cliente_domicilio,
             ID_USUARIO:sessionStorage.getItem("id_usuario")
           };
-          $http.post(global_apiserver + "/i_sg_auditoria_sitgflkfgios/delete/",sitio).
+          $http.post(global_apiserver + "/i_sg_auditoria_sitios/delete/",sitio).
             then(function(response){
 			
                 if(response.data.resultado=="ok"){
@@ -1018,12 +1044,12 @@ $scope.agregar_editar_auditorias = function(accion_auditoria,id_sce,id_tipo_audi
 		llenar_modal_AuditoriasSG($scope.id_servicio_cliente_etapa,id_tipo_auditoria);
 		$("#modalInsertarActualizarAuditoria").modal("show");	
 	}
-	if(($scope.accion_auditoria == 'insertar')&&($scope.DatosServicio.ID_SERVICIO == 2)){
+	if(($scope.accion_auditoria == 'insertar')&&($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4)){
 		$scope.modal_titulo_auditoria = "INSERTAR AUDITORIAS";
 		$scope.formDataAuditoriaEC.CICLO = $scope.DatosServicio.CICLO;
 		$("#modalInsertarActualizarAuditoriaEC").modal("show");
 	}
-	if(($scope.accion_auditoria == 'editar')&&($scope.DatosServicio.ID_SERVICIO == 2)){
+	if(($scope.accion_auditoria == 'editar')&&($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4)){
 		$scope.modal_titulo_auditoria = "EDITAR AUDITORIAS";
 		$scope.formDataAuditoriaEC.CICLO = ciclo;
 		llenar_modal_AuditoriasEC($scope.id_servicio_cliente_etapa,id_tipo_auditoria);
@@ -1043,7 +1069,7 @@ function clear_modal_auditorias(){
 				}
 		}		
 	}
-	if($scope.DatosServicio.ID_SERVICIO == 2){
+	if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){
 		$scope.formDataAuditoriaEC	=	{};
 	}
 	
@@ -1052,7 +1078,12 @@ function clear_modal_auditorias(){
 // ***** 	Funcion para llenar las variables del modal AuditoriasSG		 *****
 // ===========================================================================
 function llenar_modal_AuditoriasSG(id_servicio_cliente_etapa,id_tipo_auditoria){
-
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}
 cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 		var datos_auditoriasSG	=	$scope.DatosAuditoriasSG.find(function(element,index,array){
 				return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_tipo_auditoria )
@@ -1107,7 +1138,12 @@ cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 			$scope.formDataAuditoria.txtSitiosAuditoria = "";
 			$scope.formDataAuditoria.chkNoMetodo = false;
 		}
-				
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}		
 		var datos	=	{
 				ID	:	$scope.id_servicio_cliente_etapa,
 				DURACION_DIAS:	$scope.formDataAuditoria.txtDuracionAuditoria,
@@ -1129,6 +1165,7 @@ cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
                 if(response.data.resultado=="ok"){
 					notify('&Eacutexito','Se han actualizado los datos','success');
 					cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+					
 
                 }
                 else{
@@ -1146,7 +1183,7 @@ cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
                 if(response.data.resultado=="ok"){
 					notify('&Eacutexito','Se han actualizado los datos','success');
                    cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
-
+					
 					
                 }
                 else{
@@ -1166,7 +1203,29 @@ cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 function cargarDatosAuditoriasSG(id_servicio){
 	$http.get(  global_apiserver + "/i_sg_auditorias/getAllByIdServicio/?id="+id_servicio)
 		.then(function( response ){
-            $scope.DatosAuditoriasSG = response.data;
+			$scope.DatosAuditoriasSG = response.data;
+			const temp = [];
+			let auditoriaSalvada;
+			$scope.DatosAuditoriasSG.forEach(auditoria => {
+				if ($scope.estatusAuditoria) {
+					auditoriaSalvada = $scope.estatusAuditoria.find(aud => {
+						return aud.SERVICIO_CLIENTE_ETAPA == auditoria.SERVICIO_CLIENTE_ETAPA && aud.TIPO_AUDITORIA == auditoria.TIPO_AUDITORIA && aud.CICLO == auditoria.CICLO;
+					});
+				}
+				
+				let mostrar = false;
+				let mostrar1 = false;
+				if (auditoriaSalvada) {
+					mostrar = auditoriaSalvada.mostrandoSectoresAuditor;
+					mostrar1 = auditoriaSalvada.mostrandoSectoresSitios;
+				}
+				temp.push({
+					mostrandoSectoresAuditor: mostrar,
+					mostrandoSectoresSitios: mostrar1,
+					...auditoria
+				});
+			});
+			$scope.DatosAuditoriasSG = temp;
 			
 			$.each($scope.DatosAuditoriasSG, function( i, datos1 ) {
 				$.each(datos1.AUDITORIA_FECHAS, function( j, datos ) {
@@ -1174,6 +1233,7 @@ function cargarDatosAuditoriasSG(id_servicio){
 		 
 					});
 				});	
+				cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
 		});
 		//if($scope.DatosServicio.ID_TIPO_SERVICIO == 20){
 				$http.get(  global_apiserver + "/sce_normas/getAll/")
@@ -1181,19 +1241,42 @@ function cargarDatosAuditoriasSG(id_servicio){
 						$scope.DatosAuditoriasSGIntegral = response.data;
 				});				
 		//}
+		
     }
 //
 function cargarDatosAuditoriasSG_Ciclo(id_servicio,cc){
 	$http.get(  global_apiserver + "/i_sg_auditorias/getAllByIdServicioAndCiclo/?id="+id_servicio+"&ciclo="+cc)
 		.then(function( response ){
             $scope.DatosAuditoriasSG = response.data;
-			
+			const temp = [];
+			let auditoriaSalvada;
+			$scope.DatosAuditoriasSG.forEach(auditoria => {
+				if ($scope.estatusAuditoria) {
+					auditoriaSalvada = $scope.estatusAuditoria.find(aud => {
+						return aud.SERVICIO_CLIENTE_ETAPA == auditoria.SERVICIO_CLIENTE_ETAPA && aud.TIPO_AUDITORIA == auditoria.TIPO_AUDITORIA && aud.CICLO == auditoria.CICLO;
+					});
+				}
+				
+				let mostrar = false;
+				let mostrar1 = false;
+				if (auditoriaSalvada) {
+					mostrar = auditoriaSalvada.mostrandoSectoresAuditor;
+					mostrar1 = auditoriaSalvada.mostrandoSectoresSitios;
+				}
+				temp.push({
+					mostrandoSectoresAuditor: mostrar,
+					mostrandoSectoresSitios: mostrar1,
+					...auditoria
+				});
+			});
+			$scope.DatosAuditoriasSG = temp;
 			$.each($scope.DatosAuditoriasSG, function( i, datos1 ) {
 				$.each(datos1.AUDITORIA_FECHAS, function( j, datos ) {
 						$scope.txtFechasAuditoria[datos.ID]=datos.FECHA.substring(0,4)+"-"+datos.FECHA.substring(4,6)+"-"+datos.FECHA.substring(6,8);
 		 
 					});
 				});	
+			cargarGastosAuditorias($scope.id_servicio_cliente_etapa);	
 		});			
 		//}
     }	
@@ -1236,20 +1319,28 @@ function cargarStatusAuditoria(){
 // *****		FUNCION PARA EL BOTON SITIOS AUDITORIAS				*****
 // ======================================================================
 $scope.btnSitiosAuditoria = function(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo){
-//$scope.id_tipo_auditoria = id_tipo_auditoria;
-//	$http.get(  global_apiserver + "/i_sg_auditoria_sitios/getBySgAuditoria/?id="+id_servicio_cliente_etapa+"&id_tipo_auditoria="+id_tipo_auditoria)
-//		.then(function( response ){
-			
-//			$scope.objSitioAuditorias = response.data;
-			$("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-sitios-auditoria").collapse("show");	
-//		});
+
+var datos_auditoriasSG	=	$scope.DatosAuditoriasSG.find(function(element,index,array){
+		return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_tipo_auditoria && element.CICLO == ciclo)
+	});
+	
+	if (datos_auditoriasSG) {
+		const index = $scope.DatosAuditoriasSG.indexOf(datos_auditoriasSG);
+		$scope.DatosAuditoriasSG[index].mostrandoSectoresSitios = !$scope.DatosAuditoriasSG[index].mostrandoSectoresSitios;
+	}
+	
 }
 
 //	=====================================================================
 //	*****	FUNCION PARA AGREGAR O EDITAR FECHAS A UNA AUDITORIA	*****
 //	=====================================================================
 $scope.agregar_editar_fechasAuditoria = function(id_sce,id_tipo_auditoria,accion,ciclo,id){
-	
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
 		if(accion == 'insertar'){
 			if( $scope.txtInsertarFechas[id_tipo_auditoria] != "" && typeof $scope.txtInsertarFechas[id_tipo_auditoria] != 'undefined' ){
 				
@@ -1268,7 +1359,7 @@ $scope.agregar_editar_fechasAuditoria = function(id_sce,id_tipo_auditoria,accion
 						if($scope.DatosServicio.ID_SERVICIO == 1){		
 							cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 						}
-						if($scope.DatosServicio.ID_SERVICIO == 2){
+						if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){
 							cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 						}
 					}
@@ -1298,7 +1389,7 @@ $scope.agregar_editar_fechasAuditoria = function(id_sce,id_tipo_auditoria,accion
 					if($scope.DatosServicio.ID_SERVICIO == 1){
 						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 					}
-					if($scope.DatosServicio.ID_SERVICIO == 2){	
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);	
 					}
                 }
@@ -1307,7 +1398,7 @@ $scope.agregar_editar_fechasAuditoria = function(id_sce,id_tipo_auditoria,accion
 					if($scope.DatosServicio.ID_SERVICIO == 1){
 						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 					}
-					if($scope.DatosServicio.ID_SERVICIO == 2){	
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);	
 					}
 				}
@@ -1325,7 +1416,12 @@ $scope.eliminar_fechasAuditoria = function(id){
 	 
 }
 $scope.EliminarFecha = function(){
-
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}
 	var datos	=	{
 					ID:	$scope.IdFechaEliminar,
 					ID_USUARIO:	sessionStorage.getItem("id_usuario")
@@ -1338,7 +1434,7 @@ $scope.EliminarFecha = function(){
 					if($scope.DatosServicio.ID_SERVICIO == 1){
 						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 					}
-					if($scope.DatosServicio.ID_SERVICIO == 2){	
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 					}
 					$scope.IdFechaEliminar="";
@@ -1348,7 +1444,7 @@ $scope.EliminarFecha = function(){
 					if($scope.DatosServicio.ID_SERVICIO == 1){
 						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 					}
-					if($scope.DatosServicio.ID_SERVICIO == 2){	
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 					}
 					$scope.IdFechaEliminar="";
@@ -1362,8 +1458,18 @@ $scope.EliminarFecha = function(){
 // ======================================================================
 // *****		FUNCION PARA EL BOTON GRUPOS AUDITORIAS				*****
 // ======================================================================
-$scope.btnGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo){
-	$("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-grupo-auditoria").collapse("show");	
+$scope.btnGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo){	
+	// $("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-grupo-auditoria").collapse("toggle");
+	
+	var datos_auditoriasSG	=	$scope.DatosAuditoriasSG.find(function(element,index,array){
+		return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_tipo_auditoria && element.CICLO == ciclo)
+	});
+	
+	if (datos_auditoriasSG) {
+		const index = $scope.DatosAuditoriasSG.indexOf(datos_auditoriasSG);
+		$scope.DatosAuditoriasSG[index].mostrandoSectoresAuditor = !$scope.DatosAuditoriasSG[index].mostrandoSectoresAuditor;
+	}
+	
 }
 // ======================================================================
 // *****	FUNCION PARA EL BOTON INSERTAR GRUPOS AUDITORIAS		*****
@@ -1407,7 +1513,7 @@ $scope.cargarModalInsertarActualizarGrupoAuditor = function(id_pt_calif,nombre_c
 	if($scope.DatosServicio.ID_SERVICIO == 1){
 		$("#modalExplorarGrupo").modal("hide");
 	}
-	if($scope.DatosServicio.ID_SERVICIO == 2){	
+	if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 		$("#modalExplorarGrupoEC").modal("hide");
 	}
 	
@@ -1447,7 +1553,12 @@ function clear_modal_auditorias_grupos(){
 // ==============================================================================================
 $scope.submitFormGrupoAuditor = function (formDataGrupoAuditor) {
 		
-		
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}
 		var grupo = {
             ID_SERVICIO_CLIENTE_ETAPA:$scope.id_servicio_cliente_etapa ,
             TIPO_AUDITORIA:	$scope.grupo_id_tipo_auditoria ,
@@ -1467,7 +1578,7 @@ $scope.submitFormGrupoAuditor = function (formDataGrupoAuditor) {
 					if($scope.DatosServicio.ID_SERVICIO == 1){
 		                cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 					}
-					if($scope.DatosServicio.ID_SERVICIO == 2){	
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 					}
 				}
@@ -1502,7 +1613,12 @@ $scope.submitFormGrupoAuditorFechaNorma = function (formDataGrupoAuditorFechaNor
 	$scope.funcion_guardar_datos($scope.formDataGrupoAuditorFechaNorma.id_sce,$scope.formDataGrupoAuditorFechaNorma.id_ta,$scope.formDataGrupoAuditorFechaNorma.ciclo,$scope.formDataGrupoAuditorFechaNorma.id_pt,$scope.formDataGrupoAuditorFechaNorma.norma);
 }
 $scope.funcion_guardar_datos = function(id_sce,id_ta,ciclo,id_pt,norma_serv_integral){
-
+	if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}
 	var fecha = {
             ID_SERVICIO_CLIENTE_ETAPA:id_sce ,
             TIPO_AUDITORIA:	id_ta ,
@@ -1520,7 +1636,7 @@ $scope.funcion_guardar_datos = function(id_sce,id_ta,ciclo,id_pt,norma_serv_inte
                     if($scope.DatosServicio.ID_SERVICIO == 1){
 		                cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 					}
-					if($scope.DatosServicio.ID_SERVICIO == 2){	
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 					}
                 }
@@ -1536,7 +1652,12 @@ $scope.funcion_guardar_datos = function(id_sce,id_ta,ciclo,id_pt,norma_serv_inte
 // ***** 			Funcion para eliminar las fechas de un auditor			*****
 // ==============================================================================
 $scope.eliminar_fechasAuditoriaGrupo = function(id){
-
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}
 	var datos	=	{
 					ID:	id,
 					ID_USUARIO:	sessionStorage.getItem("id_usuario")
@@ -1549,7 +1670,7 @@ $scope.eliminar_fechasAuditoriaGrupo = function(id){
 					if($scope.DatosServicio.ID_SERVICIO == 1){
 						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa,0,0);
 					}
-					if($scope.DatosServicio.ID_SERVICIO == 2){	
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 					}
 					$scope.IdFechaEliminar="";
@@ -1559,7 +1680,7 @@ $scope.eliminar_fechasAuditoriaGrupo = function(id){
 					if($scope.DatosServicio.ID_SERVICIO == 1){
 						cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa,0,0);
 					}
-					if($scope.DatosServicio.ID_SERVICIO == 2){	
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 					}
 					$scope.IdFechaEliminar="";
@@ -1590,7 +1711,13 @@ $scope.eliminar_grupo_auditoria = function(id_sce,id_ta,ciclo,id_pt){
 			CICLO:	ciclo,
             ID_PERSONAL_TECNICO_CALIF: id_pt,
 			ID_USUARIO:sessionStorage.getItem("id_usuario")
-          };
+		  };
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}
 	$http.post(global_apiserver + "/i_sg_auditoria_grupos/delete/",auditor).
             then(function(response){
 			
@@ -1599,7 +1726,7 @@ $scope.eliminar_grupo_auditoria = function(id_sce,id_ta,ciclo,id_pt){
                     if($scope.DatosServicio.ID_SERVICIO == 1){
 		                cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 					}
-					if($scope.DatosServicio.ID_SERVICIO == 2){	
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 					}
                 }
@@ -1669,7 +1796,12 @@ $scope.GenerarArregloFecha = function(fechas){
 			$scope.formDataAuditoria.txtSitiosAuditoria = "";
 			$scope.formDataAuditoria.chkNoMetodo = false;
 		}
-*/				
+*/		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}		
 		var datos	=	{
 				ID	:	$scope.id_servicio_cliente_etapa,
 				DURACION_DIAS:	$scope.formDataAuditoriaEC.txtDuracionAuditoria,
@@ -1690,6 +1822,7 @@ $scope.GenerarArregloFecha = function(fechas){
                 if(response.data.resultado=="ok"){
 					notify('&Eacutexito','Se han actualizado los datos','success');
 					cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					
 
                 }
                 else{
@@ -1707,7 +1840,7 @@ $scope.GenerarArregloFecha = function(fechas){
                 if(response.data.resultado=="ok"){
 					notify('&Eacutexito','Se han actualizado los datos','success');
                    cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
-
+				   
 					
                 }
                 else{
@@ -1727,13 +1860,35 @@ function cargarDatosAuditoriasEC(id_servicio){
 	$http.get(  global_apiserver + "/i_ec_auditorias/getAllByIdServicio/?id="+id_servicio)
 		.then(function( response ){
             $scope.DatosAuditoriasEC = response.data;
-			
+			const temp = [];
+			let auditoriaSalvada;
+			$scope.DatosAuditoriasEC.forEach(auditoria => {
+				if ($scope.estatusAuditoria) {
+					auditoriaSalvada = $scope.estatusAuditoria.find(aud => {
+						return aud.SERVICIO_CLIENTE_ETAPA == auditoria.SERVICIO_CLIENTE_ETAPA && aud.TIPO_AUDITORIA == auditoria.TIPO_AUDITORIA && aud.CICLO == auditoria.CICLO;
+					});
+				}
+				
+				let mostrar = false;
+				let mostrar1 = false;
+				if (auditoriaSalvada) {
+					mostrar = auditoriaSalvada.mostrandoSectoresAuditor;
+					mostrar1 = auditoriaSalvada.mostrandoSectoresSitios;
+				}
+				temp.push({
+					mostrandoSectoresAuditor: mostrar,
+					mostrandoSectoresSitios: mostrar1,
+					...auditoria
+				});
+			});
+			$scope.DatosAuditoriasEC = temp;
 			$.each($scope.DatosAuditoriasEC, function( i, datos1 ) {
 				$.each(datos1.AUDITORIA_FECHAS, function( j, datos ) {
 						$scope.txtFechasAuditoria[datos.ID]=datos.FECHA.substring(0,4)+"-"+datos.FECHA.substring(4,6)+"-"+datos.FECHA.substring(6,8);
 		 
 					});
 				});	
+				cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
 		});
 		
     }
@@ -1741,14 +1896,36 @@ function cargarDatosAuditoriasEC(id_servicio){
 function cargarDatosAuditoriasEC_Ciclo(id_servicio,cc){
 	$http.get(  global_apiserver + "/i_ec_auditorias/getAllByIdServicioAndCiclo/?id="+id_servicio+"&ciclo="+cc)
 		.then(function( response ){
-            $scope.DatosAuditoriasSG = response.data;
-			
-			$.each($scope.DatosAuditoriasSG, function( i, datos1 ) {
+            $scope.DatosAuditoriasEC = response.data;
+			const temp = [];
+			let auditoriaSalvada;
+			$scope.DatosAuditoriasEC.forEach(auditoria => {
+				if ($scope.estatusAuditoria) {
+					auditoriaSalvada = $scope.estatusAuditoria.find(aud => {
+						return aud.SERVICIO_CLIENTE_ETAPA == auditoria.SERVICIO_CLIENTE_ETAPA && aud.TIPO_AUDITORIA == auditoria.TIPO_AUDITORIA && aud.CICLO == auditoria.CICLO;
+					});
+				}
+				
+				let mostrar = false;
+				let mostrar1 = false;
+				if (auditoriaSalvada) {
+					mostrar = auditoriaSalvada.mostrandoSectoresAuditor;
+					mostrar1 = auditoriaSalvada.mostrandoSectoresSitios;
+				}
+				temp.push({
+					mostrandoSectoresAuditor: mostrar,
+					mostrandoSectoresSitios: mostrar1,
+					...auditoria
+				});
+			});
+			$scope.DatosAuditoriasEC = temp;
+			$.each($scope.DatosAuditoriasEC, function( i, datos1 ) {
 				$.each(datos1.AUDITORIA_FECHAS, function( j, datos ) {
 						$scope.txtFechasAuditoria[datos.ID]=datos.FECHA.substring(0,4)+"-"+datos.FECHA.substring(4,6)+"-"+datos.FECHA.substring(6,8);
 		 
 					});
 				});	
+				cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
 		});			
 		//}
     }	
@@ -1759,7 +1936,16 @@ $scope.btnInsertaSitiosAuditoriaEC = function(id_servicio_cliente_etapa,id_tipo_
 // *****		FUNCION PARA EL BOTON SITIOS AUDITORIAS				*****
 // ======================================================================
 $scope.btnSitiosAuditoriaEC = function(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo){
-			$("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-sitios-auditoria_ec").collapse("show");	
+//			$("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-sitios-auditoria_ec").collapse("show");
+
+var datos_auditoriasEC	=	$scope.DatosAuditoriasEC.find(function(element,index,array){
+		return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_tipo_auditoria && element.CICLO == ciclo)
+	});
+	
+	if (datos_auditoriasEC) {
+		const index = $scope.DatosAuditoriasEC.indexOf(datos_auditoriasEC);
+		$scope.DatosAuditoriasEC[index].mostrandoSectoresSitios = !$scope.DatosAuditoriasEC[index].mostrandoSectoresSitios;
+	}	
 }	
 //========================================================================================
 // ***** 	FUNCION PARA CARGAR SITIOS que se pueden asignar a una auditoria EC		 *****
@@ -1779,8 +1965,17 @@ $scope.btnSitiosAuditoriaEC = function(id_servicio_cliente_etapa,id_tipo_auditor
 // *****		FUNCION PARA EL BOTON GRUPOS AUDITORIAS	EC			*****
 // ======================================================================
 $scope.btnGrupoAuditoriaEC = function(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo){
-	$("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-grupo-auditoria_ec").collapse("show");	
+	//$("#collapse-"+id_servicio_cliente_etapa+"-"+id_tipo_auditoria+"-"+ciclo+"-grupo-auditoria_ec").collapse("toggle");
+var datos_auditoriasEC	=	$scope.DatosAuditoriasEC.find(function(element,index,array){
+		return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_tipo_auditoria && element.CICLO == ciclo)
+	});
+	
+	if (datos_auditoriasEC) {
+		const index = $scope.DatosAuditoriasEC.indexOf(datos_auditoriasEC);
+		$scope.DatosAuditoriasEC[index].mostrandoSectoresAuditor = !$scope.DatosAuditoriasEC[index].mostrandoSectoresAuditor;
+	}	
 }
+
 // ======================================================================
 // *****	FUNCION PARA EL BOTON INSERTAR GRUPOS AUDITORIAS EC		*****
 // ======================================================================
@@ -1809,7 +2004,12 @@ $scope.btnInsertaGrupoAuditoriaEC = function(id_servicio_cliente_etapa,id_tipo_a
 // ***** 	Funcion para llenar las variables del modal AuditoriasEC		 *****
 // ===========================================================================
 function llenar_modal_AuditoriasEC(id_servicio_cliente_etapa,id_tipo_auditoria){
-
+		if($scope.DatosServicio.ID_SERVICIO == 1){
+			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}	
+		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+		}
 cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 		var datos_auditoriasEC	=	$scope.DatosAuditoriasEC.find(function(element,index,array){
 				return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_tipo_auditoria )
@@ -2718,26 +2918,7 @@ $scope.showFormConfiguracion = function () {
 		$("#inputIdTA").val(id_ta);
 		$("#inputCiclo").val(ciclo);
 		$scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa);
-//		Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
-//		Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
-//		Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
-//		Contactos_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
-		
-//		$scope.formDataGenCotizacion.tramites=$scope.arr_tramites_cotizacion;
-//		$scope.formDataGenCotizacion.descripcion=[];
-//		$scope.tarifa_adicional_tramite_cotizacion_by_tramite=[];
-		
-		
-//		for(var key in $scope.formDataGenCotizacion.tramites){
-			
-			/*===========================================================================*/
-//			 tramite_tarifa_adicional_by_tramite($scope.formDataGenCotizacion.tramites[key].ID,key);
-			/*===========================================================================*/
-			
-//		}
-		
-//		$scope.formDataGenCotizacion.descripcion=$scope.tarifa_adicional_tramite_cotizacion_by_tramite;
-		
+
   
     $('#modalDictaminacion').modal('show');
   }
@@ -2772,7 +2953,12 @@ $scope.funcionDictaminadores = function(id_ts){
 					ID_USUARIO_CREACION : sessionStorage.getItem("id_usuario"),
 					ID_USUARIO_MODIFICACION : 0
 				};
-	
+				if($scope.DatosServicio.ID_SERVICIO == 1){
+					$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+				}	
+				if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+					$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+				}
 				$.post(global_apiserver + "/dictaminaciones/insert/", JSON.stringify(dictaminaciones), function(respuesta){
 					respuesta = JSON.parse(respuesta);
 					if (respuesta.resultado == "ok") {
@@ -2795,9 +2981,280 @@ $scope.funcionDictaminadores = function(id_ts){
 // ***** 	          		 TERMINA DICTAMINACION			           	 *****
 // ===========================================================================
 // ===========================================================================
+// ===========================================================================
+// ***** 	          		 INICIA GASTOS AUDITORIA		           	 *****
+// ===========================================================================
+// ===========================================================================
+// ======================================================================
+// *****			FUNCION CARGAR CATALOGO GASTOS					*****
+// ======================================================================
+function cargarCatalogoGastosAuditorias(){
+	$http.get(  global_apiserver + "/i_cat_auditorias_costos/getAll/")
+		.then(function( response ){
+            $scope.CATALOGO_GASTOS = response.data;
+			
+		});
+		
+    }
+// ======================================================================
+// *****			FUNCION CARGAR GASTOS AUDITORIAS				*****
+// ======================================================================
+function cargarGastosAuditorias(id_servicio){
+	if ($scope.GastosAuditorias) {
+		$scope.estatusGastosAuditoria = $scope.GastosAuditorias;
+	}
+	$http.get(  global_apiserver + "/i_auditorias_costos/getAllByIdServicio/?id="+id_servicio)
+		.then(function( response ){
+            $scope.GastosAuditorias = response.data;
+			
+			const temp = [];
+			let auditoriaSalvada;
+			$scope.GastosAuditorias.AUDITORIAS.forEach(auditoria => {
+				if ($scope.estatusGastosAuditoria) {
+					auditoriaSalvada = $scope.estatusGastosAuditoria.AUDITORIAS.find(aud => {
+						return aud.ID_SERVICIO_CLIENTE_ETAPA == auditoria.ID_SERVICIO_CLIENTE_ETAPA && aud.TIPO_AUDITORIA == auditoria.TIPO_AUDITORIA && aud.CICLO == auditoria.CICLO;
+					});
+				}
+				
+				let mostrar = false;
+				if (auditoriaSalvada) {
+					mostrar = auditoriaSalvada.mostrandoSectoresGastosAuditor;
+					
+				}
+				temp.push({
+					mostrandoSectoresGastosAuditor: mostrar,
+					...auditoria
+				});
+			});
+			$scope.GastosAuditorias.AUDITORIAS = temp;
+			
+		});
+		
+    }
+// =======================================================================
+// ***** 		FUNCION PARA EL BOTON AGREGAR EDITAR GASTOS			 *****
+// =======================================================================
+$scope.agregar_editar_gastos	=	function(aud_o_exptec,id_servicio_cliente_etapa,id_ta,ciclo,id_pt)	{
+	
+	clear_modal_gastos();
+	$scope.accion_gastos	=	'editar';
+	$scope.aud_o_exptec	=	aud_o_exptec;
+	if($scope.accion_gastos == 'insertar'){
+		$scope.modal_titulo_gastos = "INSERTAR GASTOS DE SERVICIO";
+	}
+	if($scope.accion_gastos == 'editar'){
+		$scope.modal_titulo_gastos = "EDITAR GASTOS DE SERVICIO";
+		llenar_modal_gastos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt);
+		$scope.formDataGastosAud.TA = id_ta;
+		$scope.formDataGastosAud.CICLO = ciclo;
+		$scope.formDataGastosAud.ID_PT = id_pt;
+	}
+	$("#modalInsertarActualizarGastosAuditoria").modal("show");
+}
+// ===========================================================================
+// ***** 		FUNCION PARA EL BOTON GUARDAR DEL MODAL	GASTOS AUDITORIAS *****
+// ===========================================================================
+	$scope.submitFormGastosAud = function (formDataGastosAud) {
+						
+		var input = "";	
+		input = JSON.stringify(formDataGastosAud.input);
+			var datos	=	{
+				ID	:	$scope.id_servicio_cliente_etapa,
+				TA	:	$scope.formDataGastosAud.TA,
+				CICLO: $scope.formDataGastosAud.CICLO,
+				ID_PT	:	$scope.formDataGastosAud.ID_PT,
+				INPUT	:	input,
+				ID_USUARIO:	sessionStorage.getItem("id_usuario")
+			};
+		if($scope.accion_gastos == 'insertar'){
+			
+			$http.post(global_apiserver + "/i_auditorias_costos/insert/",datos).
+            then(function(response){
+                if(response){
+					notify('&Eacutexito','Se han actualizado los datos','success');
+					cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
+				   
+                }
+                else{
+                    notify('Error','No se pudo guardar los cambios','error');
+                }
+                
+            });
+		 }
+		if($scope.accion_gastos == 'editar'){	
+			
+			$http.post(global_apiserver + "/i_auditorias_costos/update/",datos).
+            then(function(response){
+                if(response){
+					notify('&Eacutexito','Se han actualizado los datos','success');
+                   
+					cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
+				   
+		
+                }
+                else{
+                    notify('Error','No se pudo guardar los cambios','error');
+                }
+                
+            });
+		}
+		$("#modalInsertarActualizarGastosAuditoria").modal("hide");
+		
+	};
+// ===========================================================================
+// ***** 		Funcion para limpiar las variables del modal gastos		 *****
+// ===========================================================================
+function clear_modal_gastos(){
+$scope.formDataGastosAud.input = {};
+$scope.formDataGastosAud.TA ="";	
+$scope.formDataGastosAud.CICLO ="";
+$scope.formDataGastosAud.ID_PT = "";
+	
+}
+// ===========================================================================
+// ***** 		Funcion para llenar las variables del modal gastos		 *****
+// ===========================================================================
+function llenar_modal_gastos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
+		datos_Auditorias = "";
+		datos_Auditores = "";
+		var datos_Auditorias	=	$scope.GastosAuditorias.AUDITORIAS.find(function(element,index,array){
+				return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_ta && element.CICLO == ciclo )
+			});
+			if(typeof datos_Auditorias != 'undefined'){
+				if($scope.aud_o_exptec == 'auditor'){
+					var datos_Auditores	=	datos_Auditorias.AUDITORES.find(function(element,index,array){
+						return (element.ID_PERSONAL_TECNICO_CALIF == id_pt )
+					});
+				}	
+				if($scope.aud_o_exptec == 'exptec'){
+					var datos_Auditores	=	datos_Auditorias.EXP_TECNICOS.find(function(element,index,array){
+						return (element.ID_PERSONAL_TECNICO_CALIF == id_pt )
+					});
+				}	
+				if(typeof datos_Auditores != 'undefined'){
+					
+						$scope.formDataGastosAud.input	= datos_Auditores.MONTO;
+					
+				}
+				
+					
+				
+			}
+	
+	
+	
+}
+// =======================================================================
+// ***** 		FUNCION PARA EL BOTON AGREGAR EDITAR VIATICOS		 *****
+// =======================================================================
+$scope.agregar_editar_viaticos	=	function(id_servicio_cliente_etapa,id_ta,ciclo)	{
+	
+	clear_modal_viaticos();
+	$scope.accion_viaticos	=	'editar';
+	if($scope.accion_viaticos == 'insertar'){
+		$scope.modal_titulo_viaticos = "INSERTAR VIATICOS DE SERVICIO";
+	}
+	if($scope.accion_viaticos == 'editar'){
+		$scope.modal_titulo_viaticos = "EDITAR VIATICOS DE SERVICIO";
+		llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo);
+		$scope.formDataViaticosAud.TA = id_ta;
+		$scope.formDataViaticosAud.CICLO = ciclo;
+		
+	}
+	$("#modalInsertarActualizarViaticosAuditoria").modal("show");
+}
+// ===========================================================================
+// ***** 		Funcion para limpiar las variables del modal viaticos	 *****
+// ===========================================================================
+function clear_modal_viaticos(){
+	$scope.formDataViaticosAud.MONTO = "";
+	$scope.formDataViaticosAud.TA ="";	
+	$scope.formDataViaticosAud.CICLO ="";
+	
 
+}
+// ===========================================================================
+// ***** 		Funcion para llenar las variables del modal gastos		 *****
+// ===========================================================================
+function llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
+		datos_Auditorias = "";
+		datos_Auditores = "";
+		var datos_Auditorias	=	$scope.GastosAuditorias.AUDITORIAS.find(function(element,index,array){
+				return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_ta && element.CICLO == ciclo )
+			});
+			if(typeof datos_Auditorias != 'undefined'){
+				
+					
+						$scope.formDataViaticosAud.MONTO	= datos_Auditorias.TOTAL_VIATICOS;
+					
+				
+			}
+	
+	
+	
+}
+// ===========================================================================
+// ***** 	FUNCION PARA EL BOTON GUARDAR DEL MODAL	VIATICOS AUDITORIAS *****
+// ===========================================================================
+	$scope.submitFormViaticosAud = function (formDataViaticosAud) {
+						
+			var datos	=	{
+				ID	:	$scope.id_servicio_cliente_etapa,
+				TA	:	$scope.formDataViaticosAud.TA,
+				CICLO: $scope.formDataViaticosAud.CICLO,
+				MONTO	:	$scope.formDataViaticosAud.MONTO,
+				ID_USUARIO:	sessionStorage.getItem("id_usuario")
+			};
+		if($scope.accion_viaticos == 'insertar'){
+			
+			$http.post(global_apiserver + "/i_auditorias_viaticos/insert/",datos).
+            then(function(response){
+                if(response){
+					notify('&Eacutexito','Se han actualizado los datos','success');
+					cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
+				   
+                }
+                else{
+                    notify('Error','No se pudo guardar los cambios','error');
+                }
+                
+            });
+		 }
+		if($scope.accion_viaticos == 'editar'){	
+			
+			$http.post(global_apiserver + "/i_auditorias_viaticos/update/",datos).
+            then(function(response){
+                if(response){
+					notify('&Eacutexito','Se han actualizado los datos','success');
+                   
+					cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
+				   
+                }
+                else{
+                    notify('Error','No se pudo guardar los cambios','error');
+                }
+                
+            });
+		}
+		$("#modalInsertarActualizarViaticosAuditoria").modal("hide");
+		
+	};
+	// FUNCION PARA MOSTRAR U OCULTAR LOS DATOS DE GASTOS AUDITORES
+	$scope.changePrueba = function(id_servicio_cliente_etapa,id_tipo_auditoria,ciclo){
 
-
+	var datos_auditoriasSG	=	$scope.GastosAuditorias.AUDITORIAS.find(function(element,index,array){
+		return (element.ID_SERVICIO_CLIENTE_ETAPA == id_servicio_cliente_etapa && element.TIPO_AUDITORIA  == id_tipo_auditoria && element.CICLO == ciclo)
+	});
+	
+	if (datos_auditoriasSG) {
+		const index = $scope.GastosAuditorias.AUDITORIAS.indexOf(datos_auditoriasSG);
+		$scope.GastosAuditorias.AUDITORIAS[index].mostrandoSectoresGastosAuditor = !$scope.GastosAuditorias.AUDITORIAS[index].mostrandoSectoresGastosAuditor;
+	}
+}	
+// ===========================================================================
+// ***** 	          		 TERMINA GASTOS AUDITORIA		           	 *****
+// ===========================================================================
+// ===========================================================================
 DatosServicioContratado($scope.id_servicio_cliente_etapa);
 cargarValoresMetaDatosServicio($scope.id_servicio_cliente_etapa);
 cargarSectoresServicio($scope.id_servicio_cliente_etapa);
@@ -2806,10 +3263,12 @@ cargarSitiosSGServicio($scope.id_servicio_cliente_etapa);
 cargarTodosSitiosECServicio($scope.id_servicio_cliente_etapa);
 cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+//cargarGastosAuditorias($scope.id_servicio_cliente_etapa);
+cargarCatalogoGastosAuditorias();
 $scope.cargarParticipantes($scope.id_servicio_cliente_etapa);
+
 //cargarRolesAuditor();
 //cargarOpcionesSelectMetaDatos();
-
 
 }]);
 function notify(titulo, texto, tipo) {
@@ -2835,4 +3294,3 @@ function getQueryVariable(variable) {
 	}
 	alert('Query Variable ' + variable + ' not found');
 }
-

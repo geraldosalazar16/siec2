@@ -150,10 +150,37 @@ if($id_servicio_cliente_etapa	!=	0){
 				]); 
 				valida_error_medoo_and_die();
 			}
+			// INSERTAR LOS VIATICOS EN I_AUDITORIAS_VIATICOS
+			if($database->count('I_AUDITORIAS_VIATICOS',['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]) == 1){
+				$idv = $database->update('I_AUDITORIAS_VIATICOS',
+														['MONTO'=>$tramite->VIATICOS,
+														"ID_USUARIO_CREACION"=>"",
+														"ID_USUARIO_MODIFICACION"=>$ID_USUARIO_CREACION,
+														"FECHA_CREACION"=>"",
+														"FECHA_MODIFICACION"=>date("Ymd")
+														],
+														['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]);
+			}
+			else{
+				if($tramite->VIATICOS !=0){
+					$idv = $database->insert('I_AUDITORIAS_VIATICOS',
+											[
+											"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,
+											"ID_TIPO_AUDITORIA" => $tipo_auditoria,
+											"CICLO" => $ciclo,
+											'MONTO'=>$tramite->VIATICOS,
+											"ID_USUARIO_CREACION"=>$ID_USUARIO_CREACION,
+											"ID_USUARIO_MODIFICACION"=>"",
+											"FECHA_CREACION"=>date("Ymd"),
+											"FECHA_MODIFICACION"=>""]);
+											valida_error_medoo_and_die();
+				}
+			}
 		}
+		
     
 	}
-	if($ID_SERVICIO == 2){
+	if($ID_SERVICIO == 2 || $ID_SERVICIO == 4){
 		if($ID_TIPO_SERVICIO == 13){
 			//Auditorías
 			//Para cargar una auditoría necesito
@@ -217,6 +244,32 @@ if($id_servicio_cliente_etapa	!=	0){
 					]); 
 					valida_error_medoo_and_die();
 				}
+				// INSERTAR LOS VIATICOS EN I_AUDITORIAS_VIATICOS
+			if($database->count('I_AUDITORIAS_VIATICOS',['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]) == 1){
+				$idv = $database->update('I_AUDITORIAS_VIATICOS',
+														['MONTO'=>$tramite->VIATICOS,
+														"ID_USUARIO_CREACION"=>"",
+														"ID_USUARIO_MODIFICACION"=>$ID_USUARIO_CREACION,
+														"FECHA_CREACION"=>"",
+														"FECHA_MODIFICACION"=>date("Ymd")
+														],
+														['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]);
+			}
+			else{
+				if($tramite->VIATICOS !=0){
+					$idv = $database->insert('I_AUDITORIAS_VIATICOS',
+											[
+											"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,
+											"ID_TIPO_AUDITORIA" => $tipo_auditoria,
+											"CICLO" => $ciclo,
+											'MONTO'=>$tramite->VIATICOS,
+											"ID_USUARIO_CREACION"=>$ID_USUARIO_CREACION,
+											"ID_USUARIO_MODIFICACION"=>"",
+											"FECHA_CREACION"=>date("Ymd"),
+											"FECHA_MODIFICACION"=>""]);
+											valida_error_medoo_and_die();
+				}
+			}
 			}
 		}
 		if($ID_TIPO_SERVICIO == 14){
@@ -281,6 +334,32 @@ if($id_servicio_cliente_etapa	!=	0){
 						]); 
 						valida_error_medoo_and_die();
 					}
+					// INSERTAR LOS VIATICOS EN I_AUDITORIAS_VIATICOS
+			if($database->count('I_AUDITORIAS_VIATICOS',['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]) == 1){
+				$idv = $database->update('I_AUDITORIAS_VIATICOS',
+														['MONTO'=>$tramite->VIATICOS,
+														"ID_USUARIO_CREACION"=>"",
+														"ID_USUARIO_MODIFICACION"=>$ID_USUARIO_CREACION,
+														"FECHA_CREACION"=>"",
+														"FECHA_MODIFICACION"=>date("Ymd")
+														],
+														['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]);
+			}
+			else{
+				if($tramite->VIATICOS !=0){
+					$idv = $database->insert('I_AUDITORIAS_VIATICOS',
+											[
+											"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,
+											"ID_TIPO_AUDITORIA" => $tipo_auditoria,
+											"CICLO" => $ciclo,
+											'MONTO'=>$tramite->VIATICOS,
+											"ID_USUARIO_CREACION"=>$ID_USUARIO_CREACION,
+											"ID_USUARIO_MODIFICACION"=>"",
+											"FECHA_CREACION"=>date("Ymd"),
+											"FECHA_MODIFICACION"=>""]);
+											valida_error_medoo_and_die();
+				}
+			}
 			}
 		}
 		if($ID_TIPO_SERVICIO == 15){
@@ -345,6 +424,32 @@ if($id_servicio_cliente_etapa	!=	0){
 						]); 
 						valida_error_medoo_and_die();
 					}
+					// INSERTAR LOS VIATICOS EN I_AUDITORIAS_VIATICOS
+			if($database->count('I_AUDITORIAS_VIATICOS',['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]) == 1){
+				$idv = $database->update('I_AUDITORIAS_VIATICOS',
+														['MONTO'=>$tramite->VIATICOS,
+														"ID_USUARIO_CREACION"=>"",
+														"ID_USUARIO_MODIFICACION"=>$ID_USUARIO_CREACION,
+														"FECHA_CREACION"=>"",
+														"FECHA_MODIFICACION"=>date("Ymd")
+														],
+														['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]);
+			}
+			else{
+				if($tramite->VIATICOS !=0){
+					$idv = $database->insert('I_AUDITORIAS_VIATICOS',
+											[
+											"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,
+											"ID_TIPO_AUDITORIA" => $tipo_auditoria,
+											"CICLO" => $ciclo,
+											'MONTO'=>$tramite->VIATICOS,
+											"ID_USUARIO_CREACION"=>$ID_USUARIO_CREACION,
+											"ID_USUARIO_MODIFICACION"=>"",
+											"FECHA_CREACION"=>date("Ymd"),
+											"FECHA_MODIFICACION"=>""]);
+											valida_error_medoo_and_die();
+				}
+			}
 			}
 		}
 		if($ID_TIPO_SERVICIO == 16){
@@ -408,6 +513,32 @@ if($id_servicio_cliente_etapa	!=	0){
 						]); 
 						valida_error_medoo_and_die();
 					}
+					// INSERTAR LOS VIATICOS EN I_AUDITORIAS_VIATICOS
+			if($database->count('I_AUDITORIAS_VIATICOS',['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]) == 1){
+				$idv = $database->update('I_AUDITORIAS_VIATICOS',
+														['MONTO'=>$tramite->VIATICOS,
+														"ID_USUARIO_CREACION"=>"",
+														"ID_USUARIO_MODIFICACION"=>$ID_USUARIO_CREACION,
+														"FECHA_CREACION"=>"",
+														"FECHA_MODIFICACION"=>date("Ymd")
+														],
+														['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]);
+			}
+			else{
+				if($tramite->VIATICOS !=0){
+					$idv = $database->insert('I_AUDITORIAS_VIATICOS',
+											[
+											"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,
+											"ID_TIPO_AUDITORIA" => $tipo_auditoria,
+											"CICLO" => $ciclo,
+											'MONTO'=>$tramite->VIATICOS,
+											"ID_USUARIO_CREACION"=>$ID_USUARIO_CREACION,
+											"ID_USUARIO_MODIFICACION"=>"",
+											"FECHA_CREACION"=>date("Ymd"),
+											"FECHA_MODIFICACION"=>""]);
+											valida_error_medoo_and_die();
+				}
+			}
 			}
 		}
 		if($ID_TIPO_SERVICIO == 17){
@@ -471,6 +602,32 @@ if($id_servicio_cliente_etapa	!=	0){
 						]); 
 						valida_error_medoo_and_die();
 					}
+					// INSERTAR LOS VIATICOS EN I_AUDITORIAS_VIATICOS
+			if($database->count('I_AUDITORIAS_VIATICOS',['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]) == 1){
+				$idv = $database->update('I_AUDITORIAS_VIATICOS',
+														['MONTO'=>$tramite->VIATICOS,
+														"ID_USUARIO_CREACION"=>"",
+														"ID_USUARIO_MODIFICACION"=>$ID_USUARIO_CREACION,
+														"FECHA_CREACION"=>"",
+														"FECHA_MODIFICACION"=>date("Ymd")
+														],
+														['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]);
+			}
+			else{
+				if($tramite->VIATICOS !=0){
+					$idv = $database->insert('I_AUDITORIAS_VIATICOS',
+											[
+											"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,
+											"ID_TIPO_AUDITORIA" => $tipo_auditoria,
+											"CICLO" => $ciclo,
+											'MONTO'=>$tramite->VIATICOS,
+											"ID_USUARIO_CREACION"=>$ID_USUARIO_CREACION,
+											"ID_USUARIO_MODIFICACION"=>"",
+											"FECHA_CREACION"=>date("Ymd"),
+											"FECHA_MODIFICACION"=>""]);
+											valida_error_medoo_and_die();
+				}
+			}
 			}
 		}
 		if($ID_TIPO_SERVICIO == 18){
@@ -534,6 +691,32 @@ if($id_servicio_cliente_etapa	!=	0){
 						]); 
 						valida_error_medoo_and_die();
 					}
+					// INSERTAR LOS VIATICOS EN I_AUDITORIAS_VIATICOS
+			if($database->count('I_AUDITORIAS_VIATICOS',['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]) == 1){
+				$idv = $database->update('I_AUDITORIAS_VIATICOS',
+														['MONTO'=>$tramite->VIATICOS,
+														"ID_USUARIO_CREACION"=>"",
+														"ID_USUARIO_MODIFICACION"=>$ID_USUARIO_CREACION,
+														"FECHA_CREACION"=>"",
+														"FECHA_MODIFICACION"=>date("Ymd")
+														],
+														['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]);
+			}
+			else{
+				if($tramite->VIATICOS !=0){
+					$idv = $database->insert('I_AUDITORIAS_VIATICOS',
+											[
+											"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,
+											"ID_TIPO_AUDITORIA" => $tipo_auditoria,
+											"CICLO" => $ciclo,
+											'MONTO'=>$tramite->VIATICOS,
+											"ID_USUARIO_CREACION"=>$ID_USUARIO_CREACION,
+											"ID_USUARIO_MODIFICACION"=>"",
+											"FECHA_CREACION"=>date("Ymd"),
+											"FECHA_MODIFICACION"=>""]);
+											valida_error_medoo_and_die();
+				}
+			}
 			}
 		}
 		if($ID_TIPO_SERVICIO == 19){
@@ -597,6 +780,32 @@ if($id_servicio_cliente_etapa	!=	0){
 						]); 
 						valida_error_medoo_and_die();
 					}*/
+					// INSERTAR LOS VIATICOS EN I_AUDITORIAS_VIATICOS
+			if($database->count('I_AUDITORIAS_VIATICOS',['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]) == 1){
+				$idv = $database->update('I_AUDITORIAS_VIATICOS',
+														['MONTO'=>$tramite->VIATICOS,
+														"ID_USUARIO_CREACION"=>"",
+														"ID_USUARIO_MODIFICACION"=>$ID_USUARIO_CREACION,
+														"FECHA_CREACION"=>"",
+														"FECHA_MODIFICACION"=>date("Ymd")
+														],
+														['AND'=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,"ID_TIPO_AUDITORIA" => $tipo_auditoria, "CICLO" => $ciclo]]);
+			}
+			else{
+				if($tramite->VIATICOS !=0){
+					$idv = $database->insert('I_AUDITORIAS_VIATICOS',
+											[
+											"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa,
+											"ID_TIPO_AUDITORIA" => $tipo_auditoria,
+											"CICLO" => $ciclo,
+											'MONTO'=>$tramite->VIATICOS,
+											"ID_USUARIO_CREACION"=>$ID_USUARIO_CREACION,
+											"ID_USUARIO_MODIFICACION"=>"",
+											"FECHA_CREACION"=>date("Ymd"),
+											"FECHA_MODIFICACION"=>""]);
+											valida_error_medoo_and_die();
+				}
+			}
 			}
 		}
 	}

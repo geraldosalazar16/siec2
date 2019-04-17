@@ -156,7 +156,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr ng-repeat="x in SitiosServicio" class="ng-scope  even pointer" ng-if="DatosServicio.ID_SERVICIO == 2">
+										<tr ng-repeat="x in SitiosServicio" class="ng-scope  even pointer" ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4">
 											<td> {{x.ACRONIMO}}<br>{{x.NOMBRE_DOMICILIO}}</td>
 											<td ng-init="CargarDatosSitiosEC(x.ID_CLIENTE_DOMICILIO)">
 												<ul class="list-unstyled user_data">
