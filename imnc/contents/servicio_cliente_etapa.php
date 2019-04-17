@@ -82,29 +82,29 @@
 				  <div class="form-group col-md-4">
                     <label>Sector IAF: </label>
                     <div class="input-group" style="width: 100%;">
-                          <select class="form-control" ng-model="cmbSectoresIAF_select">
+                          <select class="form-control" id="cmbSectoresIAF_select" ng-model="cmbSectoresIAF_select">
 						  <option value="" selected>--	Todos	--</option>
 							<option ng-repeat="option in cmbSectoresIAF" value="{{option.ID}}">{{option.NOMBRE}}</option>
                           </select>
 						  
                     </div>
                   </div>
-                
+                  <div class="form-group">
+                <div class="col-md-3 col-sm-3 col-xs-12 col-md-offset-9">
+                  <button type="button" class="btn btn-success" id="btnLimpiarFiltros" ng-click="tabla_servicios()">Ver todos</button>
+                  <button type="button" class="btn btn-primary" id="btnFiltrar" ng-click="cargaServiciosFiltrados()">Filtrar</button>
+                 </div>
+              </div>
 				
 			</form>
         </div>
-              <div class="form-group">
-                <div class="col-md-3 col-sm-3 col-xs-12 col-md-offset-9">
-   <!--               <button type="button" class="btn btn-success" id="btnLimpiarFiltros" ng-click="btnLimpiarFiltros">Ver todos</button>
-                  <button type="button" class="btn btn-primary" id="btnFiltrar" ng-click="btnFiltrar">Filtrar</button>
-    -->            </div>
-              </div>
+              
           
         </div>
       </div>
 	  <div class="row">
-		<p >Cantidad de servicios: {{cantidad_servicios}}
-		
+		<p>
+      Cantidad de servicios: {{cantidad_servicios}}		
 		</p>
 	  </div>
       <div class="row">
