@@ -165,6 +165,7 @@
                 link: function (scope) {
                     /*jshint ignore:start*/
                     var moment = window['moment'] || scope.moment;
+					//moment().format("DD-MM-YYYY");
                     /*jshint ignore:end*/
                     scope.ngModel = scope.ngModel || [];
 

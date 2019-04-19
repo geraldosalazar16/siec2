@@ -24,8 +24,6 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.id_servicio_cliente_etapa = getQueryVariable("id_serv_cli_et");
 	$scope.PrincipalSectores	=	{0:{ID:"S",NOMBRE:"Si"},1:{ID:"N",NOMBRE:"No"}};
 	$scope.ocultar	=	false;
-	var f = new Date();
-	$scope.FechaHoy = f.getFullYear()+'-'+(f.getMonth()+1)+'-'+f.getDate();
 	$scope.FechaPrueba = ["2018-10-5","2018-9-3"];
 	$scope.txtInsertarFechas = new Array();
 	$scope.txtFechasAuditoria={};
@@ -38,7 +36,7 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.colapseActual; // Para guardar si hay un colapse activo
 	$scope.estatusAuditoria; // Para guardar el estatus de las auditorías
 	$scope.estatusGastosAuditoria; // Para guardar el estatus de las auditorías
-
+	
 // =======================================================================================
 // ***** 			FUNCION PARA EL BOTON AGREGAR INFORMACION AUDITORIA				 *****
 // =======================================================================================	
@@ -418,7 +416,7 @@ $scope.agregar_editar_sector	=	function(accion_sector,id_servicio_cliente_etapa,
 $scope.eliminar_sector = function(id_servicio_cliente_etapa,id_sector){
 	$.confirm({
         title: 'Eliminar registro',
-        content: 'Estas a punto de eliminar un sector, la operaci�n es irreversible, estas seguro?',
+        content: 'Estas a punto de eliminar un sector, la operaci?n es irreversible, estas seguro?',
         buttons: {
             cancel: {
                 text: 'Cancelar'
@@ -1335,6 +1333,7 @@ var datos_auditoriasSG	=	$scope.DatosAuditoriasSG.find(function(element,index,ar
 //	*****	FUNCION PARA AGREGAR O EDITAR FECHAS A UNA AUDITORIA	*****
 //	=====================================================================
 $scope.agregar_editar_fechasAuditoria = function(id_sce,id_tipo_auditoria,accion,ciclo,id){
+	
 		if($scope.DatosServicio.ID_SERVICIO == 1){
 			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
 		}	
@@ -1342,13 +1341,15 @@ $scope.agregar_editar_fechasAuditoria = function(id_sce,id_tipo_auditoria,accion
 			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
 		}	
 		if(accion == 'insertar'){
+			$scope.txtInsertarFechas[id_tipo_auditoria] = $('#txtInsertarFechas-'+id_tipo_auditoria+'-'+ciclo).val();
 			if( $scope.txtInsertarFechas[id_tipo_auditoria] != "" && typeof $scope.txtInsertarFechas[id_tipo_auditoria] != 'undefined' ){
 				
 				var datos	=	{
 					ID_SERVICIO_CLIENTE_ETAPA:	id_sce,
 					TIPO_AUDITORIA:	id_tipo_auditoria,
 					CICLO: ciclo,
-					FECHA:	$scope.txtInsertarFechas[id_tipo_auditoria].substring(0,4)+$scope.txtInsertarFechas[id_tipo_auditoria].substring(5,7)+$scope.txtInsertarFechas[id_tipo_auditoria].substring(8,10),
+					//FECHA:	$scope.txtInsertarFechas[id_tipo_auditoria].substring(0,4)+$scope.txtInsertarFechas[id_tipo_auditoria].substring(5,7)+$scope.txtInsertarFechas[id_tipo_auditoria].substring(8,10),
+					FECHA:	$scope.txtInsertarFechas[id_tipo_auditoria],
 					ID_USUARIO:	sessionStorage.getItem("id_usuario")
 				};
 				$http.post(global_apiserver + "/i_sg_auditoria_fechas/insert/",datos).
@@ -1365,6 +1366,12 @@ $scope.agregar_editar_fechasAuditoria = function(id_sce,id_tipo_auditoria,accion
 					}
 					else{
 						notify('Error',response.data.mensaje,'error');
+						if($scope.DatosServicio.ID_SERVICIO == 1){		
+							cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+						}
+						if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){
+							cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+						}
 					}
                
 				});
@@ -1374,6 +1381,7 @@ $scope.agregar_editar_fechasAuditoria = function(id_sce,id_tipo_auditoria,accion
 			}
 		 }
 		if(accion == 'editar'){	
+			$scope.txtFechasAuditoria[id] = $('#txtFechasAuditoria'+id).val();
 			var datos	=	{
 					ID:	id,
 					ID_SERVICIO_CLIENTE_ETAPA:	id_sce,
@@ -1614,17 +1622,19 @@ $scope.submitFormGrupoAuditorFechaNorma = function (formDataGrupoAuditorFechaNor
 }
 $scope.funcion_guardar_datos = function(id_sce,id_ta,ciclo,id_pt,norma_serv_integral){
 	if($scope.DatosServicio.ID_SERVICIO == 1){
-			$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
-		}	
-		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
-			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
-		}
+		$scope.estatusAuditoria = $scope.DatosAuditoriasSG; // Para guardar cuáles estaban abiertas y cuáles cerradas
+	}	
+	if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+		$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
+	}
+	$scope.txtInsertarFechasGrupo[id_pt] = $('#txtInsertarFechasGrupo-'+id_ta+'-'+ciclo+'-'+id_pt).val();
 	var fecha = {
             ID_SERVICIO_CLIENTE_ETAPA:id_sce ,
             TIPO_AUDITORIA:	id_ta ,
 			CICLO:	ciclo,
             ID_PERSONAL_TECNICO_CALIF: id_pt,
-			FECHA:	$scope.txtInsertarFechasGrupo[id_pt].substring(0,4)+$scope.txtInsertarFechasGrupo[id_pt].substring(5,7)+$scope.txtInsertarFechasGrupo[id_pt].substring(8,10),
+			//FECHA:	$scope.txtInsertarFechasGrupo[id_pt].substring(0,4)+$scope.txtInsertarFechasGrupo[id_pt].substring(5,7)+$scope.txtInsertarFechasGrupo[id_pt].substring(8,10),
+			FECHA:	$scope.txtInsertarFechasGrupo[id_pt],
 			ID_NORMA: norma_serv_integral,
 			ID_USUARIO:sessionStorage.getItem("id_usuario")
           };
@@ -1642,6 +1652,12 @@ $scope.funcion_guardar_datos = function(id_sce,id_ta,ciclo,id_pt,norma_serv_inte
                 }
                 else{
                     notify('Error',response.data.mensaje,'error');
+					 if($scope.DatosServicio.ID_SERVICIO == 1){
+		                cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+					}
+					if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
+						cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
+					}
                 }
                
             });
@@ -1764,18 +1780,21 @@ $scope.GenerarArregloFecha = function(fechas){
 	var ano;
 	for(var key in fechas){
 		ano = fechas[key].FECHA.substring(0,4);
-		if(fechas[key].FECHA.substring(4,5)==0){
-			mes = fechas[key].FECHA.substring(5,6);
-		}
-		else{
+	//	if(fechas[key].FECHA.substring(4,5)==0){
+	//		mes = fechas[key].FECHA.substring(5,6);
+	//	}
+	//	else{
 			mes = fechas[key].FECHA.substring(4,6);
-		}
-		if(fechas[key].FECHA.substring(6,7)==0)	{
-			dia = fechas[key].FECHA.substring(7,8)
-		}
-		else{
+			
+	//	}
+	//	if(fechas[key].FECHA.substring(6,7)==0)	{
+	//		dia = fechas[key].FECHA.substring(7,8);
+			
+	//	}
+	//	else{
 			dia = fechas[key].FECHA.substring(6,8);
-		}	
+			
+	//	}	
 		fecha1[key] = ano+"/"+mes+"/"+dia;
 		//fecha1[key] = fecha1[key].toString();
 	}
@@ -1783,6 +1802,30 @@ $scope.GenerarArregloFecha = function(fechas){
 	//var fecha2 = ['2018/10/19','2018-9-21'];//,"2018-10-11","2018-10-12"
 	//fecha3= new Array(fecha1);
 	return fecha1;
+}
+$scope.GenerarFechaHoy = function(){
+	var f = new Date();
+	var d = f.getDate();
+	var m =f.getMonth()+1;
+	var y = f.getFullYear();
+	if(m>0 && m<10){
+		 m = '0'+m;
+	}
+					
+	if(d>0 && d<10){
+		d = '0'+d;
+	}					 
+	f1 = y +'/'+m+'/'+d;
+	return f1;
+}
+$scope.GenerarFechaInicio = function(f){
+	//var f = new Date();
+	var y = f.substring(0,4);
+	var m =f.substring(5,7);
+	var d = f.substring(8,10);
+				 
+	f1 = y +'/'+m+'/'+d;
+	return f1;
 }
 /*======================================================================*/
 //		A PARTIR DE AQUI CODIGO PARA AUDITORIAS EC

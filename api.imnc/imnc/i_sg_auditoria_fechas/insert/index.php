@@ -42,14 +42,25 @@ valida_parametro_and_die($ID_USUARIO, "Falta el ID_USUARIO");
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
 
-if($database->count("I_SG_AUDITORIA_FECHAS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO,"FECHA" => $FECHA]])==0){
-$idd = $database->insert("I_SG_AUDITORIA_FECHAS",
+$respuesta["resultado"]="ok"; 
+$mensaje="";
+//AQUI ACOMODO LAS FECHAS
+$ARR_FECHAS = explode(',',$FECHA);
+
+for($i=0;$i<count($ARR_FECHAS);$i++){
+	$year=substr($ARR_FECHAS[$i],0,4);
+	$month=substr($ARR_FECHAS[$i],5,2);
+	$day=substr($ARR_FECHAS[$i],8,2);
+	$FECHA1 = $year.$month.$day;
+	
+	if($database->count("I_SG_AUDITORIA_FECHAS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO,"FECHA" => $FECHA1]])==0){
+		$idd = $database->insert("I_SG_AUDITORIA_FECHAS",
 											
 											[
 												"ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,
 												"TIPO_AUDITORIA"=>$TIPO_AUDITORIA,
 												"CICLO"=>$CICLO,
-												"FECHA" => $FECHA,
+												"FECHA" => $FECHA1,
 												"FECHA_CREACION" => $FECHA_CREACION,
 												"HORA_CREACION" => $HORA_CREACION,
 												"FECHA_MODIFICACION" => "",
@@ -59,12 +70,15 @@ $idd = $database->insert("I_SG_AUDITORIA_FECHAS",
 												
 												
 											]); 
-valida_error_medoo_and_die();
-$respuesta["resultado"]="ok";  
+		valida_error_medoo_and_die();
+		//$respuesta["resultado"]="ok";  
+	}
+	else{
+		$respuesta["resultado"]="error"; 
+		$mensaje.=" La FECHA ".$FECHA1." ya ha sido insertada para esta auditoria,"; 
+	}
 }
-else{
-	$respuesta["resultado"]="error"; 
-	$respuesta["mensaje"]="La FECHA ".$FECHA." ya ha sido insertada para esta auditoria"; 
-}
+$respuesta["mensaje"]=$mensaje;
+
 print_r(json_encode($respuesta)); 
 ?> 

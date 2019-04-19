@@ -286,10 +286,10 @@
 
 													<tr>
 														<td>
-															<input type='text' ng-model="txtInsertarFechas[x.TIPO_AUDITORIA]" jqdatepicker/>
-															<datepicker date-format="yyyy-MM-dd" date-min-limit="{{FechaHoy}}" ng-model="txtInsertarFechas[x.TIPO_AUDITORIA]" date-typer="true" button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' >
-																<input type="text"   placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" />
-															</datepicker>
+															
+															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtInsertarFechas-{{x.TIPO_AUDITORIA}}-{{x.CICLO}}" ng-model="txtInsertarFechas[x.TIPO_AUDITORIA]"  data-date-format='yyyy-mm-dd' data-multiple-dates="true" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaHoy()}}'
+															jqdatepicker />
+														
 														</td>
 														<td>
 															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,'insertar',x.CICLO)" >Agregar Fechas</button>
@@ -298,10 +298,9 @@
 														</td>
 													</tr>
 													<tr ng-repeat = "z in x.AUDITORIA_FECHAS">
-														<td>												
-															<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-min-limit="{{FechaHoy}}"  >
-																<input type="text"  ng-model="txtFechasAuditoria[z.ID]"  data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria-{{z.ID}}" />
-															</datepicker>
+														<td>
+															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria{{z.ID}}" ng-model="txtFechasAuditoria[z.ID]"  data-date-format='yyyy-mm-dd' data-multiple-dates="false" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaInicio(txtFechasAuditoria[z.ID])}}' jqdatepicker />
+														
 														</td>
 														<td>
 															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,'editar',x.CICLO,z.ID)" >Guardar fecha</button>
@@ -450,9 +449,14 @@
 																<table>
 																	<tr>
 																		<td>
-																			<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-enabled-dates="{{GenerarArregloFecha(x.AUDITORIA_FECHAS)}}"  >
-																				<input type="text"  ng-model="txtInsertarFechasGrupo[w.ID_PERSONAL_TECNICO_CALIF]" placeholder="Fechas" data-parsley-id="2324" class="txtFechasAuditoria" style="width:100px;" />
-																			</datepicker>
+																			<input type='text' placeholder="Fechas" data-parsley-id="2324" class="txtFechasAuditoria" 
+																			id="txtInsertarFechasGrupo-{{x.TIPO_AUDITORIA}}-{{x.CICLO}}-{{w.ID_PERSONAL_TECNICO_CALIF}}" 
+																			ng-model="txtInsertarFechasGrupo[w.ID_PERSONAL_TECNICO_CALIF]"  data-date-format='yyyy-mm-dd' 
+																			data-multiple-dates="true" 
+																			data-days-allowed="{{GenerarArregloFecha(x.AUDITORIA_FECHAS)}}" 
+																			fecha-inicio='{{GenerarFechaHoy()}}'
+																			jqdatepicker />
+																		
 																		</td>
 																		<td>
 																			<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoriaGrupo(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO,w.ID_PERSONAL_TECNICO_CALIF)" >Agregar Fechas</button>
@@ -461,10 +465,7 @@
 																</table>
 																
 																
-				<!--												<label>Asignar fechas  <span class="required">*</span></label>
-				<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-enabled-dates="{{FechaPrueba}}"  >
-						<input type="text"  ng-model="formDataGrupoAuditor.Fecha"  data-parsley-id="2324" class="form-control" id="formDataGrupoAuditor.Fecha" required ng-class="{ error: exampleFormGrupoAuditor.Fecha.$error.required && !exampleFormGrupoAuditor.$pristine}"  />
-				</datepicker>-->
+				
 															<ul class="list-unstyled user_data">
 																<li ng-repeat="r in x.AUDITORES_FECHAS[w.ID_PERSONAL_TECNICO_CALIF]">
 																	<table>
@@ -495,10 +496,8 @@
 												<table>
 													<tr>
 														<td>
-															<datepicker date-format="yyyy-MM-dd" date-min-limit="{{FechaHoy}}" date-typer="true" button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' >
-																<input type="text"  ng-model="txtInsertarFechas[xx.TIPO_AUDITORIA]" placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" />
-															</datepicker>
-															
+															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtInsertarFechas-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}" ng-model="txtInsertarFechas[xx.TIPO_AUDITORIA]"  data-date-format='yyyy-mm-dd' data-multiple-dates="true" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaHoy()}}' jqdatepicker />
+														
 														</td> 
 															
 														<td>
@@ -508,10 +507,9 @@
 														</td>
 													</tr>
 													<tr ng-repeat = "z in xx.AUDITORIA_FECHAS">
-														<td>												
-															<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-min-limit="{{FechaHoy}}"  >
-																<input type="text"  ng-model="txtFechasAuditoria[z.ID]"  data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria-{{z.ID}}" />
-															</datepicker>
+														<td>		
+															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria{{z.ID}}" ng-model="txtFechasAuditoria[z.ID]"  data-date-format='yyyy-mm-dd' data-multiple-dates="false" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaInicio(txtFechasAuditoria[z.ID])}}' jqdatepicker />
+														
 														</td>
 														<td>
 															<button class="btn btn-primary btn-xs btn-imnc" ng-click="
@@ -658,9 +656,14 @@
 																<table>
 																	<tr>
 																		<td>
-																			<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-enabled-dates="{{GenerarArregloFecha(xx.AUDITORIA_FECHAS)}}"  >
-																				<input type="text"  ng-model="txtInsertarFechasGrupo[w.ID_PERSONAL_TECNICO_CALIF]" placeholder="Fechas" data-parsley-id="2324" class="txtFechasAuditoria" style="width:100px;" />
-																			</datepicker>
+																			<input type='text' placeholder="Fechas" data-parsley-id="2324" class="txtFechasAuditoria" 
+																			id="txtInsertarFechasGrupo-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-{{w.ID_PERSONAL_TECNICO_CALIF}}" 
+																			ng-model="txtInsertarFechasGrupo[w.ID_PERSONAL_TECNICO_CALIF]"  data-date-format='yyyy-mm-dd' 
+																			data-multiple-dates="true" 
+																			data-days-allowed="{{GenerarArregloFecha(xx.AUDITORIA_FECHAS)}}" 
+																			fecha-inicio='{{GenerarFechaHoy()}}'
+																			jqdatepicker />
+																	
 																		</td>
 																		<td>
 																			<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoriaGrupo(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,xx.CICLO,w.ID_PERSONAL_TECNICO_CALIF)" >Agregar Fechas</button>

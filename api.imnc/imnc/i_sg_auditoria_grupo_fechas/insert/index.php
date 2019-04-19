@@ -24,41 +24,54 @@ $ID_USUARIO = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO, "Falta el ID_USUARIO");
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
-$FECHA1 = substr($FECHA,6,2)."/".substr($FECHA,4,2)."/".substr($FECHA,0,4);
-$FECHAS = $FECHA1.",".$FECHA1;
-if($database->count("I_SG_AUDITORIA_GRUPO_FECHAS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO,"ID_PERSONAL_TECNICO_CALIF" => $ID_PERSONAL_TECNICO_CALIF,"FECHA"=>$FECHA]])==0){
-//*********************************************//
-/*
-$url = $global_apiserver . "/personal_tecnico/isDisponible/";
-$params = array( 'http' =>	array(
+
+
+$respuesta["resultado"]="ok"; 
+$mensaje="";
+//AQUI ACOMODO LAS FECHAS
+$ARR_FECHAS = explode(',',$FECHA);
+for($i=0;$i<count($ARR_FECHAS);$i++){
+	$year=substr($ARR_FECHAS[$i],0,4);
+	$month=substr($ARR_FECHAS[$i],5,2);
+	$day=substr($ARR_FECHAS[$i],8,2);
+	$FECHAN = $year.$month.$day;
+	
+	$FECHA1 = substr($FECHAN,6,2)."/".substr($FECHAN,4,2)."/".substr($FECHAN,0,4);
+	$FECHAS = $FECHA1.",".$FECHA1;
+	
+	if($database->count("I_SG_AUDITORIA_GRUPO_FECHAS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO,"ID_PERSONAL_TECNICO_CALIF" => $ID_PERSONAL_TECNICO_CALIF,"FECHA"=>$FECHAN]])==0){
+		//*********************************************//
+		/*
+		$url = $global_apiserver . "/personal_tecnico/isDisponible/";
+		$params = array( 'http' =>	array(
 				'method'	=>	'POST',
 				'content'	=>	'ID="1"&FECHAS="20181220"'//'ID='.$ID_PERSONAL_TECNICO_CALIF.'&FECHAS='.$FECHAS
-		)
-);
+					)
+				);
 
-$ctx = stream_context_create($params);
-$fp = @fopen($url,'rb',false, $ctx);
-if(!$fp){
-	throw new Exception("Problem with $url, $php_errormsg");
-}
-$json_response = @stream_get_contents($fp);
-if($json_response === false){
-	throw new Exception("Problem reading data from $url, $php_errormsg");
-}	*/	
-$ID_PT = $database->get("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID" => $ID_PERSONAL_TECNICO_CALIF]);
-$context = "?ID=".$ID_PT."&FECHAS=".$FECHAS;
-$url = $global_apiserver . "/personal_tecnico/isDisponible/".$context;
-$json_response = file_get_contents($url);
-$json_response = json_decode($json_response);
-if($json_response->disponible == "si"){
-	$idd = $database->insert("I_SG_AUDITORIA_GRUPO_FECHAS",
+		$ctx = stream_context_create($params);
+		$fp = @fopen($url,'rb',false, $ctx);
+		if(!$fp){
+			throw new Exception("Problem with $url, $php_errormsg");
+		}
+		$json_response = @stream_get_contents($fp);
+		if($json_response === false){
+			throw new Exception("Problem reading data from $url, $php_errormsg");
+		}	*/	
+		$ID_PT = $database->get("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID" => $ID_PERSONAL_TECNICO_CALIF]);
+		$context = "?ID=".$ID_PT."&FECHAS=".$FECHAS;
+		$url = $global_apiserver . "/personal_tecnico/isDisponible/".$context;
+		$json_response = file_get_contents($url);
+		$json_response = json_decode($json_response);
+		if($json_response->disponible == "si"){
+			$idd = $database->insert("I_SG_AUDITORIA_GRUPO_FECHAS",
 											
 											[
 												"ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,
 												"TIPO_AUDITORIA"=>$TIPO_AUDITORIA,
 												"CICLO"=>$CICLO,
 												"ID_PERSONAL_TECNICO_CALIF" => $ID_PERSONAL_TECNICO_CALIF,
-												"FECHA" => $FECHA,
+												"FECHA" => $FECHAN,
 												"ID_NORMA" => $ID_NORMA,
 												"FECHA_CREACION" => $FECHA_CREACION,
 												"HORA_CREACION" => $HORA_CREACION,
@@ -69,18 +82,27 @@ if($json_response->disponible == "si"){
 												
 												
 											]); 
-	valida_error_medoo_and_die();
-	$respuesta["resultado"]="ok";  
-}
-else{
-	$respuesta["resultado"]="error"; 
-	$respuesta["mensaje"]="Este auditor no esta disponible en estas fechas"; 
+			valida_error_medoo_and_die();
+	
+		}
+		else{
+			$respuesta["resultado"]="error"; 
+			$mensaje.=" Este auditor no esta disponible en la fecha ".$FECHAN.","; 
+		}
+
+	}
+	else{
+		$respuesta["resultado"]="error"; 
+		$mensaje.=" La FECHA ".$FECHAN." ya fue agregada para este auditor,";
+		
+	}
 }
 
-}
-else{
-	$respuesta["resultado"]="error"; 
-	$respuesta["mensaje"]="Este fecha ya fue agregada para este auditor"; 
-}
+
+$respuesta["mensaje"]=$mensaje;
+
+
+
+
 print_r(json_encode($respuesta)); 
 ?> 
