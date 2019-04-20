@@ -87,7 +87,7 @@ if (!isset($_SESSION['CREATED'])) {
   <!-- multipleDatePicker -->
   <link href="css/MultipleDatePicker-master/multipleDatePicker.css" rel="stylesheet"/>
   <!-- air-datepicker -->
-  <link href="js/air-datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
+  <link href="js/air-datepicker/dist/css/datepicker.css" rel="stylesheet" type="text/css">
   
   <script src="js/angular.min.js"></script>
   <script src="js/certificando-app.js"></script>
@@ -206,7 +206,7 @@ if (!isset($_SESSION['CREATED'])) {
    <!-- multidatepicker -->
    <script src="js/MultipleDatePicker-master/multipleDatePicker.js"></script>
    <!-- air-datepicker -->
-   <script src="js/air-datepicker/dist/js/datepicker.min.js"></script>
+   <script src="js/air-datepicker/dist/js/datepicker.js"></script>
    <script src="js/air-datepicker/dist/js/i18n/datepicker.es.js"></script>
   <!--checklist-model-->
    <script src="js/checklist-model/checklist-model.js"></script>

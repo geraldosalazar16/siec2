@@ -16,7 +16,7 @@ var app = angular.module("certificandoApp", ['multipleSelect','checklist-model',
           
         },
          link: function (scope, element, attrs, ngModelCtrl) {
-			$(element).datepicker({
+			$(element).datepicker_1({
                 language: 'es',
 				startDate: new Date(scope.fechaInicio),
 				
@@ -61,7 +61,7 @@ var app = angular.module("certificandoApp", ['multipleSelect','checklist-model',
 				
 				
 			});
-			scope.ngModel=$(element).data('datepicker').selectDate(new Date(scope.fechaInicio));
+			scope.ngModel=$(element).data('datepicker_1').selectDate(new Date(scope.fechaInicio));
 				
 				
         }
