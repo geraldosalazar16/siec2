@@ -122,7 +122,7 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
         },
         {
             "nombre" : "Sector IAF",
-            "value": "SC.NOMBRE AS SECTOR|string"
+            "value": "(CASE WHEN CONCAT(SC.ID*'-'*SC.ID_TIPO_SERVICIO*'-'*SC.ANHIO) THEN CONCAT(SC.ID*'-'*SC.ID_TIPO_SERVICIO*'-'*SC.ANHIO) ELSE 'N/A'  END)  AS SECTOR|string"
         },
         {
             "nombre" : "Codigo nace",
