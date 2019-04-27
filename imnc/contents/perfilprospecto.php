@@ -60,7 +60,7 @@
 							<div class="" role="tabpanel" data-example-id="togglable-tabs">
 								<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
 									<li role="presentation" class="active">
-										<a href="#tab_domicilio" id="home-tab"  role="tab"  data-toggle="tab" aria-expanded="false">
+										<a href="#tab_domicilio" id="home-tab"  role="tab"  data-toggle="tab" aria-expanded="true">
 										Domicilio</a>
 									</li>
 
@@ -76,7 +76,7 @@
 								</ul>
 								<div id="myTabContent" class="tab-content">
 									<!-- Tab domicilio-->
-									<div role="tabpanel" class="tab-pane fade" id="tab_domicilio" aria-labelledby="profile-tab">
+									<div role="tabpanel" class="tab-pane fade active in" id="tab_domicilio" aria-labelledby="profile-tab">
 										<p>
 											<button type="button" ng-click="agregarDomicilio()" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc"
 											ng-if='modulo_permisos["registrar"] == 1' style="float: right;"> 
@@ -146,7 +146,7 @@
 									<!-- Fin Tab Domicilio-->
 
 									<!-- Tab contacto -->
-									<div role="tabpanel" class="tab-pane fade active in" id="tab_contacto" aria-labelledby="home-tab">
+									<div role="tabpanel" class="tab-pane fade" id="tab_contacto" aria-labelledby="home-tab">
 										<p>
 											<button type="button" ng-click="agregarContacto()" class="btn btn-primary btn-xs btn-imnc"
 												ng-if='modulo_permisos["registrar"] == 1' style="float: right;"> 
