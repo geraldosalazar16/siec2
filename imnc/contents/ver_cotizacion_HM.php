@@ -164,7 +164,7 @@
                   </li>
               </ul>
             </div>
-
+			<br>
           <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
             <thead>
               <tr class="headings">
