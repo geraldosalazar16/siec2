@@ -835,8 +835,9 @@ $scope.eliminar = function(id){
 	$scope.ActualizarAreas = function(){
 		//recibe la url del php que se ejecutará
 		 var SG = [0,0,0,0,0,0,0,0,0,0,0,0];
-		 var EC = [0,0,0,0,0,0,0,0,0,0,0,0];;
+		 var ES = [0,0,0,0,0,0,0,0,0,0,0,0];
 		 var CIFA = [0,0,0,0,0,0,0,0,0,0,0,0];
+		 var EP = [0,0,0,0,0,0,0,0,0,0,0,0];
 		$http.get(  global_apiserver + "/prospecto_producto/getByIdProspecto/?id="+$scope.id_prospecto)
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
 	  			$scope.ProductosProspecto = response.data.map(function(item,index){
@@ -846,11 +847,15 @@ $scope.eliminar = function(id){
 					  }
 	  				  if(item.ID_SERVICIO==2)
 	  				  {
-						  EC[parseInt(item.MES)-1] += 1;
+								ES[parseInt(item.MES)-1] += 1;
 	  				  }
 	  				  if(item.ID_SERVICIO==3)
 	  				  {
 						  CIFA[parseInt(item.MES)-1] += 1;
+							}
+							if(item.ID_SERVICIO==4)
+	  				  {
+								ES[parseInt(item.MES)-1] += 1;
 	  				  }
 					  var normas_string = '';
 					  item.NORMAS.forEach(norma => {

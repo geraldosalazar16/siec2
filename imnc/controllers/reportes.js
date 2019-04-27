@@ -102,6 +102,38 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
                 }
     ];
 
+    $scope.auditores = [
+        {
+            "nombre" : "Nombre y Apellidos",
+            "value": "CONCAT(PT.NOMBRE*' '*PT.APELLIDO_PATERNO*' '*PT.APELLIDO_MATERNO) AS NOMBRE|string"
+        },
+        {
+            "nombre" : "Rol",
+            "value": "PTR.ROL AS ROL|string"
+        },
+
+        {
+            "nombre" : "Servicio",
+            "value": "S.NOMBRE AS SERVICIO|string"
+        },
+        {
+            "nombre" : "Tipo de servicios",
+            "value": "TS.NOMBRE AS TIPO_SERVICIO|string"
+        },
+        {
+            "nombre" : "Sector IAF",
+            "value": "(CASE WHEN CONCAT(SC.ID*'-'*SC.ID_TIPO_SERVICIO*'-'*SC.ANHIO) THEN CONCAT(SC.ID*'-'*SC.ID_TIPO_SERVICIO*'-'*SC.ANHIO) ELSE 'N/A'  END)  AS SECTOR|string"
+        },
+        {
+            "nombre" : "Codigo nace",
+            "value": "PTCS.SECTOR_NACE AS NACE|string"
+        },
+        {
+            "nombre" : "Status",
+            "value": "PT.STATUS AS STATUS|string"
+        }
+    ];
+
 
 // ===================================================================
 // ***** 			FUNCION PARA CARGAR LOS REPORTES    	 *****
@@ -195,6 +227,14 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
                 })
 
             }
+
+            if($scope.formData.select_area.ID_AREA == 3)
+            {
+                $.each($scope.auditores,function (i,n) {
+                    option +='<option value="'+n.value+'">'+n.nombre+'</option>';
+                })
+
+            }
         }
         else
         {
@@ -219,6 +259,18 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
                     else
                     {
                      option +='<option value="'+n.value+'">'+n.nombre+'</option>';
+                    }
+                })
+            }
+            if($scope.formData.select_area.ID_AREA == 3) {
+                $.each($scope.auditores,function (i,n) {
+                    if($scope.columns.indexOf(n.value)>-1 && $scope.edit_reporte.ID_AREA == $scope.formData.select_area.ID_AREA)
+                    {
+                        option +='<option value="'+n.value+'" selected="selected">'+n.nombre+'</option>';
+                    }
+                    else
+                    {
+                        option +='<option value="'+n.value+'">'+n.nombre+'</option>';
                     }
                 })
             }
@@ -306,7 +358,6 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
 // ***** 			          FUNCION INSERTAR REPORTE      	                   *****
 // =======================================================================================
     $scope.insertar = function(save){
-
         $scope.save = save;
          $scope.add = {
             NOMBRE: $scope.formData.nombre,
@@ -316,7 +367,6 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
             COLUMN: $("#column").val(),
             };
 
-         //alert(JSON.stringify($scope.add));
         if($scope.save)
         {
             $.post(global_apiserver + "/reportes/insert/", JSON.stringify($scope.add), function (respuesta) {
@@ -351,7 +401,6 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
             diff = $($("#column").val()).not($scope.columns).get();
             if(diff.length==0)
             {
-
                 diff = $($scope.columns).not($("#column").val()).get();
             }
         }else
@@ -430,7 +479,6 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
 // =======================================================================================
     $scope.generarEXCEL = function(key){
 
-
         if (typeof key !== "undefined") {
 
             $('#hiddenNombre').val($scope.reportes[key].NOMBRE);
@@ -448,7 +496,6 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
             $('#hiddenArea').val($scope.formData.select_area.NOMBRE);
             $('#hiddenColumnas').val(getArrayColumnas($("#column").val()));
         }
-          alert($('#hiddenColumnas').val());
         window.open('', 'VentanaReporteXLS');
         $("#formReporte").submit();
 
@@ -483,6 +530,19 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
 
                });
            }
+
+           if( $scope.reportes[key].ID_AREA == 3)
+           {
+               $.each($scope.auditores,function (i,n) {
+                   var value = n.value.split("|");
+                   $.each(selected,function (j,m) {
+                       if (m.indexOf(value[0]) > -1) {
+                           array.push(n) ;
+                       }
+                   });
+
+               });
+           }
        }
        else
        {
@@ -501,6 +561,19 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
            if($scope.formData.select_area.ID_AREA == 2 )
            {
                $.each($scope.programacion,function (i,n) {
+                   var value = n.value.split("|");
+                   $.each(selected,function (j,m) {
+                       if (m.indexOf(value[0]) > -1) {
+                           array.push(n) ;
+                       }
+                   });
+
+               });
+           }
+
+           if($scope.formData.select_area.ID_AREA == 3 )
+           {
+               $.each($scope.auditores,function (i,n) {
                    var value = n.value.split("|");
                    $.each(selected,function (j,m) {
                        if (m.indexOf(value[0]) > -1) {
@@ -554,6 +627,7 @@ $(document).ready(function () {
             delay: 2500
         });
     }
+
 
 
 

@@ -904,7 +904,7 @@ $html = <<<EOT
 	<tr>
 		<td style="font-size: medium;" width="219">
 			
-				____________________________________<br>IMNC<br>Rodrigo de Matheus Bustamante<br>Representante Legal
+				____________________________________<br>IMNC<br><br>Representante Legal
 
   			
   		</td>

@@ -304,7 +304,7 @@
 																			</thead>
 																			<tbody>
 																			<tr ng-repeat="sector in producto.sectores" class="ng-scope  even pointer">
-																					<td> {{sector.ID_SECTOR}}-{{sector.NOMBRE}}</td>
+																					<td> {{sector.ID}}-{{sector.NOMBRE}}</td>
 																					<td>
 																						<p ng-if='modulo_permisos["registrar"] == 1'>
 																							<button type="button"  ng-click="mostrar_modal_agregar_editar_sector('editar',producto,sector)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 

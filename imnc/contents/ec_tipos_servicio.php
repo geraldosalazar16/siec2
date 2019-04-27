@@ -20,7 +20,7 @@
 
         <div class="x_content">
 			
-				<ul class="list-unstyled user_data">
+				<ul class="list-unstyled user_data" style="display: inline-block !important;">
 					<li ><b>
 					Cliente:<i> {{DatosServicio.NOMBRE_CLIENTE}}</i></b>
 					</li>
@@ -48,11 +48,14 @@
                      <li ng-if="DatosServicio.ID_SERVICIO == 3" ><b>
                             URL Generada: <i><textarea style="width: 100%; border: transparent;" type="text" ng-model="url" ng-init="url = DatosServicio.URL_PARTICIPANTES"></textarea></i></b>
 					</li>
-
-
 				</ul>
-			
 				
+				<div class="pull-right subir">
+					<a	class="btn" ng-show="DatosServicio.ID_ETAPA_PROCESO !=13" href="./?pagina=ver_expediente&id={{DatosServicio.ID}}&id_entidad=5"> 
+						<span class="labelAcordeon"	>Ver expedientes</span></a>
+					<a	class="btn" ng-show="DatosServicio.ID_ETAPA_PROCESO ==13" href="./?pagina=ver_expediente&id={{DatosServicio.ID_REFERENCIA_SEG}}&id_entidad=5"> 
+						<span class="labelAcordeon"	>Ver expedientes</span></a>
+				</div>
 				
 				<div class="" role="tabpanel" data-example-id="togglable-tabs">
 							<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
@@ -71,7 +74,7 @@
                           			Sitios</a>
 								</li>
 								
-								<li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
 								<a href="#tab_auditorias" id="tab_auditorias-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
                           			Auditor&iacuteas </a>
 								</li>
@@ -85,7 +88,10 @@
 								<a href="#tab_configuracion" id="tab_configuracion-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
                           			Configuración </a>
 								</li>
-								
+								<li role="presentation" class="" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1">-->
+								<a href="#tab_gastos_auditorias" id="tab_gastos_auditorias-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
+                          			Gastos Auditor&iacuteas </a>
+								</li>
 							</ul>
 							<div id="myTabContent" class="tab-content">
 								<div role="tabpanel" class="tab-pane fade active in" id="tab_informacion" aria-labelledby="home-tab">
@@ -183,7 +189,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr ng-repeat="x in SitiosServicio" class="ng-scope  even pointer" ng-if="DatosServicio.ID_SERVICIO == 2">
+										<tr ng-repeat="x in SitiosServicio" class="ng-scope  even pointer" ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4">
 											<td> {{x.ACRONIMO}}<br>{{x.NOMBRE_DOMICILIO}}</td>
 											<td ng-init="CargarDatosSitiosEC(x.ID_CLIENTE_DOMICILIO)">
 												<ul class="list-unstyled user_data">
@@ -239,7 +245,7 @@
 									</tbody>
 								</table>
 								</div>
-								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab" ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO ==2"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" -->
+								<div role="tabpanel" class="tab-pane fade" id="tab_auditorias" aria-labelledby="profile-tab" ng-show="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO ==2 || DatosServicio.ID_SERVICIO ==4"> <!-- ng-if="DatosServicio.ID_SERVICIO == 1" -->
 									<div class="x_title">
 										<p><h2>Auditor&iacuteas </h2></p>
 											<p ng-if='modulo_permisos["registrar"] == 1'>
@@ -275,13 +281,15 @@
 									<tbody>
 										<tr ng-repeat-start="x in DatosAuditoriasSG" ng-if="DatosServicio.ID_SERVICIO == 1" class="ng-scope  even pointer"  >
 											<td> 
+
 												<table>
+
 													<tr>
 														<td>
-															<datepicker date-format="yyyy-MM-dd" date-min-limit="{{FechaHoy}}" date-typer="true" button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' >
-																<input type="text"  ng-model="txtInsertarFechas[x.TIPO_AUDITORIA]" placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" />
-															</datepicker>
 															
+															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtInsertarFechas-{{x.TIPO_AUDITORIA}}-{{x.CICLO}}" ng-model="txtInsertarFechas[x.TIPO_AUDITORIA]"  data-date-format='yyyy-mm-dd' data-multiple-dates="true" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaHoy()}}'
+															jqdatepicker />
+														
 														</td>
 														<td>
 															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,'insertar',x.CICLO)" >Agregar Fechas</button>
@@ -290,10 +298,9 @@
 														</td>
 													</tr>
 													<tr ng-repeat = "z in x.AUDITORIA_FECHAS">
-														<td>												
-															<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-min-limit="{{FechaHoy}}"  >
-																<input type="text"  ng-model="txtFechasAuditoria[z.ID]"  data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria-{{z.ID}}" />
-															</datepicker>
+														<td>
+															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria{{z.ID}}" ng-model="txtFechasAuditoria[z.ID]"  data-date-format='yyyy-mm-dd' data-multiple-dates="false" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaInicio(txtFechasAuditoria[z.ID])}}' jqdatepicker />
+														
 														</td>
 														<td>
 															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,'editar',x.CICLO,z.ID)" >Guardar fecha</button>
@@ -364,7 +371,7 @@
 										</tr>
 										
 										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->
-										<tr  ng-if="DatosServicio.ID_SERVICIO == 1" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{x.TIPO_AUDITORIA}}-{{x.CICLO}}-sitios-auditoria">
+										<tr  ng-if="DatosServicio.ID_SERVICIO == 1" ng-show="x.mostrandoSectoresSitios">
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Sitios de auditor&iacutea
@@ -410,7 +417,7 @@
 										</tr>
 										<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 										<!--++++++++++++++++++++GRUPO DE AUDITORES++++++++++++++++++-->
-										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 1" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{x.TIPO_AUDITORIA}}-{{x.CICLO}}-grupo-auditoria">
+										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 1" ng-show="x.mostrandoSectoresAuditor" >
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Grupo de auditores
@@ -442,9 +449,14 @@
 																<table>
 																	<tr>
 																		<td>
-																			<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-enabled-dates="{{GenerarArregloFecha(x.AUDITORIA_FECHAS)}}"  >
-																				<input type="text"  ng-model="txtInsertarFechasGrupo[w.ID_PERSONAL_TECNICO_CALIF]" placeholder="Fechas" data-parsley-id="2324" class="txtFechasAuditoria" style="width:100px;" />
-																			</datepicker>
+																			<input type='text' placeholder="Fechas" data-parsley-id="2324" class="txtFechasAuditoria" 
+																			id="txtInsertarFechasGrupo-{{x.TIPO_AUDITORIA}}-{{x.CICLO}}-{{w.ID_PERSONAL_TECNICO_CALIF}}" 
+																			ng-model="txtInsertarFechasGrupo[w.ID_PERSONAL_TECNICO_CALIF]"  data-date-format='yyyy-mm-dd' 
+																			data-multiple-dates="true" 
+																			data-days-allowed="{{GenerarArregloFecha(x.AUDITORIA_FECHAS)}}" 
+																			fecha-inicio='{{GenerarFechaHoy()}}'
+																			jqdatepicker />
+																		
 																		</td>
 																		<td>
 																			<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoriaGrupo(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO,w.ID_PERSONAL_TECNICO_CALIF)" >Agregar Fechas</button>
@@ -453,10 +465,7 @@
 																</table>
 																
 																
-				<!--												<label>Asignar fechas  <span class="required">*</span></label>
-				<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-enabled-dates="{{FechaPrueba}}"  >
-						<input type="text"  ng-model="formDataGrupoAuditor.Fecha"  data-parsley-id="2324" class="form-control" id="formDataGrupoAuditor.Fecha" required ng-class="{ error: exampleFormGrupoAuditor.Fecha.$error.required && !exampleFormGrupoAuditor.$pristine}"  />
-				</datepicker>-->
+				
 															<ul class="list-unstyled user_data">
 																<li ng-repeat="r in x.AUDITORES_FECHAS[w.ID_PERSONAL_TECNICO_CALIF]">
 																	<table>
@@ -482,16 +491,15 @@
 												</table>
 											</td>
 										</tr>
-										<tr ng-repeat-start="xx in DatosAuditoriasEC" ng-if="DatosServicio.ID_SERVICIO == 2" class="ng-scope  even pointer"  >
+										<tr ng-repeat-start="xx in DatosAuditoriasEC" ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4" class="ng-scope  even pointer"  >
 											<td>	
 												<table>
 													<tr>
 														<td>
-															<datepicker date-format="yyyy-MM-dd" date-min-limit="{{FechaHoy}}" date-typer="true" button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' >
-																<input type="text"  ng-model="txtInsertarFechas[xx.TIPO_AUDITORIA]" placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" />
-															</datepicker>
+															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtInsertarFechas-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}" ng-model="txtInsertarFechas[xx.TIPO_AUDITORIA]"  data-date-format='yyyy-mm-dd' data-multiple-dates="true" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaHoy()}}' jqdatepicker />
+														
+														</td> 
 															
-														</td>
 														<td>
 															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,'insertar',xx.CICLO)" >Agregar Fechas</button>
 														</td>
@@ -499,10 +507,9 @@
 														</td>
 													</tr>
 													<tr ng-repeat = "z in xx.AUDITORIA_FECHAS">
-														<td>												
-															<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-min-limit="{{FechaHoy}}"  >
-																<input type="text"  ng-model="txtFechasAuditoria[z.ID]"  data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria-{{z.ID}}" />
-															</datepicker>
+														<td>		
+															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria{{z.ID}}" ng-model="txtFechasAuditoria[z.ID]"  data-date-format='yyyy-mm-dd' data-multiple-dates="false" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaInicio(txtFechasAuditoria[z.ID])}}' jqdatepicker />
+														
 														</td>
 														<td>
 															<button class="btn btn-primary btn-xs btn-imnc" ng-click="
@@ -571,7 +578,7 @@
 											</td>
 										</tr>
 										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->
-										<tr  ng-if="DatosServicio.ID_SERVICIO == 2" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-sitios-auditoria_ec">
+										<tr  ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4" ng-show="xx.mostrandoSectoresSitios">
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Sitios de auditor&iacutea
@@ -617,7 +624,7 @@
 										</tr>	
 
 										<!--++++++++++++++++++++GRUPO DE AUDITORES++++++++++++++++++-->
-										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 2" class="collapse out" id="collapse-{{id_servicio_cliente_etapa}}-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-grupo-auditoria_ec">	
+										<tr ng-repeat-end ng-if="DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4" ng-show="xx.mostrandoSectoresAuditor">	
 											<td colspan="13">
 												<table class="table subtable">
 													<caption>Grupo de auditores
@@ -649,9 +656,14 @@
 																<table>
 																	<tr>
 																		<td>
-																			<datepicker date-format="yyyy-MM-dd"  button-prev='<i class="fa fa-arrow-circle-left"></i>' button-next='<i class="fa fa-arrow-circle-right"></i>' date-enabled-dates="{{GenerarArregloFecha(xx.AUDITORIA_FECHAS)}}"  >
-																				<input type="text"  ng-model="txtInsertarFechasGrupo[w.ID_PERSONAL_TECNICO_CALIF]" placeholder="Fechas" data-parsley-id="2324" class="txtFechasAuditoria" style="width:100px;" />
-																			</datepicker>
+																			<input type='text' placeholder="Fechas" data-parsley-id="2324" class="txtFechasAuditoria" 
+																			id="txtInsertarFechasGrupo-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}-{{w.ID_PERSONAL_TECNICO_CALIF}}" 
+																			ng-model="txtInsertarFechasGrupo[w.ID_PERSONAL_TECNICO_CALIF]"  data-date-format='yyyy-mm-dd' 
+																			data-multiple-dates="true" 
+																			data-days-allowed="{{GenerarArregloFecha(xx.AUDITORIA_FECHAS)}}" 
+																			fecha-inicio='{{GenerarFechaHoy()}}'
+																			jqdatepicker />
+																	
 																		</td>
 																		<td>
 																			<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoriaGrupo(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,xx.CICLO,w.ID_PERSONAL_TECNICO_CALIF)" >Agregar Fechas</button>
@@ -803,7 +815,117 @@
                                          </form>
 										</div>
                                 </div>
-								
+								<div role="tabpanel" class="tab-pane fade" id="tab_gastos_auditorias" aria-labelledby="profile-tab"	ng-if="DatosServicio.ID_SERVICIO == 1 || DatosServicio.ID_SERVICIO == 2 || DatosServicio.ID_SERVICIO == 4">
+									<div class="x_title">
+										<p><h2>Gastos de auditor&iacuteas </h2></p>
+									
+										<div class="clearfix"></div>
+									</div>
+									<div>
+										<ul class="list-unstyled user_data" style="display: inline-block !important;">
+											<li>
+												<p><b>
+												Total Vi&aacuteticos Servicio:</b> {{GastosAuditorias.TOTAL_VIATICOS}} </p>
+												
+											</li>
+
+											<li><b>
+												Total Gastos Servicio:</b> &nbsp;&nbsp;{{GastosAuditorias.TOTAL_GASTOS}}
+											</li>
+										</ul>
+									</div> 
+									
+									<div class='panel-group' id='accordion' role='tablist' aria-multiselectable='true'>
+										<div class='panel panel-default' ng-repeat="xyz in GastosAuditorias.AUDITORIAS">
+											<div class='panel-heading' id='heading{{$index}}' role='tab'>
+												<ul class="nav navbar-right panel_toolbox">
+												<li ng-show="xyz.mostrandoSectoresGastosAuditor == false">
+													<a class="collapse-link" ng-click="changePrueba(xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO)"><i class="fa fa-chevron-down"></i></a>
+												</li>
+												<li ng-show="xyz.mostrandoSectoresGastosAuditor == true">
+													<a class="collapse-link" ng-click="changePrueba(xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO)"><i class="fa fa-chevron-up"></i></a>
+												</li>
+											</ul>
+												<b>Ciclo:</b> {{xyz.CICLO}}<br>
+												<b>Tipo Auditoria:</b> {{xyz.TIPO}} <br>
+												<b>Total Gastos:</b> {{xyz.TOTAL_GASTOS}}<br>
+												<b>Total Vi&aacuteticos:</b> {{xyz.TOTAL_VIATICOS}} <br>
+												<b>Diferencia:</b> {{xyz.TOTAL_GASTOS-xyz.TOTAL_VIATICOS}}<br>
+												<p ng-if='modulo_permisos["registrar"] == 1'>
+														<button type="button" ng-click="agregar_editar_viaticos(xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO)" class="btn btn-primary btn-xs btn-imnc" style="float: left;"> 
+															<i class="fa fa-plus"> </i> Editar vi&aacuteticos auditor&iacuteas 
+														</button>
+													</p> <br>
+											</div>
+											<div ng-show="xyz.mostrandoSectoresGastosAuditor == true" role='tabpanel' aria-labelledby='heading{{$index}}'>
+												<div class='panel-body'>
+													<p>
+														<h2>Auditores </h2>
+													</p>
+															
+													<table class="table table-striped responsive-utilities jambo_table bulk_action">
+														<thead>
+															<tr class="headings">
+																<th class="column-title">Auditor</th>
+																<th class="column-title" ng-repeat="xyz2 in CATALOGO_GASTOS">{{xyz2.NOMBRE}}</th>
+																<th class="column-title">Total auditor</th>	
+																<th class="column-title">Total auditor sin IVA</th>															
+																<th class="column-title"></th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat='xyz1 in xyz.AUDITORES' class="ng-scope  even pointer">
+																<td>{{xyz1.NOMBRE}} {{xyz1.APELLIDO_MATERNO}} {{xyz1.APELLIDO_PATERNO}}</td>
+																<td ng-repeat="xyz3 in xyz1.MONTO">{{xyz3.VALOR}}</td>
+															
+																<td>{{xyz1.TOTAL_AUDITOR}}</td>
+																<td>{{xyz1.TOTAL_AUDITOR_SIN_IVA}}</td>
+																<td>
+																	<p ng-if='modulo_permisos["registrar"] == 1'>
+																		<button type="button"  ng-click="agregar_editar_gastos('auditor',xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO,xyz1.ID_PERSONAL_TECNICO_CALIF)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+																			<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar gastos 
+																		</button>
+																	</p>
+																</td>
+																
+															</tr>
+														</tbody>
+													</table>
+													<p><h2>Experto T&eacutecnico </h2></p>
+										
+													<table class="table table-striped responsive-utilities jambo_table bulk_action">
+														<thead>
+															<tr class="headings">
+																<th class="column-title">Experto T&eacutecnico </th>
+																<th class="column-title" ng-repeat="xyz2 in CATALOGO_GASTOS">{{xyz2.NOMBRE}}</th>
+																<th class="column-title">Total experto t&eacutecnico </th>	
+																<th class="column-title">Total experto t&eacutecnico sin IVA</th>																	
+																<th class="column-title"></th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat='xyz1 in xyz.EXP_TECNICOS' class="ng-scope  even pointer">
+																<td>{{xyz1.NOMBRE}} {{xyz1.APELLIDO_MATERNO}} {{xyz1.APELLIDO_PATERNO}}</td>
+																<td ng-repeat="xyz3 in xyz1.MONTO">{{xyz3.VALOR}}</td>
+																<td>{{xyz1.TOTAL_AUDITOR}}</td>
+																<td>{{xyz1.TOTAL_AUDITOR_SIN_IVA}}</td>
+																<td>
+																	<p ng-if='modulo_permisos["registrar"] == 1'>
+																		<button type="button"  ng-click="agregar_editar_gastos('exptec',xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO,xyz1.ID_PERSONAL_TECNICO_CALIF)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
+																			<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar gastos 
+																		</button>
+																	</p>
+																</td>
+																
+															</tr>
+														</tbody>
+													</table>
+												</div>	
+											</div>
+										</div>
+										
+									</div>
+								</div>		
 				
         </div>
       </div>
@@ -826,6 +948,8 @@
   include "ec_tipos_servicio/modal_inserta_actualiza_auditoria_grupo_auditores.php";
   include "ec_tipos_servicio/modal_fecha_norma_tipo_servicio_integral.php";
   include "ec_tipos_servicio/modal_genera_notificacion.php";
+  include "ec_tipos_servicio/modal_inserta_actualiza_gastos_auditoria.php";
+   include "ec_tipos_servicio/modal_inserta_actualiza_viaticos_auditoria.php";
   include "ec_tipos_servicio/modal_dictaminacion.php";
   include "ec_tipos_servicio/modal_confirmacion.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_participante.php";

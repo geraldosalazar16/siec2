@@ -84,12 +84,15 @@ if (!isset($_SESSION['CREATED'])) {
   <link href="css/datepicker/angular-datepicker.css" rel="stylesheet"/>
   <link rel="stylesheet" type="text/css" href="css/bootstrap-duallistbox/bootstrap-duallistbox.css"/>
   <link href="css/common.css" rel="stylesheet" type="text/css" />
+  <!-- multipleDatePicker -->
+  <link href="css/MultipleDatePicker-master/multipleDatePicker.css" rel="stylesheet"/>
+  <!-- air-datepicker -->
+  <link href="js/air-datepicker/dist/css/datepicker.css" rel="stylesheet" type="text/css">
   
   <script src="js/angular.min.js"></script>
   <script src="js/certificando-app.js"></script>
-  <script src="js/jquery.min.js"></script>
-  <!-- <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>	-->
-  <script src="js/jquery-ui.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery-ui.js"></script>
   <script src="js/nprogress.js"></script>
   <script src="js/input_mask/jquery.inputmask.js"></script>
   <script src="js/jquery.uploadfile.min.js"></script>
@@ -200,6 +203,11 @@ if (!isset($_SESSION['CREATED'])) {
   <script src="js/multiselect/multiple-select.min.js"></script>
   <!-- datepicker -->
    <script src="js/datepicker/angular-datepicker.js"></script>
+   <!-- multidatepicker -->
+   <script src="js/MultipleDatePicker-master/multipleDatePicker.js"></script>
+   <!-- air-datepicker -->
+   <script src="js/air-datepicker/dist/js/datepicker.js"></script>
+   <script src="js/air-datepicker/dist/js/i18n/datepicker.es.js"></script>
   <!--checklist-model-->
    <script src="js/checklist-model/checklist-model.js"></script>
     <!-- Autocomplete -->

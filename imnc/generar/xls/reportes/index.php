@@ -52,6 +52,8 @@ $search = array("[","]","{","}");
 $COLUMNS = str_replace($search,"",$COLUMNAS);
 
 $COLUMNAS = explode(",",$COLUMNS);
+$COLUMNAS = str_replace("*",",",$COLUMNAS);
+
 
 $sql = "";
 $TEXTS = array();
@@ -97,7 +99,7 @@ if(strtolower($AREA)=="comercial")
             ON P.ID_ESTATUS_SEGUIMIENTO = PES.ID";
 
     //$sql = "SELECT ".$SELECT.$FROM." ORDER BY ".$ORDER;
-    $sql = "SELECT ".$SELECT.$FROM;
+    $sql = "SELECT DISTINCT ".$SELECT.$FROM;
 
 }
 
@@ -122,7 +124,20 @@ if(strtolower($AREA)=="programación")
                 ON SECTORES.ID_SECTOR = SGS.ID_SECTOR 
                 LEFT JOIN ETAPAS_PROCESO 
                 ON SCE.ID_ETAPA_PROCESO = ETAPAS_PROCESO.ID_ETAPA";
-    $sql = "SELECT ".$SELECT.$FROM;
+    $sql = "SELECT DISTINCT ".$SELECT.$FROM;
+}
+
+if(strtolower($AREA)=="auditores")
+{
+    $FROM = "  FROM PERSONAL_TECNICO PT
+LEFT JOIN PERSONAL_TECNICO_CALIFICACIONES PTC ON PT.ID = PTC.ID_PERSONAL_TECNICO
+LEFT JOIN PERSONAL_TECNICO_ROLES PTR ON PTC.ID_ROL = PTR.ID
+LEFT JOIN PERSONAL_TECNICO_CALIF_SECTOR PTCS ON PTC.ID = PTCS.ID_PERSONAL_TECNICO_CALIFICACION
+LEFT JOIN SECTORES SC ON PTCS.ID_SECTOR = SC.ID_SECTOR
+LEFT JOIN TIPOS_SERVICIO TS ON PTC.ID_TIPO_SERVICIO = TS.ID
+LEFT JOIN SERVICIOS S ON TS.ID_SERVICIO = S.ID
+ORDER BY PT.NOMBRE,PT.ID,FIELD(PTC.ID_ROL,'3','1','6','4','2','8','5','7','11','9','10','12','13','14'), S.ID,TS.ID";
+    $sql = "SELECT DISTINCT ".$SELECT.$FROM;
 }
 
 $consulta = $database->query($sql)->fetchAll(PDO::FETCH_ASSOC);
