@@ -91,6 +91,10 @@ function valida_isset($variable, $mensaje){
 	}
 }
 
+//Funcion para redondear
+function redondeado ($numero, $decimales) { 
+   $factor = pow(10, $decimales); 
+   return (round($numero*$factor)/$factor); }
 
 $id_prospecto = $_REQUEST["id_prospecto"]; 
 valida_parametro_and_die($id_prospecto,"Es necesario seleccionar un prospecto");
@@ -448,20 +452,20 @@ for($i=0;$i<count($datos);$i++){
 		$SITIOS_A_VISITAR=$obj_cotizacion_tramite[$i]->COUNT_SITIOS->SITIOS_A_VISITAR;
 		$TOTAL_SITIOS = $obj_cotizacion_tramite[$i]->COUNT_SITIOS->TOTAL_SITIOS;
 		$dias_auditor_E1 = $datos[$i]->DIAS_AUDITORIA;
-		$costo_E1	=	$datos[$i]->TRAMITE_COSTO;
-		$viaticos_E1 = $datos[$i]->VIATICOS;
+		$costo_E1	=	redondeado ($datos[$i]->TRAMITE_COSTO,2);
+		$viaticos_E1 = redondeado ($datos[$i]->VIATICOS,2);
 		$total_emp_tramite = $cotizacion[0]->COTIZACION_TRAMITES[$i]->TOTAL_EMPLEADOS_TRAMITE;
 		$personas_encuesta = $cotizacion[0]->COTIZACION_TRAMITES[$i]->PERSONAS_ENCUESTA;
 		$dias_base_multisitio = $cotizacion[0]->COTIZACION_TRAMITES[$i]->DIAS_BASE + $cotizacion[0]->COTIZACION_TRAMITES[$i]->DIAS_MULTISITIO;
 		$dias_encuesta	=	$cotizacion[0]->COTIZACION_TRAMITES[$i]->DIAS_ENCUESTA;
-		$tarifa_dia_auditor = $cotizacion[0]->COTIZACION_TRAMITES[$i]->TARIFA_DES;
-		$costo_dias_encuesta = $dias_encuesta*2000;
-		$costo_dias_auditor = $dias_base_multisitio*$tarifa_dia_auditor;
-		$tarifa_adicional = $cotizacion[0]->COTIZACION_TRAMITES[$i]->TARIFA_ADICIONAL;
-		$viaticos = $cotizacion[0]->COTIZACION_TRAMITES[$i]->VIATICOS;
-		$subtotal = $cotizacion[0]->COTIZACION_TRAMITES[$i]->TRAMITE_COSTO_TOTAL;
-		$IVA = 0.16*$subtotal;//Aqui es necesario asegurarse que sea IVA 16%
-		$Total=$subtotal+$IVA;
+		$tarifa_dia_auditor = redondeado ($cotizacion[0]->COTIZACION_TRAMITES[$i]->TARIFA_DES,2);
+		$costo_dias_encuesta = redondeado ($dias_encuesta*2000,2);
+		$costo_dias_auditor = redondeado ($dias_base_multisitio*$tarifa_dia_auditor,2);
+		$tarifa_adicional = redondeado ($cotizacion[0]->COTIZACION_TRAMITES[$i]->TARIFA_ADICIONAL,2);
+		$viaticos = redondeado ($cotizacion[0]->COTIZACION_TRAMITES[$i]->VIATICOS,2);
+		$subtotal = redondeado ($cotizacion[0]->COTIZACION_TRAMITES[$i]->TRAMITE_COSTO_TOTAL,2);
+		$IVA = redondeado (0.16*$subtotal,2);//Aqui es necesario asegurarse que sea IVA 16%
+		$Total=redondeado ($subtotal+$IVA,2);
 $html = <<<EOT
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;" width="450">
@@ -658,7 +662,7 @@ $html = <<<EOT
 	<tr>
 		<td style="font-size: medium;" width="219">
 			
-				____________________________________<br>IMNC<br>Rodrigo de Matheus Bustamante<br>Representante Legal
+				____________________________________<br>IMNC<br><br>Representante Legal
 
   			
   		</td>

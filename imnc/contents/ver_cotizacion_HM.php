@@ -164,7 +164,7 @@
                   </li>
               </ul>
             </div>
-
+			<br>
           <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
             <thead>
               <tr class="headings">
@@ -868,7 +868,7 @@
         <h4 class="modal-title" id="modalTituloGenerarCotizacion">Generar Cotizacion</h4>
       </div>
       <div class="modal-body">
-		<form name="exampleFormGenCotizacion" target="VentanaGenerarPDF_CIL" method="POST" action="./generar/pdf/cotizacion_propuesta_cper/index.php">
+		<form name="exampleFormGenCotizacion" ><!--target="VentanaGenerarPDF_CIL" method="POST" action="./generar/pdf/cotizacion_propuesta_cper/index.php"> -->
 				<div  class='form-group'>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<label class="control-label col-md-4 col-xs-4 col-sm-4">Trámite</label>
