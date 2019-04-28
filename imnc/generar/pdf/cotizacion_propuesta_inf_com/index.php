@@ -458,7 +458,8 @@ for($i=0;$i<count($datos);$i++){
 		$Descripcion_servicio=$datos[$i]->TIPO;
 		$costo	=	$datos[$i]->TRAMITE_COSTO_DES;
 		$viaticos = $datos[$i]->VIATICOS;
-		
+		//Dando formato a los datos
+		$costo_f=number_format($costo,2);
 		$html = <<<EOT
 		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;" width="450">
@@ -474,7 +475,7 @@ for($i=0;$i<count($datos);$i++){
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="225">$Descripcion_servicio</td>
 				<td style="font-size: medium; background-color: #D8E4F0;" width="100">N/A</td>
 				<td style="font-size: medium; color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;" width="100">$costo</td>
+				<td style="font-size: medium;" width="100">$costo_f</td>
 			</tr>
 			
 EOT;
@@ -485,38 +486,46 @@ EOT;
 				$descripcion = $datos1[$i][$j]->DESCRIPCION;
 				$tarifa	=	$datos1[$i][$j]->TARIFA;
 				$suma_tarifa += $tarifa;
+				//Dando formato a los datos
+				$tarifa_f=number_format($tarifa,2);
 				$html .= <<<EOT
 						<tr>
 							<td style="font-size: medium; text-align:right; color:#5779A3" width="225">$descripcion</td>
 							<td style="font-size: medium; background-color: #D8E4F0;" width="100">N/A</td>
 							<td style="font-size: medium; color:#5779A3" width="25">$</td>
-							<td style="font-size: medium;" width="100">$tarifa</td>
+							<td style="font-size: medium;" width="100">$tarifa_f</td>
 						</tr>
 EOT;
-			}}		
+			}}	
+				
 			$subtotal=$costo+$suma_tarifa+$viaticos;
 			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
+			//Dando formato a los datos
+			$viaticos_f=number_format($viaticos,2);
+			$subtotal_f=number_format($subtotal,2);
+			$IVA16_f=number_format($IVA16,2);
+			$total_f=number_format($total,2);
 			$html .= <<<EOT
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325">Viáticos</td>
 				<td style="font-size: medium;  color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;  text-align:center" width="100">$viaticos</td>
+				<td style="font-size: medium;  text-align:center" width="100">$viaticos_f</td>
 			</tr>
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>Subtotal</strong></td>
 				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;" width="100">$subtotal</td>
+				<td style="font-size: medium;" width="100">$subtotal_f</td>
 			</tr>
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>I.V.A. 16%</strong></td>
 				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;" width="100">$IVA16</td>
+				<td style="font-size: medium;" width="100">$IVA16_f</td>
 			</tr>
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>Total</strong></td>
 				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;" width="100">$total</td>
+				<td style="font-size: medium;" width="100">$total_f</td>
 			</tr>
 		</table>
 EOT;
