@@ -464,7 +464,7 @@ for($i=0;$i<count($datos);$i++){
 		$total_dias_auditoria = $cotizacion[0]->COTIZACION_TRAMITES[$i]->DIAS_AUDITORIA;
 		//Dando formato a los datos
 		$costo_f=number_format($costo,2);
-		if(($norma2 == 'NMX-AA-133-SCFI-2013')&&($cotizacion[0]->COTIZACION_TRAMITES[$i]->ID_TIPO_AUDITORIA == 14)){
+		if(($norma2 == 'NMX-AA-133-SCFI-2013')&&($cotizacion[0]->COTIZACION_TRAMITES[$i]->ID_TIPO_AUDITORIA == 14)&&(false)){
 			$total_dias_auditoria1 = $total_dias_auditoria-1 ;
 			$costo1	=	$costo/$total_dias_auditoria;
 			$costo2	=	$costo1*$total_dias_auditoria1;
