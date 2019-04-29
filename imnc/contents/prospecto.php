@@ -373,7 +373,7 @@
           <div class="modal-footer">
                   <button type="button" class="btn btn-primary" ng-click="guardarDomicilio()"  id="btnGuardarDomicilio">Agregar <i class="fa fa-save"></i></button>
                   <button type="button" class="btn btn-default" ng-click="redireccionar()" >Finalizar  <i class="fa fa-window-close"></i></button>
-                  <button type="button" class="btn btn-default" ng-click="openContactos(false)"  >Siguiente <i class="fa fa-arrow-circle-right"></i></button>
+                  <button type="button" class="btn btn-default" ng-click="openContactos(false)" ng-disabled="count_domicilios==0" >Siguiente <i class="fa fa-arrow-circle-right"></i></button>
           </div>
      </div>
    </div>  <!-- FIN INSERT DOMICILIO-->

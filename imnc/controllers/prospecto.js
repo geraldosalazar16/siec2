@@ -46,6 +46,7 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 	$scope.id_new_prospecto = null;
 	$scope.accion = null;
 	$scope.listaDomicilios = {};
+	$scope.count_domicilios = 0;
 
 	/*
 		Manejo de Contacto prospecto
@@ -762,6 +763,7 @@ $scope.limpiaCamposDomicilio = function(){
 		$scope.autocompleteListBarrio("","");
 		$scope.changeInAutoComplete();
 		$scope.$apply();
+		$scope.count_domicilios = 0;
 
 		this.mytoggle('stepPrimero');
 		this.mytoggle('stepSegundo');
@@ -910,6 +912,7 @@ $scope.limpiaCamposDomicilio = function(){
 				$.post(global_apiserver + "/prospecto_domicilio/insert/", JSON.stringify(domicilio), function(respuesta){
 					respuesta = JSON.parse(respuesta);
 					if (respuesta.resultado == "ok") {
+						    $scope.count_domicilios++;
 							$scope.limpiaCamposDomicilio();
 							notify_success("Éxito", "Se ha insertado un nuevo domicilio");
 					}
