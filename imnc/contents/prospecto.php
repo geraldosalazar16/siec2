@@ -107,15 +107,16 @@
 </div>
 
 <!-- Modal insertar/actualizar-->
-<div class="modal fade" id="modalInsertarActualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="modalInsertarActualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="true">
+  <div class="modal-dialog" role="document" id="modal-size" >
+   <div id="stepPrimero">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalTitulo">Insertar/Actualizar</h4>
+        <h4 class="modal-title" id="modalTitulo">{{modal_title}}</h4>
       </div>
       <div class="modal-body">
-          <form name="form2" id="form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
+          <form name="form1" id="form1" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
             <div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12">Empresa:<span class="required">*</span>
               </label>
@@ -234,7 +235,7 @@
                 <span id="usuarioserror" class="text-danger"></span>
               </div>
             </div>
-			<!--
+
             <div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12">Habilitado<span class="required">*</span>
               </label>
@@ -247,9 +248,220 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default">Cerrar</button>
-        <button type="button" class="btn btn-primary" ng-click="guardar()"  id="btnGuardar">Guardar</button>
+          <!--<button type="button" class="btn btn-primary" ng-click="guardar(true)"  id="btnGuardar" ><span ng-if="accion == 'insertar'">Terminar</span> <span ng-if="accion == 'editar'">Guardar</span>  <i class="fa fa-save"></i></button>-->
+          <button type="button" class="btn btn-primary" ng-click="guardar()"  id="btnGuardar">Guardar <i class="fa fa-save"></i></button>
       </div>
     </div>
+   </div> <!-- FIN INSERT UPDATE PROSPECTO-->
+
+   <div id="stepSegundo">
+     <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="modalTitulo">{{modal_title}}</h4>
+          </div>
+          <div class="modal-body">
+       		<form name="form2" id="form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
+				<div class="form-group">
+					<label class="control-label col-md-4 col-sm-4 col-xs-12">Nombre:</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input type="text" class="form-control col-md-7 col-xs-12" ng-model="nombre_domicilio">
+							<span id="nombreerror" class="text-danger"></span>
+						</div>
+				</div>
+
+
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12">País<span class="required">*</span></label>
+                         <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select class="select2_single form-control col-md-7 col-xs-12" id="autocompletePais" ng-model="pais">
+
+                            </select>
+                              <!--<input  type="text" class="form-control col-md-7 col-xs-12" ng-model="pais" id="autocompletePais"></input>-->
+                         </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12">Código Postal<span class="required">*</span></label>
+                         <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="txtCP" required="required" ng-model="codigo_postal" class="form-control col-md-7 col-xs-12">
+                            <select class="select2_single form-control col-md-7 col-xs-12" id="autocompleteCP" style="display: none;">
+                            </select>
+                         </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12">Calle:<span class="required">*</span></label>
+                         <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="calle">
+                                <span id="calleerror" class="text-danger"></span>
+                          </div>
+                </div>
+
+				<div class="form-group">
+					<label class="control-label col-md-4 col-sm-4 col-xs-12">Numero Exterior:<span class="required">*</span></label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="numero_exterior">
+						    <span id="numero_exteriorerror" class="text-danger"></span>
+						</div>
+					</div>
+
+				<div class="form-group">
+					<label class="control-label col-md-4 col-sm-4 col-xs-12">Numero interior:</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="numero_interior">
+						</div>
+				</div>
+
+
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12">Colonia<span class="required">*</span>
+                          <div style="float: right;" id="campoChkCol"><input type="checkbox" ng-model="chkColonia" ng-change="colonia_checkbox()" id="chkColonia">
+                              <span style="font-size: 11px;">No encuentra colonia</span>
+                          </div>
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12" id="campoSelectColonia">
+                         <input type="text" id="txtColonia" required="required" ng-model="colonia" class="form-control col-md-7 col-xs-12">
+                         <select class="select2_single form-control col-md-7 col-xs-12" id="autocompleteColonia" style="display: none;">
+
+                         </select>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12" id="auxColonia" hidden>
+                         <input type="text" required="required" class="form-control col-md-7 col-xs-12" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group" id="campoNuevaColonia" hidden>
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12">Nueva Colonia<span class="required">*</span></label>
+                         <div class="col-md-6 col-sm-6 col-xs-12">
+                             <input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="colonia">
+                         </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12">Estado:<span class="required">*</span></label>
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                              <input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="estado" id="txtEstado">
+                                <span id="estadoerror" class="text-danger"></span>
+                          </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12">Municipio:<span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="municipio" id="txtMunicipio">
+                            <span id="municipioerror" class="text-danger"></span>
+                        </div>
+                </div>
+
+
+                <div class="form-group">
+                     <label class="control-label col-md-4 col-sm-4 col-xs-12">Domicilio para Facturación Fiscal:<span class="required">*</span></label>
+                         <div class="col-md-6 col-sm-6 col-xs-12">
+                               <input type="checkbox" class="form-control col-md-7 col-xs-12 selector noshadow" ng-model="fiscalhabilitado" data-parsley-id="2324" >
+                        </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12">¿Oficina central?<span class="required">*</span></label>
+                         <div class="col-md-6 col-sm-6 col-xs-12">
+                               <input type="checkbox" class="form-control col-md-7 col-xs-12 selector noshadow" ng-model="domiciliohabilitado" data-parsley-id="2324" >
+                         </div>
+                </div>
+				</form>
+          </div>
+          <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" ng-click="guardarDomicilio()"  id="btnGuardarDomicilio">Agregar <i class="fa fa-save"></i></button>
+                  <button type="button" class="btn btn-default" ng-click="redireccionar()" >Finalizar  <i class="fa fa-window-close"></i></button>
+                  <button type="button" class="btn btn-default" ng-click="openContactos(false)"  >Siguiente <i class="fa fa-arrow-circle-right"></i></button>
+          </div>
+     </div>
+   </div>  <!-- FIN INSERT DOMICILIO-->
+
+   <div id="stepTercero">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="modalTitulo">{{modal_title}}</h4>
+          </div>
+          <div class="modal-body">
+              <form name="form3" id="form3" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
+					<div class="form-group">
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Nombre<span class="required">*</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" class="form-control col-md-7 col-xs-12" ng-model="nombre_contacto">
+                                <span id="nombreerror" class="text-danger"></span>
+                            </div>
+					</div>
+
+					<div class="form-group">
+		                <label class="control-label col-md-4 col-sm-4 col-xs-12">Domicilio del Contacto<span class="required">*</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                              <select class="form-control col-md-7 col-xs-12" id="domicilioContacto" ng-model="domicilioContacto"
+                                      ng-options="dom.ID as dom.NOMBRE for dom in listaDomicilios">
+                                  <option value="">---Seleccione un domicilio---</option>
+                              </select>
+                            </div>
+		            </div>
+
+					<div class="form-group">
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Correo<span class="required">*</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="correo">
+                                <span id="correoerror" class="text-danger"></span>
+                            </div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Correo2</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="correo2">
+                                <span id="correoerror" class="text-danger"></span>
+                            </div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Telefono<span class="required">*</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="tel" required="required" class="form-control col-md-7 col-xs-12" ng-model="telefono">
+                                <span id="telefonoerror" class="text-danger"></span>
+                            </div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Celular</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="tel" required="required" class="form-control col-md-7 col-xs-12" ng-model="celular">
+                            </div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Puesto<span class="required">*</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" required="required" class="form-control col-md-7 col-xs-12" ng-model="puesto">
+                                <span id="puestoerror" class="text-danger"></span>
+                            </div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-4 col-sm-4 col-xs-12">Datos Adicionales</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea rows="4" cols="50" name="datos_adicionales" id="datos_adicionales" class="form-control col-md-7 col-xs-12"
+                                          ng-model="datos_adicionales"> </textarea>
+                            </div>
+					</div>
+                    <div class="form-group">
+                        <label class="control-label col-md-4 col-sm-4 col-xs-12">ACTIVO:<span class="required">*</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                   <input type="checkbox" class="form-control col-md-7 col-xs-12 selector noshadow" ng-model="contactohabilitado" data-parsley-id="2324" >
+                            </div>
+                    </div>
+
+				</form>
+          </div>
+             <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" ng-click="guardarContacto()"  id="btnGuardarContacto">Agregar <i class="fa fa-save"></i></button>
+                 <button type="button" class="btn btn-default" ng-click="redireccionar()" >Finalizar <i class="fa fa-window-close"></i> </button>
+
+          </div>
+        </div>
+   </div> <!-- FIN INSERT CONTACTO-->
   </div>
 </div>
 <!-- Modal Detalles-->
