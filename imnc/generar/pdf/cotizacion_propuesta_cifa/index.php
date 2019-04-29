@@ -353,7 +353,7 @@ if($modalidad == 'programado'){
 	$subtotal_curso = $tarifa*$num_part;
 }
 $subtotal = $cotizacion[0]->TOTAL_COTIZACION;
-$iva = redondeado($subtotal*0.16,2);
+$iva = $subtotal*0.16;
 $total = $subtotal +  $iva;
 //////////////////////////
 // create new PDF document
@@ -479,7 +479,12 @@ $html = <<<EOT
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
-
+//Dando formato a los datos
+$tarifa=number_format($tarifa,2);
+$subtotal_curso=number_format($subtotal_curso,2);
+$subtotal=number_format($subtotal,2);
+$iva=number_format($iva,2);
+$total=number_format($total,2);
 $Titulo_Tabla="".strtoupper($cotizacion[0]->TIPOS_SERVICIO->NOMBRE);
 $html = <<<EOT
 		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -525,7 +530,7 @@ EOT;
 				for($j=0;$j<count($datos1);$j++){
 					$index = $j+1;
 					$descripcion = $datos1[$j]->DESCRIPCION;
-					$tarifa_ad	=	$datos1[$j]->TARIFA*$datos1[$j]->CANTIDAD;
+					$tarifa_ad	=	number_format($datos1[$j]->TARIFA*$datos1[$j]->CANTIDAD,2);
 					$suma_tarifa_ad += $tarifa_ad;
 					$html .= <<<EOT
 						<tr>

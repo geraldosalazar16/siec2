@@ -192,7 +192,7 @@
                   </li>
               </ul>
             </div>
-
+			<br>
           <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
             <thead>
               <tr class="headings">
@@ -663,7 +663,7 @@
                 <div class='checkbox col-md-12 cambioCheckbox' >
                   <label>
                     <input type='checkbox' ng-model="check_cmb_list[item_cmb.ID]" ng-change="check_checkbox_cambio(item_cmb.ID,check_cmb_list[item_cmb.ID])" />
-                    {{item_cmb.CAMBIO}}
+                  <!--  {{item_cmb.CAMBIO}} -->{{item_cmb.NOMBRE}}
                   </label>
                 </div>
               </div>

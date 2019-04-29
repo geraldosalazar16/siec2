@@ -868,6 +868,7 @@ $scope.eliminar = function(id){
 						  nombre_servicio: item.NOMBRE_SERVICIO,
 						  id_tipo_servicio: item.ID_TIPO_SERVICIO,
 						  nombre_tipo_servicio: item.NOMBRE_TIPO_SERVICIO,
+						  alcance: item.ALCANCE,
 						  normas: item.NORMAS,
 						  normas_string: normas_string,
 						  sectores_mostrandose: false,

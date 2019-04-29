@@ -60,7 +60,7 @@
 							<div class="" role="tabpanel" data-example-id="togglable-tabs">
 								<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
 									<li role="presentation" class="active">
-										<a href="#tab_domicilio" id="home-tab"  role="tab"  data-toggle="tab" aria-expanded="false">
+										<a href="#tab_domicilio" id="home-tab"  role="tab"  data-toggle="tab" aria-expanded="true">
 										Domicilio</a>
 									</li>
 

@@ -91,9 +91,7 @@ function valida_isset($variable, $mensaje){
 	}
 }
 
-function redondeado ($numero, $decimales) { 
-   $factor = pow(10, $decimales); 
-   return (round($numero*$factor)/$factor); }
+
 
 $id_prospecto = $_REQUEST["id_prospecto"]; 
 //valida_parametro_and_die($id_prospecto,"Es necesario seleccionar un prospecto");
@@ -463,6 +461,9 @@ for($i=0;$i<count($datos);$i++){
 		$total_productos = $obj_cotizacion_tramite[$i]->TOTAL_PRODUCTOS;
 		$costo	=	$datos[$i]->TRAMITE_COSTO_DES;
 		$viaticos = $datos[$i]->VIATICOS;
+		//Dando formato a los datos
+		$costo_total_visita_inspeccion_f=number_format($costo_total_visita_inspeccion,2);
+		$costo_total_ensayos_f=number_format($costo_total_ensayos,2);
 		$html = <<<EOT
 		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;" width="450">
@@ -478,13 +479,13 @@ for($i=0;$i<count($datos);$i++){
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="225">Visita de inspección (planta)</td>
 				<td style="font-size: medium; background-color: #D8E4F0;" width="100">1</td>
 				<td style="font-size: medium; color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;" width="100">$costo_total_visita_inspeccion</td>
+				<td style="font-size: medium;" width="100">$costo_total_visita_inspeccion_f</td>
 			</tr>
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="225">Ensayos de Laboratorio</td>
 				<td style="font-size: medium; background-color: #D8E4F0;" width="100">$total_productos</td>
 				<td style="font-size: medium; color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;" width="100">$costo_total_ensayos</td>
+				<td style="font-size: medium;" width="100">$costo_total_ensayos_f</td>
 			</tr>
 			
 EOT;
@@ -497,38 +498,45 @@ EOT;
 				$tarifa	=	$datos1[$i][$j]->TARIFA;
 				$costo_total_certificados = $tarifa*$cantidad_cert;
 				$suma_tarifa += $tarifa*$cantidad_cert;
+				//Dando formato a los datos
+				$costo_total_certificados_f=number_format($costo_total_certificados,2);
 				$html .= <<<EOT
 						<tr>
 							<td style="font-size: medium; text-align:right; color:#5779A3" width="225">$descripcion</td>
 							<td style="font-size: medium; background-color: #D8E4F0;" width="100">$cantidad_cert</td>
 							<td style="font-size: medium; color:#5779A3" width="25">$</td>
-							<td style="font-size: medium;" width="100">$costo_total_certificados</td>
+							<td style="font-size: medium;" width="100">$costo_total_certificados_f</td>
 						</tr>
 EOT;
 			}}		
 			$subtotal=$costo+$viaticos;
-			$IVA16=redondeado (0.16*$subtotal,2);
+			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
+			//Dando formato a los datos
+			$viaticos_f=number_format($viaticos,2);
+			$subtotal_f=number_format($subtotal,2);
+			$IVA16_f=number_format($IVA16,2);
+			$total_f=number_format($total,2);
 			$html .= <<<EOT
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325">Viáticos</td>
 				<td style="font-size: medium;  color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;  text-align:center" width="100">$viaticos</td>
+				<td style="font-size: medium;  text-align:center" width="100">$viaticos_f</td>
 			</tr>
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>Subtotal</strong></td>
 				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;" width="100">$subtotal</td>
+				<td style="font-size: medium;" width="100">$subtotal_f</td>
 			</tr>
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>I.V.A. 16%</strong></td>
 				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;" width="100">$IVA16</td>
+				<td style="font-size: medium;" width="100">$IVA16_f</td>
 			</tr>
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>Total</strong></td>
 				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
-				<td style="font-size: medium;" width="100">$total</td>
+				<td style="font-size: medium;" width="100">$total_f</td>
 			</tr>
 			
 		</table>

@@ -1065,9 +1065,14 @@ $scope.formData = {};
     }
   }
    function fill_checkbox_cambio(){
-    $.getJSON(  global_apiserver + "/servicio_cambio/getAll/", function( response ) {
+   /* $.getJSON(  global_apiserver + "/servicio_cambio/getAll/", function( response ) {
       $scope.arr_cambio = response;
-    });
+    }); */
+	$http.get(global_apiserver + "/i_servicios_contratados_tipos_cambios/getAll/")
+            .then(function(response) {
+                $scope.arr_cambio = response.data;
+
+            });
   }
   //funcion get by id cambios
   function get_cambios_servicios(id_tramite, op){
