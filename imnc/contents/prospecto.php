@@ -20,11 +20,10 @@
               <label class="control-label col-md-12 col-sm-12 col-xs-12">Filtrar por nombre de prospecto</label>
               <select id="cmbProspectos" 
               ng-model="listado_prospecto" 
-              class="select2_single form-control col-md-7 col-xs-12" 
+              class="select2_single form-control col-md-7 col-xs-12"
               ng-options="prospecto.ID as prospecto.NOMBRE for prospecto in Prospectos"> 
                 <option value="elige" ng-selected="true" disabled>Seleccione un prospecto</option>
-              </select>	
-                        
+              </select>
               <a href="./?pagina=perfilprospecto&id={{prospecto_seleccionado}}&entidad=1" ng-if='modulo_permisos["editar"] == 1 && mostrar_perfil_seleccionado' class="btn btn-primary btn-xs btn-success" style="float: left;margin-top:10px;"><i class="fa fa-home"> </i>Perfil</a>	
               <button type="button" style="margin-top:10px" ng-if="mostrar_editar_seleccionado == true" ng-click="editar(prospecto_seleccionado)" class="btn btn-primary btn-xs btn-imnc btnEditar" style="margin-top:10px;">
                 <i class="fa fa-edit"> </i> Editar
@@ -106,8 +105,10 @@
 	</div>
 </div>
 
+
+
 <!-- Modal insertar/actualizar-->
-<div class="modal fade" id="modalInsertarActualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="true">
+<div class="modal fade" id="modalInsertarActualizar"  role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="true">
   <div class="modal-dialog" role="document" id="modal-size" >
    <div id="stepPrimero">
     <div class="modal-content">
@@ -274,9 +275,9 @@
                 <div class="form-group">
                     <label class="control-label col-md-4 col-sm-4 col-xs-12">País<span class="required">*</span></label>
                          <div class="col-md-6 col-sm-6 col-xs-12">
-                            <select class="select2_single form-control col-md-7 col-xs-12" id="autocompletePais" ng-model="pais">
+                           <select class="select2_single form-control col-md-7 col-xs-12" id="autocompletePais">
 
-                            </select>
+                           </select>
                               <!--<input  type="text" class="form-control col-md-7 col-xs-12" ng-model="pais" id="autocompletePais"></input>-->
                          </div>
                 </div>

@@ -27,7 +27,7 @@ function valida_error_medoo_and_die(){
 $respuesta=array();
 
 
-$sectores = $database->select("TABLA_SECTORES", "*");
+$sectores = $database->select("SECTORES", "*");
 valida_error_medoo_and_die();
 
 print_r(json_encode($sectores));

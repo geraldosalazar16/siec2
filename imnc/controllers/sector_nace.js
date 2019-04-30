@@ -72,6 +72,7 @@ app.controller('sector_nace_controller', ['$scope', '$http', function($scope,$ht
 			ID_SECTOR : $scope.nace.Sector,
 			ID_USUARIO : sessionStorage.getItem("id_usuario")
 		};
+		console.log($scope.nace.Sector);
 		if ($scope.accion == 'insertar') {
 		    var http_request = {
 		        method: 'POST',
@@ -119,7 +120,7 @@ app.controller('sector_nace_controller', ['$scope', '$http', function($scope,$ht
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
 	  			$scope.Sectores = response.data.map(function(item){
 	  				return{
-	  					ID_SECTOR : item.ID_SECTOR,
+	  					ID_SECTOR : item.ID,
 	  					NOMBRE : item.ID+" - "+item.NOMBRE
 	  				}
 	  			});
