@@ -2136,8 +2136,12 @@ $scope.get_notificacion	= function(id_servicio,id_sce,id_ta,ciclo){
 		$scope.saveNotas = response.data.NOTAS.map(function(item){
 			$scope.notas[$scope.countnotas++] = item.NOTA;
 			return item.NOTA;
+
 		});
+		console.log(response);
 		$scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF = response.data.DOMICILIO;
+		$scope.$apply();
+
 	});
 	
   }
