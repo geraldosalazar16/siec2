@@ -335,6 +335,7 @@ class MYPDF extends TCPDF {
 	private $selector;
 	private $direccion;
 	private $certificacion;
+	private $nombre_auxiliar;
 
 	function __construct($CERTIFICACION, $DIRECCION, $SELECTOR, $PDF_PAGE_ORIENTATION, $PDF_UNIT, $PDF_PAGE_FORMAT, $B1, $coding, $B2) {
        parent::__construct($PDF_PAGE_ORIENTATION, $PDF_UNIT, $PDF_PAGE_FORMAT, $B1, $coding, $B2);
@@ -342,6 +343,10 @@ class MYPDF extends TCPDF {
        $this->direccion = $DIRECCION;
        $this->certificacion = $CERTIFICACION;//strtoupper($CERTIFICACION);
    }
+    public function setAuxiliar($auxiliar)
+    {
+        $this->nombre_auxiliar = $auxiliar;
+    }
 
 	//Page header
 	public function Header() {
@@ -367,32 +372,38 @@ class MYPDF extends TCPDF {
 		//$this->Cell(0, 10, 'Página '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
 		$NumPage =  $this->getAliasNumPage();
 		$TotPage =	$this->getAliasNbPages();
-
+        $paginado = trim('Página '.$this->getAliasNumPage()." de ".$this->getAliasNbPages());
 		$this->SetFont('Helvetica', '', 9);
 
 		// Lugar, fecha y claves (alineado a la derecha)
-$html = <<<EOD
-<table cellpadding="3" cellspacing="0" border="0">
-	
+
+        $html = <<<EOD
+
+<table cellpadding="2" cellspacing="0" border="0">
+	<tr style="margin-bottom: 10px;">
+		<td colspan="2" style="text-align: center;">
+		 <strong>  Atentamente, $this->nombre_auxiliar</strong> <span style="color: #8d8f90;">(USUARIO SIEC)</span>
+		</td>
+	</tr>
 	<tr>
-		<hr>
-		<td style="font-size: small; text-align:center;" width="400">
+		<td style="font-size: small;border-top: #0a0a0a 3px solid;color: #8d8f90;margin-left: 200px;" width="400">
+		    <br> <br>
 			Manuel Ma. Contreras 133 6º piso Col. Cuauhtémoc, Del. Cuauhtémoc C. P. 06500 CDMX<br>
 			Lada sin costo: 01 800 201 0145 Teléfono: 5546 4546<br>
 			Web <a>www.imnc.org.mx</a>
 		</td>
 		
-		<td style="font-size: small; text-align:left;" width="115"> 
+		<td style="font-size: small; border-top: #0a0a0a 1px solid;color: #8d8f90;" width="115" ALIGN="RIGHT" BGCOLOR="#E0E0E0"> 
 			Clave: FPOP01 <br>
 			Fecha de aplicación: 2019-01-07 <br>
 			Versión: 00 <br>
-			Página $NumPage de $TotPage<br>
+			<span>$paginado</span> <br>
 		</td>
 	</tr>
 </table>
 EOD;
 
-		$this->writeHTML($html, true, false, true, false, '');
+		$this->writeHTML($html, true, true, true, false, 'C');
 		
 	}
 }
@@ -414,6 +425,7 @@ $global_diffname="imnc/";
 // create new PDF document
 $pdf1 = new MYPDF($No5, $str_direccion, $global_diffname, PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 //$fontname = TCPDF_FONTS::addTTFfont('E:/xampp/htdocs/imnc/imnc/phplibs/libPDF/fonts/Calibri Bold Italic.ttf','TrueTypeUnicode','',96);
+$pdf1->setAuxiliar($nombreAuxiliar);
 $pdf1->AddFont('Calibri','','calibri.php');
 $pdf1->AddFont('Calibri','B','calibrib.php');
 $pdf1->AddFont('Calibri','I','calibrii.php');
@@ -459,12 +471,12 @@ $pdf1->AddPage();
 $pdf1->SetPrintFooter(true);
 
 
-$pdf1->SetFont('Helvetica', 'B', 14);
-    // Title
-$pdf1->Cell(0, 5, 'Notificación', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-$pdf1->setCellMargins(0,0,0,0);
-// Titulo de documento (centrado)
-$pdf1->SetXY(0,25);
+//$pdf1->SetFont('Helvetica', 'B', 14);
+//    // Title
+//$pdf1->Cell(0, 5, 'Notificación', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+//$pdf1->setCellMargins(0,0,0,0);
+//// Titulo de documento (centrado)
+$pdf1->SetXY(0,10);
 // set font
 $pdf1->SetFont('Calibri', 'B', 12);
 $html = '<br><br><br><br>';
@@ -478,7 +490,7 @@ $html = '<div style="text-align:center;"><strong><i>'.$NOMBRE_CLIENTE.'</i></str
 $html .= '<strong><i>Dirección:&nbsp;</i></strong> '.$CALLE_Y_NUMERO.'&nbsp;'.$COLONIA_DELEGACION_Y_CP.'&nbsp;'.$ENTIDAD_FEDERATIVA.'<br>';
 $html .= '<br>';
 $html .= '<strong><i>'.$NOMBRE_CONTACTO.'</i></strong><br>';
-$html .= ''.$CARGO_CONTACTO.'<br><br>';
+$html .= '<strong><i>Puesto:&nbsp;</i></strong>'.$CARGO_CONTACTO.'<br>';
 $html .= '<strong><i>Teléfono:&nbsp;</i></strong> '.$TELEFONO.'<br>';
 $html .= '<strong><i>Email:&nbsp;</i></strong> '.$CORREO.'</div>';
 $html .= '<br>';
@@ -590,18 +602,17 @@ $index ++;
 $pdf1->writeHTML($html, true, false, true, false, 'J');
 
 
-
-$html = <<<EOT
-<br><br><table cellpadding="1" cellspacing="0" border="0" style="text-align:center;">
-	<tr>
-		<td style="font-size: medium; text-align:center" >Atentamente, </td>
-	</tr>
-</table>
-EOT;
-$pdf1->writeHTML($html, true, false, true, false, '');
-    $pdf1->SetFont('Calibri', 'B', 10);
-$pdf1->Cell(0, 0, $nombreAuxiliar, 0, false, 'C', 0, '', 0, false, 'M', 'M');
-// Espacio para firmas
+//    $html = <<<EOT
+//<br><br><table cellpadding="1" cellspacing="0" border="0" style="text-align:center;">
+//	<tr>
+//		<td style="font-size: medium; text-align:center" >Atentamente, <strong>$nombreAuxiliar</strong></td>
+//	</tr>
+//</table>
+//EOT;
+//$pdf1->writeHTML($html, true, false, true, false, '');
+//    $pdf1->SetFont('Calibri', 'B', 10);
+//$pdf1->Cell(0, 0, $nombreAuxiliar, 0, false, 'C', 0, '', 0, false, 'M', 'M');
+//// Espacio para firmas
 
 
 // ---------------------------------------------------------
