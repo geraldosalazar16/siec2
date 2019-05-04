@@ -393,7 +393,7 @@ class MYPDF extends TCPDF {
 			Web <a>www.imnc.org.mx</a>
 		</td>
 		
-		<td style="font-size: small; border-top: #0a0a0a 1px solid;color: #8d8f90;" width="115" ALIGN="RIGHT" BGCOLOR="#E0E0E0"> 
+		<td style="font-size: small; border-top: #0a0a0a 1px solid;color: #8d8f90;" width="115" ALIGN="RIGHT"> 
 			Clave: FPOP01 <br>
 			Fecha de aplicación: 2019-01-07 <br>
 			Versión: 00 <br>
