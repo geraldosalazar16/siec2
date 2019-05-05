@@ -16,13 +16,41 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
     // =======================================================================================
     // ***** 		AQUI VOY A INICIALIZAR LAS VARIABLES A USAR EN LOS FILTROS			 *****
     // =======================================================================================
-    $scope.txtFiltroReferencia = "";
-    $scope.txtFiltroReferenciaContains = "";
-    $scope.txtFiltroNombreCliente = "";
-    $scope.txtFiltroNombreClienteContains = "";
-    $scope.txtFiltroNombreServicio = "";
-    $scope.txtFiltroNombreServicioContains = "";
-    $scope.cmbSectoresIAF = "";
+     $scope.total = 0;
+     $scope.filtros = Array();
+     $scope.campos = [
+         {
+             "nombre" : "Nombre del cliente",
+             "value": "CLIENTES.NOMBRE"
+
+         },
+         {
+             "nombre" : "RFC del cliente",
+             "value": "CLIENTES.RFC"
+
+         },
+         {
+             "nombre" : "Referencia",
+             "value": "SERVICIO_CLIENTE_ETAPA.REFERENCIA"
+
+         },
+         {
+             "nombre" : "Servicio",
+             "value": "SERVICIOS.NOMBRE"
+
+         },
+         {
+             "nombre" : "Tipo de Servicio",
+             "value": "TIPOS_SERVICIO.NOMBRE"
+
+         },
+         {
+             "nombre" : "Trámite",
+             "value": "ETAPAS_PROCESO.ETAPA"
+
+         }
+
+     ]
 
 
     // =======================================================================================
@@ -615,32 +643,192 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
                 $scope.formData.txtReferencia = response.data;
             });
     }
-
-    // ==============================================================================
-    // ***** 		    Funcion mostrar fichas de empleados filtrada     		       *****
-    // ==============================================================================
+// ==============================================================================
+// ***** 		    Funcion btn filtrar accion                   		*****
+// ==============================================================================
     $scope.cargaServiciosFiltrados = function() {
-        $scope.fichas = [];
-        $scope.error_filtro = false;
-        var filtros = {
-            REFERENCIA: $("#txtFiltroReferencia").val(),
-            REFERENCIA_CONTAINS: $("#txtFiltroReferenciaContains").val(),
-            NOMBRE_CLIENTE: $("#txtFiltroNombreCliente").val(),
-            NOMBRE_CLIENTE_CONTAINS: $("#txtFiltroNombreClienteContains").val(),
-            NOMBRE_SERVIO: $("#txtFiltroNombreServicio").val(),
-            NOMBRE_SERVIO_CONTAINS: $("#txtFiltroNombreServicioContains").val(),
-            ID_SECTOR: $("#cmbSectoresIAF_select").val(),
+
+        if($scope.total>0)
+        {
+            var sql = " WHERE";
+
+            $. each( $scope.filtros, function(i, n) {
+
+                if(n.valor)
+                {
+                    var character = (n.container?"%":"");
+                    sql += " "+n.andor+" "+n.sql+" LIKE '"+character+n.valor+"%'";
+
+                }
 
 
-        };
-        $.post(global_apiserver + "/servicio_cliente_etapa/getByFiltro/", JSON.stringify(filtros), function(respuesta) {
-            response = JSON.parse(respuesta);
-            $scope.cantidad_servicios = response.length;
-            $scope.tablaDatos = response;
+            })
 
-            $scope.$apply();
+            var filtros = { QUERY : sql};
+            $.post(global_apiserver + "/servicio_cliente_etapa/getByFiltro/", JSON.stringify(filtros), function(respuesta) {
+                response = JSON.parse(respuesta);
+                $scope.cantidad_servicios = response.length;
+                $scope.tablaDatos = response;
+
+                $scope.$apply();
+            });
+
+        }
+
+
+    }
+
+// ==============================================================================
+// ***** 		    Funcion mostrar opciones para filtrar           		*****
+// ==============================================================================
+    $scope.showFiltrar = function()
+    {
+        $scope.mytoggle('divFitrar');
+    }
+// ================================================================================
+// *****                  Funcion Mostrar/Ocultar elementos                   *****
+// ================================================================================
+    $scope.mytoggle = function (id)
+    {
+        $("#"+id).toggle(function(){
+
+        },function(){
+
         });
     }
+// ================================================================================
+// *****                  Remove input al filtro                   *****
+// ================================================================================
+    $scope.removeFilter = function(pos)
+    {
+
+        $scope.filtros = $scope.filtros.filter(function (elem,index) {
+            if(elem.index != pos)
+            {
+                return true;
+            }
+            else
+            {
+                $("#filtro-" + pos).remove();
+                $scope.total--;
+                return false;
+            }
+
+        })
+
+        if(pos==0)
+        {
+            $scope.reloadInputs();
+        }
+    }
+
+// ================================================================================
+// *****                  Add input al filtro                   *****
+// ================================================================================
+    $scope.addInput = function()
+    {
+        if(!$scope.selectCampo){
+            return false;
+        }
+        if($scope.total>0)
+        {
+            $scope.filtros[$scope.total]= {index:$scope.total , nombre: $scope.selectCampo.nombre, sql: $scope.selectCampo.value, andor: 'AND' , container: "", valor: ''};
+        }
+        else
+        {
+            $scope.filtros[$scope.total]= {index:$scope.total , nombre: $scope.selectCampo.nombre, sql: $scope.selectCampo.value, andor: '' , container: "", valor: ''};
+        }
+        $scope.total++;
+        $scope.reloadInputs();
+
+        $(".remove").click(function (e) {
+            e.preventDefault();
+            $scope.removeFilter($(this).attr("pos"));
+        });
+        $(".andor").change(function (e) {
+            e.preventDefault();
+            var value = $(this).val();
+            var pos = $(this).attr('pos');
+            $scope.filtros[pos].andor = value;
+        });
+
+        $(".cont").change(function (e) {
+            e.preventDefault();
+            if($scope.total>0)
+            {
+                var value = $(this).val();
+                var pos = $(this).attr('pos');
+                $scope.filtros[pos].container = value;
+            }
+
+        });
+
+        $(".valor").blur(function (e) {
+            e.preventDefault();
+            if($scope.total>0)
+            {
+                var value = $(this).val();
+                var pos = $(this).attr('pos');
+                $scope.filtros[pos].valor = value;
+            }
+
+        });
+
+
+        $scope.selectCampo = "";
+
+    }
+    $scope.cancelFilter = function()
+    {
+        $scope.tabla_servicios();
+        $("#divInputContainer").html("");
+        $scope.mytoggle('divFitrar');
+        $scope.filtros = Array();
+        $scope.total = 0;
+
+
+    }
+    $scope.reloadInputs = function()
+    {
+        $("#divInputContainer").html("");
+        $. each( $scope.filtros, function(i, n) {
+            var newBoxDiv = $(document.createElement('div'))
+                .attr("id", 'filtro-' + n.index);
+
+            var andor = '';
+            var html = '';
+            if(i>0)
+            {
+                andor += '<select id="andor-'+n.index+'" ng-model="andor-'+n.index+'" pos="'+n.index+'" ng-init="andor-'+n.index+' = '+ n.andor +'" class="form-control andor" style="font-size: 10px;">' +
+                    '  <option value="AND" selected>-- Y --</option>' +
+                    '  <option value="OR">-- O --</option>' +
+                    '  </select>';
+
+            }
+            else {
+                $scope.filtros[i].andor = "";
+            }
+
+            html+=' <div class="form-group form-inline">\n' +
+                andor+'\n'+
+                '    <input type="text" class="form-control" id="nombre-'+n.index+'" ng-model="nombre-'+n.index+'" value="'+n.nombre+'"  readonly >\n' +
+                '    <select id="container-'+n.index+'" ng-model="container-'+n.index+'" pos="'+n.index+'" class="form-control cont" style="font-size: 10px;" ng-init="container-'+n.index+' = '+ n.container +'">\n' +
+                '       <option value="false" selected>Comienza con</option>\n' +
+                '       <option value="true">Contiene </option>\n' +
+                '    </select>\n' +
+                '    <input type="text" class="form-control valor" pos="'+n.index+'" id="value-'+n.index+'" ng-model="value-'+n.index+'" value="'+n.valor+'">\n' +
+                '<button type="button" id="remove-'+n.index+'"  name="remove-'+n.index+'" pos="'+n.index+'" class="btn btn-xs remove" ><i class="fa fa-remove"> </i></button>\n'+
+                '    </div>';
+
+            newBoxDiv.after().html(html);
+
+            newBoxDiv.appendTo("#divInputContainer");
+
+
+
+        }) ;
+    }
+
 
     $(document).ready(function() {
         cargarClientes();
@@ -649,7 +837,9 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
         cargarCambios();
         TraerTodosCambios();
         $scope.funcionsectoresIAF();
-        //$scope.tabla_servicios();
+        $scope.tabla_servicios();
+
+
 
     });
 }]);
@@ -672,3 +862,4 @@ function notify(titulo, texto, tipo) {
         delay: 2500
     });
 }
+
