@@ -1070,6 +1070,7 @@ function clear_modal_insertar_actualizar_calif(){
 		fill_cmb_sectores_NACE(id_sector,"N/A");
 	});
 	function fill_cmb_sectores_NACE(id_sector,seleccionado){
+        console.log(id_sector);
 		$.getJSON( global_apiserver + "/sectores/getSectoresNACE/?id="+id_sector, function( response ) {
 			$("#cmbSectorNACE").html('<option value="N/A" selected>-NO APLICA-</option>');
 			$.each(response, function( indice, objSector ) {

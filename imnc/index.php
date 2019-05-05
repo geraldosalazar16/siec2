@@ -80,6 +80,8 @@ if (!isset($_SESSION['CREATED'])) {
   <link href="css/select/select2.min.css" rel="stylesheet"/>
   <!-- multiselect -->
   <link href="css/multiselect/multiple-select.min.css" rel="stylesheet"/>
+  <!-- ui-grid -->
+  <link href="css/ui-grid/ui-grid.css" rel="stylesheet"/>
 <!-- datepicker -->
   <link href="css/datepicker/angular-datepicker.css" rel="stylesheet"/>
   <link rel="stylesheet" type="text/css" href="css/bootstrap-duallistbox/bootstrap-duallistbox.css"/>
@@ -201,6 +203,9 @@ if (!isset($_SESSION['CREATED'])) {
   <script src="js/select/select2/i18n/es.js"></script>
   <!-- multiselect-->
   <script src="js/multiselect/multiple-select.min.js"></script>
+  <!-- ui-grid-->
+  <script src="js/ui-grid/ui-grid.js"></script>
+  <script src="js/ui-grid/pinning/pinning.js"></script>
   <!-- datepicker -->
    <script src="js/datepicker/angular-datepicker.js"></script>
    <!-- multidatepicker -->
