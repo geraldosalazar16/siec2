@@ -34,8 +34,8 @@
               echo '</p>';
           } 
         ?>
-        <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-click="showFiltrar()">
-          <i class="fa fa-filter"> </i> Filtrar</button>
+        <button type="button" id="btnfiltro" class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-click="showFiltrar()">
+          <i class="fa fa-filter"> </i> Filtro</button>
 
           <div class="clearfix"></div>
         </div>
@@ -49,7 +49,19 @@
                 </div>
 
                 <div id="divInputContainer">
-
+                 <div class="form-group form-inline" id="filtro-{{n.index}}" ng-repeat="n in filtros">
+                     <select ng-if="$index>0"  class="form-control" style="font-size: 10px;" ng-init="andor = n.andor" ng-model="andor" id="andor-{{n.index}}" ng-change="changeAndOr(n.index)">
+                          <option value="AND" selected>-- Y --</option>
+                          <option value="OR">-- O --</option>
+                    </select>
+                    <input type="text" class="form-control"  value="{{n.nombre}}"  readonly >
+                    <select  class="form-control" style="font-size: 10px;" ng-model="container" ng-init="container = n.container" id="container-{{n.index}}" ng-change="changeContainer(n.index)">
+                       <option value="false" selected>Comienza con</option>
+                       <option value="true">Contiene </option>
+                    </select>
+                    <input type="text" class="form-control"  value="{{n.valor}}" ng-model="value" id="value-{{n.index}}" ng-change="changeValor(n.index)" >
+                <button type="button"  class="btn btn-xs" ng-click="onRemove(n.index)"><i class="fa fa-remove"> </i></button>
+                </div>
                 </div>
                 <div class="form-group w_25">
                     <select class="form-control border-dark" style="margin-top: 10px;" id="selectCampo" ng-model="selectCampo" ng-options="campo as campo.nombre for campo in campos" ng-change="addInput()">
@@ -57,7 +69,7 @@
                     </select>
                 </div>
                 <hr>
-                <div class="col-md-3 col-sm-3 col-xs-12 mt-5" ng-show="total>0">
+                <div class="col-md-3 col-sm-3 col-xs-12 mt-5" >
                   <button type="button" class="btn btn-success" id="btnclear" ng-click="cancelFilter()">Cancelar</button>
                   <button type="button" class="btn btn-primary" id="btnFiltrar" ng-click="cargaServiciosFiltrados()">Filtrar</button>
                  </div>

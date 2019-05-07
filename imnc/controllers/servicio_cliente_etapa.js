@@ -21,33 +21,49 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
      $scope.campos = [
          {
              "nombre" : "Nombre del cliente",
-             "value": "CLIENTES.NOMBRE"
+             "value": "CLIENTES.NOMBRE",
+             "sub": 0
 
          },
          {
              "nombre" : "RFC del cliente",
-             "value": "CLIENTES.RFC"
+             "value": "CLIENTES.RFC",
+             "sub": 0
 
          },
          {
              "nombre" : "Referencia",
-             "value": "SERVICIO_CLIENTE_ETAPA.REFERENCIA"
+             "value": "SERVICIO_CLIENTE_ETAPA.REFERENCIA",
+             "sub": 0
 
          },
          {
              "nombre" : "Servicio",
-             "value": "SERVICIOS.NOMBRE"
+             "value": "SERVICIOS.NOMBRE",
+             "sub": 0
 
          },
          {
              "nombre" : "Tipo de Servicio",
-             "value": "TIPOS_SERVICIO.NOMBRE"
+             "value": "TIPOS_SERVICIO.NOMBRE",
+             "sub": 0
 
          },
          {
              "nombre" : "Trámite",
-             "value": "ETAPAS_PROCESO.ETAPA"
+             "value": "ETAPAS_PROCESO.ETAPA",
+             "sub": 0
 
+         },
+         {
+             "nombre" : "Norma",
+             "value": "SCE_NORMAS.ID_NORMA",
+             "sub": 1
+         },
+         {
+             "nombre" : "Curso",
+             "value": "C.NOMBRE",
+             "sub": 3
          }
 
      ]
@@ -648,23 +664,38 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
 // ==============================================================================
     $scope.cargaServiciosFiltrados = function() {
 
-        if($scope.total>0)
-        {
-            var sql = " WHERE";
+
+            var sql = "";
+            var subsql1 = "";
+            var subsql3 = "";
 
             $. each( $scope.filtros, function(i, n) {
 
                 if(n.valor)
                 {
-                    var character = (n.container?"%":"");
-                    sql += " "+n.andor+" "+n.sql+" LIKE '"+character+n.valor+"%'";
+                    var character = (n.container==1?"%":"");
+                    if(n.sub == 0)
+                    {
+                        sql += " "+n.andor+" "+n.sql+" LIKE '"+character+n.valor+"%'";
+                    }
+                    if(n.sub == 1)
+                    {
+                        subsql1 += " "+n.andor+" "+n.sql+" LIKE '"+character+n.valor+"%'";
+                    }
+                    if(n.sub == 3)
+                    {
+                        subsql3 += " "+n.andor+" "+n.sql+" LIKE '"+character+n.valor+"%'";
+                    }
 
                 }
 
 
             })
 
-            var filtros = { QUERY : sql};
+            if(sql){if(sql.indexOf("AND")==1) sql = sql.substring(sql.indexOf("AND")+3,sql.length) ;}
+            if(subsql1){if(subsql1.indexOf("AND")!=1) subsql1 = " AND"+ subsql1 ;}
+            if(subsql3){if(subsql3.indexOf("AND")!=1) subsql3 = " AND"+ subsql3 ;}
+            var filtros = { QUERY : sql?" WHERE"+sql:"",  QUERY1: subsql1,  QUERY3: subsql3};
             $.post(global_apiserver + "/servicio_cliente_etapa/getByFiltro/", JSON.stringify(filtros), function(respuesta) {
                 response = JSON.parse(respuesta);
                 $scope.cantidad_servicios = response.length;
@@ -673,7 +704,7 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
                 $scope.$apply();
             });
 
-        }
+
 
 
     }
@@ -701,7 +732,6 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
 // ================================================================================
     $scope.removeFilter = function(pos)
     {
-
         $scope.filtros = $scope.filtros.filter(function (elem,index) {
             if(elem.index != pos)
             {
@@ -715,11 +745,9 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
             }
 
         })
+           // $scope.reloadInputs();
+            //$scope.events();
 
-        if(pos==0)
-        {
-            $scope.reloadInputs();
-        }
     }
 
 // ================================================================================
@@ -732,56 +760,41 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
         }
         if($scope.total>0)
         {
-            $scope.filtros[$scope.total]= {index:$scope.total , nombre: $scope.selectCampo.nombre, sql: $scope.selectCampo.value, andor: 'AND' , container: "", valor: ''};
+            $scope.filtros[$scope.total]= {index:$scope.total , nombre: $scope.selectCampo.nombre, sql: $scope.selectCampo.value, andor: 'AND' , container: 'false', valor: '', sub: $scope.selectCampo.sub};
         }
         else
         {
-            $scope.filtros[$scope.total]= {index:$scope.total , nombre: $scope.selectCampo.nombre, sql: $scope.selectCampo.value, andor: '' , container: "", valor: ''};
+            $scope.filtros[$scope.total]= {index:$scope.total , nombre: $scope.selectCampo.nombre, sql: $scope.selectCampo.value, andor: "", container: 'false', valor: '', sub: $scope.selectCampo.sub};
         }
         $scope.total++;
-        $scope.reloadInputs();
-
-        $(".remove").click(function (e) {
-            e.preventDefault();
-            $scope.removeFilter($(this).attr("pos"));
-        });
-        $(".andor").change(function (e) {
-            e.preventDefault();
-            var value = $(this).val();
-            var pos = $(this).attr('pos');
-            $scope.filtros[pos].andor = value;
-        });
-
-        $(".cont").change(function (e) {
-            e.preventDefault();
-            if($scope.total>0)
-            {
-                var value = $(this).val();
-                var pos = $(this).attr('pos');
-                $scope.filtros[pos].container = value;
-            }
-
-        });
-
-        $(".valor").blur(function (e) {
-            e.preventDefault();
-            if($scope.total>0)
-            {
-                var value = $(this).val();
-                var pos = $(this).attr('pos');
-                $scope.filtros[pos].valor = value;
-            }
-
-        });
-
 
         $scope.selectCampo = "";
 
     }
+
+    $scope.onRemove = function(pos){
+        $scope.removeFilter(pos);
+    }
+
+    $scope.changeAndOr = function(pos){
+            $scope.filtros[pos].andor = $("#andor-"+pos).val();
+     }
+    $scope.changeValor = function(pos){
+        if($scope.total>0)
+        {
+            $scope.filtros[pos].valor = $("#value-"+pos).val();
+        }
+    }
+    $scope.changeContainer = function(pos){
+        if($scope.total>0)
+        {
+            $scope.filtros[pos].container = $("#container-"+pos).val();
+        }
+    }
     $scope.cancelFilter = function()
     {
         $scope.tabla_servicios();
-        $("#divInputContainer").html("");
+
         $scope.mytoggle('divFitrar');
         $scope.filtros = Array();
         $scope.total = 0;
