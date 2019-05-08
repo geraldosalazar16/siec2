@@ -133,7 +133,7 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 
 	// SG_AUDITORIA_GRUPO
 	//$i_sg_auditoria_grupo = $database->select("I_SG_AUDITORIA_GRUPOS", "*", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$id_tipo_auditoria,"CICLO"=>$ciclo]]);
-	$i_sg_auditoria_grupo = $database->query("SELECT * FROM I_SG_AUDITORIA_GRUPOS WHERE ID_SERVICIO_CLIENTE_ETAPA= ".$id_sce." AND TIPO_AUDITORIA=".$id_tipo_auditoria." AND CICLO=".$ciclo."  ORDER BY FIELD(ID_ROL,'3','1','6','4','2','8','5','7','11','9','10','12','13','14') ;")->fetchAll();
+	$i_sg_auditoria_grupo = $database->query("SELECT * FROM I_SG_AUDITORIA_GRUPOS WHERE ID_SERVICIO_CLIENTE_ETAPA= ".$id_sce." AND TIPO_AUDITORIA=".$id_tipo_auditoria." AND CICLO=".$ciclo."  ORDER BY FIELD(ID_ROL,'3','1','6','4','2','8','5','7','11','9','10','12','13','14','15') ;")->fetchAll();
 	//$i_sg_auditoria_grupo = $i_sg_auditoria_grupo[0];
 	valida_error_medoo_and_die();
 	

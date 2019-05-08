@@ -13,16 +13,99 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
     $scope.cantidad_servicios = 0;
 
     /*AQUI VOY A INICIALIZAR LAS VARIABLES A USAR EN LOS FILTROS*/
+    // "sub": 0, consulta sce
+    // "sub": 1, consulta norma
+    // "sub": 3, consulta curso
     // =======================================================================================
     // ***** 		AQUI VOY A INICIALIZAR LAS VARIABLES A USAR EN LOS FILTROS			 *****
     // =======================================================================================
-    $scope.txtFiltroReferencia = "";
-    $scope.txtFiltroReferenciaContains = "";
-    $scope.txtFiltroNombreCliente = "";
-    $scope.txtFiltroNombreClienteContains = "";
-    $scope.txtFiltroNombreServicio = "";
-    $scope.txtFiltroNombreServicioContains = "";
-    $scope.cmbSectoresIAF = "";
+
+     $scope.total = 0;
+     $scope.filtros = Array();
+     $scope.selecAndOr = [{title:'-- Y --',valor: "AND"},{title:'-- O --',valor: "OR"}];
+     $scope.typeSearch = [{title:'Comienza con',valor: ""},{title:'Contiene',valor: "%"}];
+     $scope.typeSearchDate = [{title:'Exactamente',valor: "="},{title:'Entre',valor: "BETWEEN"}];
+     $scope.isfiltre= false;
+     $scope.campos = [
+         {
+             "nombre" : "Nombre del cliente",
+             "value": "CLIENTES.NOMBRE",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
+
+         },
+         {
+             "nombre" : "RFC del cliente",
+             "value": "CLIENTES.RFC",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
+
+         },
+         {
+             "nombre" : "Referencia",
+             "value": "SERVICIO_CLIENTE_ETAPA.REFERENCIA",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
+
+         },
+         {
+             "nombre" : "Servicio",
+             "value": "SERVICIOS.NOMBRE",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
+
+         },
+         {
+             "nombre" : "Tipo de Servicio",
+             "value": "TIPOS_SERVICIO.NOMBRE",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
+
+         },
+         {
+             "nombre" : "Trámite",
+             "value": "ETAPAS_PROCESO.ETAPA",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
+
+         },
+         {
+             "nombre" : "Norma",
+             "value": "SCE_NORMAS.ID_NORMA",
+             "type": "string",
+             "sub": 1,
+             "condicion":$scope.typeSearch
+         },
+         {
+             "nombre" : "Curso",
+             "value": "C.NOMBRE",
+             "type": "string",
+             "sub": 3,
+             "condicion":$scope.typeSearch
+         },
+         {
+             "nombre" : "Fecha de creación",
+             "value": "SERVICIO_CLIENTE_ETAPA.FECHA_CREACION",
+             "type": "date",
+             "sub": 0,
+             "condicion":$scope.typeSearchDate
+         },
+         {
+             "nombre" : "Fecha de modificación",
+             "value": "SERVICIO_CLIENTE_ETAPA.FECHA_MODIFICACION",
+             "type": "date",
+             "sub": 0,
+             "condicion":$scope.typeSearchDate
+         }
+
+
+     ]
 
 
     // =======================================================================================
@@ -615,32 +698,279 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
                 $scope.formData.txtReferencia = response.data;
             });
     }
-
-    // ==============================================================================
-    // ***** 		    Funcion mostrar fichas de empleados filtrada     		       *****
-    // ==============================================================================
+// ==============================================================================
+// ***** 		    Funcion btn filtrar accion                   		*****
+// ==============================================================================
     $scope.cargaServiciosFiltrados = function() {
-        $scope.fichas = [];
-        $scope.error_filtro = false;
-        var filtros = {
-            REFERENCIA: $("#txtFiltroReferencia").val(),
-            REFERENCIA_CONTAINS: $("#txtFiltroReferenciaContains").val(),
-            NOMBRE_CLIENTE: $("#txtFiltroNombreCliente").val(),
-            NOMBRE_CLIENTE_CONTAINS: $("#txtFiltroNombreClienteContains").val(),
-            NOMBRE_SERVIO: $("#txtFiltroNombreServicio").val(),
-            NOMBRE_SERVIO_CONTAINS: $("#txtFiltroNombreServicioContains").val(),
-            ID_SECTOR: $("#cmbSectoresIAF_select").val(),
 
 
-        };
-        $.post(global_apiserver + "/servicio_cliente_etapa/getByFiltro/", JSON.stringify(filtros), function(respuesta) {
-            response = JSON.parse(respuesta);
-            $scope.cantidad_servicios = response.length;
-            $scope.tablaDatos = response;
+            var sql = "";
+            var subsql1 = "";
+            var subsql3 = "";
 
-            $scope.$apply();
+            $. each( $scope.filtros, function(i, n) {
+
+                if(n.valor)
+                {
+                    var value = n.valor;
+                    if(n.selectCampo.type=="date")
+                    {
+                        if(n.container=="BETWEEN")
+                        {
+                            var valor = value.split(",");
+
+                            var array1 = valor[0].split("/");
+                            var array2 = valor[1].split("/");
+                            if(array1.length==3 && array2.length==3)
+                            {
+                                value = array1[2]+array1[1]+array1[0]+","+array2[2]+array2[1]+array2[0];
+                            }
+                            else {
+                                if(array1.length!=3)
+                                {
+                                    $("#value1-"+i).attr("class","form-control input-error");
+                                }
+                                if(array2.length!=3)
+                                {
+                                    $("#value2-"+i).attr("class","form-control input-error");
+                                }
+
+                                return;
+                            }
+                        }else
+                        {
+                            var array = value.split("/");
+                            if(array.length==3)
+                            {
+                                value = array[2]+array[1]+array[0];
+                            }
+                            else {
+                                $("#value-"+i).attr("class","form-control input-error");
+                                return;
+                            }
+                        }
+
+
+                    }
+                    if(n.selectCampo.sub == 0)
+                    {
+                        switch (n.container) {
+                            case "=":
+                                sql += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" '"+value+"'";
+                                break;
+                            case "BETWEEN":
+                                var valor = value.split(',');
+                                sql += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" "+valor[0]+" AND "+valor[1];
+                                break;
+                            default:
+                                sql += " "+n.andor+" "+n.selectCampo.value+" LIKE '"+n.container+value+"%'";
+                                break;
+                        }
+
+                    }
+                    if(n.selectCampo.sub == 1)
+                    {
+                        switch (n.container) {
+                            case "=":
+                                subsql1 += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" '"+value+"'";
+                                break;
+                            case "BETWEEN":
+                                var valor = value.split(',');
+                                sql += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" "+valor[0]+" AND "+valor[1];
+                                break;
+                            default:
+                                subsql1 += " "+n.andor+" "+n.selectCampo.value+" LIKE '"+n.container+value+"%'";
+                                break;
+                        }
+                    }
+                    if(n.selectCampo.sub == 3)
+                    {
+                        switch (n.container) {
+                            case "=":
+                                subsql3 += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" '"+value+"'";
+                                break;
+                            case "BETWEEN":
+                                var valor = value.split(',');
+                                sql += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" "+valor[0]+" AND "+valor[1];
+                                break;
+                            default:
+                                subsql3 += " "+n.andor+" "+n.selectCampo.value+" LIKE '"+n.container+value+"%'";
+                                break;
+                        }
+                    }
+
+                }
+                else {
+                    $("#value-"+i).attr("class","form-control input-error");
+                }
+
+
+            })
+
+          if(sql){if(sql.indexOf("AND")==1) sql = sql.substring(sql.indexOf("AND")+3,sql.length) ;}
+            var filtros = { QUERY : sql?" WHERE"+sql:"",  QUERY1: subsql1,  QUERY3: subsql3};
+            console.log(filtros);
+            $.post(global_apiserver + "/servicio_cliente_etapa/getByFiltro/", JSON.stringify(filtros), function(respuesta) {
+                response = JSON.parse(respuesta);
+                $scope.cantidad_servicios = response.length;
+                $scope.tablaDatos = response;
+                $scope.isfiltre = true;
+                $scope.$apply();
+            });
+
+
+
+
+    }
+
+// ==============================================================================
+// ***** 		    Funcion mostrar opciones para filtrar           		*****
+// ==============================================================================
+    $scope.showFiltrar = function()
+    {
+        $scope.mytoggle('divFitrar');
+    }
+// ================================================================================
+// *****                  Funcion Mostrar/Ocultar elementos                   *****
+// ================================================================================
+    $scope.mytoggle = function (id)
+    {
+        $("#"+id).toggle(function(){
+
+        },function(){
+
         });
     }
+// ================================================================================
+// *****                  Remove input al filtro                   *****
+// ================================================================================
+    $scope.removeFilter = function(pos)
+    {
+        $scope.filtros = $scope.filtros.filter(function (elem,index) {
+            if(index != pos)
+            {
+                return true;
+            }
+            else
+            {
+                $("#filtro-" + pos).remove();
+                $scope.total--;
+                if($scope.total==0){$scope.isfiltre == false}
+                return false;
+            }
+
+        })
+        if($scope.total > 0) {
+            var andor = '';
+            if ($scope.filtros[0].selectCampo.sub != 0) {
+                andor = 'AND';
+            }
+
+            $scope.filtros[0].andor = andor;
+
+        }
+
+        if($scope.isfiltre == true)
+        {
+            $scope.cargaServiciosFiltrados();
+        }
+
+
+    }
+
+// ================================================================================
+// *****                  Add input al filtro                   *****
+// ================================================================================
+    $scope.addInput = function()
+    {
+        if(!$scope.selectCampo){
+            return false;
+        }
+        var andor = '';
+        if($scope.total>0 || $scope.selectCampo.sub != 0)
+        {
+            andor = 'AND';
+        }
+            $scope.filtros[$scope.total]= { selectCampo:$scope.selectCampo, andor: andor, container: $scope.selectCampo.condicion[0].valor, valor: ''};
+
+       $scope.total++;
+
+        $scope.selectCampo = "";
+
+    }
+// ================================================================================
+// *****                  remove campo del filtro                             *****
+// ================================================================================
+    $scope.onRemove = function(pos){
+        $scope.removeFilter(pos);
+    }
+// ================================================================================
+// *****                  onchange select and | or                        *****
+// ================================================================================
+    $scope.changeAndOr = function(pos){
+            $scope.filtros[pos].andor = $("#andor-"+pos).val();
+     }
+// ================================================================================
+// *****                  onchange input de la busqueda                        *****
+// ================================================================================
+    $scope.changeValor = function(pos){
+            $scope.filtros[pos].valor = $("#value-"+pos).val();
+            $("#value-"+pos).attr("class","form-control")
+    }
+    $scope.changeValorBetween = function(pos){
+
+            $scope.filtros[pos].valor = $("#value1-"+pos).val()+','+$("#value2-"+pos).val();
+
+    }
+// ================================================================================
+// *****                  onchange select condicion                       *****
+// ================================================================================
+    $scope.changeContainer = function(pos){
+        if($scope.total>0)
+        {
+            $scope.filtros[pos].container = $("#container-"+pos).val();
+            if($("#container-"+pos).val() == "BETWEEN")
+            {
+                $("#value-"+pos).hide();
+                $("#divb-"+pos).show();
+            }
+            else
+            {
+                $("#value-"+pos).show();
+                $("#divb-"+pos).hide();
+            }
+        }
+    }
+// ================================================================================
+// *****                  onchange cancelar filtro                       *****
+// ================================================================================
+    $scope.cancelFilter = function()
+    {
+        $scope.tabla_servicios();
+
+        $scope.mytoggle('divFitrar');
+        $scope.filtros = Array();
+        $scope.total = 0;
+
+
+    }
+// ================================================================================
+// *****                  build placeholder a mostrar                       *****
+// ================================================================================
+   $scope.buildPlaceholder = function(type)
+    {
+        switch (type) {
+            case "string":
+                return "Introduzca un valor";
+            case "date" :
+                return "Formato:dia/mes/año";
+            case "number":
+                return "Introduzca un valor"
+        }
+    }
+
+
+
 
     $(document).ready(function() {
         cargarClientes();
@@ -649,7 +979,9 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
         cargarCambios();
         TraerTodosCambios();
         $scope.funcionsectoresIAF();
-        //$scope.tabla_servicios();
+        $scope.tabla_servicios();
+
+
 
     });
 }]);
@@ -672,3 +1004,4 @@ function notify(titulo, texto, tipo) {
         delay: 2500
     });
 }
+

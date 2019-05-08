@@ -146,7 +146,7 @@
 									<!-- Fin Tab Domicilio-->
 
 									<!-- Tab contacto -->
-									<div role="tabpanel" class="tab-pane fade " id="tab_contacto" aria-labelledby="home-tab">
+									<div role="tabpanel" class="tab-pane fade" id="tab_contacto" aria-labelledby="home-tab">
 										<p>
 											<button type="button" ng-click="agregarContacto()" class="btn btn-primary btn-xs btn-imnc"
 												ng-if='modulo_permisos["registrar"] == 1' style="float: right;"> 

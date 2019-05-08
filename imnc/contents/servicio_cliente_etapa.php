@@ -1,11 +1,17 @@
 <span ng-controller="servicio_cliente_etapa_controller">
-<div class="right_col" role="main">
+    <style>
+        .input-error{
+            border: #da0000 1px solid;
+            background: rgba(255, 0, 0, 0.09);
+        }
+    </style>
+<div class="right_col " role="main">
   <div class="page-title">
     <div class="title_left">
       <?php
         if ($modulo_permisos["SERVICIOS"]["extraer"] == 1) {
             echo '<div class="dropdown" style="margin-bottom: 10px;">';
-            echo '  <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown">';
+            echo '  <button class="btn btn-primaryí btn-xs dropdown-toggle" type="button" data-toggle="dropdown">';
             echo '  <i class="fa fa-cloud-download" aria-hidden="true"></i> Exportar todos';
             echo '  <span class="caret"></span></button>';
             echo '  <ul class="dropdown-menu">';
@@ -24,6 +30,7 @@
       <div class="x_panel">
         <div class="x_title">
         <p><h2>{{titulo}}</h2></p>
+
         <?php
           if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
               echo '<p>';
@@ -33,70 +40,51 @@
               echo '</p>';
           } 
         ?>
-        
+        <button type="button" id="btnfiltro" class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-click="showFiltrar()">
+          <i class="fa fa-filter"> </i> Filtro</button>
+
           <div class="clearfix"></div>
         </div>
 
         <div class="x_content">
-        <div class="col-md-12">
-            <form class="form-horizontal form-label-left ng-pristine ng-valid">
-                  
+        <div id="divFitrar" class="col-md-12"  hidden>
+            <form>
+                <div class="form-group w_25">
+                    <label for="nombreFiltro">Crear filtro<span class="required"></span></label>
+                </div>
 
-				 <div class="form-group col-md-4">
-                    <label>Por referencia: </label>
-                    <div class="input-group" style="width: 100%;">
-                         <input type="text" class="form-control input-filtro" id="txtFiltroReferencia" ng-model="txtFiltroReferencia">
-                          <!-- insert this line -->
-                          <span class="input-group-addon" style="width:0px; padding-left:0px; padding-right:0px; border:none;"></span>
-                          <select id="txtFiltroReferenciaContains" ng-model="txtFiltroReferenciaContains" class="form-control" style="font-size: 10px;">
-                              <option value="" selected>Comienza con</option>
-                              <option value="1">Contenido en</option>
-                          </select>
-                    </div>
-                  </div>
-				 
-				 <div class="form-group col-md-4">
-                    <label>Nombre cliente: </label>
-                    <div class="input-group" style="width: 100%;">
-                          <input type="text" class="form-control input-filtro" id="txtFiltroNombreCliente" ng-model="txtFiltroNombreCliente">
-                          <!-- insert this line -->
-                          <span class="input-group-addon" style="width:0px; padding-left:0px; padding-right:0px; border:none;"></span>
-                          <select id="txtFiltroNombreClienteContains" ng-model="txtFiltroNombreClienteContains" class="form-control" style="font-size: 10px;">
-                              <option value="" selected>Comienza con</option>
-                              <option value="1">Contenido en</option>
-                          </select>
-                    </div>
-                  </div>
-                 <div class="form-group col-md-4">
-                    <label>Nombre de servicio: </label>
-                    <div class="input-group" style="width: 100%;">
-                          <input type="text" class="form-control input-filtro" id="txtFiltroNombreServicio" ng-model="txtFiltroNombreServicio">
-                          <!-- insert this line -->
-                          <span class="input-group-addon" style="width:0px; padding-left:0px; padding-right:0px; border:none;"></span>
-                          <select id="txtFiltroNombreServicioContains" ng-model="txtFiltroNombreServicioContains" class="form-control" style="font-size: 10px;">
-                              <option value="" selected>Comienza con</option>
-                              <option value="1">Contenido en</option>
-                          </select>
-                    </div>
-                  </div>
-				  <div class="form-group col-md-4">
-                    <label>Sector IAF: </label>
-                    <div class="input-group" style="width: 100%;">
-                          <select class="form-control" id="cmbSectoresIAF_select" ng-model="cmbSectoresIAF_select">
-						  <option value="" selected>--	Todos	--</option>
-							<option ng-repeat="option in cmbSectoresIAF" value="{{option.ID}}">{{option.NOMBRE}}</option>
-                          </select>
-						  
-                    </div>
-                  </div>
-                  <div class="form-group">
-                <div class="col-md-3 col-sm-3 col-xs-12 col-md-offset-9">
-                  <button type="button" class="btn btn-success" id="btnLimpiarFiltros" ng-click="tabla_servicios()">Ver todos</button>
+                <div id="divInputContainer">
+                 <div class="form-group form-inline" id="filtro-{{$index}}" ng-repeat="n in filtros">
+                     <select ng-if="$index>0"  class="form-control" style="font-size: 10px;" ng-init="andor = n.andor" ng-model="andor" id="andor-{{$index}}" ng-change="changeAndOr($index)">
+                          <option value="{{item.valor}}" ng-repeat="item in selecAndOr" >{{item.title}}</option>
+                    </select>
+                    <input type="text" class="form-control"  value="{{n.selectCampo.nombre}}"  readonly >
+                    <select  class="form-control" style="font-size: 10px;" ng-model="container" ng-init="container = n.container" id="container-{{$index}}" ng-change="changeContainer($index)">
+                           <option  value="{{type.valor}}" ng-repeat="type in n.selectCampo.condicion">{{type.title}}</option>
+                    </select>
+                     <input type="text" class="form-control"  value="{{n.valor}}" ng-model="value" id="value-{{$index}}" ng-change="changeValor($index)" placeholder="{{ buildPlaceholder(n.selectCampo.type)}}" >
+                      <span id="divb-{{$index}}"  hidden>
+                         <input  type="text" class="form-control"   value="{{n.valor.split(',')[0]}}" ng-model="value1" id="value1-{{$index}}" ng-change="changeValorBetween($index)" placeholder="{{ buildPlaceholder(n.selectCampo.type)}}" >
+                         <input  type="text" class="form-control "  value="{{n.valor.split(',')[1]}}" ng-model="value2" id="value2-{{$index}}" ng-change="changeValorBetween($index)" placeholder="{{ buildPlaceholder(n.selectCampo.type)}}" >
+                      </span>
+                     <input  type="text" class="form-control hidden"   value="{{n.valor.split(',')[0]}}" ng-model="value1" id="value1-{{$index}}" ng-change="changeValorBetween($index)" placeholder="{{ buildPlaceholder(n.selectCampo.type)}}" >
+                     <input  type="text" class="form-control hidden"  value="{{n.valor.split(',')[1]}}" ng-model="value2" id="value2-{{$index}}" ng-change="changeValorBetween($index)" placeholder="{{ buildPlaceholder(n.selectCampo.type)}}" >
+
+                <button type="button"  class="btn btn-xs" ng-click="onRemove($index)"><i class="fa fa-remove"> </i></button>
+                </div>
+                </div>
+                <div class="form-group w_25">
+                    <select class="form-control border-dark" style="margin-top: 10px;" id="selectCampo" ng-model="selectCampo" ng-options="campo as campo.nombre for campo in campos" ng-change="addInput()">
+				      <option value="" selected>--	Seleccione un Campo  --</option>
+                    </select>
+                </div>
+                <hr>
+                <div class="col-md-3 col-sm-3 col-xs-12 mt-5" >
+                  <button type="button" class="btn btn-success" id="btnclear" ng-click="cancelFilter()">Cancelar</button>
                   <button type="button" class="btn btn-primary" id="btnFiltrar" ng-click="cargaServiciosFiltrados()">Filtrar</button>
                  </div>
-              </div>
-				
-			</form>
+            </form>
+
         </div>
               
           

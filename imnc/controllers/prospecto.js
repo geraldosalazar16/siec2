@@ -89,7 +89,7 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 	/*
 		Función para actualizar la tabla con los creacions en la BD.
 	*/
-	$(".select2_single").select2({});
+
 	$scope.actualizaTabla = function(){
 		//recibe la url del php que se ejecutará
 		$http.get(  global_apiserver + "/prospecto/getByIdUsuario/?id="+id_user)
@@ -105,10 +105,10 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 	  			});
 			},
 			function (response){});
-		//url:global_apiserver + "/prospecto/getAll/",	
+		//url:global_apiserver + "/prospecto/getAll/",
 		$.ajax({
 			type:'GET',
-			url:global_apiserver + "/prospecto/getByIdUsuario/?id="+id_user, 
+			url:global_apiserver + "/prospecto/getByIdUsuario/?id="+id_user,
 			success: function(data){
 				$scope.$apply(function(){
 					$scope.prospecto = angular.fromJson(data);
@@ -140,6 +140,8 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 			$scope.usuariosP = id_user;
 		}
 		$scope.id_new_prospecto = null;
+		$scope.autocompleteListPais("");
+
 	};
 	/*
 		Función para hacer que aparezca el formulario de agregar. Cambiamos el
@@ -159,13 +161,15 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 		$scope.accion = "insertar";
 		$scope.modal_title = "Agregar prospecto";
 		//$("#nombre").attr("readonly",false);
+
 		listener_txt_nombre();
       	listener_txt_rfc();
-
+		console.log($("#ww"));
 		$("#stepSegundo").hide();
 		$("#stepTercero").hide();
 		$("#stepPrimero").show();
 		$("#modalInsertarActualizar").modal("show");
+
 	};
 	function listener_txt_nombre(){
 	  $('#nombre').keyup(function(){
@@ -390,7 +394,7 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 			$("#autocompletePais").html('<option value="" selected disabled>-elige una opción-</option>');
 			$.each(response, function( indice, objPais ) {
 				if (seleccionado == objPais.NOMBRE) {
-					$("#autocompletePais").append('<option value="'+objPais.NOMBRE+'">'+objPais.NOMBRE+'</option>');
+					$("#autocompletePais").append('<option value="'+objPais.NOMBRE+'" selected>'+objPais.NOMBRE+'</option>');
 				}else{
 					$("#autocompletePais").append('<option value="'+objPais.NOMBRE+'">'+objPais.NOMBRE+'</option>');
 				}
@@ -745,6 +749,7 @@ $scope.limpiaCamposDomicilio = function(){
 		$scope.telefono="";
 		$scope.puesto="";
 		$scope.celular="";
+		$scope.contactohabilitado = false;
 		if(flag){$scope.$apply();}
 
 	};
@@ -980,7 +985,7 @@ $scope.limpiaCamposDomicilio = function(){
 
 	};
 
-
+	$('.select2_single').select2({});
 	$('#cmbProspectos').on('select2:select', function (evt) {
 		var prospecto = $("#cmbProspectos").val().substring(7);
 		if(prospecto !== "elige"){
@@ -999,13 +1004,13 @@ $scope.limpiaCamposDomicilio = function(){
 		}
 		$scope.$apply();
 	});
+
 	$scope.OrigenLista();
 	$scope.CompetenciaLista();
 	$scope.EstatusSeguimientoLista();
 	$scope.TipoServicioLista();
 	$scope.UsuariosLista();
 	$scope.UsuariosPrincipalLista();
-	
 	$scope.TipoContratoLista();
 	$scope.DepartamentosLista();
 	$scope.actualizaTabla();

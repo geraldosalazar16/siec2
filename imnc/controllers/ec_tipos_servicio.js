@@ -2079,7 +2079,6 @@ cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 //GENERAR NOTIFICACION
   $scope.modal_generar_notificacion = function(id_servicio,id_sce,id_ta,ciclo){
 
-	    $scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa);
 	    $scope.get_notificacion(id_servicio,id_sce,id_ta,ciclo);
 		$("#inputIdSCE").val(id_sce);
 		$("#inputIdTA").val(id_ta);
@@ -2136,16 +2135,21 @@ $scope.get_notificacion	= function(id_servicio,id_sce,id_ta,ciclo){
 		$scope.saveNotas = response.data.NOTAS.map(function(item){
 			$scope.notas[$scope.countnotas++] = item.NOTA;
 			return item.NOTA;
+
 		});
-		$scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF = response.data.DOMICILIO;
+		$scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa,response.data.DOMICILIO);
+
+
+
 	});
 	
   }
 //	FUNCIONES PARA OBTENER LOS DOMICILIOS DEL CLIENTE
-	$scope.get_domicilio_cliente	= function(id_cliente){
+	$scope.get_domicilio_cliente	= function(id_cliente,id_domicilio){
 		$http.get(  global_apiserver + "/servicio_cliente_etapa/getDomicilioByIDSCE/?id="+id_cliente)
 			.then(function( response ){
 				$scope.Domicilios	= response.data;
+				$scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF = id_domicilio;
 			});
 
 	}
@@ -2183,6 +2187,7 @@ $scope.get_notificacion	= function(id_servicio,id_sce,id_ta,ciclo){
 		 $("#inputNotas").val($scope.notas.join("<|>"));
 		 $("#inputNotasEdit").val(diff2.concat(diff1).join("<|>"));
 		 $("#inputDomicilio").val($scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF);
+	     console.log($scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF);
 
 
 	    if($scope.validar_chck())
