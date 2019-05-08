@@ -1,5 +1,11 @@
 <span ng-controller="servicio_cliente_etapa_controller">
-<div class="right_col" role="main">
+    <style>
+        .input-error{
+            border: #da0000 1px solid;
+            background: rgba(255, 0, 0, 0.09);
+        }
+    </style>
+<div class="right_col " role="main">
   <div class="page-title">
     <div class="title_left">
       <?php
@@ -41,26 +47,30 @@
         </div>
 
         <div class="x_content">
-        <div id="divFitrar" class="col-md-12" hidden>
+        <div id="divFitrar" class="col-md-12"  hidden>
             <form>
                 <div class="form-group w_25">
-                    <label for="nombreFiltro">Nombre del filtro<span class="required"></span></label>
-                    <input type="text" class="form-control input-filtro" id="nombreFiltro" ng-model="nombreFiltro">
+                    <label for="nombreFiltro">Crear filtro<span class="required"></span></label>
                 </div>
 
                 <div id="divInputContainer">
-                 <div class="form-group form-inline" id="filtro-{{n.index}}" ng-repeat="n in filtros">
-                     <select ng-if="$index>0"  class="form-control" style="font-size: 10px;" ng-init="andor = n.andor" ng-model="andor" id="andor-{{n.index}}" ng-change="changeAndOr(n.index)">
-                          <option value="AND" selected>-- Y --</option>
-                          <option value="OR">-- O --</option>
+                 <div class="form-group form-inline" id="filtro-{{$index}}" ng-repeat="n in filtros">
+                     <select ng-if="$index>0"  class="form-control" style="font-size: 10px;" ng-init="andor = n.andor" ng-model="andor" id="andor-{{$index}}" ng-change="changeAndOr($index)">
+                          <option value="{{item.valor}}" ng-repeat="item in selecAndOr" >{{item.title}}</option>
                     </select>
-                    <input type="text" class="form-control"  value="{{n.nombre}}"  readonly >
-                    <select  class="form-control" style="font-size: 10px;" ng-model="container" ng-init="container = n.container" id="container-{{n.index}}" ng-change="changeContainer(n.index)">
-                       <option value="false" selected>Comienza con</option>
-                       <option value="true">Contiene </option>
+                    <input type="text" class="form-control"  value="{{n.selectCampo.nombre}}"  readonly >
+                    <select  class="form-control" style="font-size: 10px;" ng-model="container" ng-init="container = n.container" id="container-{{$index}}" ng-change="changeContainer($index)">
+                           <option  value="{{type.valor}}" ng-repeat="type in n.selectCampo.condicion">{{type.title}}</option>
                     </select>
-                    <input type="text" class="form-control"  value="{{n.valor}}" ng-model="value" id="value-{{n.index}}" ng-change="changeValor(n.index)" >
-                <button type="button"  class="btn btn-xs" ng-click="onRemove(n.index)"><i class="fa fa-remove"> </i></button>
+                     <input type="text" class="form-control"  value="{{n.valor}}" ng-model="value" id="value-{{$index}}" ng-change="changeValor($index)" placeholder="{{ buildPlaceholder(n.selectCampo.type)}}" >
+                      <span id="divb-{{$index}}"  hidden>
+                         <input  type="text" class="form-control"   value="{{n.valor.split(',')[0]}}" ng-model="value1" id="value1-{{$index}}" ng-change="changeValorBetween($index)" placeholder="{{ buildPlaceholder(n.selectCampo.type)}}" >
+                         <input  type="text" class="form-control "  value="{{n.valor.split(',')[1]}}" ng-model="value2" id="value2-{{$index}}" ng-change="changeValorBetween($index)" placeholder="{{ buildPlaceholder(n.selectCampo.type)}}" >
+                      </span>
+                     <input  type="text" class="form-control hidden"   value="{{n.valor.split(',')[0]}}" ng-model="value1" id="value1-{{$index}}" ng-change="changeValorBetween($index)" placeholder="{{ buildPlaceholder(n.selectCampo.type)}}" >
+                     <input  type="text" class="form-control hidden"  value="{{n.valor.split(',')[1]}}" ng-model="value2" id="value2-{{$index}}" ng-change="changeValorBetween($index)" placeholder="{{ buildPlaceholder(n.selectCampo.type)}}" >
+
+                <button type="button"  class="btn btn-xs" ng-click="onRemove($index)"><i class="fa fa-remove"> </i></button>
                 </div>
                 </div>
                 <div class="form-group w_25">
