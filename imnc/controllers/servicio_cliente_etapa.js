@@ -13,42 +13,97 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
     $scope.cantidad_servicios = 0;
 
     /*AQUI VOY A INICIALIZAR LAS VARIABLES A USAR EN LOS FILTROS*/
+    // "sub": 0, consulta sce
+    // "sub": 1, consulta norma
+    // "sub": 3, consulta curso
     // =======================================================================================
     // ***** 		AQUI VOY A INICIALIZAR LAS VARIABLES A USAR EN LOS FILTROS			 *****
     // =======================================================================================
+
      $scope.total = 0;
      $scope.filtros = Array();
+     $scope.selecAndOr = [{title:'-- Y --',valor: "AND"},{title:'-- O --',valor: "OR"}];
+     $scope.typeSearch = [{title:'Comienza con',valor: ""},{title:'Contiene',valor: "%"}];
+     $scope.typeSearchDate = [{title:'Exactamente',valor: "="},{title:'Entre',valor: "BETWEEN"}];
+     $scope.isfiltre= false;
      $scope.campos = [
          {
              "nombre" : "Nombre del cliente",
-             "value": "CLIENTES.NOMBRE"
+             "value": "CLIENTES.NOMBRE",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
 
          },
          {
              "nombre" : "RFC del cliente",
-             "value": "CLIENTES.RFC"
+             "value": "CLIENTES.RFC",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
 
          },
          {
              "nombre" : "Referencia",
-             "value": "SERVICIO_CLIENTE_ETAPA.REFERENCIA"
+             "value": "SERVICIO_CLIENTE_ETAPA.REFERENCIA",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
 
          },
          {
              "nombre" : "Servicio",
-             "value": "SERVICIOS.NOMBRE"
+             "value": "SERVICIOS.NOMBRE",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
 
          },
          {
              "nombre" : "Tipo de Servicio",
-             "value": "TIPOS_SERVICIO.NOMBRE"
+             "value": "TIPOS_SERVICIO.NOMBRE",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
 
          },
          {
              "nombre" : "Trámite",
-             "value": "ETAPAS_PROCESO.ETAPA"
+             "value": "ETAPAS_PROCESO.ETAPA",
+             "type": "string",
+             "sub": 0,
+             "condicion":$scope.typeSearch
 
+         },
+         {
+             "nombre" : "Norma",
+             "value": "SCE_NORMAS.ID_NORMA",
+             "type": "string",
+             "sub": 1,
+             "condicion":$scope.typeSearch
+         },
+         {
+             "nombre" : "Curso",
+             "value": "C.NOMBRE",
+             "type": "string",
+             "sub": 3,
+             "condicion":$scope.typeSearch
+         },
+         {
+             "nombre" : "Fecha de creación",
+             "value": "SERVICIO_CLIENTE_ETAPA.FECHA_CREACION",
+             "type": "date",
+             "sub": 0,
+             "condicion":$scope.typeSearchDate
+         },
+         {
+             "nombre" : "Fecha de modificación",
+             "value": "SERVICIO_CLIENTE_ETAPA.FECHA_MODIFICACION",
+             "type": "date",
+             "sub": 0,
+             "condicion":$scope.typeSearchDate
          }
+
 
      ]
 
@@ -648,32 +703,121 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
 // ==============================================================================
     $scope.cargaServiciosFiltrados = function() {
 
-        if($scope.total>0)
-        {
-            var sql = " WHERE";
+
+            var sql = "";
+            var subsql1 = "";
+            var subsql3 = "";
 
             $. each( $scope.filtros, function(i, n) {
 
                 if(n.valor)
                 {
-                    var character = (n.container?"%":"");
-                    sql += " "+n.andor+" "+n.sql+" LIKE '"+character+n.valor+"%'";
+                    var value = n.valor;
+                    if(n.selectCampo.type=="date")
+                    {
+                        if(n.container=="BETWEEN")
+                        {
+                            var valor = value.split(",");
 
+                            var array1 = valor[0].split("/");
+                            var array2 = valor[1].split("/");
+                            if(array1.length==3 && array2.length==3)
+                            {
+                                value = array1[2]+array1[1]+array1[0]+","+array2[2]+array2[1]+array2[0];
+                            }
+                            else {
+                                if(array1.length!=3)
+                                {
+                                    $("#value1-"+i).attr("class","form-control input-error");
+                                }
+                                if(array2.length!=3)
+                                {
+                                    $("#value2-"+i).attr("class","form-control input-error");
+                                }
+
+                                return;
+                            }
+                        }else
+                        {
+                            var array = value.split("/");
+                            if(array.length==3)
+                            {
+                                value = array[2]+array[1]+array[0];
+                            }
+                            else {
+                                $("#value-"+i).attr("class","form-control input-error");
+                                return;
+                            }
+                        }
+
+
+                    }
+                    if(n.selectCampo.sub == 0)
+                    {
+                        switch (n.container) {
+                            case "=":
+                                sql += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" '"+value+"'";
+                                break;
+                            case "BETWEEN":
+                                var valor = value.split(',');
+                                sql += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" "+valor[0]+" AND "+valor[1];
+                                break;
+                            default:
+                                sql += " "+n.andor+" "+n.selectCampo.value+" LIKE '"+n.container+value+"%'";
+                                break;
+                        }
+
+                    }
+                    if(n.selectCampo.sub == 1)
+                    {
+                        switch (n.container) {
+                            case "=":
+                                subsql1 += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" '"+value+"'";
+                                break;
+                            case "BETWEEN":
+                                var valor = value.split(',');
+                                sql += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" "+valor[0]+" AND "+valor[1];
+                                break;
+                            default:
+                                subsql1 += " "+n.andor+" "+n.selectCampo.value+" LIKE '"+n.container+value+"%'";
+                                break;
+                        }
+                    }
+                    if(n.selectCampo.sub == 3)
+                    {
+                        switch (n.container) {
+                            case "=":
+                                subsql3 += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" '"+value+"'";
+                                break;
+                            case "BETWEEN":
+                                var valor = value.split(',');
+                                sql += " "+n.andor+" "+n.selectCampo.value+" "+n.container+" "+valor[0]+" AND "+valor[1];
+                                break;
+                            default:
+                                subsql3 += " "+n.andor+" "+n.selectCampo.value+" LIKE '"+n.container+value+"%'";
+                                break;
+                        }
+                    }
+
+                }
+                else {
+                    $("#value-"+i).attr("class","form-control input-error");
                 }
 
 
             })
 
-            var filtros = { QUERY : sql};
+
+            var filtros = { QUERY : sql?" WHERE"+sql:"",  QUERY1: subsql1,  QUERY3: subsql3};
             $.post(global_apiserver + "/servicio_cliente_etapa/getByFiltro/", JSON.stringify(filtros), function(respuesta) {
                 response = JSON.parse(respuesta);
                 $scope.cantidad_servicios = response.length;
                 $scope.tablaDatos = response;
-
+                $scope.isfiltre = true;
                 $scope.$apply();
             });
 
-        }
+
 
 
     }
@@ -701,9 +845,8 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
 // ================================================================================
     $scope.removeFilter = function(pos)
     {
-
         $scope.filtros = $scope.filtros.filter(function (elem,index) {
-            if(elem.index != pos)
+            if(index != pos)
             {
                 return true;
             }
@@ -711,15 +854,27 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
             {
                 $("#filtro-" + pos).remove();
                 $scope.total--;
+                if($scope.total==0){$scope.isfiltre == false}
                 return false;
             }
 
         })
+        if($scope.total > 0) {
+            var andor = '';
+            if ($scope.filtros[0].selectCampo.sub != 0) {
+                andor = 'AND';
+            }
 
-        if(pos==0)
-        {
-            $scope.reloadInputs();
+            $scope.filtros[0].andor = andor;
+
         }
+
+        if($scope.isfiltre == true)
+        {
+            $scope.cargaServiciosFiltrados();
+        }
+
+
     }
 
 // ================================================================================
@@ -730,104 +885,90 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
         if(!$scope.selectCampo){
             return false;
         }
-        if($scope.total>0)
+        var andor = '';
+        if($scope.total>0 || $scope.selectCampo.sub != 0)
         {
-            $scope.filtros[$scope.total]= {index:$scope.total , nombre: $scope.selectCampo.nombre, sql: $scope.selectCampo.value, andor: 'AND' , container: "", valor: ''};
+            andor = 'AND';
         }
-        else
-        {
-            $scope.filtros[$scope.total]= {index:$scope.total , nombre: $scope.selectCampo.nombre, sql: $scope.selectCampo.value, andor: '' , container: "", valor: ''};
-        }
-        $scope.total++;
-        $scope.reloadInputs();
+            $scope.filtros[$scope.total]= { selectCampo:$scope.selectCampo, andor: andor, container: $scope.selectCampo.condicion[0].valor, valor: ''};
 
-        $(".remove").click(function (e) {
-            e.preventDefault();
-            $scope.removeFilter($(this).attr("pos"));
-        });
-        $(".andor").change(function (e) {
-            e.preventDefault();
-            var value = $(this).val();
-            var pos = $(this).attr('pos');
-            $scope.filtros[pos].andor = value;
-        });
-
-        $(".cont").change(function (e) {
-            e.preventDefault();
-            if($scope.total>0)
-            {
-                var value = $(this).val();
-                var pos = $(this).attr('pos');
-                $scope.filtros[pos].container = value;
-            }
-
-        });
-
-        $(".valor").blur(function (e) {
-            e.preventDefault();
-            if($scope.total>0)
-            {
-                var value = $(this).val();
-                var pos = $(this).attr('pos');
-                $scope.filtros[pos].valor = value;
-            }
-
-        });
-
+       $scope.total++;
 
         $scope.selectCampo = "";
 
     }
+// ================================================================================
+// *****                  remove campo del filtro                             *****
+// ================================================================================
+    $scope.onRemove = function(pos){
+        $scope.removeFilter(pos);
+    }
+// ================================================================================
+// *****                  onchange select and | or                        *****
+// ================================================================================
+    $scope.changeAndOr = function(pos){
+            $scope.filtros[pos].andor = $("#andor-"+pos).val();
+     }
+// ================================================================================
+// *****                  onchange input de la busqueda                        *****
+// ================================================================================
+    $scope.changeValor = function(pos){
+            $scope.filtros[pos].valor = $("#value-"+pos).val();
+            $("#value-"+pos).attr("class","form-control")
+    }
+    $scope.changeValorBetween = function(pos){
+
+            $scope.filtros[pos].valor = $("#value1-"+pos).val()+','+$("#value2-"+pos).val();
+
+    }
+// ================================================================================
+// *****                  onchange select condicion                       *****
+// ================================================================================
+    $scope.changeContainer = function(pos){
+        if($scope.total>0)
+        {
+            $scope.filtros[pos].container = $("#container-"+pos).val();
+            if($("#container-"+pos).val() == "BETWEEN")
+            {
+                $("#value-"+pos).hide();
+                $("#divb-"+pos).show();
+            }
+            else
+            {
+                $("#value-"+pos).show();
+                $("#divb-"+pos).hide();
+            }
+        }
+    }
+// ================================================================================
+// *****                  onchange cancelar filtro                       *****
+// ================================================================================
     $scope.cancelFilter = function()
     {
         $scope.tabla_servicios();
-        $("#divInputContainer").html("");
+
         $scope.mytoggle('divFitrar');
         $scope.filtros = Array();
         $scope.total = 0;
 
 
     }
-    $scope.reloadInputs = function()
+// ================================================================================
+// *****                  build placeholder a mostrar                       *****
+// ================================================================================
+   $scope.buildPlaceholder = function(type)
     {
-        $("#divInputContainer").html("");
-        $. each( $scope.filtros, function(i, n) {
-            var newBoxDiv = $(document.createElement('div'))
-                .attr("id", 'filtro-' + n.index);
-
-            var andor = '';
-            var html = '';
-            if(i>0)
-            {
-                andor += '<select id="andor-'+n.index+'" ng-model="andor-'+n.index+'" pos="'+n.index+'" ng-init="andor-'+n.index+' = '+ n.andor +'" class="form-control andor" style="font-size: 10px;">' +
-                    '  <option value="AND" selected>-- Y --</option>' +
-                    '  <option value="OR">-- O --</option>' +
-                    '  </select>';
-
-            }
-            else {
-                $scope.filtros[i].andor = "";
-            }
-
-            html+=' <div class="form-group form-inline">\n' +
-                andor+'\n'+
-                '    <input type="text" class="form-control" id="nombre-'+n.index+'" ng-model="nombre-'+n.index+'" value="'+n.nombre+'"  readonly >\n' +
-                '    <select id="container-'+n.index+'" ng-model="container-'+n.index+'" pos="'+n.index+'" class="form-control cont" style="font-size: 10px;" ng-init="container-'+n.index+' = '+ n.container +'">\n' +
-                '       <option value="false" selected>Comienza con</option>\n' +
-                '       <option value="true">Contiene </option>\n' +
-                '    </select>\n' +
-                '    <input type="text" class="form-control valor" pos="'+n.index+'" id="value-'+n.index+'" ng-model="value-'+n.index+'" value="'+n.valor+'">\n' +
-                '<button type="button" id="remove-'+n.index+'"  name="remove-'+n.index+'" pos="'+n.index+'" class="btn btn-xs remove" ><i class="fa fa-remove"> </i></button>\n'+
-                '    </div>';
-
-            newBoxDiv.after().html(html);
-
-            newBoxDiv.appendTo("#divInputContainer");
-
-
-
-        }) ;
+        switch (type) {
+            case "string":
+                return "Introduzca un valor";
+            case "date" :
+                return "Formato:dia/mes/año";
+            case "number":
+                return "Introduzca un valor"
+        }
     }
+
+
 
 
     $(document).ready(function() {
