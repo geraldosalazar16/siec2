@@ -807,8 +807,9 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
 
             })
 
-
+          if(sql){if(sql.indexOf("AND")==1) sql = sql.substring(sql.indexOf("AND")+3,sql.length) ;}
             var filtros = { QUERY : sql?" WHERE"+sql:"",  QUERY1: subsql1,  QUERY3: subsql3};
+            console.log(filtros);
             $.post(global_apiserver + "/servicio_cliente_etapa/getByFiltro/", JSON.stringify(filtros), function(respuesta) {
                 response = JSON.parse(respuesta);
                 $scope.cantidad_servicios = response.length;
