@@ -1,4 +1,4 @@
-var app = angular.module("certificandoApp", ['multipleSelect','checklist-model','720kb.datepicker','multipleDatePicker','ui.grid','ui.grid.pinning'])
+var app = angular.module("certificandoApp", ['multipleSelect','checklist-model','720kb.datepicker','multipleDatePicker','ui.grid','ui.grid.pinning','ui.grid.autoFitColumns'])
 .config(function ($httpProvider) {     
 	$httpProvider.defaults.useXDomain = true;   
     delete $httpProvider.defaults.headers.common['X-Requested-With'];

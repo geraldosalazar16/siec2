@@ -204,8 +204,9 @@ if (!isset($_SESSION['CREATED'])) {
   <!-- multiselect-->
   <script src="js/multiselect/multiple-select.min.js"></script>
   <!-- ui-grid-->
-  <script src="js/ui-grid/ui-grid.js"></script>
-  <script src="js/ui-grid/pinning/pinning.js"></script>
+	<script src="js/ui-grid/ui-grid.js"></script> 
+	<script src="js/ui-grid/autoFitColumns.js"></script> 
+	<script src="js/ui-grid/pinning/pinning.js"></script>
   <!-- datepicker -->
    <script src="js/datepicker/angular-datepicker.js"></script>
    <!-- multidatepicker -->

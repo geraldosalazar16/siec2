@@ -3,11 +3,11 @@
 	Creación del controlador con el nombre "certi_auditores_controller".
 */
 
-app.controller('certi_auditores_controller',['$scope',function($scope){
+app.controller('certi_auditores_controller',['$scope','$http' ,function($scope,$http){
 //Titulo que aparece en el html
 	
 	$scope.titulo = 'CERTI AUDITORES';
-		
+	//$scope.cabecera =this;	
 	$scope.tntPortfolio = [
     {
         "cliente": "Globalia (Air Europa)",
@@ -43,46 +43,140 @@ app.controller('certi_auditores_controller',['$scope',function($scope){
         "dia8": "agilismo, iOS"
     }
   ];
-	 $scope.gridOptions = {};
-  $scope.cabecera = [{field: 'cliente', displayName: 'Cliente', width: '30%', pinnedLeft: true }];
-  for(var i =1; i< 9; i++){
-	  var a = {field: 'dia'+i, displayName: 'Dia'+i};
-	   $scope.cabecera.push(a);
-  }
-  $scope.gridOptions = {
+	$scope.gridOptions = {};
+/*	 $scope.gridOptions = {
     enableSorting: true,
+	columnDefs: $scope.columns,
 	enableColumnMenus: false,
-	columnDefs: [
-			$scope.cabecera
-           
-        ],
-		rowHeight: '35px',
-  };
-  $scope.gridOptions.minimumColumnSize = 100;
-  $scope.gridOptions.data =  $scope.tntPortfolio;
-  
-  
+	rowHeight: '35px',
+  };*/
+ //FECHA DE HOY
+$scope.mesActual= moment().format('M'); 
+$scope.anoActual= moment().format('YYYY'); 
 /*		
-		Función para actualizar la tabla con los registros en la BD.
+		Función para generar la fecha donde comenzara la tabla (FECHA ACTUAL) .
 */
-$scope.tipos_servicio = function() {
-
-	var tablaDatos1 = new Array();
-	var indice1=0;
-	$.post(  global_apiserver + "/tipos_servicio/getAll/", function( response ) {
-		response = JSON.parse(response);
-		$.each(response, function( indice, datos ) {
-			
-
-			tablaDatos1[indice1] = angular.fromJson(datos);
-			indice1+=1;
-		 
-	   });
-	   $scope.tablaDatos =  tablaDatos1;
-	   $scope.$apply();
-	});
-}	
+$scope.InicializarSelectMonthYear = function(){
+	 $('#txtDate').datepicker({
+     changeMonth: true,
+     changeYear: true,
+     dateFormat: 'MM yy',
+       
+     onClose: function() {
+        var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+        var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+        $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+		//Creando Cabecera
+		$scope.HeadingTable(iYear,iMonth);
+     },
+       
+     beforeShow: function() {
+		if ((selDate = $(this).val()).length > 0) 
+		{
+			iYear = selDate.substring(selDate.length - 4, selDate.length);
+			iMonth = jQuery.inArray(selDate.substring(0, selDate.length - 5), $(this).datepicker('option', 'monthNames'));
+			$(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
+			$(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+		}
+		
+    }
 	
+	
+  });
+  
+}	
+/*		
+		Función que crea la cabecera de la tabla de forma dinamica.
+*/
+$scope.HeadingTable = function(ano,mes){
+	/**/
+	
+	//AQUI INICIALIZO gridOptions
+	$scope.columns = [{field: 'Auditor', displayName: 'Auditor',width: '30%', pinnedLeft: true }];
+ 
+ $scope.gridOptions.enableSorting =true;
+ $scope.gridOptions.columnDefs =$scope.columns;
+ $scope.gridOptions.enableColumnMenus =false;
+ 
+ //$scope.gridOptions.rowHeight ='35px';
+/* $scope.gridOptions.onRegisterApi= function(gridApi){ 
+		$scope.gridApi = gridApi;
+		
+	}
+*/
+
+ // $scope.gridOptions.columnDefs = $scope.cabecera;
+  $scope.gridOptions.minimumColumnSize = 100;
+  
+  
+ // $scope.gridOptions.data =  $scope.tntPortfolio;
+
+	/**/
+	var diaMayor=0;
+	switch(parseInt(mes)){
+		case 0:
+			diaMayor = 31;
+			break;
+		case 1:
+			if(parseInt(ano)%4 == 0){
+				diaMayor = 29;
+			}
+			else{
+				diaMayor = 28;
+			}
+			
+			break;
+		case 2:
+			diaMayor = 31;
+			break;
+		case 3:
+			diaMayor = 30;
+			break;
+		case 4:
+			diaMayor = 31;
+			break;
+		case 5:
+			diaMayor = 30;
+			break;
+		case 6:
+			diaMayor = 31;
+			break;
+		case 7:	
+			diaMayor = 31;
+			break;
+		case 8:
+			diaMayor = 30;
+			break;
+		case 9:
+			diaMayor = 31;
+			break;
+		case 10:
+			diaMayor = 30;
+			break;
+		case 11:
+			diaMayor = 31;
+			break;
+	}
+	
+	
+  //$scope.cabecera.columns = [{field: 'cliente', displayName: 'Cliente', width: '20%', pinnedLeft: true }];
+	$scope.columns.splice(1);
+  for(var i =1; i<= diaMayor; i++){
+	  var abc1='';
+	  var fecha = (parseInt(mes)+1)+'-'+i+'-'+ano;
+	   abc1 = moment(fecha).format('ddd');
+	  var a = {field: 'd'+i, displayName: abc1+' '+i};
+	   $scope.columns.push(a);
+  }
+ 
+	//then later
+	$http.get(  global_apiserver + "/i_auditores_certi/getByMesyAno/?mes="+mes+"&ano="+ano)
+		.then(function( response ){
+			$scope.gridOptions.data = response.data;
+			
+		});
+//$scope.gridApi.core.refresh();
+}
 /*		
 		Función para limpiar la información del módelo y que no se quede guardada
 		después de realizar alguna transacción.
@@ -230,12 +324,12 @@ $scope.funciontiposervicionormas = function(id_tipo_servicio){
 
 
 $(document).ready(function () {
-	$scope.tipos_servicio();
 	$scope.funcionClaveServicio();
 	$scope.funcionparalistanormas(); 
 	$scope.limpiaCampos();
-
-
+	$scope.InicializarSelectMonthYear();
+	$('#txtDate').datepicker('setDate', new Date());
+	$scope.HeadingTable($scope.anoActual,$scope.mesActual-1);
 });
 	
 }]);
