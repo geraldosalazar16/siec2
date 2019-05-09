@@ -62,7 +62,8 @@ for($i=0;$i<count($catalogo);$i++){
 	if($INPUT[$i]['VALOR'] != 0){ // AQUI COMPRUEBO SI EL GASTO ES DISTINTO DE 0
 		if($database->count('I_AUDITORIAS_COSTOS',['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id_servicio_cliente_etapa,'ID_TIPO_AUDITORIA'=>$ID_TA,'CICLO'=>$CICLO,'ID_PERSONAL_TECNICO_CALIF'=>$ID_PT,'ID_CAT_AUDITORIAS_COSTOS'=>$catalogo[$i]['ID']]]) != 1){ // AQUI COMPRUEBO SI ES EDICION O NUEVO REGISTRO
 			//SI ES DISTINTO DE 1 ES NUEVO REGISTRO
-			$id1 = $database->insert($nombre_tabla, [ 
+			if($catalogo[$i]['ID'] != 4 &&  $catalogo[$i]['ID'] != 6){
+				$id1 = $database->insert($nombre_tabla, [ 
 				"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
 				"ID_TIPO_AUDITORIA"	=> 	$ID_TA,
 				"CICLO"	=>	$CICLO,
@@ -74,17 +75,77 @@ for($i=0;$i<count($catalogo);$i++){
 				"FECHA_CREACION"=>date("Ymd"),
 				"FECHA_MODIFICACION"=>""
 				]);
-			valida_error_medoo_and_die();	
+				valida_error_medoo_and_die();	
+				if($catalogo[$i]['ID'] == 3){
+					$id1 = $database->insert($nombre_tabla, [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_TIPO_AUDITORIA"	=> 	$ID_TA,
+						"CICLO"	=>	$CICLO,
+						"ID_PERSONAL_TECNICO_CALIF" => $ID_PT, 
+						"ID_CAT_AUDITORIAS_COSTOS" => 4,
+						"MONTO" =>$INPUT[$i]['VALOR']*0.84,
+						"ID_USUARIO_CREACION"=>$ID_USUARIO,
+						"ID_USUARIO_MODIFICACION"=>"",
+						"FECHA_CREACION"=>date("Ymd"),
+						"FECHA_MODIFICACION"=>""
+						]);
+						valida_error_medoo_and_die();
+					
+				}
+				if($catalogo[$i]['ID'] == 5){
+					$id1 = $database->insert($nombre_tabla, [ 
+						"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
+						"ID_TIPO_AUDITORIA"	=> 	$ID_TA,
+						"CICLO"	=>	$CICLO,
+						"ID_PERSONAL_TECNICO_CALIF" => $ID_PT, 
+						"ID_CAT_AUDITORIAS_COSTOS" => 6,
+						"MONTO" =>$INPUT[$i]['VALOR']*0.84,
+						"ID_USUARIO_CREACION"=>$ID_USUARIO,
+						"ID_USUARIO_MODIFICACION"=>"",
+						"FECHA_CREACION"=>date("Ymd"),
+						"FECHA_MODIFICACION"=>""
+						]);
+						valida_error_medoo_and_die();
+					
+				}
+			}
+			else{
+				continue;
+			}
+			
 		}
 		else{
 			// SI ES IGUAL a 1 ES UNA EDICION
-			$id1 = $database->update($nombre_tabla, 
+			if($catalogo[$i]['ID'] != 4 &&  $catalogo[$i]['ID'] != 6){
+				$id1 = $database->update($nombre_tabla, 
 					["MONTO" => $INPUT[$i]['VALOR'],
 					"ID_USUARIO_MODIFICACION"=>$ID_USUARIO,
 					"FECHA_MODIFICACION"=>date("Ymd")],
 					['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id_servicio_cliente_etapa,'ID_TIPO_AUDITORIA'=>$ID_TA,'CICLO'=>$CICLO,'ID_PERSONAL_TECNICO_CALIF'=>$ID_PT,'ID_CAT_AUDITORIAS_COSTOS'=>$catalogo[$i]['ID']]
 				]);			
 				valida_error_medoo_and_die();
+				if($catalogo[$i]['ID'] == 3){
+					$id1 = $database->update($nombre_tabla, 
+						["MONTO" => $INPUT[$i]['VALOR']*0.84,
+						"ID_USUARIO_MODIFICACION"=>$ID_USUARIO,
+						"FECHA_MODIFICACION"=>date("Ymd")],
+						['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id_servicio_cliente_etapa,'ID_TIPO_AUDITORIA'=>$ID_TA,'CICLO'=>$CICLO,'ID_PERSONAL_TECNICO_CALIF'=>$ID_PT,'ID_CAT_AUDITORIAS_COSTOS'=>4]
+					]);			
+					valida_error_medoo_and_die();
+				}
+				if($catalogo[$i]['ID'] == 5){
+					$id1 = $database->update($nombre_tabla, 
+						["MONTO" => $INPUT[$i]['VALOR']*0.84,
+						"ID_USUARIO_MODIFICACION"=>$ID_USUARIO,
+						"FECHA_MODIFICACION"=>date("Ymd")],
+						['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id_servicio_cliente_etapa,'ID_TIPO_AUDITORIA'=>$ID_TA,'CICLO'=>$CICLO,'ID_PERSONAL_TECNICO_CALIF'=>$ID_PT,'ID_CAT_AUDITORIAS_COSTOS'=>6]
+					]);			
+					valida_error_medoo_and_die();
+				}
+			}
+			else{
+				continue;
+			}		
 		}
 	}
 	

@@ -12,6 +12,7 @@
                             <div class='form-group' ng-repeat="x in CATALOGO_GASTOS">
                                 <label>{{x.NOMBRE}}<span class="required">*</span></label>
                                 <input type="text" class="form-control"  id="formDataGastosAud.input{{x.ID}}" ng-model="formDataGastosAud.input[$index].VALOR" required
+								ng-disabled = "x.ID == 4 || x.ID == 6"
                                 ng-class="{ error: exampleFormGastosAud.x.ID.$error.required && !exampleGastosAud.$pristine}" >
 							</div>
 							

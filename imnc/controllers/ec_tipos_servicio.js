@@ -3116,7 +3116,7 @@ $scope.agregar_editar_gastos	=	function(aud_o_exptec,id_servicio_cliente_etapa,i
 			};
 		if($scope.accion_gastos == 'insertar'){
 			
-			$http.post(global_apiserver + "/i_auditorias_costos/insert/",datos).
+		/*	$http.post(global_apiserver + "/i_auditorias_costos/insert/",datos).
             then(function(response){
                 if(response){
 					notify('&Eacutexito','Se han actualizado los datos','success');
@@ -3127,7 +3127,7 @@ $scope.agregar_editar_gastos	=	function(aud_o_exptec,id_servicio_cliente_etapa,i
                     notify('Error','No se pudo guardar los cambios','error');
                 }
                 
-            });
+            });*/
 		 }
 		if($scope.accion_gastos == 'editar'){	
 			
