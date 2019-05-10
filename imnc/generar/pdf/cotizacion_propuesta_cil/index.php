@@ -522,17 +522,17 @@ $html = <<<EOT
 		<td style="font-size: medium; text-align:left" width="150">Aplicación del Instrumento de medición de percepciones</td>
 		<td style="font-size: medium;  text-align:center" width="100">$dias_encuesta</td>
 		<td style="font-size: medium;  text-align:center" width="100"> 2,000.00 $ </td>
-		<td style="font-size: medium;  text-align:center" width="100">$costo_dias_encuesta</td>
+		<td style="font-size: medium;  text-align:center" width="100">$ $costo_dias_encuesta</td>
 	</tr>
 	<tr>
 		<td style="font-size: medium; text-align:left" width="150">Evaluación en Sitio</td>
 		<td style="font-size: medium;  text-align:center" width="100">$dias_base_multisitio</td>
 		<td style="font-size: medium;  text-align:center" width="100"> $tarifa_dia_auditor $ </td>
-		<td style="font-size: medium;  text-align:center" width="100">$costo_dias_auditor</td>
+		<td style="font-size: medium;  text-align:center" width="100">$ $costo_dias_auditor</td>
 	</tr>
 	<tr>
 		<td style="font-size: medium; text-align:left" width="350">Emisión de Certificado</td>
-		<td style="font-size: medium;  text-align:center" width="100">$tarifa_adicional</td>
+		<td style="font-size: medium;  text-align:center" width="100">$ $tarifa_adicional</td>
 	</tr>
 	<tr>
 		<td style="font-size: medium; text-align:left" width="250">Copias de Certificado sin acrílico</td>
@@ -546,19 +546,19 @@ $html = <<<EOT
 	</tr>
 	<tr>
 		<td style="font-size: medium; text-align:left" width="350">Viáticos</td>
-		<td style="font-size: medium;  text-align:center" width="100">$viaticos</td>
+		<td style="font-size: medium;  text-align:center" width="100">$ $viaticos</td>
 	</tr>
 	<tr>
 		<td style="font-size: medium;  text-align:right" width="350"> Subtotal </td>
-		<td style="font-size: medium;  text-align:center" width="100">$subtotal</td>
+		<td style="font-size: medium;  text-align:center" width="100">$ $subtotal</td>
 	</tr>
 	<tr>
 		<td style="font-size: medium;  text-align:rigt" width="350"> IVA </td>
-		<td style="font-size: medium;  text-align:center" width="100">$IVA </td>
+		<td style="font-size: medium;  text-align:center" width="100">$ $IVA </td>
 	</tr>
 	<tr>
 		<td style="font-size: medium;  text-align:right" width="350"> Total </td>
-		<td style="font-size: medium;  text-align:center" width="100">$Total </td>
+		<td style="font-size: medium;  text-align:center" width="100">$ $Total </td>
 	</tr>
 </table>
 EOT;
