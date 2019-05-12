@@ -42,7 +42,7 @@ function draw_ficha_clientes(objeto)
       strHtml += '            <i class="fa fa-edit"> </i> Editar </button>';
   }
   strHtml += '        <a href="./?pagina=cliente_perfil&id='+objeto.ID+'&entidad=2" class="btn btn-primary btn-xs btn-imnc" style="float: right;">';
-  strHtml += '            <i class="fa fa-home"> </i> Domicilios </a>';
+  strHtml += '            <i class="fa fa-home"> </i> Detalles </a>';
   if(global_permisos["EXPEDIENTES"]["ver"] == 1){
     strHtml += '        <a href="./?pagina=registro_expediente&id='+objeto.ID+'&id_entidad=1" class="btn btn-primary btn-xs btn-imnc" style="float: right;">';
     strHtml += '            <i class="fa fa-home"> </i> Expedientes </a>';
