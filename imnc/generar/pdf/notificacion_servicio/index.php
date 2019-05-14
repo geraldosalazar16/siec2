@@ -148,7 +148,7 @@ if($id_servicio==2 || $id_servicio==4)
 {
     $json_response = file_get_contents($global_apiserver . "/i_ec_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
 }
-$json_response = file_get_contents($global_apiserver . "/i_sg_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
+//$json_response = file_get_contents($global_apiserver . "/i_sg_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
 valida_isset($json_response, "Error en la conexión a los datos para generar PDF en linea: " . __LINE__);
 
 $json_object = json_decode($json_response);
