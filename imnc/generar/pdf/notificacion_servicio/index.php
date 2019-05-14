@@ -374,6 +374,7 @@ class MYPDF extends TCPDF {
 		$TotPage =	$this->getAliasNbPages();
         $paginado = trim('Página '.$this->getAliasNumPage()." de ".$this->getAliasNbPages());
 		$this->SetFont('Helvetica', '', 9);
+		$this->SetFillColor();
 
 		// Lugar, fecha y claves (alineado a la derecha)
 
@@ -382,28 +383,36 @@ class MYPDF extends TCPDF {
 <table cellpadding="2" cellspacing="0" border="0">
 	<tr style="margin-bottom: 10px;">
 		<td colspan="2" style="text-align: center;">
-		 <strong>  Atentamente, $this->nombre_auxiliar</strong> <span style="color: #8d8f90;">(USUARIO SIEC)</span>
+		 <strong>  Atentamente, $this->nombre_auxiliar</strong> <span style="color: #8d8f90;"></span>
 		</td>
 	</tr>
 	<tr>
-		<td style="font-size: small;border-top: #0a0a0a 3px solid;color: #8d8f90;margin-left: 200px;" width="400">
+		<td style="font-size: small;border-top: #0a0a0a 3px solid;color: #8d8f90;padding-left: 20px;" width="400">
 		    <br> <br>
 			Manuel Ma. Contreras 133 6º piso Col. Cuauhtémoc, Del. Cuauhtémoc C. P. 06500 CDMX<br>
 			Lada sin costo: 01 800 201 0145 Teléfono: 5546 4546<br>
 			Web <a>www.imnc.org.mx</a>
+			
 		</td>
 		
 		<td style="font-size: small; border-top: #0a0a0a 1px solid;color: #8d8f90;" width="115" ALIGN="RIGHT"> 
 			Clave: FPOP01 <br>
 			Fecha de aplicación: 2019-01-07 <br>
 			Versión: 00 <br>
-			<span>$paginado</span> <br>
 		</td>
 	</tr>
 </table>
+<label style="color: rgba(141,143,144,0.94)"></label>
 EOD;
 
 		$this->writeHTML($html, true, true, true, false, 'C');
+        // Position at 15 mm from bottom
+        $this->SetXY(-14,-8);
+        $this->SetTextColor(141,143,144);
+        // Set font
+        $this->SetFont('helvetica', '', 7);
+        // Page number
+        $this->Cell(10, 10, $paginado, 0, false, 'R', 0, '', 0, false, 'T', 'M');
 		
 	}
 }
