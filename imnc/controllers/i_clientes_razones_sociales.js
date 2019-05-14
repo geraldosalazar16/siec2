@@ -3,7 +3,7 @@
 	Creación del controlador con el nombre "clientes_facturacion_controller".
 */
 
-app.controller('clientes_facturacion_controller',['$scope','$http',function($scope,$http){
+app.controller('clientes_razones_sociales_controller',['$scope','$http',function($scope,$http){
 //Titulo que aparece en el html
 	
 	$scope.formData = {};
@@ -12,22 +12,16 @@ app.controller('clientes_facturacion_controller',['$scope','$http',function($sco
 		Función para actualizar la tabla con los registros en la BD.
 */
 
-$scope.clientes_datos_facturacion = function() {
+$scope.clientes_datos_razones_sociales = function() {
 
 	var tablaDatos1 = new Array();
 	var indice1=0;
 	
-	$http.get(  global_apiserver + "/i_clientes_datos_facturacion/getByIdCliente/?id="+global_id_cliente)
+	$http.get(  global_apiserver + "/i_clientes_razones_sociales/getByIdCliente/?id="+global_id_cliente)
 		.then(function( response ){
             $scope.CLIENTES_DATOS_FACTURACION = response.data[0];
 			$scope.accion_fact=response.data.length;
-			if($scope.accion_fact != 1){
-				$scope.textoBoton= 'Agregar datos de facturación';
-			}
-			else{
-				$scope.textoBoton= 'Editar datos de facturación';
-				
-			}
+			
 			
 		});
 		
@@ -39,33 +33,30 @@ $scope.clientes_datos_facturacion = function() {
 		después de realizar alguna transacción.
 */
 $scope.limpiaCampos = function(){
-	$scope.formData.formadePago="";
-	$scope.formData.metododePago ="";
-	$scope.formData.usodelaFactura="";
+	$scope.formData.Nombre="";
+	$scope.formData.RFC ="";
+	
 	
 }
 
 /*		
-		Función para hacer que aparezca el formulario de agregar datos de facturacion. Cambiamos el
-		atributo de "accion" del boton guardar para tener una referencia a que tipo
-		transacción se va a hacer (actualizar o insertar)
+		Función para hacer que aparezca el formulario de agregar razones sociales. 
 */
-$scope.InsertarDatosFacturacion = function(){
+$scope.InsertarRazonSocial = function(){
 	$scope.limpiaCampos();
-	if($scope.accion_fact == 0){
-		$scope.modal_titulo = 'Insertar Datos Facturacion';
+		$scope.modal_titulo = 'Insertar Razón Social';
 		$scope.accion_fact =0;
-	}
-	if($scope.accion_fact == 1){
+	
+	/*if($scope.accion_fact == 1){
 		$scope.modal_titulo = 'Editar Datos Facturacion';
 		$scope.accion_fact =1;
 		$scope.formData.formadePago=$scope.CLIENTES_DATOS_FACTURACION.ID_FORMA_D_PAGO;
 		$scope.formData.metododePago =$scope.CLIENTES_DATOS_FACTURACION.ID_METODO_D_PAGO;
 		$scope.formData.usodelaFactura=$scope.CLIENTES_DATOS_FACTURACION.ID_USO_D_L_FACTURA;
 		
-	}
+	}*/
 	
-	$("#modalInsertarActualizar").modal("show");
+	$("#modalInsertarActualizarRS").modal("show");
 
 }
 // ==============================================================================
@@ -74,13 +65,12 @@ $scope.InsertarDatosFacturacion = function(){
 $scope.submitForm = function (formData) {
 	var datos = {
             CLIENTE: global_id_cliente ,
-            FORMA_DE_PAGO:	$scope.formData.formadePago ,
-			METODO_DE_PAGO:	$scope.formData.metododePago,
-            USO_DE_LA_FACTURA: $scope.formData.usodelaFactura,
-			ID_USUARIO:sessionStorage.getItem("id_usuario")
+            NOMBRE:	$scope.formData.Nombre ,
+			RFC:	$scope.formData.RFC,
+            ID_USUARIO:sessionStorage.getItem("id_usuario")
           };
 		  if($scope.accion_fact == 0){
-			$http.post(global_apiserver + "/i_clientes_datos_facturacion/insert/",datos).
+			$http.post(global_apiserver + "/i_clientes_razones_sociales/insert/",datos).
 				then(function(response){
 			
                 if(response.data.resultado=="ok"){
@@ -161,13 +151,15 @@ $scope.funcionUsoDeLaFactura = function(){
 	});
 }
 
-
+ $('#RFC').keyup(function(){
+      $(this).val($(this).val().toUpperCase());
+    });
 
 $(document).ready(function () {
 	$scope.funcionFormasDePago();
 	$scope.funcionMetodosDePago();
 	$scope.funcionUsoDeLaFactura();
-	$scope.clientes_datos_facturacion();
+	$scope.clientes_datos_razones_sociales();
 	//$scope.limpiaCampos();
 
 

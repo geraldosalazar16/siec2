@@ -100,6 +100,9 @@
 					<li role="presentation" class=""><a href="#tab_facturacion" role="tab" id="profile-tab3" data-toggle="tab" aria-expanded="false">
                           Facturaci&oacuten </a>
 					</li>
+					<li role="presentation" class=""><a href="#tab_clientes_razones_sociales" role="tab" id="profile-tab3" data-toggle="tab" aria-expanded="false">
+                          Razones sociales </a>
+					</li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                   <div role="tabpanel" class="tab-pane fade active in" id="tab_domicilios" aria-labelledby="profile-tab">
@@ -398,6 +401,68 @@
 													ng-class="{ error: exampleForm.usodelaFactura.$error.required && !exampleForm.$pristine}">
 													</select>
 												</div>
+												 <input type="submit" class="btn btn-success pull-right mt-2" ng-click="submitForm(formData)" ng-disabled="!exampleForm.$valid" value="Guardar"/>
+											</form>
+										</div>	
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane fade" id="tab_clientes_razones_sociales" aria-labelledby="profile-tab">
+						<script type="text/javascript" src="controllers/i_clientes_razones_sociales.js"></script>
+						<div ng-controller="clientes_razones_sociales_controller">
+							<p>			
+								<button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-click="InsertarRazonSocial()"> 
+									<i class="fa fa-plus"> </i> Agregar raz&oacuten social
+								</button>
+							</p>
+							<br><br>
+							
+							<div ng-show="accion_fact==1">
+							<ul class="list-unstyled user_data" style="display: inline-block !important;" >
+								<li ><b>
+									Forma de Pago:</b><i> {{CLIENTES_DATOS_FACTURACION.NOMBRE_FORMA_D_PAGO}}</i>
+									
+								</li>
+								<li ><b>
+									M&eacutetodo de Pago:</b><i> {{CLIENTES_DATOS_FACTURACION.NOMBRE_METODO_D_PAGO}}</i>
+									
+								</li>
+								<li ><b>
+									Uso de la factura:</b><i> {{CLIENTES_DATOS_FACTURACION.NOMBRE_USO_D_L_FACTURA}}</i>
+									
+								</li>
+					
+							</ul>
+							</div>
+							<?php	
+								/********************************************/
+								/*  	   A PARTIR DE AQUI EL MODAL	  	*/
+								/********************************************/
+							?>
+							<div class="modal fade" id="modalInsertarActualizarRS" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+								data-backdrop="static" data-keyboard="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+											</button>
+											<h4 class="modal-title" id="modalTitulo">{{modal_titulo}}</h4>
+										</div>
+										<div class="modal-body"> 
+											<form name="exampleForm">
+												<div class="form-group">
+													<label for="Nmbre">Nombre<span class="required">*</span></label>
+													 <input type="text" class="form-control" name="Nombre" id="Nombre" ng-model="formData.Nombre" required
+													ng-class="{ error: exampleForm.Nombre.$error.required && !exampleForm.$pristine}" >
+												</div>
+												<div class="form-group">
+													<label for="RFC">RFC<span class="required">*</span></label>
+													 <input type="text" class="form-control" name="RFC" id="RFC" ng-model="formData.RFC" data-inputmask="'mask': '<?php echo $str_mascara_rfc; ?>'" placeholder="SIA090305XXX"  require
+													ng-class="{ error: exampleForm.RFC.$error.required && !exampleForm.$pristine}" >
+												</div>
+												
 												 <input type="submit" class="btn btn-success pull-right mt-2" ng-click="submitForm(formData)" ng-disabled="!exampleForm.$valid" value="Guardar"/>
 											</form>
 										</div>	
