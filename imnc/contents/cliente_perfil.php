@@ -419,23 +419,34 @@
 							</p>
 							<br><br>
 							
-							<div ng-show="accion_fact==1">
-							<ul class="list-unstyled user_data" style="display: inline-block !important;" >
-								<li ><b>
-									Forma de Pago:</b><i> {{CLIENTES_DATOS_FACTURACION.NOMBRE_FORMA_D_PAGO}}</i>
-									
-								</li>
-								<li ><b>
-									M&eacutetodo de Pago:</b><i> {{CLIENTES_DATOS_FACTURACION.NOMBRE_METODO_D_PAGO}}</i>
-									
-								</li>
-								<li ><b>
-									Uso de la factura:</b><i> {{CLIENTES_DATOS_FACTURACION.NOMBRE_USO_D_L_FACTURA}}</i>
-									
-								</li>
+							<table class="table table-striped responsive-utilities jambo_table bulk_action">
+								<thead>
+									<tr class="headings">
+										<th class="column-title">Nombre</th>
+										<th class="column-title">RFC</th>
+										<th class="column-title"></th>
+                
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr ng-repeat="x in CLIENTES_RAZONES_SOCIALES" class="ng-scope even pointer">
+										<td>{{x.NOMBRE}}</td>
+										<td>{{x.RFC}}</td>
+										<td >
+													<button type="button" 
+															class="btn btn-primary btn-xs btn-imnc btnEditar" 
+															style="float: right;" 
+															ng-disabled='$index ==0'
+															ng-click="EditarRazonSocial(x.ID,x.NOMBRE,x.RFC,x.ES_FACTURARIO)"> 
+														<i class="fa fa-edit"> </i> Editar raz&oacuten social
+													 </button>
+										</td>	
 					
-							</ul>
-							</div>
+					
+									</tr>
+								</tbody>
+							</table>
 							<?php	
 								/********************************************/
 								/*  	   A PARTIR DE AQUI EL MODAL	  	*/

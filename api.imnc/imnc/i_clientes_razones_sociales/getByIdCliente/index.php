@@ -20,29 +20,36 @@ function valida_error_medoo_and_die(){
 		die(); 
 	} 
 } 
-
+$respuesta=array();
 $id_cliente = $_REQUEST["id"];
-$valores = $database->select('I_CLIENTES_DATOS_FACTURACION',
+// Obtener la primera razon social que es el propio nombre del cliente
+$data1 = $database->get('CLIENTES',['ID','NOMBRE','RFC'],['ID'=>$id_cliente]);
+valida_error_medoo_and_die();
+$n=0;
+$respuesta[$n] = $data1; 
+$n=1;
+//Obtener la 2da razon social de la tabla clientes si existe
+if($database->count('CLIENTES',['AND'=>['ID'=>$id_cliente,'ES_FACTURARIO'=>'N']])>0){
+	$data2 = $database->get('CLIENTES',['ID','CLIENTE_FACTURARIO(NOMBRE)','RFC_FACTURARIO(RFC)','ES_FACTURARIO'],['ID'=>$id_cliente]);
+	Valida_error_medoo_and_die();
+	$respuesta[$n]=$data2;
+	$n=2;
+}
+$valores = $database->select('I_CLIENTES_RAZONES_SOCIALES',
+							
 							[
-								"[><]CLIENTES"=>["I_CLIENTES_DATOS_FACTURACION.ID_CLIENTE"=>"ID"],
-								"[><]I_CAT_FORMA_D_PAGO"=>["I_CLIENTES_DATOS_FACTURACION.ID_FORMA_D_PAGO"=>"ID"],
-								"[><]I_CAT_METODO_D_PAGO"=>["I_CLIENTES_DATOS_FACTURACION.ID_METODO_D_PAGO"=>"ID"],
-								"[><]I_CAT_USO_D_L_FACTURA"=>["I_CLIENTES_DATOS_FACTURACION.ID_USO_D_L_FACTURA"=>"ID"]
-							],
-							[
-								'I_CLIENTES_DATOS_FACTURACION.ID',
-								'CLIENTES.NOMBRE(NOMBRE_CLIENTE)',
-								'I_CAT_FORMA_D_PAGO.ID(ID_FORMA_D_PAGO)',
-								'I_CAT_FORMA_D_PAGO.NOMBRE(NOMBRE_FORMA_D_PAGO)',
-								'I_CAT_METODO_D_PAGO.ID(ID_METODO_D_PAGO)',
-								'I_CAT_METODO_D_PAGO.NOMBRE(NOMBRE_METODO_D_PAGO)',
-								'I_CAT_USO_D_L_FACTURA.ID(ID_USO_D_L_FACTURA)',
-								'I_CAT_USO_D_L_FACTURA.NOMBRE(NOMBRE_USO_D_L_FACTURA)'
+								'I_CLIENTES_RAZONES_SOCIALES.ID',
+								'I_CLIENTES_RAZONES_SOCIALES.NOMBRE',
+								'I_CLIENTES_RAZONES_SOCIALES.RFC'
+								
 							],['ID_CLIENTE'=>$id_cliente]);
 valida_error_medoo_and_die();
 
+for($i=0;$i<count($valores);$i++){
+	$respuesta[$n] = $valores[$i];
+	$n++;
+}
 
 
-
-print_r(json_encode($valores)); 
+print_r(json_encode($respuesta)); 
 ?> 

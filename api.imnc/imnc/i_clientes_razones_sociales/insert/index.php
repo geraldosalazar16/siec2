@@ -19,7 +19,7 @@ function valida_error_medoo_and_die(){
 		$respuesta["resultado"]="error"; 
 		$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
 		print_r(json_encode($respuesta)); 
-		$mailerror->send("I_CLIENTES_DATOS_FACTURACION", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
+		$mailerror->send("I_CLIENTES_RAZONES_SOCIALES", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
 		die(); 
 	} 
 } 
@@ -38,16 +38,12 @@ $ID_USUARIO = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO, "Falta el ID_USUARIO");
 $FECHA_CREACION = date("Ymd");
 
-else{
-	$respuesta["resultado"]="error"; 
-	$respuesta["mensaje"]="El RFC tiene formato incorrecto. Debe tener 12 caracteres."; 
-}
 
-$count1 = $database->count("I_CLIENTES_DATOS_FACTURACION",['AND'=>['ID_CLIENTE'=>$CLIENTE,'NOMBRE'=>$NOMBRE]]);
-$count2 = $database->count("CLIENTES",['AND'=>['ID'=>$CLIENTE,'NOMBRE'=>$NOMBRE]]);
-$count3 = $database->count("CLIENTES",['AND'=>['ID'=>$CLIENTE,'CLIENTE_FACTURARIO'=>$NOMBRE]]);
-if(($count1+$count2+$count3)>0){
-	$idd = $database->insert("I_CLIENTES_DATOS_FACTURACION",
+$count1 = $database->count("I_CLIENTES_RAZONES_SOCIALES",['AND'=>['ID_CLIENTE'=>$CLIENTE,'RFC'=>$RFC]]);
+$count2 = $database->count("CLIENTES",['AND'=>['ID'=>$CLIENTE,'RFC'=>$RFC]]);
+$count3 = $database->count("CLIENTES",['AND'=>['ID'=>$CLIENTE,'RFC_FACTURARIO'=>$RFC]]);
+if(($count1+$count2+$count3)==0){
+	$idd = $database->insert("I_CLIENTES_RAZONES_SOCIALES",
 											
 											[
 												"ID_CLIENTE"=>$CLIENTE,
