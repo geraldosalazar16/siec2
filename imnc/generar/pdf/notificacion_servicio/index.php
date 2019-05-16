@@ -148,8 +148,8 @@ if($id_servicio==2 || $id_servicio==4)
 {
     $json_response = file_get_contents($global_apiserver . "/i_ec_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
 }
-$json_response = file_get_contents($global_apiserver . "/i_sg_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
-valida_isset($json_response, "Error en la conexión a los datos para generar PDF en linea: " . __LINE__);
+//$json_response = file_get_contents($global_apiserver . "/i_sg_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
+//valida_isset($json_response, "Error en la conexión a los datos para generar PDF en linea: " . __LINE__);
 
 $json_object = json_decode($json_response);
 
@@ -166,22 +166,26 @@ $REFERENCIA = $json_object->SERVICIO_CLIENTE_ETAPA->REFERENCIA;
 valida_isset($REFERENCIA, "Error: No se encuentra la REFERENCIA en linea: " . __LINE__);
 
 $TIPO_SERVICIO = $json_object->TIPO_AUDITORIA;
+if($id_servicio==1)
+{
+	$arr_sectores = $json_object->SERVICIO_CLIENTE_ETAPA->SG_SECTORES; //Es arreglo
+	valida_isset($arr_sectores, "Error: No se encuentra arr_sectores en linea: " . __LINE__);
 
-$arr_sectores = $json_object->SERVICIO_CLIENTE_ETAPA->SG_SECTORES; //Es arreglo
-valida_isset($arr_sectores, "Error: No se encuentra arr_sectores en linea: " . __LINE__);
 
-$SECTORES = "";
-for ($i=0; $i < count($arr_sectores); $i++) {
-	if (($i+1) ==  count($arr_sectores)) { //Si es el ultimo elemento
-		$SECTORES .= $arr_sectores[$i]->SECTORES->ID;
-		valida_isset($SECTORES, "Error: No se encuentra SECTORES en linea: " . __LINE__);
+	$SECTORES = "";
+	for ($i=0; $i < count($arr_sectores); $i++) {
+		if (($i+1) ==  count($arr_sectores)) { //Si es el ultimo elemento
+			$SECTORES .= $arr_sectores[$i]->SECTORES->ID;
+			valida_isset($SECTORES, "Error: No se encuentra SECTORES en linea: " . __LINE__);
+		}
+		else{
+			$SECTORES .= $arr_sectores[$i]->SECTORES->ID . ", ";
+			valida_isset($SECTORES, "Error: No se encuentra SECTORES en linea: " . __LINE__);
+		}
 	}
-	else{
-		$SECTORES .= $arr_sectores[$i]->SECTORES->ID . ", ";
-		valida_isset($SECTORES, "Error: No se encuentra SECTORES en linea: " . __LINE__);
-	}
-}
+}	
     $SECTORES =   ($SECTORES?$SECTORES:'N/A');
+
 // Datos de contacto y domicilio
 
 $obj_cliente = $json_object->SERVICIO_CLIENTE_ETAPA->CLIENTE;
@@ -243,22 +247,22 @@ $TEXT_NORMA ="";
 if(count($NORMA)>0){
 	
 	for($i=0;$i<count($NORMA);$i++){
-		if($i%2 == 0){
-			$TEXT_NORMA .='<tr>';
-			$TEXT_NORMA .='<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn'.($i+1).'" value="1" checked="true" readonly="false">'.trim($NORMA[$i]->ID_NORMA).'</td>';
+		/*if($i == (count($NORMA)-1)){
+			$TEXT_NORMA .= $NORMA[$i]->ID_NORMA;
 		}
 		else{
-			$TEXT_NORMA .='<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn'.($i+1).'" value="1" checked="true" readonly="false">'.trim($NORMA[$i]->ID_NORMA).'</td>';
-			$TEXT_NORMA .='</tr>';
-		}		
+			$TEXT_NORMA .= $NORMA[$i]->ID_NORMA.',';
+		}	*/
+		$TEXT_NORMA .='<tr>';
+			$TEXT_NORMA .='<td BGCOLOR="#E0E0E0">'.trim($NORMA[$i]->ID_NORMA).'</td>';
+			$TEXT_NORMA .='</tr>';	
 	/*	<tr>
 		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn1" value="1" checked="false" readonly="false">NMX-CC-9001-IMNC-2015 / ISO 9001:2015</td>
 		<td style="font-size: medium; text-align:left"  width="225"><input type="checkbox" name="chkn2" value="1" checked="false" readonly="false">NMX-SAST-001-IMNC-2008</td>
 	</tr>*/
+	
 	}
-	if(count($NORMA)%2 == 1){
-		$TEXT_NORMA .='</tr>';
-	}
+	
 	
 }
 /*===========================================================================*/
@@ -283,8 +287,14 @@ valida_isset($pts, "Error: No se encuentra SG_AUDITORIA_GRUPO en linea: " . __LI
 $PERSONAL_TECNICO = "";
 for ($i=0; $i < count($pts) ; $i++) { 
 	$PT_NOMBRE_COMPLETO = $pts[$i]->PERSONAL_TECNICO_CALIFICACION->PERSONAL_TECNICO->NOMBRE . " " . $pts[$i]->PERSONAL_TECNICO_CALIFICACION->PERSONAL_TECNICO->APELLIDO_PATERNO . " " . $pts[$i]->PERSONAL_TECNICO_CALIFICACION->PERSONAL_TECNICO->APELLIDO_MATERNO;
-	$PT_SECTORES = implode (", ", $pts[$i]->PERSONAL_TECNICO_CALIFICACION->PERSONAL_TECNICO_CALIF_SECTORES);
-//	$PT_SECTORES = 35;
+	if($id_servicio==1)
+	{
+		$PT_SECTORES = implode (", ", $pts[$i]->PERSONAL_TECNICO_CALIFICACION->PERSONAL_TECNICO_CALIF_SECTORES);
+	//	$PT_SECTORES = 35;
+	}
+	else{
+		$PT_SECTORES = 'N/A';
+	}
 	valida_isset($pts[$i]->PERSONAL_TECNICO_CALIFICACION->PERSONAL_TECNICO->NOMBRE, "Error: No se encuentra NOMBRE en linea: " . __LINE__);
 	valida_isset($pts[$i]->PERSONAL_TECNICO_CALIFICACION->PERSONAL_TECNICO->APELLIDO_PATERNO, "Error: No se encuentra APELLIDO_PATERNO en linea: " . __LINE__);
 	valida_isset($pts[$i]->PERSONAL_TECNICO_CALIFICACION->PERSONAL_TECNICO->APELLIDO_MATERNO, "Error: No se encuentra APELLIDO_MATERNO en linea: " . __LINE__);
@@ -294,15 +304,20 @@ for ($i=0; $i < count($pts) ; $i++) {
 	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="40%"> '.trim($PT_NOMBRE_COMPLETO).'  </td>';
 	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="20%"> '.trim($pts[$i]->PERSONAL_TECNICO_CALIFICACION->REGISTRO).' </td>';
 	$PERSONAL_TECNICO .= '	<td style="font-size: medium;"  align="CENTER" width="20%"> '.(trim($PT_SECTORES)?trim($PT_SECTORES):'S/C').' </td>';
+	
 	$PERSONAL_TECNICO .= '</tr>';
 
 	valida_isset($pts[$i]->PERSONAL_TECNICO_ROL->ROL, "Error: No se encuentra ROL en linea: " . __LINE__);
 	valida_isset($pts[$i]->PERSONAL_TECNICO_CALIFICACION->REGISTRO, "Error: No se encuentra REGISTRO en linea: " . __LINE__);
 }
-$CLAVE_CERTIFICADO = " ";
+//$CLAVE_CERTIFICADO = " ";
 $CC_FECHA_INICIO = " ";
 $CC_FECHA_FIN = " ";
-$CLAVE_CERTIFICADO = $json_object->SERVICIO_CLIENTE_ETAPA->INFO_SERVICIO[0]->VALOR;
+
+	$CLAVE_CERTIFICADO = $json_object->SERVICIO_CLIENTE_ETAPA->INFO_SERVICIO[0]->VALOR;
+
+
+$CLAVE_CERTIFICADO =   ($CLAVE_CERTIFICADO?$CLAVE_CERTIFICADO:' ');
 //valida_isset($CLAVE_CERTIFICADO, "Error: No se encuentra la clave certificado: " . __LINE__);
 //$CC_FECHA_INICIO = $json_object->SG_AUDITORIA_CERTIFICADO->FECHA_INICIO;
 valida_isset($CC_FECHA_INICIO, "Error: No se encuentra la fecha de inicio: " . __LINE__);
@@ -496,7 +511,8 @@ $html .= ''.$CORREO.'</div>';
 $html .= '<br>';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 9);
-$html= <<<EOT
+
+	$html= <<<EOT
 <br>
 <table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;">
     <tr>
@@ -519,6 +535,8 @@ $html= <<<EOT
 	
 </table>
 EOT;
+
+
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 11);
 $html= <<<EOT
@@ -567,9 +585,7 @@ $html= <<<EOT
     <tr>
      <td BGCOLOR="#1F487B" style="color: #ffffff; text-align: left;"> Bajo el/los siguiente (s) lineamiento (s) de referencia: </td>
     </tr>
-    <tr>
-     <td  BGCOLOR="#E0E0E0">$TEXT_NORMA</td>
-    </tr>
+    $TEXT_NORMA
 
 </table>
 
