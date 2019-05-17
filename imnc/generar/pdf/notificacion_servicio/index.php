@@ -148,7 +148,7 @@ if($id_servicio==2 || $id_servicio==4)
 {
     $json_response = file_get_contents($global_apiserver . "/i_ec_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
 }
-$json_response = file_get_contents($global_apiserver . "/i_sg_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
+//$json_response = file_get_contents($global_apiserver . "/i_sg_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
 valida_isset($json_response, "Error en la conexión a los datos para generar PDF en linea: " . __LINE__);
 
 $json_object = json_decode($json_response);
@@ -374,6 +374,7 @@ class MYPDF extends TCPDF {
 		$TotPage =	$this->getAliasNbPages();
         $paginado = trim('Página '.$this->getAliasNumPage()." de ".$this->getAliasNbPages());
 		$this->SetFont('Helvetica', '', 9);
+		$this->SetFillColor();
 
 		// Lugar, fecha y claves (alineado a la derecha)
 
@@ -386,24 +387,32 @@ class MYPDF extends TCPDF {
 		</td>
 	</tr>
 	<tr>
-		<td style="font-size: small;border-top: #0a0a0a 3px solid;color: #8d8f90;margin-left: 200px;" width="400">
+		<td style="font-size: small;border-top: #0a0a0a 3px solid;color: #8d8f90;padding-left: 20px;" width="400">
 		    <br> <br>
 			Manuel Ma. Contreras 133 6º piso Col. Cuauhtémoc, Del. Cuauhtémoc C. P. 06500 CDMX<br>
 			Lada sin costo: 01 800 201 0145 Teléfono: 5546 4546<br>
 			Web <a>www.imnc.org.mx</a>
+			
 		</td>
 		
 		<td style="font-size: small; border-top: #0a0a0a 1px solid;color: #8d8f90;" width="115" ALIGN="RIGHT"> 
 			Clave: FPOP01 <br>
 			Fecha de aplicación: 2019-01-07 <br>
 			Versión: 00 <br>
-			<span>$paginado</span> <br>
 		</td>
 	</tr>
 </table>
+<label style="color: rgba(141,143,144,0.94)"></label>
 EOD;
 
 		$this->writeHTML($html, true, true, true, false, 'C');
+        // Position at 15 mm from bottom
+        $this->SetXY(-14,-8);
+        $this->SetTextColor(141,143,144);
+        // Set font
+        $this->SetFont('helvetica', '', 7);
+        // Page number
+        $this->Cell(10, 10, $paginado, 0, false, 'R', 0, '', 0, false, 'T', 'M');
 		
 	}
 }
