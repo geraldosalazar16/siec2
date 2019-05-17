@@ -1,0 +1,70 @@
+[05-Apr-2019 16:09:42 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(26): MailError->send('certificando', '/home/sistemai/...', 'Table 'sistemai...', 'SELECT * FROM "...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(32): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[08-Apr-2019 15:44:59 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(26): MailError->send('certificando', '/home/sistemai/...', 'Table 'sistemai...', 'SELECT * FROM "...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(32): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[08-Apr-2019 16:19:31 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(26): MailError->send('certificando', '/home/sistemai/...', 'Table 'sistemai...', 'SELECT * FROM "...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(32): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[09-Apr-2019 16:01:43 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(26): MailError->send('certificando', '/home/sistemai/...', 'Table 'sistemai...', 'SELECT * FROM "...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(32): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[29-Apr-2019 15:04:29 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(26): MailError->send('certificando', '/home/sistemai/...', 'Table 'sistemai...', 'SELECT * FROM "...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(32): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[29-Apr-2019 15:07:53 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(26): MailError->send('certificando', '/home/sistemai/...', 'Table 'sistemai...', 'SELECT * FROM "...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(32): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[29-Apr-2019 15:26:34 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(26): MailError->send('certificando', '/home/sistemai/...', 'Table 'sistemai...', 'SELECT * FROM "...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(32): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[29-Apr-2019 15:43:39 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(26): MailError->send('certificando', '/home/sistemai/...', 'Table 'sistemai...', 'SELECT * FROM "...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(32): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[29-Apr-2019 15:48:03 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(26): MailError->send('certificando', '/home/sistemai/...', 'Table 'sistemai...', 'SELECT * FROM "...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(32): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
+[02-May-2019 17:51:27 UTC] PHP Fatal error:  Uncaught exception 'SendGrid\Exception' with message '{"errors":["The provided authorization grant is invalid, expired, or revoked"],"message":"error"}' in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php:120
+Stack trace:
+#0 /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/conn-sendgrid.php(52): SendGrid->send(Object(SendGrid\Email))
+#1 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(26): MailError->send('certificando', '/home/sistemai/...', 'Table 'sistemai...', 'SELECT * FROM "...', 'polo@codeart.mx')
+#2 /home/sistemai/public_html/imnc/test/api.imnc/imnc/departamentos/getAll/index.php(32): valida_error_medoo_and_die()
+#3 {main}
+  thrown in /home/sistemai/public_html/imnc/test/api.imnc/imnc/common/sendgridlib/lib/SendGrid.php on line 120
