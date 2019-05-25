@@ -148,7 +148,7 @@ if($id_servicio==2 || $id_servicio==4)
 {
     $json_response = file_get_contents($global_apiserver . "/i_ec_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
 }
-$json_response = file_get_contents($global_apiserver . "/i_sg_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
+//$json_response = file_get_contents($global_apiserver . "/i_sg_auditorias/getById/?completo=true&id_sce=". $id_sce."&id_ta=".$id_tipo_auditoria."&ciclo=".$ciclo."&id_domicilio=".$id_domicilio);
 valida_isset($json_response, "Error en la conexión a los datos para generar PDF en linea: " . __LINE__);
 
 $json_object = json_decode($json_response);
@@ -374,6 +374,7 @@ class MYPDF extends TCPDF {
 		$TotPage =	$this->getAliasNbPages();
         $paginado = trim('Página '.$this->getAliasNumPage()." de ".$this->getAliasNbPages());
 		$this->SetFont('Helvetica', '', 9);
+		$this->SetFillColor();
 
 		// Lugar, fecha y claves (alineado a la derecha)
 
@@ -382,28 +383,36 @@ class MYPDF extends TCPDF {
 <table cellpadding="2" cellspacing="0" border="0">
 	<tr style="margin-bottom: 10px;">
 		<td colspan="2" style="text-align: center;">
-		 <strong>  Atentamente, $this->nombre_auxiliar</strong> <span style="color: #8d8f90;">(USUARIO SIEC)</span>
+		 <strong>  Atentamente, $this->nombre_auxiliar</strong> <span style="color: #8d8f90;"></span>
 		</td>
 	</tr>
 	<tr>
-		<td style="font-size: small;border-top: #0a0a0a 3px solid;color: #8d8f90;margin-left: 200px;" width="400">
+		<td style="font-size: small;border-top: #0a0a0a 3px solid;color: #8d8f90;padding-left: 20px;" width="400">
 		    <br> <br>
 			Manuel Ma. Contreras 133 6º piso Col. Cuauhtémoc, Del. Cuauhtémoc C. P. 06500 CDMX<br>
 			Lada sin costo: 01 800 201 0145 Teléfono: 5546 4546<br>
 			Web <a>www.imnc.org.mx</a>
+			
 		</td>
 		
 		<td style="font-size: small; border-top: #0a0a0a 1px solid;color: #8d8f90;" width="115" ALIGN="RIGHT"> 
 			Clave: FPOP01 <br>
 			Fecha de aplicación: 2019-01-07 <br>
 			Versión: 00 <br>
-			<span>$paginado</span> <br>
 		</td>
 	</tr>
 </table>
+<label style="color: rgba(141,143,144,0.94)"></label>
 EOD;
 
 		$this->writeHTML($html, true, true, true, false, 'C');
+        // Position at 15 mm from bottom
+        $this->SetXY(-14,-8);
+        $this->SetTextColor(141,143,144);
+        // Set font
+        $this->SetFont('helvetica', '', 7);
+        // Page number
+        $this->Cell(10, 10, $paginado, 0, false, 'R', 0, '', 0, false, 'T', 'M');
 		
 	}
 }
@@ -486,13 +495,13 @@ $html =  '<br><div style="text-align:right;"> Ciudad de México, a  '.$LUGAR_Y_F
 $html .= '<br>';
 $pdf1->writeHTML($html, true, false, true, false, 'L');
 $pdf1->SetFont('Calibri', '', 10);
-$html = '<div style="text-align:center;"><strong><i>'.$NOMBRE_CLIENTE.'</i></strong><br>';
-$html .= '<strong><i>Dirección:&nbsp;</i></strong> '.$CALLE_Y_NUMERO.'&nbsp;'.$COLONIA_DELEGACION_Y_CP.'&nbsp;'.$ENTIDAD_FEDERATIVA.'<br>';
+$html = '<div style="text-align:center;">'.$NOMBRE_CLIENTE.'<br>';
+$html .= ''.$CALLE_Y_NUMERO.'&nbsp;'.$COLONIA_DELEGACION_Y_CP.'&nbsp;'.$ENTIDAD_FEDERATIVA.'<br>';
 $html .= '<br>';
-$html .= '<strong><i>'.$NOMBRE_CONTACTO.'</i></strong><br>';
-$html .= '<strong><i>Puesto:&nbsp;</i></strong>'.$CARGO_CONTACTO.'<br>';
-$html .= '<strong><i>Teléfono:&nbsp;</i></strong> '.$TELEFONO.'<br>';
-$html .= '<strong><i>Email:&nbsp;</i></strong> '.$CORREO.'</div>';
+$html .= ''.$NOMBRE_CONTACTO.'<br>';
+$html .= ''.$CARGO_CONTACTO.'<br>';
+$html .= ''.$TELEFONO.'<br>';
+$html .= ''.$CORREO.'</div>';
 $html .= '<br>';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 9);

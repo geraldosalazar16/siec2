@@ -2078,7 +2078,7 @@ cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 /*============================================================================================*/
 //GENERAR NOTIFICACION
   $scope.modal_generar_notificacion = function(id_servicio,id_sce,id_ta,ciclo){
-
+	    $scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF = "";
 	    $scope.get_notificacion(id_servicio,id_sce,id_ta,ciclo);
 		$("#inputIdSCE").val(id_sce);
 		$("#inputIdTA").val(id_ta);
@@ -2086,7 +2086,6 @@ cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 		$("#inputServicio").val(id_servicio);
 		$("#inputSave").val('');
 		$("#inputNombreUsuario").val(sessionStorage.getItem("nombre_usuario"));
-		$scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF = "";
     $('#modalGeneraNotificacion').modal('show');
   }
 
@@ -2138,9 +2137,6 @@ $scope.get_notificacion	= function(id_servicio,id_sce,id_ta,ciclo){
 
 		});
 		$scope.get_domicilio_cliente($scope.id_servicio_cliente_etapa,response.data.DOMICILIO);
-
-
-
 	});
 	
   }
@@ -2150,6 +2146,8 @@ $scope.get_notificacion	= function(id_servicio,id_sce,id_ta,ciclo){
 			.then(function( response ){
 				$scope.Domicilios	= response.data;
 				$scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF = id_domicilio;
+				console.log(id_domicilio);
+				console.log($scope.Domicilios);
 			});
 
 	}
