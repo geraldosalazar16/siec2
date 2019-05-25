@@ -61,75 +61,7 @@ $id_domicilio =$abcde[1] ;
 //$tipoNotificacionPDF = $_REQUEST["cmbTipoNotificacionPDF"];
 //$tipoCambiosPDF = $_REQUEST["cmbTipoCambiosPDF"];
 //$certificacionMantenimientoPDF = $_REQUEST["cmbCertificacionMantenimientoPDF"];
-$notasPDF = $_REQUEST["txtNotas"];
-if($notasPDF)
-{
-    $notasPDF = explode("<|>",$notasPDF);
-}else{
-    $notasPDF = [];
-}
-if($save == "save")
-{
-    $object = $database->get("AUDITORIAS_NOTIFICACION",["ID"],["AND"=>["ID_SCE"=>$id_sce,"ID_TA"=>$id_tipo_auditoria,"CICLO"=>$ciclo,"SERVICIO"=>$id_servicio]] );
-    valida_error_medoo_and_die();
-    $Domicilio = $_REQUEST["DOMICILIO"];
-    if(!$object)
-    {
-        $idc = $database->insert("AUDITORIAS_NOTIFICACION", [
-            "ID_SCE" => $id_sce,
-            "ID_TA"=>$id_tipo_auditoria,
-            "CICLO"=>$ciclo,
-            "SERVICIO"=>$id_servicio,
-            "DOMICILIO"=>$Domicilio,
-        ]);
-        valida_error_medoo_and_die();
-    }else{
-        $idc = $database->update("AUDITORIAS_NOTIFICACION", [
-            "DOMICILIO"=>$Domicilio,
-        ]);
-        valida_error_medoo_and_die();
-    }
 
-    $notasPDFEdit = $_REQUEST["txtNotasEdit"];
-    if($notasPDFEdit)
-    {
-        $notasPDFEdit = explode("<|>",$notasPDFEdit);
-        if(!$object)
-        {
-            foreach ($notasPDFEdit as $NOTA)
-            {
-
-                    $idn = $database->insert("AUDITORIAS_NOTIFICACION_NOTAS", [
-                        "ID_AUDITORIAS_NOTIFICACION" => $idc,
-                        "NOTA"=>$NOTA,
-                    ]);
-                    valida_error_medoo_and_die();
-
-            }
-
-        }
-        else
-        {
-
-            foreach ($notasPDFEdit as $NOTA)
-            {
-                $delete = $database->delete("AUDITORIAS_NOTIFICACION_NOTAS",["AND"=>["ID_AUDITORIAS_NOTIFICACION"=>$object["ID"],"NOTA"=>$NOTA]]);
-                if($delete==0)
-                {
-                    $idn = $database->insert("AUDITORIAS_NOTIFICACION_NOTAS", [
-                        "ID_AUDITORIAS_NOTIFICACION" => $object["ID"],
-                        "NOTA"=>$NOTA,
-                    ]);
-                    valida_error_medoo_and_die();
-                }
-
-            }
-
-
-        }
-
-    }
-}
 
 
 //$nombreAutorizaPDF = $_REQUEST["txtNombreAutorizaPDF"];
@@ -320,7 +252,75 @@ if(count($FA)>0)
         $FECHAS_AUDITORIAS .= " - ".substr($FA[count($FA)-1]->FECHA,6,8)."/".substr($FA[count($FA)-1]->FECHA,-4,2)."/".substr($FA[count($FA)-1]->FECHA,0,4);
     }
 }
+	$notasPDF = $_REQUEST["txtNotas"];
+	if($notasPDF)
+	{
+		$notasPDF = explode("<|>",$notasPDF);
+	}else{
+		$notasPDF = [];
+	}
+	if($save == "save")
+	{
+		$object = $database->get("AUDITORIAS_NOTIFICACION",["ID"],["AND"=>["ID_SCE"=>$id_sce,"ID_TA"=>$id_tipo_auditoria,"CICLO"=>$ciclo,"SERVICIO"=>$id_servicio]] );
+		valida_error_medoo_and_die();
+		$Domicilio = $_REQUEST["DOMICILIO"];
+		if(!$object)
+		{
+			$idc = $database->insert("AUDITORIAS_NOTIFICACION", [
+				"ID_SCE" => $id_sce,
+				"ID_TA"=>$id_tipo_auditoria,
+				"CICLO"=>$ciclo,
+				"SERVICIO"=>$id_servicio,
+				"DOMICILIO"=>$Domicilio,
+			]);
+			valida_error_medoo_and_die();
+		}else{
+			$idc = $database->update("AUDITORIAS_NOTIFICACION", ["DOMICILIO"=>$Domicilio],["ID"=>$object['ID']
+			]);
+			valida_error_medoo_and_die();
 
+		}
+
+		$notasPDFEdit = $_REQUEST["txtNotasEdit"];
+		if($notasPDFEdit)
+		{
+			$notasPDFEdit = explode("<|>",$notasPDFEdit);
+			if(!$object)
+			{
+				foreach ($notasPDFEdit as $NOTA)
+				{
+
+					$idn = $database->insert("AUDITORIAS_NOTIFICACION_NOTAS", [
+						"ID_AUDITORIAS_NOTIFICACION" => $idc,
+						"NOTA"=>$NOTA,
+					]);
+					valida_error_medoo_and_die();
+
+				}
+
+			}
+			else
+			{
+
+				foreach ($notasPDFEdit as $NOTA)
+				{
+					$delete = $database->delete("AUDITORIAS_NOTIFICACION_NOTAS",["AND"=>["ID_AUDITORIAS_NOTIFICACION"=>$object["ID"],"NOTA"=>$NOTA]]);
+					if($delete==0)
+					{
+						$idn = $database->insert("AUDITORIAS_NOTIFICACION_NOTAS", [
+							"ID_AUDITORIAS_NOTIFICACION" => $object["ID"],
+							"NOTA"=>$NOTA,
+						]);
+						valida_error_medoo_and_die();
+					}
+
+				}
+
+
+			}
+
+		}
+	}
 /*for ($i=0; $i < count($FA) ; $i++) {
 
 	$FECHAS_AUDITORIAS .= substr($FA[$i]->FECHA,6,8)."/".substr($FA[$i]->FECHA,-4,2)."/".substr($FA[$i]->FECHA,0,4).",";

@@ -2092,12 +2092,11 @@ cargarDatosAuditoriasEC($scope.id_servicio_cliente_etapa);
 // Agredar notas adicionales
 $scope.addNote = function(value)
 {
-	if(value!="")
+	if(typeof value !== "undefined" && value.length > 0)
 	{
 		$scope.notas[$scope.countnotas++] =value ;
 		$scope.formDataGeneraNotificacionPDF.txtNotaPDF = "";
 		$('#txtNotaPDF').focus();
-
 	}
 
 }
@@ -2146,10 +2145,7 @@ $scope.get_notificacion	= function(id_servicio,id_sce,id_ta,ciclo){
 			.then(function( response ){
 				$scope.Domicilios	= response.data;
 				$scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF = id_domicilio;
-				console.log(id_domicilio);
-				console.log($scope.Domicilios);
 			});
-
 	}
  $scope.validar_chck = function()
  {
@@ -2185,7 +2181,6 @@ $scope.get_notificacion	= function(id_servicio,id_sce,id_ta,ciclo){
 		 $("#inputNotas").val($scope.notas.join("<|>"));
 		 $("#inputNotasEdit").val(diff2.concat(diff1).join("<|>"));
 		 $("#inputDomicilio").val($scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF);
-	     console.log($scope.formDataGeneraNotificacionPDF.cmbDomicilioNotificacionPDF);
 
 
 	    if($scope.validar_chck())
