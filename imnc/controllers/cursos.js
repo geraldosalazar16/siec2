@@ -31,6 +31,10 @@ app.controller('cursos_controller',['$scope',function($scope){
       $scope.formData.tipoServicio = "";
       $scope.formData.selectNorma = "";
       $scope.formData.checkActivo = true;
+      $scope.formData.precioInsitu = 0;
+      $scope.formData.diasInsitu = 0;
+      $scope.formData.precioProgramado = 0;
+      $scope.formData.diasProgramado = 0;
       $("#selectedListerror").text("");
       $("#tipoServicioerror").text("");
       $("#txtNombreerror").text("");
@@ -81,6 +85,11 @@ $scope.EditarCurso	=	function(curso_id){
       $scope.formData.checkActivo = true;
       else
       $scope.formData.checkActivo = false;
+
+      $scope.formData.precioInsitu = parseInt(response.PRECIO_INSITU, 10);
+      $scope.formData.diasInsitu = parseInt(response.DIAS_INSITU, 10);
+      $scope.formData.precioProgramado = parseInt(response.PRECIO_PROGRAMADO, 10);
+      $scope.formData.diasProgramado = parseInt(response.DIAS_PROGRAMADO, 10);
 
       $scope.$apply();
       $scope.funcionTipoServicio();
@@ -268,11 +277,14 @@ $scope.funcionparalistanormas = function(){
 $scope.insertar	=	function(){
   
 	var curso = {
-      NOMBRE:		          	$scope.formData.txtNombre,
+    NOMBRE:		          	$scope.formData.txtNombre,
 	  ID_TIPO_SERVICIO:			$scope.formData.tipoServicio,
 	  ID_NORMA:	                $scope.formData.selectNorma,
-      ISACTIVO:                 $scope.formData.checkActivo
-
+    ISACTIVO:                 $scope.formData.checkActivo,
+    PRECIO_INSITU: $scope.formData.precioInsitu,
+    DIAS_INSITU: $scope.formData.diasInsitu,
+    PRECIO_PROGRAMADO: $scope.formData.precioProgramado,
+    DIAS_PROGRAMADO: $scope.formData.diasProgramado,
   };
   $.post( global_apiserver + "/cursos/insert/", JSON.stringify(curso), function(respuesta){
       respuesta = JSON.parse(respuesta);
@@ -299,7 +311,11 @@ $scope.editar	=	function(){
       NOMBRE:		        $scope.formData.txtNombre,
 	  ID_TIPO_SERVICIO:		$scope.formData.tipoServicio,
 	  ID_NORMA:	            $scope.formData.selectNorma,
-      ISACTIVO:                 $scope.formData.checkActivo
+      ISACTIVO:                 $scope.formData.checkActivo,
+      PRECIO_INSITU: $scope.formData.precioInsitu,
+    DIAS_INSITU: $scope.formData.diasInsitu,
+    PRECIO_PROGRAMADO: $scope.formData.precioProgramado,
+    DIAS_PROGRAMADO: $scope.formData.diasProgramado,
   };
   $.post( global_apiserver + "/cursos/update/", JSON.stringify(curso), function(respuesta){
       respuesta = JSON.parse(respuesta);

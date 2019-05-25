@@ -39,13 +39,26 @@ valida_parametro_and_die($ID_NORMA, "Es necesario seleccionar una norma");
 
 $ISACTIVO = $objeto->ISACTIVO;
 
+$DIAS_INSITU = $objeto->DIAS_INSITU; 
+valida_parametro_and_die($DIAS_INSITU, "Es necesario capturar la cantidad de días in situ");
+$DIAS_PROGRAMADO = $objeto->DIAS_PROGRAMADO; 
+valida_parametro_and_die($DIAS_PROGRAMADO, "Es necesario capturar la cantidad de días programado");
+$PRECIO_INSITU = $objeto->PRECIO_INSITU; 
+valida_parametro_and_die($PRECIO_INSITU, "Es necesario capturar el precio in situ");
+$PRECIO_PROGRAMADO = $objeto->PRECIO_PROGRAMADO; 
+valida_parametro_and_die($PRECIO_PROGRAMADO, "Es necesario capturar el precio programado");
+
 
 
 $id_sce = $database->insert("CURSOS", [ 
 	"NOMBRE" => $NOMBRE, 
 	"ID_TIPO_SERVICIO"=>	$ID_TIPO_SERVICIO,
 	"ID_NORMA" => $ID_NORMA ,
-	"ISACTIVO" => $ISACTIVO
+	"ISACTIVO" => $ISACTIVO,
+	"DIAS_INSITU" => $DIAS_INSITU,
+	"DIAS_PROGRAMADO" => $DIAS_PROGRAMADO,
+	"PRECIO_INSITU" => $PRECIO_INSITU,
+	"PRECIO_PROGRAMADO" => $PRECIO_PROGRAMADO
 //	
 ]); 
 valida_error_medoo_and_die(); 
