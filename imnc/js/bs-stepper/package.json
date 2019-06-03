@@ -1,0 +1,135 @@
+{
+  "_from": "bs-stepper",
+  "_id": "bs-stepper@1.5.0",
+  "_inBundle": false,
+  "_integrity": "sha512-a6CVEDmA6pwayH1gzWATTYbkg3ws8MVnjZaoAjUXL5AzW2A0cxq4PVCk+YIP8wSSBNzeWtW1ruDBVNXiz1irLg==",
+  "_location": "/bs-stepper",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "bs-stepper",
+    "name": "bs-stepper",
+    "escapedName": "bs-stepper",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bs-stepper/-/bs-stepper-1.5.0.tgz",
+  "_shasum": "7ada58cee7b217524cc33672cd813b3c37295387",
+  "_spec": "bs-stepper",
+  "_where": "E:\\IMNC\\Facturacion",
+  "author": {
+    "name": "Johann-S",
+    "email": "johann.servoire@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/Johann-S/bs-stepper/issues"
+  },
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Martijn Cuppens",
+      "email": "martijn.cuppens@gmail.com"
+    },
+    {
+      "name": "Lausselloic",
+      "email": "loic.laussel@orange.com"
+    },
+    {
+      "name": "XhmikosR",
+      "email": "xhmikosr@gmail.com"
+    }
+  ],
+  "dependencies": {},
+  "deprecated": false,
+  "description": "A stepper for Bootstrap 4",
+  "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "autoprefixer": "^9.5.0",
+    "babel-plugin-istanbul": "^5.1.1",
+    "bootstrap": "^4.3.1",
+    "clean-css-cli": "^4.2.1",
+    "coveralls": "^3.0.3",
+    "cross-env": "^5.2.0",
+    "gh-pages": "^2.0.1",
+    "http-server": "^0.11.1",
+    "ip": "^1.1.5",
+    "jasmine-core": "^3.3.0",
+    "karma": "^4.0.1",
+    "karma-browserstack-launcher": "^1.4.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage-istanbul-reporter": "^2.0.5",
+    "karma-jasmine": "^2.0.1",
+    "postcss-cli": "^6.1.2",
+    "rollup": "^1.7.0",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-terser": "^4.0.4",
+    "shx": "^0.3.2",
+    "standard": "^12.0.1",
+    "standard-version": "^5.0.2",
+    "stylelint": "^9.10.1",
+    "stylelint-config-twbs-bootstrap": "^0.3.0"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "files": [
+    "dist/js/*.{js,map}",
+    "dist/css/*.{css,map}",
+    "bs-stepper.d.ts",
+    "CHANGELOG.md"
+  ],
+  "homepage": "https://github.com/Johann-S/bs-stepper",
+  "keywords": [
+    "bootstrap",
+    "bootstrap 4",
+    "vanillajs",
+    "react",
+    "angular",
+    "stepper"
+  ],
+  "license": "MIT",
+  "main": "dist/js/bs-stepper.js",
+  "name": "bs-stepper",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Johann-S/bs-stepper.git"
+  },
+  "scripts": {
+    "browserstack": "npm run build-js:unit && cross-env browser=true karma start tests/karma.conf.js",
+    "build": "npm run build-js && npm run build-css",
+    "build-css": "postcss src/css/bs-stepper.css -m --use autoprefixer -d dist/css && npm run css-minify",
+    "build-js": "rollup -c && rollup -c --environment PROD",
+    "build-js:unit": "cross-env NODE_ENV=test rollup -c --environment TEST",
+    "changelog": "standard-version -a",
+    "coveralls": "shx cat tests/dist/coverage/lcov.info | coveralls",
+    "css-lint": "stylelint src/css/bs-stepper.css",
+    "css-minify": "cleancss --level 1 --format breaksWith=lf --source-map --source-map-inline-sources --output dist/css/bs-stepper.min.css dist/css/bs-stepper.css",
+    "deploy": "gh-pages -d docs",
+    "dev": "rollup --environment DEV -c -w",
+    "docs-build": "shx mkdir -p docs/dist/ && shx cp -r dist/css/ docs/dist/ && shx cp -r dist/js/ docs/dist/",
+    "docs-serve": "http-server docs/ -c-1 -o",
+    "standard": "standard src/js/* tests/units/*.spec.js",
+    "test": "npm run standard && npm run css-lint && npm run build-js:unit && npm run test:unit && npm run build",
+    "test:unit": "karma start tests/karma.conf.js"
+  },
+  "standard": {
+    "ignore": [
+      "dist/js/*.js"
+    ]
+  },
+  "standard-version": {
+    "scripts": {
+      "postbump": "node scripts/bump-css.js && npm run build",
+      "precommit": "node scripts/restore-css.js"
+    }
+  },
+  "types": "bs-stepper.d.ts",
+  "version": "1.5.0"
+}
