@@ -109,6 +109,8 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 	$razon="";
 	$OJBETO_MES_PT = clone $OJBETO_MES;
 	$OJBETO_MES_PT->Auditor = $personal_tecnico[$i]['NOMBRE'].' '.$personal_tecnico[$i]['APELLIDO_PATERNO'].' '.$personal_tecnico[$i]['APELLIDO_MATERNO'];
+	$OJBETO_MES_PT->ID = $personal_tecnico[$i]['ID'];
+
 	//$context = "?ID=".$personal_tecnico[$i]['ID']."&FECHAS=".$FECHAS;
 	//$url = $global_apiserver . "/personal_tecnico/isDisponible/".$context;
 	//$json_response = file_get_contents($url);
@@ -120,15 +122,16 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 // ===================================================================
 // ***** 			VERIFICA SI TIENE AUDITORIAS				 *****
 // ===================================================================
-	$consulta= "SELECT SGAGF.FECHA,PTC.ID_TIPO_SERVICIO FROM PERSONAL_TECNICO_CALIFICACIONES PTC INNER JOIN I_SG_AUDITORIA_GRUPO_FECHAS SGAGF ON PTC.ID = SGAGF.ID_PERSONAL_TECNICO_CALIF  WHERE PTC.ID_PERSONAL_TECNICO =".$personal_tecnico[$i]['ID']." AND SGAGF.FECHA >= ".$FECHA_INICIO." AND SGAGF.FECHA<= ".$FECHA_FIN;
+	$consulta= "SELECT SGAGF.FECHA, SGAGF.ID_SERVICIO_CLIENTE_ETAPA,SGAGF.TIPO_AUDITORIA,SGAGF.CICLO,PTC.ID_TIPO_SERVICIO FROM PERSONAL_TECNICO_CALIFICACIONES PTC INNER JOIN I_SG_AUDITORIA_GRUPO_FECHAS SGAGF ON PTC.ID = SGAGF.ID_PERSONAL_TECNICO_CALIF  WHERE PTC.ID_PERSONAL_TECNICO =".$personal_tecnico[$i]['ID']." AND SGAGF.FECHA >= ".$FECHA_INICIO." AND SGAGF.FECHA<= ".$FECHA_FIN;
 	$I_SG_AUDITORIA_GRUPO_FECHAS = $database->query($consulta)->fetchAll(PDO::FETCH_ASSOC);
 	valida_error_medoo_and_die();
 
 	for ($j=0; $j < count($I_SG_AUDITORIA_GRUPO_FECHAS) ; $j++) {
-            $FECHA = date("Ymd", strtotime($I_SG_AUDITORIA_GRUPO_FECHAS[$j]["FECHA"]));
 
+            $FECHA = date("Ymd", strtotime($I_SG_AUDITORIA_GRUPO_FECHAS[$j]["FECHA"]));
 		    $FLAG = "no";
 			$dia1= (int)substr($FECHA,6,8);
+		    $numero = $dia1;
 			$dia1 = 'd'.$dia1;
 			switch($I_SG_AUDITORIA_GRUPO_FECHAS[$j]["ID_TIPO_SERVICIO"]){
 				case 1:
@@ -148,6 +151,37 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 					break;
 			}
 			//$OJBETO_MES_PT->$dia1 = "Auditoria para esta fecha.		";
+		    $SERVICIO = $database->get("SERVICIO_CLIENTE_ETAPA",
+				["[><]CLIENTES" => ["ID_CLIENTE" => "ID"]],
+				[
+				 "SERVICIO_CLIENTE_ETAPA.ID",
+				 "SERVICIO_CLIENTE_ETAPA.ID_CLIENTE",
+				 "SERVICIO_CLIENTE_ETAPA.REFERENCIA",
+				 "CLIENTES.NOMBRE"
+				],
+				["SERVICIO_CLIENTE_ETAPA.ID"=>$I_SG_AUDITORIA_GRUPO_FECHAS[$j]['ID_SERVICIO_CLIENTE_ETAPA']] );
+		    valida_error_medoo_and_die();
+		    $AUDITORES = $database->select("I_SG_AUDITORIA_GRUPOS",
+			              [
+			              	"[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID_PERSONAL_TECNICO_CALIF"=>"ID"],
+			              	"[><]PERSONAL_TECNICO_ROLES"=>["ID_ROL"=>"ID"],
+			              	"[><]PERSONAL_TECNICO"=>["PERSONAL_TECNICO_CALIFICACIONES.ID_PERSONAL_TECNICO"=>"ID"],
+						  ],
+			              [
+							  "PERSONAL_TECNICO.NOMBRE",
+							  "PERSONAL_TECNICO.APELLIDO_MATERNO",
+							  "PERSONAL_TECNICO.APELLIDO_PATERNO",
+							  "PERSONAL_TECNICO.EMAIL",
+							  "PERSONAL_TECNICO_ROLES.ACRONIMO",
+						  ],
+			              ["AND"=>["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=>$I_SG_AUDITORIA_GRUPO_FECHAS[$j]['ID_SERVICIO_CLIENTE_ETAPA'],
+							  "I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=>$I_SG_AUDITORIA_GRUPO_FECHAS[$j]['TIPO_AUDITORIA'],
+							  "I_SG_AUDITORIA_GRUPOS.CICLO"=>$I_SG_AUDITORIA_GRUPO_FECHAS[$j]['CICLO']]]
+			);
+		valida_error_medoo_and_die();
+		$SERVICIO["AUDITORES"]=$AUDITORES;
+		    $OJBETO_MES_PT->$dia1 = $SERVICIO["NOMBRE"]."		";
+		    $OJBETO_MES_PT->$numero->SCE = $SERVICIO;
 			$personal_tecnico[$i]['DATOS']= $OJBETO_MES_PT;
 			$respuesta[$i] = $OJBETO_MES_PT; 
 			
@@ -251,7 +285,7 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 	
 	
 }
-print_r(json_encode($respuesta));
+print_r(json_encode($respuesta,JSON_PRETTY_PRINT));
 
 
 //-------- FIN --------------

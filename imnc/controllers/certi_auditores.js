@@ -7,42 +7,9 @@ app.controller('certi_auditores_controller',['$scope','$http' ,function($scope,$
 //Titulo que aparece en el html
 	
 	$scope.titulo = 'CERTI AUDITORES';
-	//$scope.cabecera =this;	
-	$scope.tntPortfolio = [
-    {
-        "cliente": "Globalia (Air Europa)",
-        "dia1": "Metodologías ágiles y soporte al desarrollo",
-        "dia2": "agilismo, iOS",
-		"dia3": "Metodologías ágiles y soporte al desarrollo",
-        "dia4": "agilismo, iOS",
-		"dia5": "Metodologías ágiles y soporte al desarrollo",
-        "dia6": "agilismo, iOS",
-		"dia7": "Metodologías ágiles y soporte al desarrollo",
-        "dia8": "agilismo, iOS"
-    },
-    {
-        "cliente": "Tinsa",
-         "dia1": "Metodologías ágiles y soporte al desarrollo",
-        "dia2": "agilismo, iOS",
-		"dia3": "Metodologías ágiles y soporte al desarrollo",
-        "dia4": "agilismo, iOS",
-		"dia5": "Metodologías ágiles y soporte al desarrollo",
-        "dia6": "agilismo, iOS",
-		"dia7": "Metodologías ágiles y soporte al desarrollo",
-        "dia8": "agilismo, iOS"
-    },
-    {
-        "cliente": "Casa del Libro",
-        "dia1": "Metodologías ágiles y soporte al desarrollo",
-        "dia2": "agilismo, iOS",
-		"dia3": "Metodologías ágiles y soporte al desarrollo",
-        "dia4": "agilismo, iOS",
-		"dia5": "Metodologías ágiles y soporte al desarrollo",
-        "dia6": "agilismo, iOS",
-		"dia7": "Metodologías ágiles y soporte al desarrollo",
-        "dia8": "agilismo, iOS"
-    }
-  ];
+	$scope.columns = [];
+	$scope.data = [];
+
 	$scope.gridOptions = {};
 /*	 $scope.gridOptions = {
     enableSorting: true,
@@ -89,27 +56,8 @@ $scope.InicializarSelectMonthYear = function(){
 		Función que crea la cabecera de la tabla de forma dinamica.
 */
 $scope.HeadingTable = function(ano,mes){
-	/**/
-	
-	//AQUI INICIALIZO gridOptions
-	$scope.columns = [{field: 'Auditor', displayName: 'Auditor',width: '30%', pinnedLeft: true }];
- 
- $scope.gridOptions.enableSorting =true;
- $scope.gridOptions.columnDefs =$scope.columns;
- $scope.gridOptions.enableColumnMenus =false;
- 
- //$scope.gridOptions.rowHeight ='35px';
-/* $scope.gridOptions.onRegisterApi= function(gridApi){ 
-		$scope.gridApi = gridApi;
-		
-	}
-*/
 
- // $scope.gridOptions.columnDefs = $scope.cabecera;
-  $scope.gridOptions.minimumColumnSize = 100;
-  
-  
- // $scope.gridOptions.data =  $scope.tntPortfolio;
+//$scope.gridApi.core.refresh();
 
 	/**/
 	var diaMayor=0;
@@ -124,7 +72,7 @@ $scope.HeadingTable = function(ano,mes){
 			else{
 				diaMayor = 28;
 			}
-			
+
 			break;
 		case 2:
 			diaMayor = 31;
@@ -141,7 +89,7 @@ $scope.HeadingTable = function(ano,mes){
 		case 6:
 			diaMayor = 31;
 			break;
-		case 7:	
+		case 7:
 			diaMayor = 31;
 			break;
 		case 8:
@@ -157,44 +105,97 @@ $scope.HeadingTable = function(ano,mes){
 			diaMayor = 31;
 			break;
 	}
-	
-	
-  //$scope.cabecera.columns = [{field: 'cliente', displayName: 'Cliente', width: '20%', pinnedLeft: true }];
-	$scope.columns.splice(1);
-  for(var i =1; i<= diaMayor; i++){
+	$scope.columns.push({field: 'ID', displayName: 'ID',width: '5%',pinnedLeft: true,enableColumnMenu: false });
+	$scope.columns.push({field: 'Auditor', displayName: 'Auditor',width: '30%', pinnedLeft: true,enableColumnMenu: false });
+	 for(var i =1; i<= diaMayor; i++){
 	  var abc1='';
-	  var fecha = (parseInt(mes)+1)+'-'+i+'-'+ano;
+	  var dia = '';
+	  var fecha = (parseInt(mes)+1)+'/'+i+'/'+ano;
 	   abc1 = moment(fecha).format('ddd');
-	  var a = {field: 'd'+i, displayName: abc1+' '+i,cellClass : function(grid,row,col,rowRenderIndex,colRenderIndex){
-		  switch(grid.getCellValue(row,col)){
-			  	case 'Auditoria(C) para esta fecha.		':
-			  		return 'calidad';
+	  var a = {
+	  	  field: 'd'+i,
+		  displayName: abc1+' '+i,
+		  cellTemplate: '<div style="cursor: pointer;"><div ng-click="grid.appScope.showDescription(row.entity.ID,'+"'"+i+"'"+')" title="{{COL_FIELD}}" class="ui-grid-cell-contents">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
+		  // cellTemplate:'<div style="width: 100%; height: 30px; font-size: 13px"  ng-click="grid.appScope.showDescription(row,'+"'"+abc1+i+"'"+')">{{COL_FIELD CUSTOM_FILTERS}}</div>',
+		  cellClass : function(grid,row,col,rowRenderIndex,colRenderIndex){
+			  switch(grid.getCellValue(row,col)){
+				  case 'Auditoria(C) para esta fecha.		':
+					  return 'calidad';
 					  break;
-				case 'Auditoria(A) para esta fecha.		':
-					return 'ambiente';
-					break;	
-				case 'Auditoria(SAST) para esta fecha.		':
-					return 'sast';
-					break;
-			    case 'Auditoria(SGEN) para esta fecha.		':
-				  return 'sgen';
-				  break;		  
-			    default:
-				 	return 'def';
-					break;  
-			}
-		}};
+				  case 'Auditoria(A) para esta fecha.		':
+					  return 'ambiente';
+					  break;
+				  case 'Auditoria(SAST) para esta fecha.		':
+					  return 'sast';
+					  break;
+				  case 'Auditoria(SGEN) para esta fecha.		':
+					  return 'sgen';
+					  break;
+				  default:
+					  return 'def';
+					  break;
+			  }
+		  }
+	  };
 	   $scope.columns.push(a);
-  }
- 
-	//then later
-	$http.get(  global_apiserver + "/i_auditores_certi/getByMesyAno/?mes="+mes+"&ano="+ano)
-		.then(function( response ){
-			$scope.gridOptions.data = response.data;
-			
-		});
-//$scope.gridApi.core.refresh();
+	 }
+
+
+
+	$scope.gridOptions = {
+		enableSelectAll: false,
+		enableRowHeaderSelection: false,
+		enableGridMenu: true,
+		enableSorting: true,
+		columnDefs: $scope.columns,
+		paginationPageSizes: [25, 50, 100, 200, 500],
+		paginationPageSize: 5,
+		rowHeight: '35px',
+		minimumColumnSize: 100,
+		multiSelect: false,
+		enableRowSelection : true,
+		onRegisterApi: function(gridApi) {
+			$scope.gridApi = gridApi;
+		},
+
+
+			};
+
+	getData(mes,ano);
+
 }
+
+
+	$scope.showDescription = function(elem_Id,valor){
+
+		var obj_results = $scope.data;
+		for (var i in obj_results){
+			if (obj_results[i].ID === elem_Id){
+				$scope.REFERENCIA = obj_results[i][valor].SCE.REFERENCIA;
+				$scope.CLIENTE = obj_results[i][valor].SCE.NOMBRE;
+				$scope.AUDITORES = obj_results[i][valor].SCE.AUDITORES;
+				$scope.ID_SCE = obj_results[i][valor].SCE.ID;
+				$scope.ID_AUDITOR = obj_results[i].ID;
+				$("#modalDatosAuditoria").modal("show");
+			}
+		}
+	};
+
+async function getData(mes,anno)
+    {
+		// //Obtener todas las auditorias del servicio
+		// let response = await $http.get(`${global_apiserver}/i_auditores_certi/getByMesyAno/?mes=${mes}&ano=${anno}`);
+		// if (response.data.resultado === 'error') {
+		// 	$scope.gridOptions.data = [];
+		// } else {
+		// 	$scope.gridOptions.data = response.data;
+		// }
+		$http.get(`${global_apiserver}/i_auditores_certi/getByMesyAno/?mes=${mes}&ano=${anno}`)
+			.then(function( response ){
+					$scope.data =  response.data;
+					$scope.gridOptions.data = $scope.data;
+			});
+    }
 /*		
 		Función para limpiar la información del módelo y que no se quede guardada
 		después de realizar alguna transacción.
