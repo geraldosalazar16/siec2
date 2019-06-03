@@ -55,12 +55,12 @@ app.controller('cat_documentos_controller',['$scope','$http' ,function($scope,$h
         //alert('Form submitted with' + JSON.stringify(formData));
         if($scope.accion == 'insertar'){
             var datos = {
-                nombre: formData.nombre,
-                descripcion: formData.descripcion,
-                id_etapa: $scope.formData.etapa,
-                id_seccion: $scope.formData.seccion
+                NOMBRE: formData.nombre,
+                DESCRIPCION: formData.descripcion?formData.descripcion:'',
+                ETAPA: $scope.formData.etapa,
+                SECCION: $scope.formData.seccion
             };
-            $http.post(global_apiserver + "/ver_expedientes/guardarCatDocumento/",datos).
+            $http.post(global_apiserver + "/ver_expedientes/guardarCatDocumento/",JSON.stringify(datos)).
             then(function(response){
                 if(response){
 					notify('Éxito','El tipo de documento se guardó correctamente','success');
@@ -74,11 +74,11 @@ app.controller('cat_documentos_controller',['$scope','$http' ,function($scope,$h
         }
         else if($scope.accion == 'editar'){
             var datos = {
-				id: $scope.id_documento,
-                nombre: formData.nombre,
-                descripcion: formData.descripcion,
-                id_etapa: $scope.formData.etapa,
-                id_seccion: $scope.formData.seccion
+                ID: $scope.id_documento,
+                NOMBRE: formData.nombre,
+                DESCRIPCION: formData.descripcion?formData.descripcion:'',
+                ETAPA: $scope.formData.etapa,
+                SECCION: $scope.formData.seccion
             };
             $http.post(global_apiserver + "/ver_expedientes/editarCatDocumento/",datos).
             then(function(response){

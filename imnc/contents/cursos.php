@@ -26,6 +26,10 @@
                 <th class="column-title" style="width:40%">Nombre Curso</th>
 				<th class="column-title" style="width:30%">Norma</th>
                 <th class="column-title" style="width:30%">Tipo de Servicio</th>
+                <th class="column-title" style="width:30%">Precio In Situ</th>
+                <th class="column-title" style="width:30%">Días In Situ</th>
+                <th class="column-title" style="width:30%">Precio Programado</th>
+                <th class="column-title" style="width:30%">Días Programado</th>
                 <th class="column-title" style="width:30%">Estado</th>
                 <th class="column-title"></th>
               </tr>
@@ -35,7 +39,11 @@
 				<tr ng-repeat="x in tablaDatos" class="ng-scope even pointer">
 					<td>{{x.NOMBRE}}</td>
 					<td>{{x.ID_NORMA}}</td>
-					<td>{{x.NOMBRE_TIPO_SEVICIO}}</td>					
+          <td>{{x.NOMBRE_TIPO_SEVICIO}}</td>		
+          <td>{{x.PRECIO_INSITU}}</td>	
+          <td>{{x.DIAS_INSITU}}</td>		
+          <td>{{x.PRECIO_PROGRAMADO}}</td>
+          <td>{{x.DIAS_PROGRAMADO}}</td>
 					<td>{{x.ISACTIVO}}</td>
 					<td >
 					<?php
@@ -104,6 +112,7 @@
               </div>
       
             </div>
+
             <div class="form-group">
             <label class="control-label col-md-4 col-sm-4 col-xs-12" for="checkActivo">¿Habilitado? <span class="required">*</span>
               </label>
@@ -111,7 +120,46 @@
                <input type="checkbox" id="checkActivo" ng-model="formData.checkActivo"   style="float: left;" ng-checked="true" data-parsley-id="4103"><ul class="parsley-errors-list" id="parsley-id-4103"></ul>
                       <span id="checkActivoListerror" class="text-danger"></span>
               </div>
+            </div>
 
+            <div class="form-group">
+            <label class="control-label col-md-4 col-sm-4 col-xs-12" for="precioInsitu">Precio In Situ <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="number" id="precioInsitu" ng-model="formData.precioInsitu"  class="form-control col-md-7 col-xs-12" data-parsley-id="4103">
+                <ul class="parsley-errors-list" id="parsley-id-4103"></ul>
+                <span id="precioInsituError" class="text-danger"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+            <label class="control-label col-md-4 col-sm-4 col-xs-12" for="diasInsitu">Días In Situ<span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="number" id="diasInsitu" ng-model="formData.diasInsitu"  class="form-control col-md-7 col-xs-12" data-parsley-id="4103">
+                <ul class="parsley-errors-list" id="parsley-id-4103"></ul>
+                <span id="diasInsituError" class="text-danger"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+            <label class="control-label col-md-4 col-sm-4 col-xs-12" for="precioProgramado">Precio Programado<span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="number" id="precioProgramado" ng-model="formData.precioProgramado"  class="form-control col-md-7 col-xs-12" data-parsley-id="4103">
+                <ul class="parsley-errors-list" id="parsley-id-4103"></ul>
+                <span id="precioProgramadoError" class="text-danger"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+            <label class="control-label col-md-4 col-sm-4 col-xs-12" for="diasProgramado">Días Programado<span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="number" id="diasProgramado" ng-model="formData.diasProgramado" class="form-control col-md-7 col-xs-12"  data-parsley-id="4103">
+                <ul class="parsley-errors-list" id="parsley-id-4103"></ul>
+                <span id="diasProgramadoError" class="text-danger"></span>
+              </div>
             </div>
            
           </form>
