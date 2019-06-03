@@ -140,6 +140,14 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '  </ul>';
             echo '</li>';
           }
+
+          if ($modulo_permisos["FACTURACION"]["ver"] == 1) {
+            echo '<li><a><i class="fa fa-file"></i> Facturación </a>';
+            echo '   <ul class="nav child_menu" style="display: none">';
+            echo '      <li><a href="./?pagina=solicitudes_facturacion">Solicitudes</a></li>';
+            echo '  </ul>';
+            echo '</li>';
+          }
           
           if ($modulo_permisos["EXPEDIENTES"]["ver"] == 1) {
             echo '<li><a><i class="fa fa-folder-open"></i> Expediente </a>';

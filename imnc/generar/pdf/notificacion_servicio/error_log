@@ -1,0 +1,2 @@
+[04-Apr-2019 22:31:23 UTC] PHP Warning:  array_push() expects parameter 1 to be array, null given in /home/sistemai/public_html/imnc/test/imnc/phplibs/libPDF/tcpdf.php on line 16919
+[04-Apr-2019 22:31:23 UTC] PHP Warning:  array_push() expects parameter 1 to be array, null given in /home/sistemai/public_html/imnc/test/imnc/phplibs/libPDF/tcpdf.php on line 16919

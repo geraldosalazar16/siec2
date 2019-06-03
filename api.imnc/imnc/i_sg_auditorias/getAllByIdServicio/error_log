@@ -3,3 +3,4 @@
 [09-Jan-2019 16:11:44 UTC] PHP Fatal error:  Call to a member function fetchAll() on boolean in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/i_sg_auditorias/getAllByIdServicio/index.php on line 65
 [21-Feb-2019 05:28:25 UTC] PHP Fatal error:  Call to a member function fetchAll() on boolean in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/i_sg_auditorias/getAllByIdServicio/index.php on line 82
 [21-Feb-2019 23:23:50 UTC] PHP Fatal error:  Call to a member function fetchAll() on boolean in /home/sistemai/public_html/imnc/siec2.0_prueba/api.imnc/imnc/i_sg_auditorias/getAllByIdServicio/index.php on line 82
+[22-Apr-2019 22:11:52 UTC] PHP Fatal error:  Call to a member function fetchAll() on boolean in /home/sistemai/public_html/imnc/test/api.imnc/imnc/i_sg_auditorias/getAllByIdServicio/index.php on line 82

@@ -1,0 +1,3 @@
+[20-Apr-2019 16:17:29 UTC] PHP Fatal error:  Call to a member function fetchAll() on boolean in /home/sistemai/public_html/imnc/test/api.imnc/imnc/servicio_cliente_etapa/getByFiltro/index.php on line 87
+[20-Apr-2019 16:17:40 UTC] PHP Fatal error:  Call to a member function fetchAll() on boolean in /home/sistemai/public_html/imnc/test/api.imnc/imnc/servicio_cliente_etapa/getByFiltro/index.php on line 87
+[24-Apr-2019 02:06:19 UTC] PHP Fatal error:  Call to a member function fetchAll() on boolean in /home/sistemai/public_html/imnc/test/api.imnc/imnc/servicio_cliente_etapa/getByFiltro/index.php on line 87

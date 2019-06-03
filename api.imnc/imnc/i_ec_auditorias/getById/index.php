@@ -19,7 +19,7 @@ function valida_error_medoo_and_die(){
 		$respuesta["resultado"]="error"; 
 		$respuesta["mensaje"]="Error al ejecutar script: " . $database->error()[2]; 
 		print_r(json_encode($respuesta)); 
-		$mailerror->send("I_SG_AUDITORIAS", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
+		$mailerror->send("I_EC_AUDITORIAS", getcwd(), $database->error()[2], $database->last_query(), "polo@codeart.mx"); 
 		die(); 
 	} 
 } 
@@ -123,36 +123,36 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 			// SG_AUDITORIA_GRUPO => PT_CALIF
 			$pt_calificacion = $database->get("PERSONAL_TECNICO_CALIFICACIONES", "*", ["ID"=>$i_sg_auditoria_grupo[$i]["ID_PERSONAL_TECNICO_CALIF"]]);
 			valida_error_medoo_and_die();
-
-				// EC_AUDITORIA_GRUPO => PT_CALIF => PERSONAL_TECNICO_CALIFICACION_SECTOR
-				$pt_calif_sectores = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["AND" => ["ID_PERSONAL_TECNICO_CALIFICACION"=>$pt_calificacion["ID"], "ID_SECTOR" => $servicio_cliente_etapa["SG_SECTORES_ARRAY"]]]);
-				valida_error_medoo_and_die();
-
-				if (count($pt_calif_sectores) != 0) {
-					$pt_calif_sectores_aif = $database->select("SECTORES", "NOMBRE", ["ID_SECTOR"=>$pt_calif_sectores]);
+								/*
+					// EC_AUDITORIA_GRUPO => PT_CALIF => PERSONAL_TECNICO_CALIFICACION_SECTOR
+					$pt_calif_sectores = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["AND" => ["ID_PERSONAL_TECNICO_CALIFICACION"=>$pt_calificacion["ID"], "ID_SECTOR" => $servicio_cliente_etapa["SG_SECTORES_ARRAY"]]]);
 					valida_error_medoo_and_die();
-					$pt_calificacion["PERSONAL_TECNICO_CALIF_SECTORES"] = $pt_calif_sectores_aif;
-				}else{
-					$pt_calificacion["PERSONAL_TECNICO_CALIF_SECTORES"] = $pt_calif_sectores;
-				}
-				
 
+					if (count($pt_calif_sectores) != 0) {
+						$pt_calif_sectores_aif = $database->select("SECTORES", "NOMBRE", ["ID_SECTOR"=>$pt_calif_sectores]);
+						valida_error_medoo_and_die();
+						$pt_calificacion["PERSONAL_TECNICO_CALIF_SECTORES"] = $pt_calif_sectores_aif;
+					}else{
+						$pt_calificacion["PERSONAL_TECNICO_CALIF_SECTORES"] = $pt_calif_sectores;
+					}
+				
+				*/
 				// EC_AUDITORIA_GRUPO => PT_CALIF => PERSONAL_TECNICO
 				$pt = $database->get("PERSONAL_TECNICO", ["NOMBRE", "APELLIDO_PATERNO", "APELLIDO_MATERNO"], ["ID"=>$pt_calificacion["ID_PERSONAL_TECNICO"]]);
 				valida_error_medoo_and_die();
 				$pt_calificacion["PERSONAL_TECNICO"] = $pt;
 
-			$i_ec_auditoria_grupo[$i]["PERSONAL_TECNICO_CALIFICACION"] = $pt_calificacion;
+			$i_sg_auditoria_grupo[$i]["PERSONAL_TECNICO_CALIFICACION"] = $pt_calificacion;
 
 			// EC_AUDITORIA_GRUPO =>  PT_ROL
-			$pt_rol = $database->get("PERSONAL_TECNICO_ROLES", "*", ["ID"=>$i_ec_auditoria_grupo[$i]["ID_ROL"]]);
+			$pt_rol = $database->get("PERSONAL_TECNICO_ROLES", "*", ["ID"=>$i_sg_auditoria_grupo[$i]["ID_ROL"]]);
 			valida_error_medoo_and_die();
-			$i_ec_auditoria_grupo[$i]["PERSONAL_TECNICO_ROL"] = $pt_rol;
+			$i_sg_auditoria_grupo[$i]["PERSONAL_TECNICO_ROL"] = $pt_rol;
 
 			
 		}
 
-	$i_ec_auditorias["SG_AUDITORIA_GRUPO"] = $i_ec_auditoria_grupo;
+	$i_ec_auditorias["SG_AUDITORIA_GRUPO"] = $i_sg_auditoria_grupo;
 
 	// SG_AUDITORIA_SITIOS
 	$i_sg_auditoria_sitios = $database->select("I_SG_AUDITORIA_SITIOS", "*", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$id_tipo_auditoria,"CICLO"=>$ciclo]]);
@@ -167,7 +167,7 @@ if ($completo == "true") { // Realiza consultas adicionales para regresar un rep
 	//valida_error_medoo_and_die();
 	//$sg_auditorias["SG_AUDITORIA_CERTIFICADO"] = $sg_auditoria_certificado;
 	$i_sg_auditoria_tipo =  $database->get("I_SG_AUDITORIAS_TIPOS",["TIPO"],["ID"=>$id_tipo_auditoria]);
-	$i_sg_auditorias["TIPO_AUDITORIA"] = $i_sg_auditoria_tipo["TIPO"];
+	$i_ec_auditorias["TIPO_AUDITORIA"] = $i_sg_auditoria_tipo["TIPO"];
 
 }
 

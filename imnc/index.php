@@ -223,6 +223,11 @@ if (!isset($_SESSION['CREATED'])) {
   <script src="js/custom.js"></script>
    <!-- form wizard -->
   <script type="text/javascript" src="js/wizard/jquery.smartWizard.js"></script>
+  <!-- state machine -->
+  <script type="text/javascript" src="js/javascript-state-machine/dist/state-machine.min.js"></script>
+  <!-- bs stepper -->
+  <link rel="stylesheet" href="js/bs-stepper/dist/css/bs-stepper.min.css">
+  <script type="text/javascript" src="js/bs-stepper/dist/js/bs-stepper.min.js"></script>
 
   <!-- flot js -->
   <!--[if lte IE 8]><script type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
