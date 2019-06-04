@@ -31,7 +31,7 @@
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
                 <!-- <input type="text" id="txtPais" required="required" class="form-control col-md-7 col-xs-12"> -->
-                <select class="select2_single form-control col-md-7 col-xs-12" id="autocompletePais" >
+                <select class="select2_single form-control col-md-7 col-xs-12" id="autocompletePais">
 
                 </select>
               </div>
