@@ -8,6 +8,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   $scope.cotizacion_insertar_editar = {};
   $scope.bandera = 0;
   $scope.Normas = [];
+  $scope.select_pos = -1;
 
   function fill_select_servicio () {
     //recibe la url del php que se ejecutará
@@ -123,8 +124,25 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $http(http_request).success(function(data) {
       if(data) {
         $scope.arr_clientes = data;
-        //$("#selectCliente").val(seleccionado);
-        $scope.cotizacion_insertar_editar.CLIENTE = {ID : seleccionado};
+        $("#selectCliente").html('<option value="" selected disabled>---Seleccione un cliente---</option>');
+        $.each(data, function( indice, obj ) {
+          if (seleccionado == obj.ID) {
+            $("#selectCliente").append('<option value="'+obj.ID+'" selected>'+obj.NOMBRE+'</option>');
+          }else{
+            $("#selectCliente").append('<option value="'+obj.ID+'">'+obj.NOMBRE+'</option>');
+          }
+
+        });
+        $('#selectCliente').select2();
+        $("#selectCliente").val(seleccionado);
+        $("#selectCliente" ).change();
+        $("#selectCliente" ).on('change',function (e) {
+          if(this.selectedIndex>0)
+          {
+            $scope.select_pos = this.selectedIndex;
+            $scope.cambioCliente();
+          }
+        });
       }
       else  {
         console.log("No hay datos");
@@ -158,8 +176,26 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     $http(http_request).success(function(data) {
       if(data) {
         $scope.arr_prospectos = data;
-        //$("#selectProspecto").val(seleccionado);
-        $scope.cotizacion_insertar_editar.PROSPECTO = { ID : seleccionado };
+        $("#selectProspecto").html('<option value="" selected disabled>---Seleccione un prospecto---</option>');
+        $.each(data, function( indice, obj ) {
+          if (seleccionado == obj.ID) {
+            $("#selectProspecto").append('<option value="'+obj.ID+'" selected>'+obj.NOMBRE+'</option>');
+          }else{
+            $("#selectProspecto").append('<option value="'+obj.ID+'">'+obj.NOMBRE+'</option>');
+          }
+
+        });
+        $('#selectProspecto').select2();
+        $("#selectProspecto").val(seleccionado);
+        $("#selectProspecto" ).change();
+        $("#selectProspecto" ).on('change',function (e) {
+          if(this.selectedIndex>0)
+          {
+            $scope.select_pos = this.selectedIndex;
+            $scope.cambioProspecto();
+          }
+        });
+
       }
       else  {
         console.log("No hay datos");
@@ -372,7 +408,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       id_curso = $scope.cursos_insitu;
     }
     if($scope.bandera == 0){
-      id_entidad = $scope.cotizacion_insertar_editar.PROSPECTO.ID;
+      id_entidad = $("#selectProspecto").val();
       cotizacion = {
         ID : $scope.cotizacion_insertar_editar.ID,
         ID_PROSPECTO : id_entidad,
@@ -400,7 +436,8 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
         ID_USUARIO : sessionStorage.getItem("id_usuario")
       }
     }else{
-      id_entidad = $scope.cotizacion_insertar_editar.CLIENTE.ID;
+      //id_entidad = $scope.cotizacion_insertar_editar.CLIENTE.ID;
+      id_entidad = $("#selectCliente").val();
       var cotizacion = {
         ID : $scope.cotizacion_insertar_editar.ID,
         ID_PROSPECTO : id_entidad,
@@ -517,7 +554,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
  $scope.cambioCliente = function(ref){
    //ref es la referencia a cargar para edicion
-   $http.get(  global_apiserver + "/servicio_cliente_etapa/getReferenciaByClient/?cliente="+$scope.cotizacion_insertar_editar.CLIENTE.ID)
+   $http.get(  global_apiserver + "/servicio_cliente_etapa/getReferenciaByClient/?cliente="+$("#selectCliente").val())
         .then(function( response ) {//se ejecuta cuando la petición fue correcta
           $scope.Referencias = response.data.map(function(item){
             return{
@@ -538,13 +575,30 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       },
       function (response){});
     //Determinar si es persona fisica o moral
-    $scope.tipo_persona = $scope.cotizacion_insertar_editar.CLIENTE.TIPO_PERSONA;
+   if($scope.select_pos>0)
+   {
+     $scope.tipo_persona = $scope.arr_clientes[$scope.select_pos-1].TIPO_PERSONA;
+   }
  }
 
- $scope.cambioProspecto = function(prospecto){
-  $scope.tipo_persona = prospecto.TIPO_PERSONA;
- }
+ $scope.cambioProspecto = function(){
+   if($scope.select_pos>0)
+   {
+     $scope.tipo_persona = $scope.arr_prospectos[$scope.select_pos-1].TIPO_PERSONA;
+   }
 
+ }
+  $scope.cambioRatio = function(bandera)
+  {
+    if(bandera==1)
+    {
+      $scope.fill_select_clientes('');
+    }
+    if(bandera==0)
+    {
+      $scope.fill_select_prospectos('')
+    }
+  }
  $scope.onChangeModalidades = function(id_tipo_servicio,seleccionado)
     {
 

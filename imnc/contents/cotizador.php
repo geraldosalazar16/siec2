@@ -169,7 +169,7 @@
   </div>
 
   <!-- Modal insertar/actualizar-->
-  <div class="modal fade" id="modalInsertarActualizarCotizacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal fade" id="modalInsertarActualizarCotizacion"  role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -188,31 +188,33 @@
               <div class="form-group form-vertical" >
                 <label class="control-label col-md-6">Tipo de entidad</label>
                 <div class="col-md-12" style="text-align:center">
-                  <label class="radio-inline"><input type="radio" ng-model="bandera" value="0" name="prospecto-radio">Prospecto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                  <label class="radio-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" ng-model="bandera" value="1" name="clienteradio">Cliente</label>
+                  <label class="radio-inline"><input type="radio" ng-model="bandera" value="0" name="prospecto-radio" ng-change="cambioRatio(bandera)">Prospecto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                  <label class="radio-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" ng-model="bandera" value="1" name="clienteradio" ng-change="cambioRatio(bandera)">Cliente</label>
                 </div>
               </div>
 
               <div class="form-group form-vertical" id="comboProspecto" ng-if="bandera==0">
                 <label class="control-label col-md-12">Prospecto <span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select id="selectProspecto" ng-model="cotizacion_insertar_editar.PROSPECTO" 
-                  class="form-control" ng-change="cambioProspecto(cotizacion_insertar_editar.PROSPECTO)"
-                  ng-options="prospecto as prospecto.NOMBRE for prospecto in arr_prospectos track by prospecto.ID">
-                     <option value="" selected disabled>-- selecciona un prospecto --</option>
-                  </select>
+                  <select id="selectProspecto" ng-model="cotizacion_insertar_editar.PROSPECTO" class="form-control"></select>
+<!--                    <select id="selectProspecto" ng-model="cotizacion_insertar_editar.PROSPECTO"-->
+<!--                            class="form-control" ng-change="cambioProspecto(cotizacion_insertar_editar.PROSPECTO)"-->
+<!--                            ng-options="prospecto as prospecto.NOMBRE for prospecto in arr_prospectos track by prospecto.ID">-->
+<!--                        <option value="" selected disabled>-- selecciona un prospecto --</option>-->
+<!--                    </select>  -->
                 </div>
               </div>
 
               <div class="form-group form-vertical" id="comboCliente" ng-if="bandera==1">
                 <label class="control-label col-md-12">Cliente <span class="required">*</span></label>
                 <div class="col-md-12">
-                  <select id="selectCliente"
-                  ng-model="cotizacion_insertar_editar.CLIENTE" class="form-control"
-                  ng-options="cliente as cliente.NOMBRE for cliente in arr_clientes track by cliente.ID"
-                  ng-change="cambioCliente()">
-                     <option value="" selected disabled>-- selecciona un cliente --</option>
-                  </select>
+                  <select id="selectCliente"  ng-model="cotizacion_insertar_editar.CLIENTE" class="form-control"> </select>
+<!--                    <select id="selectCliente"-->
+<!--                            ng-model="cotizacion_insertar_editar.CLIENTE" class="form-control"-->
+<!--                            ng-options="cliente as cliente.NOMBRE for cliente in arr_clientes track by cliente.ID"-->
+<!--                            ng-change="cambioCliente()">-->
+<!--                        <option value="" selected disabled>-- selecciona un cliente --</option>-->
+<!--                    </select>-->
                 </div>
               </div>
 
