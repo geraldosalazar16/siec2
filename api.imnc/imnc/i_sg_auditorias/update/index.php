@@ -103,13 +103,26 @@ else{
 
 	$INPUT	=	json_decode($objeto->DURACION_DIAS_INTEGRAL,true);
 	foreach($INPUT as $i => $valor){
-		$id1 = $database->update("SCE_NORMAS", [ 
+		if($database->count("SCE_NORMAS", [	"AND"=>["ID_SCE" => $ID_SERVICIO_CLIENTE_ETAPA,"ID_NORMA"=>$i,"ID_TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO]])>0){
+			$id1 = $database->update("SCE_NORMAS", [ 
 					"DIAS_AUDITOR" => $valor,
 					"ID_TIPO_AUDITORIA"=>$TIPO_AUDITORIA,
 					"CICLO"=>$CICLO],[
 				"AND"=>["ID_SCE" => $ID_SERVICIO_CLIENTE_ETAPA,"ID_NORMA"=>$i,"ID_TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO]
 				]);
-	valida_error_medoo_and_die();
+			valida_error_medoo_and_die();
+		}
+		else{
+			$id1 = $database->insert("SCE_NORMAS", [ 
+					"ID_SCE" => $ID_SERVICIO_CLIENTE_ETAPA,
+					"ID_NORMA"=>$i,
+					"DIAS_AUDITOR" => $valor,
+					"ID_TIPO_AUDITORIA"=>$TIPO_AUDITORIA,
+					"CICLO" => $CICLO]
+				);
+			valida_error_medoo_and_die();
+		}
+		
 	
 	
 	}
