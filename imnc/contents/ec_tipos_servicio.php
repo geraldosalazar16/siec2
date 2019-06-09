@@ -148,7 +148,7 @@
 									</thead>
 									<tbody>
 										<tr ng-repeat="x in SectoresServicio" class="ng-scope  even pointer">
-											<td> {{x.SECTORES_ID}}-{{x.SECTORES_ID_TIPO_SERVICIO}}-{{x.SECTORES_ANHIO}}</td>
+											<td> {{x.SECTORES_ID}}-{{x.ACRONIMO}}-{{x.SECTORES_ANHIO}}</td>
 											<td>{{x.NOMBRE_SECTOR}}</td>
 								<!--			<td>{{x.PRINCIPAL}}</td>	-->
 											<td>

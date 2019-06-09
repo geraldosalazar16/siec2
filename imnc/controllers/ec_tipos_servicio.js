@@ -532,7 +532,6 @@ function llenar_modal_sector(id_servicio_cliente_etapa,id_sector){
 // ***** 			FUNCION PARA CARGAR DATOS DE SECTORES DEL TIPO SERVICIO			 *****
 // =======================================================================================	
 	function cargarSectoresTipoServicio(id_tipo_servicio){
-				
 			$http.get(  global_apiserver + "/sectores/getByIdTipoServicio/?id_tipo_servicio="+id_tipo_servicio)
 			.then(function( response ){
 				$scope.SectoresTipoServicio = response.data;
