@@ -115,7 +115,6 @@ $DATOS_ADICIONALES = $objeto->DATOS_ADICIONALES;
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
 
-
 $client_contact = $database->insert("CLIENTES_CONTACTOS", [
 	"ID_CLIENTE_DOMICILIO" => $ID_CLIENTE_DOMICILIO,
 	"ID_TIPO_CONTACTO" => $ID_TIPO_CONTACTO,
@@ -134,11 +133,10 @@ $client_contact = $database->insert("CLIENTES_CONTACTOS", [
 	"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
 ]);
 valida_error_medoo_and_die();
-
 $respuesta['resultado']="ok";
 $respuesta['id']=$client_contact;
+//$respuesta['id_contacto']=$database->id();
 print_r(json_encode($respuesta));
-
 
 //-------- FIN --------------
 ?>

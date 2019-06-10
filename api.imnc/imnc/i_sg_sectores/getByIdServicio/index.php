@@ -26,6 +26,7 @@ $id = $_REQUEST["id"];
 $meta_sce = $database->select("I_SG_SECTORES",
 											[
 												"[><]SECTORES"=>["I_SG_SECTORES.ID_SECTOR"=>"ID_SECTOR"],
+												"[><]TIPOS_SERVICIO"=>["SECTORES.ID_TIPO_SERVICIO"=>"ID"],
 											],
 											[
 												"I_SG_SECTORES.ID_SERVICIO_CLIENTE_ETAPA",
@@ -34,7 +35,9 @@ $meta_sce = $database->select("I_SG_SECTORES",
 												"SECTORES.NOMBRE(NOMBRE_SECTOR)",
 												"SECTORES.ID(SECTORES_ID)",
 												"SECTORES.ID_TIPO_SERVICIO(SECTORES_ID_TIPO_SERVICIO)",
-												"SECTORES.ANHIO(SECTORES_ANHIO)"
+												"SECTORES.ANHIO(SECTORES_ANHIO)",
+												"TIPOS_SERVICIO.ACRONIMO"
+
 												
 											],
 											["ID_SERVICIO_CLIENTE_ETAPA"=>$id]); 

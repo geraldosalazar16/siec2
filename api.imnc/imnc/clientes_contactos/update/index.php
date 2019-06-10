@@ -101,7 +101,6 @@ valida_parametro_and_die($EMAIL, "Es necesario capturar un email");
 if (!filter_var($EMAIL, FILTER_VALIDATE_EMAIL)) {
   imprime_error_and_die("El email debe tener un formato válido (e.j. tu.nombre@tuempresa.com)");
 }
-
 //Validar que solo puede haber un contacto principal por domicilio
 $total_con_principal = $database->count("CLIENTES_CONTACTOS", "*", ["AND"=>["ID_CLIENTE_DOMICILIO"=>$ID_CLIENTE_DOMICILIO, "ES_PRINCIPAL"=>"si", "ID[!]"=>$ID]]);
 valida_error_medoo_and_die();

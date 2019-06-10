@@ -7,7 +7,7 @@
 	<script src="js/ngFileUpload/ng-file-upload-shim.min.js"></script>
 	<script src="js/ngFileUpload/ng-file-upload.min.js"></script>
 	<script type="text/javascript" src="js/datepicker/timepicker.js"></script>
-<style type="text/css">
+	<style type="text/css">
     caption{
       text-align: left;
       color: black;
@@ -510,7 +510,7 @@
 <script type="text/javascript" src="js/notify.js"></script>
 <script type="text/javascript">
 	$( document ).ready( function () {
-		$( 'a[data-toggle="tab"]' ).on( 'shown.bs.tab', function ( e ) {
+				$( 'a[data-toggle="tab"]' ).on( 'shown.bs.tab', function ( e ) {
 			$( '#calendario' ).fullCalendar( 'render' );
 		} );
 		$( '#myTab a:first' ).tab( 'show' );
