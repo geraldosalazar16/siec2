@@ -82,6 +82,16 @@ for ($i=0; $i < count($valores) ; $i++) {
 		
 		$valores[$i]["AUDITORES_FECHAS"][$valores[$i]["AUDITORES"][$j]["ID_PERSONAL_TECNICO_CALIF"]] = $database->query("SELECT `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID`,`I_SG_AUDITORIA_GRUPO_FECHAS`.`FECHA`,`I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_NORMA` FROM `I_SG_AUDITORIA_GRUPO_FECHAS` WHERE `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id. " AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`TIPO_AUDITORIA`=".$valores[$i]["TIPO_AUDITORIA"]." AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`CICLO`=".$valores[$i]["CICLO"]." AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_PERSONAL_TECNICO_CALIF`=".$valores[$i]["AUDITORES"][$j]["ID_PERSONAL_TECNICO_CALIF"])->fetchAll(PDO::FETCH_ASSOC);
 		valida_error_medoo_and_die(); 
+		
+		if($tipo_servicio == 20){
+			$id_pt = $database->get('PERSONAL_TECNICO_CALIFICACIONES','ID_PERSONAL_TECNICO',['ID'=>$valores[$i]['AUDITORES'][$j]['ID_PERSONAL_TECNICO_CALIF']]);
+			$otras_califs = $database->query("SELECT 	
+													GROUP_CONCAT(PTC.`REGISTRO`) AS REGISTRO
+												FROM `PERSONAL_TECNICO_CALIFICACIONES` PTC
+												INNER JOIN `PERSONAL_TECNICO` PT  ON PTC.`ID_PERSONAL_TECNICO` = PT.ID
+												WHERE PTC.`ID_TIPO_SERVICIO` IN (1,2,12) AND PT.`ID` =".$id_pt." GROUP BY `ID_PERSONAL_TECNICO`")->fetchAll();
+			$valores[$i]["AUDITORES"][$j]["REGISTRO"] = $otras_califs[0]['REGISTRO'];
+		}
 	}
 	
 	/*======================================================*/
@@ -236,7 +246,13 @@ for ($i=0; $i < count($valores) ; $i++) {
 	}
 	
 	/*======================================================*/
-	
+	//Aqui buscamos el estado de la auditoria en dictaminacion
+	if($database->count("DICTAMINACIONES", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id,"TIPO_AUDITORIA" => $valores[$i]["TIPO_AUDITORIA"], "CICLO" => $valores[$i]["CICLO"] ]]) == 0){
+		$valores[$i]["ESTADO_DICTAMINACION"] = "Pendiente Solicitud";
+	}
+	else{
+		$valores[$i]["ESTADO_DICTAMINACION"] = $database->get("DICTAMINACIONES","STATUS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id,"TIPO_AUDITORIA" => $valores[$i]["TIPO_AUDITORIA"], "CICLO" => $valores[$i]["CICLO"] ]]);
+	}
 }
 
 
