@@ -61,7 +61,7 @@ if($tipo_servicio == 20){
 		`PERSONAL_TECNICO_CALIF_SECTOR`.`SECTOR_NACE`,
 		`PERSONAL_TECNICO_CALIF_SECTOR`.`ALCANCE`,
 		`PERSONAL_TECNICO_CALIFICACIONES`.`ID_PERSONAL_TECNICO`,
-		`PERSONAL_TECNICO_CALIFICACIONES`.`REGISTRO`,
+		GROUP_CONCAT(`PERSONAL_TECNICO_CALIFICACIONES`.`REGISTRO`) AS REGISTRO,
 		`PERSONAL_TECNICO_CALIFICACIONES`.`ID` AS `PT_CALIF_ID`,
 		`PERSONAL_TECNICO_CALIFICACIONES`.`ID_TIPO_SERVICIO`,
 		`PERSONAL_TECNICO_CALIFICACIONES`.`ID_ROL`,
@@ -151,7 +151,10 @@ for ($i=0; $i < count($all_pt) ; $i++) {
 			$detalles_de_califs["ROL"] = $database->get("PERSONAL_TECNICO_ROLES", "ROL", ["ID" => $all_pt[$i]["ID_ROL"]]);
 			array_push($respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CALIFICACIONES"], $detalles_de_califs);
 		}
-
+		//AQUI VOY A PONER TODAS LAS CALIFICACIONES DEL AUDITOR SI ES INTEGRAL
+		//if($tipo_servicio == 20){
+		//	$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["REGISTRO"] .=  ','.$all_pt[$i]['REGISTRO'];
+		//}
 	}
 	else{ // Insertar nuevo al arreglo
 		$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]] = array();
@@ -208,44 +211,174 @@ valida_error_medoo_and_die();
 
 if($tipo_servicio == 20){
 	if (count($array_pt_califs) > 0) { // Si hay auditores con calificacion se hace un query con todos menos ellos
-		$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs,"OR"=>[ "ID_TIPO_SERVICIO"=>1,"ID_TIPO_SERVICIO"=>2,"ID_TIPO_SERVICIO"=>12]]]);
+		 $otras_califs = $database->query("SELECT 	PTC.`ID`,
+		PTC.`ID_ROL`,
+		PTC.`ID_PERSONAL_TECNICO`,
+   		PTC.`ID_TIPO_SERVICIO`,
+		GROUP_CONCAT(PTC.`REGISTRO`) AS REGISTRO,
+        CONCAT(PT.`NOMBRE`,' ',PT.`APELLIDO_PATERNO`,' ',PT.`APELLIDO_MATERNO`) AS NOMBRE_COMPLETO, 
+		CONCAT('0 de ',".$total_sectores.") AS TOTAL, 
+        PT.`STATUS`,
+        PTR.`ROL`,
+        PTR.`JERARQUIA`,
+		PTC.`ID` AS PT_CALIF_ID,
+    	PTC.`FECHA_INICIO`,
+        PTC.`FECHA_FIN`,
+        PTC.`FECHA_CREACION`,
+        PTC.`HORA_CREACION`,
+        PTC.`FECHA_MODIFICACION`,
+        PTC.`HORA_MODIFICACION`,
+        PTC.`ID_USUARIO_CREACION`,
+        PTC.`ID_USUARIO_MODIFICACION`
+       
+        
+FROM `PERSONAL_TECNICO_CALIFICACIONES` PTC
+INNER JOIN `PERSONAL_TECNICO` PT  ON PTC.`ID_PERSONAL_TECNICO` = PT.ID
+INNER JOIN `PERSONAL_TECNICO_ROLES` PTR  ON PTC.`ID_ROL` = PTR.ID
+WHERE PTC.`ID_TIPO_SERVICIO` IN (1,2,12) AND PTC.`ID` NOT IN  (".implode(',',$array_pt_califs).") GROUP BY PTC.`ID_PERSONAL_TECNICO`")->fetchAll();
+		//$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs,"OR"=>[ "ID_TIPO_SERVICIO"=>1,"ID_TIPO_SERVICIO"=>2,"ID_TIPO_SERVICIO"=>12]]]);
 	}
 	else{
-		$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["OR"=>[ "ID_TIPO_SERVICIO"=>1,"ID_TIPO_SERVICIO"=>2,"ID_TIPO_SERVICIO"=>12]]);
+		$otras_califs = $database->query("SELECT 	PTC.`ID`,
+		PTC.`ID_ROL`,
+		PTC.`ID_PERSONAL_TECNICO`,
+   		PTC.`ID_TIPO_SERVICIO`,
+		GROUP_CONCAT(PTC.`REGISTRO`) AS REGISTRO,
+        CONCAT(PT.`NOMBRE`,' ',PT.`APELLIDO_PATERNO`,' ',PT.`APELLIDO_MATERNO`) AS NOMBRE_COMPLETO, 
+		CONCAT('0 de ',".$total_sectores.") AS TOTAL, 
+        PT.`STATUS`,
+        PTR.`ROL`,
+        PTR.`JERARQUIA`,
+		PTC.`ID` AS PT_CALIF_ID,
+    	PTC.`FECHA_INICIO`,
+        PTC.`FECHA_FIN`,
+        PTC.`FECHA_CREACION`,
+        PTC.`HORA_CREACION`,
+        PTC.`FECHA_MODIFICACION`,
+        PTC.`HORA_MODIFICACION`,
+        PTC.`ID_USUARIO_CREACION`,
+        PTC.`ID_USUARIO_MODIFICACION`
+       
+        
+FROM `PERSONAL_TECNICO_CALIFICACIONES` PTC
+INNER JOIN `PERSONAL_TECNICO` PT  ON PTC.`ID_PERSONAL_TECNICO` = PT.ID
+INNER JOIN `PERSONAL_TECNICO_ROLES` PTR  ON PTC.`ID_ROL` = PTR.ID
+WHERE PTC.`ID_TIPO_SERVICIO` IN (1,2,12) GROUP BY PTC.`ID_PERSONAL_TECNICO`")->fetchAll();
+		//$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["OR"=>[ "ID_TIPO_SERVICIO"=>1,"ID_TIPO_SERVICIO"=>2,"ID_TIPO_SERVICIO"=>12]]);
 	}
 }
 else{
 	if (count($array_pt_califs) > 0) { // Si hay auditores con calificacion se hace un query con todos menos ellos
-		$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs, "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
+		$otras_califs = $database->query("SELECT 	PTC.`ID`,
+		PTC.`ID_ROL`,
+		PTC.`ID_PERSONAL_TECNICO`,
+   		PTC.`ID_TIPO_SERVICIO`,
+		PTC.`REGISTRO`,
+        CONCAT(PT.`NOMBRE`,' ',PT.`APELLIDO_PATERNO`,' ',PT.`APELLIDO_MATERNO`) AS NOMBRE_COMPLETO, 
+		CONCAT('0 de ',".$total_sectores.") AS TOTAL, 
+        PT.`STATUS`,
+        PTR.`ROL`,
+        PTR.`JERARQUIA`,
+		PTC.`ID` AS PT_CALIF_ID,
+    	PTC.`FECHA_INICIO`,
+        PTC.`FECHA_FIN`,
+        PTC.`FECHA_CREACION`,
+        PTC.`HORA_CREACION`,
+        PTC.`FECHA_MODIFICACION`,
+        PTC.`HORA_MODIFICACION`,
+        PTC.`ID_USUARIO_CREACION`,
+        PTC.`ID_USUARIO_MODIFICACION`
+       
+        
+FROM `PERSONAL_TECNICO_CALIFICACIONES` PTC
+INNER JOIN `PERSONAL_TECNICO` PT  ON PTC.`ID_PERSONAL_TECNICO` = PT.ID
+INNER JOIN `PERSONAL_TECNICO_ROLES` PTR  ON PTC.`ID_ROL` = PTR.ID
+WHERE PTC.`ID_TIPO_SERVICIO` = ".$tipo_servicio." AND PTC.`ID` NOT IN  (".implode(',',$array_pt_califs).") GROUP BY PTC.`ID_PERSONAL_TECNICO`")->fetchAll();
+		//$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs, "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
 	}
 	else{
-		$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>[ "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
+		$otras_califs = $database->query("SELECT 	PTC.`ID`,
+		PTC.`ID_ROL`,
+		PTC.`ID_PERSONAL_TECNICO`,
+   		PTC.`ID_TIPO_SERVICIO`,
+		PTC.`REGISTRO`,
+        CONCAT(PT.`NOMBRE`,' ',PT.`APELLIDO_PATERNO`,' ',PT.`APELLIDO_MATERNO`) AS NOMBRE_COMPLETO, 
+		CONCAT('0 de ',".$total_sectores.") AS TOTAL, 
+        PT.`STATUS`,
+        PTR.`ROL`,
+        PTR.`JERARQUIA`,
+		PTC.`ID` AS PT_CALIF_ID,
+    	PTC.`FECHA_INICIO`,
+        PTC.`FECHA_FIN`,
+        PTC.`FECHA_CREACION`,
+        PTC.`HORA_CREACION`,
+        PTC.`FECHA_MODIFICACION`,
+        PTC.`HORA_MODIFICACION`,
+        PTC.`ID_USUARIO_CREACION`,
+        PTC.`ID_USUARIO_MODIFICACION`
+       
+        
+FROM `PERSONAL_TECNICO_CALIFICACIONES` PTC
+INNER JOIN `PERSONAL_TECNICO` PT  ON PTC.`ID_PERSONAL_TECNICO` = PT.ID
+INNER JOIN `PERSONAL_TECNICO_ROLES` PTR  ON PTC.`ID_ROL` = PTR.ID
+WHERE PTC.`ID_TIPO_SERVICIO` = ".$tipo_servicio."  GROUP BY PTC.`ID_PERSONAL_TECNICO`")->fetchAll();
+		//$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>[ "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
 	}
 }
 
 
 valida_error_medoo_and_die();
-for ($i=0; $i < count($otras_califs); $i++) { 
-	$otros_auditores = $database->get("PERSONAL_TECNICO", "*", ["ID"=>$otras_califs[$i]["ID_PERSONAL_TECNICO"]]);
-	valida_error_medoo_and_die();
-	$rol = $database->get("PERSONAL_TECNICO_ROLES", "ROL", ["ID"=>$otras_califs[$i]["ID_ROL"]]);
-	valida_error_medoo_and_die();
-	///agreagdo 14 febrero
-	$jerq =$database->get("PERSONAL_TECNICO_ROLES", "JERARQUIA", ["ID" => $otras_califs[$i]["ID_ROL"]]);
-	//valida_error_medoo_and_die();
+//for ($i=0; $i < count($otras_califs); $i++) { 
+	//if($tipo_servicio == 20){
+		/*if (array_key_exists($otras_califs[$i]["ID_PERSONAL_TECNICO"], $otras_califs)) { //Agregar al arreglo
+			$registros =$otras_califs[$otras_califs[$i]["ID_PERSONAL_TECNICO"]]["REGISTRO"] .','.$otras_califs[$i]['REGISTRO'];
+			$otras_califs[$otras_califs[$i]["ID_PERSONAL_TECNICO"]]["REGISTRO"]= $registros;
+		}*/
+		//else{
+	/*	$otros_auditores = $database->get("PERSONAL_TECNICO", "*", ["ID"=>$otras_califs[$i]["ID_PERSONAL_TECNICO"]]);
+		valida_error_medoo_and_die();
+		$rol = $database->get("PERSONAL_TECNICO_ROLES", "ROL", ["ID"=>$otras_califs[$i]["ID_ROL"]]);
+		valida_error_medoo_and_die();
+		///agreagdo 14 febrero
+		$jerq =$database->get("PERSONAL_TECNICO_ROLES", "JERARQUIA", ["ID" => $otras_califs[$i]["ID_ROL"]]);
+		//valida_error_medoo_and_die();
 
 
-	$otras_califs[$i]["ROL"] = $rol;
-	$otras_califs[$i]["JERARQUIA"] =$jerq;
+		$otras_califs[$i]["ROL"] = $rol;
+		$otras_califs[$i]["JERARQUIA"] =$jerq;
 
-	$otras_califs[$i]["ID_PERSONAL_TECNICO"] = $otros_auditores["ID"];
-	$otras_califs[$i]["NOMBRE_COMPLETO"] =  $otros_auditores["NOMBRE"] . " " . $otros_auditores["APELLIDO_PATERNO"] . " " . $otros_auditores["APELLIDO_MATERNO"];
-	$otras_califs[$i]["STATUS"] = $otros_auditores["STATUS"];
-	$otras_califs[$i]["TOTAL"] = "0 de " . $total_sectores;
-	$otras_califs[$i]["PT_CALIF_ID"] = $otras_califs[$i]["ID"];
-	$otras_califs[$i]["EN_GRUPO"] = $database->count("I_SG_AUDITORIA_GRUPOS", ["AND" => ["ID_PERSONAL_TECNICO_CALIF"=>$otras_califs[$i]["PT_CALIF_ID"], "ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$idtipoauditoria,"CICLO"=>$ciclo]]);
-	valida_error_medoo_and_die();
+		//$otras_califs[$i]["ID_PERSONAL_TECNICO"] = $otros_auditores["ID"];
+		$otras_califs[$i]["NOMBRE_COMPLETO"] =  $otros_auditores["NOMBRE"] . " " . $otros_auditores["APELLIDO_PATERNO"] . " " . $otros_auditores["APELLIDO_MATERNO"];
+		$otras_califs[$i]["STATUS"] = $otros_auditores["STATUS"];
+		$otras_califs[$i]["TOTAL"] = "0 de " . $total_sectores;
+		$otras_califs[$i]["PT_CALIF_ID"] = $otras_califs[$i]["ID"];
+		$otras_califs[$i]["EN_GRUPO"] = $database->count("I_SG_AUDITORIA_GRUPOS", ["AND" => ["ID_PERSONAL_TECNICO_CALIF"=>$otras_califs[$i]["PT_CALIF_ID"], "ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$idtipoauditoria,"CICLO"=>$ciclo]]);
+		valida_error_medoo_and_die();
+		//}
+	}*/
+	//else{
+		//$otros_auditores = $database->get("PERSONAL_TECNICO", "*", ["ID"=>$otras_califs[$i]["ID_PERSONAL_TECNICO"]]);
+		//valida_error_medoo_and_die();
+		//$rol = $database->get("PERSONAL_TECNICO_ROLES", "ROL", ["ID"=>$otras_califs[$i]["ID_ROL"]]);
+		//valida_error_medoo_and_die();
+		///agreagdo 14 febrero
+		//$jerq =$database->get("PERSONAL_TECNICO_ROLES", "JERARQUIA", ["ID" => $otras_califs[$i]["ID_ROL"]]);
+		//valida_error_medoo_and_die();
 
+
+		//$otras_califs[$i]["ROL"] = $rol;
+		//$otras_califs[$i]["JERARQUIA"] =$jerq;
+
+		//$otras_califs[$i]["ID_PERSONAL_TECNICO"] = $otros_auditores["ID"];
+		//$otras_califs[$i]["NOMBRE_COMPLETO"] =  $otros_auditores["NOMBRE"] . " " . $otros_auditores["APELLIDO_PATERNO"] . " " . $otros_auditores["APELLIDO_MATERNO"];
+		//$otras_califs[$i]["STATUS"] = $otros_auditores["STATUS"];
+		//$otras_califs[$i]["TOTAL"] = "0 de " . $total_sectores;
+		//$otras_califs[$i]["PT_CALIF_ID"] = $otras_califs[$i]["ID"];
+	//	$otras_califs[$i]["EN_GRUPO"] = $database->count("I_SG_AUDITORIA_GRUPOS", ["AND" => ["ID_PERSONAL_TECNICO_CALIF"=>$otras_califs[$i]["PT_CALIF_ID"], "ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$idtipoauditoria,"CICLO"=>$ciclo]]);
+	//	valida_error_medoo_and_die();
+
+	//}
+	
 	// Verfica que auditor no tenga las fechas de la auditoria asignadas
 
 	/*$id_pt_calif = $otras_califs[$i]["PT_CALIF_ID"];
@@ -253,7 +386,7 @@ for ($i=0; $i < count($otras_califs); $i++) {
 	valida_error_medoo_and_die();
 	$ids_pt_calif =  $database->select("PERSONAL_TECNICO_CALIFICACIONES", "ID", ["ID_PERSONAL_TECNICO"=>$id_pt]);
 	valida_error_medoo_and_die();*/
-}
+//}
 
 // ==============================================================
 // * ORDENAR "CON CALIFICACION" POR CANTIDAD DE CALIFICACIONES	*
