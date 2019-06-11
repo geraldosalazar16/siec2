@@ -27,10 +27,10 @@ function valida_error_medoo_and_die(){
 $id_tipo_servicio = $_REQUEST["id_tipo_servicio"];
 if($id_tipo_servicio == 20){
 	//$sectores = $database->query("SELECT * FROM `SECTORES` WHERE `ID_TIPO_SERVICIO`=1 OR `ID_TIPO_SERVICIO` =2 OR `ID_TIPO_SERVICIO`=12 ORDER BY `ID_TIPO_SERVICIO` ASC ")->fetchAll(PDO::FETCH_ASSOC);
-	$sectores = $database->query("SELECT * FROM `SECTORES` WHERE `ID_TIPO_SERVICIO` IN (SELECT `ID` FROM `TIPOS_SERVICIO` WHERE `ID_SERVICIO` = 1)")->fetchAll(PDO::FETCH_ASSOC);
+	$sectores = $database->query("SELECT S.`ID_SECTOR`,S.`ID`,S.`ID_TIPO_SERVICIO`,S.`ANHIO`,S.`NOMBRE`,TS.`ACRONIMO` FROM `SECTORES` S INNER JOIN `TIPOS_SERVICIO` TS ON S.ID_TIPO_SERVICIO = TS.ID  WHERE `ID_TIPO_SERVICIO` IN (SELECT `ID` FROM `TIPOS_SERVICIO` WHERE `ID_SERVICIO` = 1  ) ORDER BY NOMBRE ASC")->fetchAll(PDO::FETCH_ASSOC);
 }
 else{
-	$sectores = $database->select("SECTORES", "*", ["ID_TIPO_SERVICIO"=>$id_tipo_servicio]);
+	$sectores = $database->select("SECTORES","*",["ID_TIPO_SERVICIO"=>$id_tipo_servicio]);
 }
 valida_error_medoo_and_die();
 

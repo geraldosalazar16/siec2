@@ -10,7 +10,8 @@
 		<form name="exampleFormSector" >
 			<div class='form-group'>
 				<label for="claveNombreSector">Nombre del sector<span class="required">*</span></label>
-                <select ng-model="formDataSector.Id_Sector" ng-options="claveNombreSector.ID_SECTOR as claveNombreSector.NOMBRE for claveNombreSector in SectoresTipoServicio"  class="form-control" id="claveNombreSector" name="claveNombreSector" ng-change='cambioclaveNombreSector()' required ng-class="{ error: exampleFormSector.claveNombreSector.$error.required && !exampleForm.$pristine}"></select>
+                <select ng-if="DatosServicio.ID_TIPO_SERVICIO==20" ng-model="formDataSector.Id_Sector" ng-options="claveNombreSector.ID_SECTOR as claveNombreSector.NOMBRE+'  '+ claveNombreSector.ID+'-'+ claveNombreSector.ACRONIMO for claveNombreSector in SectoresTipoServicio"  class="form-control" id="claveNombreSector" name="claveNombreSector" ng-change='cambioclaveNombreSector()' required ng-class="{ error: exampleFormSector.claveNombreSector.$error.required && !exampleForm.$pristine}"></select>
+                <select ng-if="DatosServicio.ID_TIPO_SERVICIO!=20" ng-model="formDataSector.Id_Sector" ng-options="claveNombreSector.ID_SECTOR as claveNombreSector.NOMBRE for claveNombreSector in SectoresTipoServicio"  class="form-control" id="claveNombreSector" name="claveNombreSector" ng-change='cambioclaveNombreSector()' required ng-class="{ error: exampleFormSector.claveNombreSector.$error.required && !exampleForm.$pristine}"></select>
             </div>
 			<div class='form-group' ng-show="ocultar">
 				<label for="PrincipalSec">Nombre del sector<span class="required">*</span></label>
