@@ -80,7 +80,7 @@
                                                         <span class="labelAcordeon"	>Procesar solicitud</span></a>                                                        
                                                     </li>
                                                     <li>
-                                                        <a	ng-click="verDetallesSolicitud(solicitud)"> 
+                                                        <a	href="./?pagina=solicitudes_facturacion_detalles&id={{solicitud.ID}}">
                                                         <span class="labelAcordeon"	>Ver detalles</span></a>                                                        
                                                     </li>
                                                     <li>

@@ -496,7 +496,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
                 if (response.data.resultado === 'error') {
                     notify('Error', response.data.mensaje, 'error')
                 } else {
-                    notify('Éxito', 'Se ha creado una nueva solicitud', 'error');
+                    notify('Éxito', 'Se ha creado una nueva solicitud', 'success');
                     $("#modalInsertarActualizarSolicitud").modal("hide");
                     listarSolicitudes();
                 }
@@ -508,7 +508,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
                 if (response.data.resultado === 'error') {
                     notify('Error', response.data.mensaje, 'error')
                 } else {
-                    notify('Éxito', 'Se ha modificado la solicitud', 'error');
+                    notify('Éxito', 'Se ha modificado la solicitud', 'success');
                     $("#modalInsertarActualizarSolicitud").modal("hide");
                     listarSolicitudes();
                 }

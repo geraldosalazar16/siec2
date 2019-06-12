@@ -37,8 +37,6 @@ $meta_sce = $database->select("I_SG_SECTORES",
 												"SECTORES.ID_TIPO_SERVICIO(SECTORES_ID_TIPO_SERVICIO)",
 												"SECTORES.ANHIO(SECTORES_ANHIO)",
 												"TIPOS_SERVICIO.ACRONIMO"
-
-												
 											],
 											["ID_SERVICIO_CLIENTE_ETAPA"=>$id]); 
 valida_error_medoo_and_die(); 

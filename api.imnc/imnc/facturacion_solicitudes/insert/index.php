@@ -81,9 +81,10 @@ $descripcion = $objeto->descripcion;
 $id_usuario = $objeto->id_usuario;
 valida_parametro_and_die($id_usuario,"Falta seleccionar un usuario");
 
-
+$USUARIO_CREACION = $objeto->id_usuario;
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
+
 	
 $id = $database->insert("FACTURACION_SOLICITUDES", 
 	[  
@@ -98,14 +99,15 @@ $id = $database->insert("FACTURACION_SOLICITUDES",
 		"RFC" => $rfc,
 		"MONTO" => $monto,
 		"REQUIERE_ORDEN_COMPRA" => $requiere_orden_compra,
-		"DESCRIPCION"=>$descripcion,
+		"DESCRIPCION"=>$descripcion?$descripcion:'',
 		"FACTURAR_VIATICOS" => $facturar_viaticos, 
 		"SUBIR_FACTURA_PORTAL" => $subir_factura_portal, 
-		"PORTAL" => $portal,
+		"PORTAL" => $portal?$portal:'',
 		"FECHA_CREACION" => $FECHA_CREACION,
 		"HORA_CREACION" => $HORA_CREACION,
 		"USUARIO_CREACION" => $USUARIO_CREACION
-	]); 
+	]);
+print_r($database);
 valida_error_medoo_and_die(); 
 
 $database->insert("FACTURACION_SOLICITUD_HISTORICO",[
