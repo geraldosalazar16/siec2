@@ -342,7 +342,7 @@
                                     <input type="submit" class="btn btn-success pull-right mt-2" ng-click="stepperFinish()" ng-disabled="!pagoParcialForm.$valid" value="Finalizar"/> 
                                 </form>
 
-                                <form name="liquidarForm" ng-show="mostrarFormProceso('liquidarForm', 'liquidarEmitida')">    
+                                <form name="liquidarForm" ng-show="mostrarFormProceso('liquidarForm', transition.name)">    
                                     <div class='form-group'>
                                         <label for="compLiquidarFile">Cargar evidencia de pago</label>
                                         <input type="file" class="form-control" id="compLiquidarFile" ng-model="compLiquidarFile" valid-file>
@@ -350,7 +350,7 @@
                                     <input type="submit" class="btn btn-success pull-right mt-2" ng-click="stepperFinish()" ng-disabled="!liquidarForm.$valid" value="Finalizar"/> 
                                 </form>
 
-                                <form name="cancelarForm" ng-show="mostrarFormProceso('cancelarForm','cancelarEmitida')">    
+                                <form name="cancelarForm" ng-show="mostrarFormProceso('cancelarForm',transition.name)">    
                                     <div class='form-group'>
                                         <label for="pdfCancelarFile">Cargar pdf cancelación</label>
                                         <input type="file" class="form-control" id="pdfCancelarFile" ng-model="pdfCancelarFile" valid-file>

@@ -41,7 +41,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
         { name: 'emitir', label: 'Emitir', form: 'emitirForm'},
         { name: 'suspender', label: 'Suspender', form: 'suspenderForm'},
         { name: 'pagoParcial', label: 'Pago Parcial', form: 'pagoParcialForm'},
-        { name: 'liquidarEmitida', label: 'Liquidar', form: 'pagoParcialForm'},
+        { name: 'liquidarEmitida', label: 'Liquidar', form: 'liquidarForm'},
         { name: 'liquidarSuspendida', label: 'Liquidar', form: 'liquidarForm'},
         { name: 'liquidarVencida', label: 'Liquidar', form: 'liquidarForm'},
         { name: 'liquidarParcial', label: 'Liquidar', form: 'liquidarForm'},
@@ -69,6 +69,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
 
     function clear_modal_insertar_actualizar() {
         $scope.formData = {};
+        $("#sce").val('');
     }
 
     async function fill_modal_insertar_actualizar() {
