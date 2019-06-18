@@ -51,7 +51,7 @@
 				<ul class="list-unstyled user_data" style="display: inline-block !important;">
                      <li><b>
 					Comprobante fiscal:<i>
-                         <a style="margin-left: 10px;" class="btn btn-sm" href="{{solicitud.DOCUMENTO.UBICACION_DOCUMENTOS}}"> {{solicitud.DOCUMENTO.NOMBRE}}</a>
+                         <a style="margin-left: 10px;" class="btn btn-sm" href="{{solicitud.DOCUMENTO.UBICACION_DOCUMENTOS}}" target="_blank"> {{solicitud.DOCUMENTO.NOMBRE}}</a>
 					</i></b>
                      </li>
 

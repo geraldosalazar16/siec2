@@ -58,8 +58,7 @@ app.controller('solicitudes_facturacion_detalles_controller', ['$scope', '$http'
                 html += '<table class="table">';
                 html += ' <thead style="background: #966610;color: white;">';
                 html += ' <tr class="headings">'
-                html += ' <th class="column-title" width="45%">Nombre del documento</th>';
-                html += ' <th class="column-title" width="45%">Nombre real</th>';
+                html += ' <th class="column-title" width="90%">Nombre del documento</th>';
                 html += ' <th class="column-title"  width="10%"></th>';
                 html += ' </tr>';
                 html += ' </thead>';
@@ -68,7 +67,6 @@ app.controller('solicitudes_facturacion_detalles_controller', ['$scope', '$http'
 
                 html += '<tr>';
                 html += '<td>'+item.NOMBRE_DOCUMENTO+'</td>';
-                html += '<td>'+item.NOMBRE_ALMACENAMIENTO+'</td>';
                 html += '<td>';
                 html += '<span class="btn-group">';
                 html += '<button type="button" class="btn btn-primary btn-xs btn-imnc" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones ';
@@ -77,7 +75,7 @@ app.controller('solicitudes_facturacion_detalles_controller', ['$scope', '$http'
                 if(item.NOMBRE_ALMACENAMIENTO)
                 {
                     html += '<li class="ver_documento" nombre_documento = "'+item.NOMBRE_ALMACENAMIENTO+'"><a> <span class="labelAcordeon"><i class="fa fa-eye"></i> Ver Documento</span></a> </li>';
-                    html += '<li class="download_documento" nombre_documento = "'+item.NOMBRE_DOCUMENTO+'" nombre_almacen = "'+item.NOMBRE_ALMACENAMIENTO+'"><a> <span class="labelAcordeon"><i class="fa fa-download"></i> Descargar Documento</span></a> </li>';
+                     html += '<li class="download_documento" nombre_documento = "'+item.NOMBRE_DOCUMENTO+'" nombre_almacen = "'+item.NOMBRE_ALMACENAMIENTO+'"><a> <span class="labelAcordeon"><i class="fa fa-download"></i> Descargar Documento</span></a> </li>';
                 }
 
 
