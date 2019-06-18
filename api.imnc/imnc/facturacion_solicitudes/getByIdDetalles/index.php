@@ -23,6 +23,18 @@
 	$id_solicitud = $_REQUEST["id"];
 	$solicitud = $database->get("FACTURACION_SOLICITUDES", "*", ["ID"=>$id_solicitud]);
 	valida_error_medoo_and_die();
+    $sce= $database->get("SERVICIO_CLIENTE_ETAPA",
+		[
+			"[><]ETAPAS_PROCESO" => ["ID_ETAPA_PROCESO" => "ID_ETAPA"]
+		],
+		[
+			"SERVICIO_CLIENTE_ETAPA.REFERENCIA",
+			"ETAPAS_PROCESO.ETAPA"
+		],
+		[
+			"SERVICIO_CLIENTE_ETAPA.ID" => $solicitud["ID_SERVICIO_CLIENTE_ETAPA"]
+		]);
+     valida_error_medoo_and_die();
 	$contacto_facturacion = $database->get("SERVICIO_CLIENTE_ETAPA",
 		[
 			"[><]CLIENTES_DOMICILIOS" => ["ID_CLIENTE" => "ID_CLIENTE"],
@@ -47,17 +59,35 @@
 	$documento= $database->get("BASE_DOCUMENTOS",
 		[
 			"[><]CATALOGO_DOCUMENTOS" => ["ID_CATALOGO_DOCUMENTOS" => "ID"],
+			"[><]CATALOGO_SECCIONES" => ["CATALOGO_DOCUMENTOS.ID_SECCION" => "ID"],
 		],
 		[
+			"BASE_DOCUMENTOS.ID",
 			"BASE_DOCUMENTOS.UBICACION_DOCUMENTOS",
+			"BASE_DOCUMENTOS.CICLO",
+			"BASE_DOCUMENTOS.EXTENSION_DOCUMENTO",
 			"CATALOGO_DOCUMENTOS.NOMBRE",
+			"CATALOGO_SECCIONES.NOMBRE_SECCION"
+
 		],
 		["AND"=>["BASE_DOCUMENTOS.ID_SERVICIO"=>$solicitud["ID_SERVICIO_CLIENTE_ETAPA"],"BASE_DOCUMENTOS.CICLO"=>1,"BASE_DOCUMENTOS.ID_CATALOGO_DOCUMENTOS "=>5,"CATALOGO_DOCUMENTOS.ID_ETAPA"=>3]]);
 	valida_error_medoo_and_die();
 	if($documento)
 	{
+		$cadena = explode("-",$sce["REFERENCIA"]);
+		$ruta = "arch_expediente/".$cadena[1].$cadena[2]."/".$documento["CICLO"]."/".$sce["ETAPA"]."/".$documento["NOMBRE_SECCION"]."/".$documento["ID"].".".$documento["EXTENSION_DOCUMENTO"];
+		$documento["EXIST"] = false;
+		if(file_exists("../../".$ruta))
+		{
+			$documento["EXIST"] = true;
+			$documento["RUTA"] = $ruta;
+
+		}
+
 		$solicitud["DOCUMENTO"] = $documento;
 	}
+    valida_error_medoo_and_die();
+
 
 
 print_r(json_encode($solicitud));
