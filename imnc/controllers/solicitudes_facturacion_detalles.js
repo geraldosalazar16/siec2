@@ -14,8 +14,9 @@ app.controller('solicitudes_facturacion_detalles_controller', ['$scope', '$http'
             notify('Error', response.data.mensaje, 'error')
         } else {
             $scope.solicitud = response.data;
+            console.log($scope.solicitud);
             $scope.solicitud.DOCUMENTO.RUTA = global_apiserver+'/'+$scope.solicitud.DOCUMENTO.RUTA;
-            console.log($scope.solicitud.DOCUMENTO.RUTA);
+
 
         }
     })
