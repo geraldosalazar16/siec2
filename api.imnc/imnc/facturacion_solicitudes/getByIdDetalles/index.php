@@ -77,10 +77,10 @@
 	if($documento)
 	{
 		$cadena = explode("-",$sce["REFERENCIA"]);
-		$ruta = "arch_expediente/".$cadena[1].$cadena[2]."/1/Asignación/".trim($documento["NOMBRE_SECCION"])."/".$documento["ID"].".".$documento["EXTENSION_DOCUMENTO"];
+		$ruta = "arch_expediente/".$cadena[1].$cadena[2]."/1/Asignación /".trim($documento["NOMBRE_SECCION"])."/".$documento["ID"].".".$documento["EXTENSION_DOCUMENTO"];
 		$documento["EXIST"] = false;
-		$ruta_full = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR."arch_expediente".DIRECTORY_SEPARATOR.$cadena[1].$cadena[2].DIRECTORY_SEPARATOR."1".DIRECTORY_SEPARATOR."Asignación".DIRECTORY_SEPARATOR.trim($documento["NOMBRE_SECCION"]).DIRECTORY_SEPARATOR.$documento["ID"].".".$documento["EXTENSION_DOCUMENTO"];
-		if(file_exists(realpath($ruta_full)))
+		$ruta_full = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR."arch_expediente".DIRECTORY_SEPARATOR.$cadena[1].$cadena[2].DIRECTORY_SEPARATOR."1".DIRECTORY_SEPARATOR."Asignación ".DIRECTORY_SEPARATOR.trim($documento["NOMBRE_SECCION"]).DIRECTORY_SEPARATOR.$documento["ID"].".".$documento["EXTENSION_DOCUMENTO"];
+		if(file_exists($ruta_full))
 		{
 			$documento["EXIST"] = true;
 			$documento["RUTA"] = $ruta;
