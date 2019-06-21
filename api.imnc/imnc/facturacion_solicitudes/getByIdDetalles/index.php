@@ -77,9 +77,9 @@
 	if($documento)
 	{
 		$cadena = explode("-",$sce["REFERENCIA"]);
-		$ruta = "arch_expediente/".$cadena[1].$cadena[2]."/1/Asignación/".$documento["NOMBRE_SECCION"]."/".$documento["ID"].".".$documento["EXTENSION_DOCUMENTO"];
+		$ruta = "arch_expediente/".$cadena[1].$cadena[2]."/1/Asignación/".trim($documento["NOMBRE_SECCION"])."/".$documento["ID"].".".$documento["EXTENSION_DOCUMENTO"];
 		$documento["EXIST"] = false;
-		if(file_exists("../../".$ruta))
+		if(file_exists(realpath("../../".$ruta)))
 		{
 			$documento["EXIST"] = true;
 			$documento["RUTA"] = $ruta;

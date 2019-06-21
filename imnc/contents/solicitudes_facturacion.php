@@ -367,4 +367,40 @@
             </div>
         </div>
     </div>
+    </div>
+
+   <div class="modal fade" id="modalHistorico" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog" role="document" id="modal-size">
+            <div class="modal-content">
+                <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalTitulo">Histórico</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped responsive-utilities jambo_table bulk_action">
+                        <thead>
+                            <tr class="headings">
+                            <th class="column-title" width="10">Solicitud ID</th>
+                            <th class="column-title">Cambio</th>
+                            <th class="column-title">Descripción</th>
+                            <th class="column-title">Fecha</th>
+                            <th class="column-title">Usuario</th>
+                            </tr>
+                        </thead>
+
+                        <tbody >
+                            <tr ng-repeat="historico in listaHistoricos" class="ng-scope  even pointer">
+                                <td>{{historico.ID_SOLICITUD}}</td>
+                                <td>{{historico.CAMBIO}}</td>
+                                <td>{{historico.DESCRIPCION}}</td>
+                                <td>{{historico.FECHA +" "+ historico.HORA}}</td>
+                                <td>{{historico.NOMBRE}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+   </div>
 </span>

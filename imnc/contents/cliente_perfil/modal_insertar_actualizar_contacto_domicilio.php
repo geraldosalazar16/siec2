@@ -23,7 +23,7 @@
               <label class="control-label col-md-4 col-sm-4 col-xs-12" for="txtTipoContacto">Tipo de contacto <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" id="txtTipoContacto" required="required" class="form-control col-md-7 col-xs-12" data-parsley-id="4103"><ul class="parsley-errors-list" id="parsley-id-4103"></ul>
+                  <select type="text" id="txtTipoContacto" required="required" class="form-control col-md-7 col-xs-12" data-parsley-id="4103"></select><ul class="parsley-errors-list" id="parsley-id-4103"></ul>
               </div>
             </div>
             <div class="form-group">

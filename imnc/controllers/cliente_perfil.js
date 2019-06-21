@@ -55,7 +55,8 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     fec_ini = fec_ini.substring(6, 8) + "/" + fec_ini.substring(4, 6) + "/" + fec_ini.substring(0, 4);
     var fec_fin = response.FECHA_FIN;
     fec_fin = fec_fin.substring(6, 8) + "/" + fec_fin.substring(4, 6) + "/" + fec_fin.substring(0, 4);
-    $("#txtTipoContacto").val(response.ID_TIPO_CONTACTO);
+    cambioServicio(response.ID_TIPO_CONTACTO);
+    // $("#txtTipoContacto").val(response.ID_TIPO_CONTACTO);
     $("#txtNombreContacto").val(response.NOMBRE_CONTACTO);
     $("#txtCargoContacto").val(response.CARGO);
     $("#txtTelMovil").val(response.TELEFONO_MOVIL);
@@ -65,6 +66,26 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     $("#cmbEsPrincipal").val(response.ES_PRINCIPAL);
     $("#datos_adicionales").val(response.DATOS_ADICIONALES);
   });
+}
+
+// Listar todas las solicitudes
+ function cambioServicio(seleccionado) {
+   $.getJSON(`${global_apiserver}/clientes_contactos/getAllTipoContacto/`,function (response){
+     if (response.resultado === 'error') {
+       notify('Error', response.mensaje, 'error');
+     } else {
+       $("#txtTipoContacto").html('<option value="" selected disabled>-elige una opción-</option>');
+       $.each(response, function( indice, objTipo ) {
+         if (seleccionado == objTipo.ID) {
+           $("#txtTipoContacto").append('<option value="'+objTipo.ID+'" selected>'+objTipo.TIPO+'</option>');
+         }else{
+           $("#txtTipoContacto").append('<option value="'+objTipo.ID+'">'+objTipo.TIPO+'</option>');
+         }
+
+       });
+     }
+   });
+
 }
 
 function fill_autocomplete_pais(seleccionado) {
@@ -407,10 +428,11 @@ function listener_btn_contactos() {
 
           $("#Contactosde" + id_cliente_domicilio).append(draw_row_contactos(num, objContacto));
           agrego = false;
+          listener_btn_nuevo_contacto();
+          listener_btn_editar_contacto();
         }
       });
-      listener_btn_nuevo_contacto();
-      listener_btn_editar_contacto();
+
       $("#bodyContactos-" + id_cliente_domicilio).collapse("toggle");
     });
   });
@@ -422,6 +444,7 @@ function listener_btn_nuevo_contacto() {
     $("#btnGuardarContacto").attr("id_domicilio", $(this).attr("id_domicilio"));
     $("#modalTituloDomiContacto").html("Insertar nuevo contacto");
     clear_modal_insertar_actualizar_contacto();
+    cambioServicio();
     $("#modalInsertarActualizarDomiContacto").modal("show");
   });
 }
@@ -459,7 +482,7 @@ function draw_row_contactos(num, objContacto) {
   }
   var strHtml = "";
   strHtml += num + ".-";
-  strHtml += ' Tipo: ' + objContacto.ID_TIPO_CONTACTO + '<br><br>';
+  strHtml += ' Tipo: ' + objContacto.TIPO + '<br><br>';
   strHtml += '<strong> ' + objContacto.NOMBRE_CONTACTO + '</strong>';
   strHtml += '<br>' + objContacto.CARGO;
   strHtml += '<address>';

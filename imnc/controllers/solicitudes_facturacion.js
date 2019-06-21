@@ -16,6 +16,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
     $scope.listaUsosFactura = [];
     $scope.listaAuditorias = [];
     $scope.listaRazonesSociales = [];
+    $scope.listaHistoricos = [];
     $scope.posibles_estados = [];
 
     let state_machine;
@@ -65,6 +66,14 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
         $scope.accion = "editar";
         await fill_modal_insertar_actualizar();
         $("#modalInsertarActualizarSolicitud").modal("show");
+    }
+
+    // Abrir modal historicos
+    async function abrirModalHistoricos() {
+        $scope.listaHistoricos = [];
+        await $scope.loadHistoricos();
+        $("#modal-size").attr("class","modal-dialog modal-lg");
+        $("#modalHistorico").modal("show");
     }
 
     function clear_modal_insertar_actualizar() {
@@ -169,7 +178,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
     }
 
     $scope.verHistoricoSolicitud = function(solicitud) {
-        
+        abrirModalHistoricos();
     }
 
     $scope.verDocumentosSolicitud = function(solicitud) {
@@ -599,6 +608,25 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
     function inicializacion() {
         $('#sce').select2();
     }
+
+    // cargar los historicos
+    $scope.loadHistoricos = function () {
+        $http.get(`${global_apiserver}/facturacion_solicitudes/getAllHistoricos/`)
+            .then(response => {
+            if (response.data.resultado === 'error') {
+            notify('Error', response.data.mensaje, 'error')
+        } else {
+
+            $scope.listaHistoricos = response.data;
+
+
+        }
+    })
+    .catch(error => notify('Error', error.message, 'error'))
+    }
+
+
+
 
     $(document).ready(function () {
         $scope.stepper = new Stepper($('.bs-stepper')[0]);
