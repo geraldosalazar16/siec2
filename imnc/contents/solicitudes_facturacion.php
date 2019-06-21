@@ -381,7 +381,6 @@
                     <table class="table table-striped responsive-utilities jambo_table bulk_action">
                         <thead>
                             <tr class="headings">
-                            <th class="column-title" width="10">Solicitud ID</th>
                             <th class="column-title">Cambio</th>
                             <th class="column-title">Descripción</th>
                             <th class="column-title">Fecha</th>
@@ -391,7 +390,6 @@
 
                         <tbody >
                             <tr ng-repeat="historico in listaHistoricos" class="ng-scope  even pointer">
-                                <td>{{historico.ID_SOLICITUD}}</td>
                                 <td>{{historico.CAMBIO}}</td>
                                 <td>{{historico.DESCRIPCION}}</td>
                                 <td>{{historico.FECHA +" "+ historico.HORA}}</td>

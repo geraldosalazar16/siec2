@@ -69,9 +69,9 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
     }
 
     // Abrir modal historicos
-    async function abrirModalHistoricos() {
+    async function abrirModalHistoricos(id_solicitud) {
         $scope.listaHistoricos = [];
-        await $scope.loadHistoricos();
+        await $scope.loadHistoricos(id_solicitud);
         $("#modal-size").attr("class","modal-dialog modal-lg");
         $("#modalHistorico").modal("show");
     }
@@ -178,7 +178,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
     }
 
     $scope.verHistoricoSolicitud = function(solicitud) {
-        abrirModalHistoricos();
+        abrirModalHistoricos(solicitud.ID);
     }
 
     $scope.verDocumentosSolicitud = function(solicitud) {
@@ -610,8 +610,8 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
     }
 
     // cargar los historicos
-    $scope.loadHistoricos = function () {
-        $http.get(`${global_apiserver}/facturacion_solicitudes/getAllHistoricos/`)
+    $scope.loadHistoricos = function (id_solicitud) {
+        $http.get(`${global_apiserver}/facturacion_solicitudes/getAllHistoricos?id=${id_solicitud}`)
             .then(response => {
             if (response.data.resultado === 'error') {
             notify('Error', response.data.mensaje, 'error')

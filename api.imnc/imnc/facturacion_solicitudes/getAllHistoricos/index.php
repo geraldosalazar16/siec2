@@ -19,8 +19,8 @@
 			print_r(json_encode($respuesta)); 
 			die(); 
 		} 
-	} 
-
+	}
+    $id_solicitud = $_REQUEST["id"];
 	$historicos = $database->select("FACTURACION_SOLICITUD_HISTORICO",
 		[
 //			"[><]FACTURACION_SOLICITUDES" => ["ID_SOLICITUD"=>"ID"],
@@ -34,6 +34,10 @@
 			"FACTURACION_SOLICITUD_HISTORICO.HORA",
 			"USUARIOS.NOMBRE",
 		],
+	    [
+            "FACTURACION_SOLICITUD_HISTORICO.ID_SOLICITUD"=>$id_solicitud
+		],
+
 	    [
 	    	"ORDER"=>["FACTURACION_SOLICITUD_HISTORICO.FECHA","FACTURACION_SOLICITUD_HISTORICO.HORA"]
 		]);
