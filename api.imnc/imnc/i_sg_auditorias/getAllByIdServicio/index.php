@@ -254,6 +254,13 @@ for ($i=0; $i < count($valores) ; $i++) {
 	else{
 		$valores[$i]["ESTADO_DICTAMINACION"] = $database->get("DICTAMINACIONES","STATUS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id,"TIPO_AUDITORIA" => $valores[$i]["TIPO_AUDITORIA"], "CICLO" => $valores[$i]["CICLO"] ]]);
 	}
+    /*==============================================================*/
+	//aqui buscamos si tiene solicitud
+	$solicitud = $database->get("FACTURACION_SOLICITUDES","*",
+		[
+			"AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$id,"ID_TIPO_AUDITORIA"=>$valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"]]
+		]);
+	$valores[$i]["SOLICITUD"] = $solicitud;
 }
 
 
