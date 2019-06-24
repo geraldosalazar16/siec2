@@ -56,7 +56,7 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     var fec_fin = response.FECHA_FIN;
     fec_fin = fec_fin.substring(6, 8) + "/" + fec_fin.substring(4, 6) + "/" + fec_fin.substring(0, 4);
     cambioServicio(response.ID_TIPO_CONTACTO);
-    // $("#txtTipoContacto").val(response.ID_TIPO_CONTACTO);
+    $("#txtDescripcion").val(response.DESCRIPCION_CONTACTO);
     $("#txtNombreContacto").val(response.NOMBRE_CONTACTO);
     $("#txtCargoContacto").val(response.CARGO);
     $("#txtTelMovil").val(response.TELEFONO_MOVIL);
@@ -655,6 +655,7 @@ function insertar_contacto(id_domicilio) {
   var cliente_domicilio_contacto = {
     ID_CLIENTE_DOMICILIO: parseInt(id_domicilio),
     ID_TIPO_CONTACTO: $("#txtTipoContacto").val(),
+    DESCRIPCION_CONTACTO: $("#txtDescripcion").val(),
     NOMBRE_CONTACTO: $("#txtNombreContacto").val(),
     CARGO: $("#txtCargoContacto").val(),
     TELEFONO_MOVIL: $("#txtTelMovil").val(),
@@ -667,7 +668,6 @@ function insertar_contacto(id_domicilio) {
     DATOS_ADICIONALES: $("#datos_adicionales").val(),
     ID_USUARIO: sessionStorage.getItem("id_usuario")
   };
-  //console.log(cliente_domicilio_contacto);
   $.post(global_apiserver + "/clientes_contactos/insert/", JSON.stringify(cliente_domicilio_contacto), function (respuesta) {
     respuesta = JSON.parse(respuesta);
     if (respuesta.resultado == "ok") {
@@ -692,6 +692,7 @@ function editar_contacto(id, id_domicilio) {
     ID: parseInt(id),
     ID_CLIENTE_DOMICILIO: parseInt(id_domicilio),
     ID_TIPO_CONTACTO: $("#txtTipoContacto").val(),
+    DESCRIPCION_CONTACTO: $("#txtDescripcion").val(),
     NOMBRE_CONTACTO: $("#txtNombreContacto").val(),
     CARGO: $("#txtCargoContacto").val(),
     TELEFONO_MOVIL: $("#txtTelMovil").val(),
@@ -735,7 +736,6 @@ function insertar_cliente_contactos_servicios(id_contacto) {
   $.post(global_apiserver + "/cliente_contactos_servicios/insert/", JSON.stringify(cliente_contactos_servicios), function (respuesta) {
     respuesta = JSON.parse(respuesta);
     if (respuesta.resultado == "ok") {
-      console.log(respuesta.resultado);
     }
     else {
       notify("Error", respuesta.mensaje, "error");
@@ -750,7 +750,6 @@ function actualizar_cliente_contactos_servicios(id_contacto) {
   $.post(global_apiserver + "/cliente_contactos_servicios/update/", JSON.stringify(cliente_contactos_servicios), function (respuesta) {
     respuesta = JSON.parse(respuesta);
     if (respuesta.resultado == "ok") {
-      console.log(respuesta.resultado);
     }
     else {
       notify("Error", respuesta.mensaje, "error");
