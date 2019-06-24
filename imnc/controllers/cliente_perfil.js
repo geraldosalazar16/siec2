@@ -396,7 +396,7 @@ function draw_head_contactos(id_domicilio) {
   var strHtml = "";
   //strHtml += '<strong>Contactos</strong>';
   if (global_permisos["CLIENTES"]["registrar"] == 1) {
-    strHtml += '<button type="button" class="btn btn-primary btn-xs btn-imnc btnAñadirContacto" id_domicilio="' + id_domicilio + '" style="float: right;"> <i class="fa fa-plus"> </i> Agregar contacto </button>';
+    strHtml += '<button type="button" class="btn btn-primary btn-xs btn-imnc btnAnadirContacto" id_domicilio="' + id_domicilio + '" style="float: right;"> <i class="fa fa-plus"> </i> Agregar contacto </button>';
   }
   strHtml += '<br>';
   strHtml += '<div class="col-sm-12 invoice-col" id="Contactosde' + id_domicilio + '"';
@@ -406,7 +406,6 @@ function draw_head_contactos(id_domicilio) {
 }
 
 function listener_btn_contactos() {
-
   $(".btnContactos").click(function () {
     var id_cliente_domicilio = $(this).attr("id");
     var agrego = false;
@@ -428,9 +427,10 @@ function listener_btn_contactos() {
 
           $("#Contactosde" + id_cliente_domicilio).append(draw_row_contactos(num, objContacto));
           agrego = false;
-          listener_btn_nuevo_contacto();
-          listener_btn_editar_contacto();
+
         }
+        listener_btn_nuevo_contacto();
+        listener_btn_editar_contacto();
       });
 
       $("#bodyContactos-" + id_cliente_domicilio).collapse("toggle");
@@ -439,7 +439,7 @@ function listener_btn_contactos() {
 }
 
 function listener_btn_nuevo_contacto() {
-  $(".btnAñadirContacto").click(function () {
+  $(".btnAnadirContacto").click(function () {
     $("#btnGuardarContacto").attr("accion", "insertar");
     $("#btnGuardarContacto").attr("id_domicilio", $(this).attr("id_domicilio"));
     $("#modalTituloDomiContacto").html("Insertar nuevo contacto");
