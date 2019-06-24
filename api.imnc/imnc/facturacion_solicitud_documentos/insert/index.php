@@ -40,12 +40,14 @@ $HORA_CREACION = date("His");
 
 foreach ($_FILES as $archivo) {
 	// move_uploaded_file($archivo["tmp_name"], $archivo["name"]);
+	$partes = explode(".", $archivo["name"]);
+	$extension = $partes[sizeof($partes) - 1];
 	$nombre_almacenamiento = md5($archivo["name"] . $FECHA_CREACION . $HORA_CREACION);
 	$id = $database->insert("FACTURACION_SOLICITUD_DOCUMENTOS",[  
 		"ID_SOLICITUD" => $id_solicitud, 
 		"TIPO_DOCUMENTO" => $tipo_documento, 
 		"NOMBRE_DOCUMENTO" => $archivo["name"],
-		"NOMBRE_ALMACENAMIENTO" => $nombre_almacenamiento,
+		"NOMBRE_ALMACENAMIENTO" => $nombre_almacenamiento . "." . $extension,
 		"FECHA_CREACION" => $FECHA_CREACION,
 		"HORA_CREACION"=> $HORA_CREACION,
 		"USUARIO_CREACION" => $id_usuario
