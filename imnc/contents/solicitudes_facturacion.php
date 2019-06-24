@@ -87,10 +87,10 @@
                                                         <a	ng-click="verHistoricoSolicitud(solicitud)"> 
                                                         <span class="labelAcordeon"	>Ver Histórico</span></a>                                                        
                                                     </li>
-                                                    <li>
-                                                        <a	ng-click="verDocumentosSolicitud(solicitud)"> 
-                                                        <span class="labelAcordeon"	>Ver Documentos</span></a>                                                        
-                                                    </li>
+<!--                                                    <li>-->
+<!--                                                        <a	ng-click="verDocumentosSolicitud(solicitud)"> -->
+<!--                                                        <span class="labelAcordeon"	>Ver Documentos</span></a>                                                        -->
+<!--                                                    </li>-->
                                                     <li ng-show="solicitud.ID_ESTATUS === 6">
                                                         <a	ng-click="agregarComplementosSolicitud(solicitud)"> 
                                                         <span class="labelAcordeon"	>Agregar complementos</span></a>                                                        
