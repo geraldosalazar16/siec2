@@ -68,7 +68,7 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
   });
 }
 
-// Listar todas las solicitudes
+// Listar todas los tipos de contactos
  function cambioServicio(seleccionado) {
    $.getJSON(`${global_apiserver}/clientes_contactos/getAllTipoContacto/`,function (response){
      if (response.resultado === 'error') {

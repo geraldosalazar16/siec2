@@ -58,7 +58,14 @@ $modulo_permisos = $_SESSION["permisos"];
 		   echo '     <li><a href="./?pagina=documentos">Documentos</a>';
            echo '     </li>';
            echo '     <li><a href="./?pagina=cursos">Cursos</a>';
-           echo '     </li>'; 
+           echo '     </li>';
+           echo '     <li><a href="./?pagina=formas_pago">Formas de Pago</a>';
+           echo '     </li>';
+           echo '     <li><a href="./?pagina=metodos_pago">Método de Pago</a>';
+           echo '     </li>';
+           echo '     <li><a href="./?pagina=uso_factura">Uso de la Factura</a>';
+           echo '     </li>';
+
         }
         if ($modulo_permisos["CLIENTES"]["catalogos"] == 1) {
            echo '     <li><a href="./?pagina=entidad_tipo">' . $str_tipo_entidad . '</a>';
