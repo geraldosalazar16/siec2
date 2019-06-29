@@ -3348,9 +3348,9 @@ function llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
 		$scope.formDataSolicitud = {};
 		$scope.formDataSolicitud.razon_social = {NOMBRE:solicitud.RAZON_SOCIAL,RFC:solicitud.RFC};
 		$scope.formDataSolicitud.estatus = solicitud.ID_ESTATUS;
-		$scope.formDataSolicitud.forma_pago = solicitud.ID_FORMA_PAGO;
-		$scope.formDataSolicitud.metodo_pago = solicitud.ID_METODO_PAGO;
-		$scope.formDataSolicitud.uso_factura = solicitud.ID_USO_FACTURA;
+		$scope.formDataSolicitud.forma_pago = (solicitud.ID_FORMA_PAGO==0?"":solicitud.ID_FORMA_PAGO);
+		$scope.formDataSolicitud.metodo_pago = (solicitud.ID_METODO_PAGO==0?"":solicitud.ID_METODO_PAGO);
+		$scope.formDataSolicitud.uso_factura = (solicitud.ID_USO_FACTURA==0?"":solicitud.ID_USO_FACTURA);
 		$scope.formDataSolicitud.monto = parseFloat(solicitud.MONTO);
 		if (solicitud.REQUIERE_ORDEN_COMPRA === 'S') {
 			$scope.formDataSolicitud.orden_compra_requerida = true;
@@ -3470,6 +3470,7 @@ function llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
 		})
 		.catch(error => notify('Error', error.message, 'error'))
 		}else if ($scope.accion === 'editar') {
+			$scope.formDataSolicitud.estatus = 1;
 			$http.post(`${global_apiserver}/facturacion_solicitudes/update/`, $scope.formDataSolicitud)
 				.then(response => {
 				if (response.data.resultado === 'error') {
