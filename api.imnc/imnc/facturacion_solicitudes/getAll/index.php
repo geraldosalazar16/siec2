@@ -50,7 +50,8 @@ $solicitudes = $database->select("FACTURACION_SOLICITUDES", [
 	"FACTURACION_SOLICITUDES.FACTURAR_VIATICOS",
 	"FACTURACION_SOLICITUDES.SUBIR_FACTURA_PORTAL",
 	"FACTURACION_SOLICITUDES.PORTAL"
-]); 
+],
+["FACTURACION_SOLICITUDES.ID_ESTATUS[!]"=>2]);
 valida_error_medoo_and_die();
 
 print_r(json_encode($solicitudes)); 

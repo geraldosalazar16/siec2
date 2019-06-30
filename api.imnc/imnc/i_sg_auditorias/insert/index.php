@@ -60,7 +60,25 @@ $idd = $database->insert("I_SG_AUDITORIAS",
 												
 											]); 
 valida_error_medoo_and_die();
-
+if($STATUS_AUDITORIA==2)
+{
+	$facturacion = $database->get("FACTURACION_SOLICITUDES",["ID"],["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$ID_SERVICIO_CLIENTE_ETAPA,"ID_TIPO_AUDITORIA"=>$TIPO_AUDITORIA,"CICLO"=>$CICLO]]);
+	valida_error_medoo_and_die();
+    if(!$facturacion)
+	{
+		$id = $database->insert("FACTURACION_SOLICITUDES",
+			[
+				"ID_SERVICIO_CLIENTE_ETAPA" => $ID_SERVICIO_CLIENTE_ETAPA,
+				"ID_TIPO_AUDITORIA" => $TIPO_AUDITORIA,
+				"CICLO" => $CICLO,
+				"ID_ESTATUS" => 2,
+				"FECHA_CREACION" => $FECHA_CREACION,
+				"HORA_CREACION" => $HORA_CREACION,
+				"USUARIO_CREACION" => $ID_USUARIO
+			]);
+		valida_error_medoo_and_die();
+	}
+}
 if($objeto->DURACION_DIAS_INTEGRAL == "NO INTEGRAL"){
 	$respuesta["resultado"]="ok"; 
 }

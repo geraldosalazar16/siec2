@@ -83,7 +83,6 @@ $descripcion = $objeto->descripcion;
 $id_usuario = $objeto->id_usuario;
 valida_parametro_and_die($id_usuario,"Falta seleccionar un usuario");
 
-
 $FECHA = date("Ymd");
 $HORA = date("His");
 	

@@ -22,7 +22,7 @@
                     </div>
                     <div class='form-group'>
                         <label for="estatus">Estatus<span class="required">*</span></label>
-                        <select
+                        <select ng-disabled="formDataSolicitud.estatus==2"
                                 ng-model="formDataSolicitud.estatus"
                                 ng-options="estatus.ID as estatus.ESTATUS for estatus in listaEstatus"
                                 class="form-control" id="estatus" name="estatus" required
