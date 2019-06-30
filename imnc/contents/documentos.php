@@ -18,14 +18,44 @@
         </div>
 
         <div class="x_content">
-
+			<div class="form-group col-md-3">
+                <label>Servicios</label>
+                <select ng-model="filtroServ" ng-options="Servicio.ID as Servicio.NOMBRE for Servicio in Servicios" 
+                                class="form-control" ng-change='cambioServicio()' >
+					 <option value='' selected enabled>---Ver Todos---</option>
+				</select>
+				
+            </div>
+			<div class="form-group col-md-3">
+                <label>Tipos de Servicio</label>
+                <select ng-model="filtroTS" ng-options="tiposServicio.ID as tiposServicio.NOMBRE for tiposServicio in tiposServicios" 
+                                class="form-control" ng-change='cambiotiposServicio()' >
+					<option value='' selected enabled>---Ver Todos---</option>	
+				</select>	
+            </div>
+			<div class="form-group col-md-3">
+                <label>Etapas</label>
+                <select ng-model="filtroEtapa" ng-options="etapa.ID_ETAPA as etapa.ETAPA for etapa in Etapas" 
+                                class="form-control" ng-change='cambioEtapa()' >
+					<option value='' selected enabled>---Ver Todos---</option>
+				</select>
+            </div>
+			<div class="form-group col-md-3">
+                <label>Secciones</label>
+                <select ng-model="filtroSecciones" ng-options="seccion.ID as seccion.NOMBRE_SECCION for seccion in Secciones" 
+                                class="form-control" ng-change='cambioSeccion()' >
+					<option value='' selected enabled>---Ver Todos---</option>
+				</select>
+            </div>
           <table class="table table-striped responsive-utilities">
             <thead>
               <tr class="headings">
                 <th class="column-title">Nombre del documento</th>
-                <th class="column-title">Descripci&oacuten</th>
+                <th class="column-title">Descripci&oacuten </th>
+				<th class="column-title">Servicio </th>
+				<th class="column-title">Tipo de servicio </th>
                 <th class="column-title">Etapa</th>
-                <th class="column-title">Secci&oacuten</th>
+                <th class="column-title">Secci&oacuten </th>
 				<th class="column-title"></th>
               </tr>
             </thead>
@@ -34,6 +64,8 @@
 				<tr ng-repeat="doc in Documentos">
 					<td>{{doc.NOMBRE}}</td>
 					<td>{{doc.DESCRIPCION}}</td>
+					<td>{{doc.NOMBRE_SERVICIO}}</td>
+					<td>{{doc.NOMBRE_TIPO_SERVICIO}}</td>
 					<td>{{doc.ETAPA}}</td>
 					<td>{{doc.NOMBRE_SECCION}}</td>
 					<td>
@@ -70,15 +102,27 @@
                                 <input type="text" class="form-control" name="descripcion" id="descripcion" ng-model="formData.descripcion">
                             </div>
 							<div class="form-group">
-                                <label for="seccion">Secci&oacuten<span class="required">*</span></label>
+                                <label for="servicio">Servicio<span class="required">*</span></label>
+                                <select ng-model="formData.servicio" ng-options="servicio.ID as servicio.NOMBRE for servicio in Servicios" 
+                                class="form-control" id="servicio" name="servicio" ng-change='cambioServicioModal()' required
+                                ng-class="{ error: exampleForm.servicio.$error.required && !exampleForm.$pristine}"></select>
+                            </div>
+							<div class="form-group">
+                                <label for="tiposServicio">Tipo de servicio<span class="required">*</span></label>
+                                <select ng-model="formData.tiposServicio" ng-options="tiposServicio.ID as tiposServicio.NOMBRE for tiposServicio in tiposServicios" 
+                                class="form-control" id="tiposServicio" name="tiposServicio" ng-change='cambiotiposServicioModal()' required
+                                ng-class="{ error: exampleForm.tiposServicio.$error.required && !exampleForm.$pristine}"></select>
+                            </div>
+							<div class="form-group">
+                                <label for="seccion">Secci&oacuten <span class="required">*</span></label>
                                 <select ng-model="formData.seccion" ng-options="seccion.ID as seccion.NOMBRE_SECCION for seccion in Secciones" 
-                                class="form-control" id="seccion" name="seccion" ng-change='cambioSeccion()' required
+                                class="form-control" id="seccion" name="seccion" ng-change='cambioSeccionModal()' required
                                 ng-class="{ error: exampleForm.seccion.$error.required && !exampleForm.$pristine}"></select>
                             </div>
                             <div class="form-group">
                                 <label for="etapa">Etapa<span class="required">*</span></label>
                                 <select ng-model="formData.etapa" ng-options="etapa.ID_ETAPA as etapa.ETAPA for etapa in Etapas" 
-                                class="form-control" id="etapa" name="etapa" ng-change='cambioEtapa()' required
+                                class="form-control" id="etapa" name="etapa" ng-change='cambioEtapaModal()' required
                                 ng-class="{ error: exampleForm.etapa.$error.required && !exampleForm.$pristine}"></select>
                             </div>
 							

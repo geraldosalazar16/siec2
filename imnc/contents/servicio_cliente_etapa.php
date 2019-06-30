@@ -156,8 +156,9 @@
 												<a	href="./?pagina=ec_tipos_servicio&id_serv_cli_et={{x.ID}}"> 
 												<span class="labelAcordeon"	>Ver detalles</span></a>
 												
-											</li>	-->
-											<li  ng-show="x.ID_SERVICIO == 1" >
+											</li>	
+											<li  ng-show="x.ID_SERVICIO == 1" >-->
+											<li>
 												<a	ng-show="x.ID_ETAPA_PROCESO !=13" href="./?pagina=ver_expediente&id={{x.ID}}&id_entidad=5"> 
 												<span class="labelAcordeon"	>Ver expedientes</span></a>
 												<a	ng-show="x.ID_ETAPA_PROCESO ==13" href="./?pagina=ver_expediente&id={{x.ID}}&id_entidad=5"> 
