@@ -151,7 +151,7 @@ valida_isset($extension, "Error: No se encuentra extension en linea: " . __LINE_
 $email = $obj_domicilio_fiscal->CLIENTE_DOMICILIO_CONTACTO_PRINCIPAL->EMAIL;
 valida_isset($email, "Error: No se encuentra email en linea: " . __LINE__);
 
-$CALLE_Y_NUMERO = $calle . " No. ". $numero_exterior;
+$CALLE_Y_NUMERO = $calle . " No. Ext. ". $numero_exterior.($numero_interior && $numero_interior!="S/N"?" No. Int. ".$numero_interior:"") ;
 
 $COLONIA_DELEGACION_Y_CP = "Col. " . $colonia_barrio . " " . $delegacion_municipio . ", C.P. " . $cp;
 
