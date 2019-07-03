@@ -15,7 +15,7 @@
 			<input type='text' id='txtDate' class='txtFechasAuditoria' />
 		
 		<br><br>
-			<div id="tntGridServices" ui-grid="gridOptions" ui-grid-pinning ui-grid-auto-fit-columns ></div>
+			<div id="tntGridServices" ui-grid="gridOptions" ui-grid-pinning ui-grid-auto-fit-columns class='grid' ></div>
   
         </div>
       </div>

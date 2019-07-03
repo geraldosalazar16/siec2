@@ -165,7 +165,25 @@ $scope.HeadingTable = function(ano,mes){
 	  var abc1='';
 	  var fecha = (parseInt(mes)+1)+'-'+i+'-'+ano;
 	   abc1 = moment(fecha).format('ddd');
-	  var a = {field: 'd'+i, displayName: abc1+' '+i};
+	  var a = {field: 'd'+i, displayName: abc1+' '+i,cellClass : function(grid,row,col,rowRenderIndex,colRenderIndex){
+		  switch(grid.getCellValue(row,col)){
+			  	case 'Auditoria(C) para esta fecha.		':
+			  		return 'calidad';
+					  break;
+				case 'Auditoria(A) para esta fecha.		':
+					return 'ambiente';
+					break;	
+				case 'Auditoria(SAST) para esta fecha.		':
+					return 'sast';
+					break;
+			    case 'Auditoria(SGEN) para esta fecha.		':
+				  return 'sgen';
+				  break;		  
+			    default:
+				 	return 'def';
+					break;  
+			}
+		}};
 	   $scope.columns.push(a);
   }
  

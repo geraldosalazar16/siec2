@@ -120,7 +120,7 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 // ===================================================================
 // ***** 			VERIFICA SI TIENE AUDITORIAS				 *****
 // ===================================================================
-	$consulta= "SELECT SGAGF.FECHA FROM PERSONAL_TECNICO_CALIFICACIONES PTC INNER JOIN I_SG_AUDITORIA_GRUPO_FECHAS SGAGF ON PTC.ID = SGAGF.ID_PERSONAL_TECNICO_CALIF  WHERE PTC.ID_PERSONAL_TECNICO =".$personal_tecnico[$i]['ID']." AND SGAGF.FECHA >= ".$FECHA_INICIO." AND SGAGF.FECHA<= ".$FECHA_FIN;
+	$consulta= "SELECT SGAGF.FECHA,PTC.ID_TIPO_SERVICIO FROM PERSONAL_TECNICO_CALIFICACIONES PTC INNER JOIN I_SG_AUDITORIA_GRUPO_FECHAS SGAGF ON PTC.ID = SGAGF.ID_PERSONAL_TECNICO_CALIF  WHERE PTC.ID_PERSONAL_TECNICO =".$personal_tecnico[$i]['ID']." AND SGAGF.FECHA >= ".$FECHA_INICIO." AND SGAGF.FECHA<= ".$FECHA_FIN;
 	$I_SG_AUDITORIA_GRUPO_FECHAS = $database->query($consulta)->fetchAll(PDO::FETCH_ASSOC);
 	valida_error_medoo_and_die();
 
@@ -130,7 +130,24 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 		    $FLAG = "no";
 			$dia1= (int)substr($FECHA,6,8);
 			$dia1 = 'd'.$dia1;
-			$OJBETO_MES_PT->$dia1 = "Auditoria para esta fecha.		";
+			switch($I_SG_AUDITORIA_GRUPO_FECHAS[$j]["ID_TIPO_SERVICIO"]){
+				case 1:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(C) para esta fecha.		";
+					break;
+				case 2:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(A) para esta fecha.		";
+					break;
+				case 12:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(SAST) para esta fecha.		";
+					break;
+				case 21:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(SGEN) para esta fecha.		";
+					break;
+				default:
+					//$OJBETO_MES_PT->$dia1 = "Auditoria para esta fecha.		";
+					break;
+			}
+			//$OJBETO_MES_PT->$dia1 = "Auditoria para esta fecha.		";
 			$personal_tecnico[$i]['DATOS']= $OJBETO_MES_PT;
 			$respuesta[$i] = $OJBETO_MES_PT; 
 			
