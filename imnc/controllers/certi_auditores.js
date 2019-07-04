@@ -56,9 +56,9 @@ $scope.InicializarSelectMonthYear = function(){
 		Función que crea la cabecera de la tabla de forma dinamica.
 */
 $scope.HeadingTable = function(ano,mes){
-
-//$scope.gridApi.core.refresh();
-
+	$scope.columns = [];
+	$scope.data = [];
+	$scope.gridOptions = {};
 	/**/
 	var diaMayor=0;
 	switch(parseInt(mes)){
@@ -118,17 +118,18 @@ $scope.HeadingTable = function(ano,mes){
 		  cellTemplate: '<div style="cursor: pointer;"><div ng-click="grid.appScope.showDescription(row.entity.ID,'+"'"+i+"'"+')" title="{{COL_FIELD}}" class="ui-grid-cell-contents">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
 		  // cellTemplate:'<div style="width: 100%; height: 30px; font-size: 13px"  ng-click="grid.appScope.showDescription(row,'+"'"+abc1+i+"'"+')">{{COL_FIELD CUSTOM_FILTERS}}</div>',
 		  cellClass : function(grid,row,col,rowRenderIndex,colRenderIndex){
-			  switch(grid.getCellValue(row,col)){
-				  case 'Auditoria(C) para esta fecha.		':
+			  var valor = grid.getCellValue(row,col).split("-");
+			  switch(valor[0]){
+				  case "Auditoria(C)":
 					  return 'calidad';
 					  break;
-				  case 'Auditoria(A) para esta fecha.		':
+				  case "Auditoria(A)":
 					  return 'ambiente';
 					  break;
-				  case 'Auditoria(SAST) para esta fecha.		':
+				  case "Auditoria(SAST)":
 					  return 'sast';
 					  break;
-				  case 'Auditoria(SGEN) para esta fecha.		':
+				  case "Auditoria(SGEN)":
 					  return 'sgen';
 					  break;
 				  default:
@@ -157,9 +158,7 @@ $scope.HeadingTable = function(ano,mes){
 		onRegisterApi: function(gridApi) {
 			$scope.gridApi = gridApi;
 		},
-
-
-			};
+		};
 
 	getData(mes,ano);
 
@@ -171,28 +170,28 @@ $scope.HeadingTable = function(ano,mes){
 		var obj_results = $scope.data;
 		for (var i in obj_results){
 			if (obj_results[i].ID === elem_Id){
-				$scope.REFERENCIA = obj_results[i][valor].SCE.REFERENCIA;
-				$scope.CLIENTE = obj_results[i][valor].SCE.NOMBRE;
-				$scope.AUDITORES = obj_results[i][valor].SCE.AUDITORES;
-				$scope.ID_SCE = obj_results[i][valor].SCE.ID;
-				$scope.ID_AUDITOR = obj_results[i].ID;
-				$("#modalDatosAuditoria").modal("show");
+				try{
+						$scope.REFERENCIA = obj_results[i][valor].SCE.REFERENCIA;
+						$scope.CLIENTE = obj_results[i][valor].SCE.NOMBRE;
+						$scope.AUDITORES = obj_results[i][valor].SCE.AUDITORES;
+						$scope.ID_SCE = obj_results[i][valor].SCE.ID;
+						$scope.ID_AUDITOR = obj_results[i].ID;
+						$("#modalDatosAuditoria").modal("show");
+				}catch (e) {
+
+				}
+				
+
 			}
 		}
 	};
 
 async function getData(mes,anno)
     {
-		// //Obtener todas las auditorias del servicio
-		// let response = await $http.get(`${global_apiserver}/i_auditores_certi/getByMesyAno/?mes=${mes}&ano=${anno}`);
-		// if (response.data.resultado === 'error') {
-		// 	$scope.gridOptions.data = [];
-		// } else {
-		// 	$scope.gridOptions.data = response.data;
-		// }
-		$http.get(`${global_apiserver}/i_auditores_certi/getByMesyAno/?mes=${mes}&ano=${anno}`)
+    	$http.get(`${global_apiserver}/i_auditores_certi/getByMesyAno/?mes=${mes}&ano=${anno}`)
 			.then(function( response ){
 					$scope.data =  response.data;
+				    $scope.gridOptions.data= [];
 					$scope.gridOptions.data = $scope.data;
 			});
     }
@@ -349,6 +348,7 @@ $(document).ready(function () {
 	$scope.InicializarSelectMonthYear();
 	$('#txtDate').datepicker('setDate', new Date());
 	$scope.HeadingTable($scope.anoActual,$scope.mesActual-1);
+
 });
 	
 }]);

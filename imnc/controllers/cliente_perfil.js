@@ -55,7 +55,7 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     fec_ini = fec_ini.substring(6, 8) + "/" + fec_ini.substring(4, 6) + "/" + fec_ini.substring(0, 4);
     var fec_fin = response.FECHA_FIN;
     fec_fin = fec_fin.substring(6, 8) + "/" + fec_fin.substring(4, 6) + "/" + fec_fin.substring(0, 4);
-    cambioServicio(response.ID_TIPO_CONTACTO);
+    cargarContactos(response.ID_TIPO_CONTACTO);
     $("#txtDescripcion").val(response.DESCRIPCION_CONTACTO);
     $("#txtNombreContacto").val(response.NOMBRE_CONTACTO);
     $("#txtCargoContacto").val(response.CARGO);
@@ -69,7 +69,7 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
 }
 
 // Listar todas los tipos de contactos
- function cambioServicio(seleccionado) {
+ function cargarContactos(seleccionado) {
    $.getJSON(`${global_apiserver}/clientes_contactos/getAllTipoContacto/`,function (response){
      if (response.resultado === 'error') {
        notify('Error', response.mensaje, 'error');
@@ -315,6 +315,7 @@ function clear_modal_insertar_actualizar_domicilio() {
 
 function clear_modal_insertar_actualizar_contacto() {
   $("#txtTipoContacto").val("");
+  $("#txtDescripcion").val("");
   $("#txtNombreContacto").val("");
   $("#txtCargoContacto").val("");
   $("#txtTelMovil").val("");
@@ -322,6 +323,7 @@ function clear_modal_insertar_actualizar_contacto() {
   $("#txtExtension").val("");
   $("#txtEmail").val("");
   $("#cmbEsPrincipal").val("no");
+  $("#idservicio").val("");
   $("#datos_adicionales").val("");
 }
 
@@ -444,7 +446,7 @@ function listener_btn_nuevo_contacto() {
     $("#btnGuardarContacto").attr("id_domicilio", $(this).attr("id_domicilio"));
     $("#modalTituloDomiContacto").html("Insertar nuevo contacto");
     clear_modal_insertar_actualizar_contacto();
-    cambioServicio();
+    cargarContactos();
     $("#modalInsertarActualizarDomiContacto").modal("show");
   });
 }

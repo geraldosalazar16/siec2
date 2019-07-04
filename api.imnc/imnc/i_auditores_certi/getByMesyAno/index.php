@@ -133,24 +133,7 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 			$dia1= (int)substr($FECHA,6,8);
 		    $numero = $dia1;
 			$dia1 = 'd'.$dia1;
-			switch($I_SG_AUDITORIA_GRUPO_FECHAS[$j]["ID_TIPO_SERVICIO"]){
-				case 1:
-					$OJBETO_MES_PT->$dia1 = "Auditoria(C) para esta fecha.		";
-					break;
-				case 2:
-					$OJBETO_MES_PT->$dia1 = "Auditoria(A) para esta fecha.		";
-					break;
-				case 12:
-					$OJBETO_MES_PT->$dia1 = "Auditoria(SAST) para esta fecha.		";
-					break;
-				case 21:
-					$OJBETO_MES_PT->$dia1 = "Auditoria(SGEN) para esta fecha.		";
-					break;
-				default:
-					//$OJBETO_MES_PT->$dia1 = "Auditoria para esta fecha.		";
-					break;
-			}
-			//$OJBETO_MES_PT->$dia1 = "Auditoria para esta fecha.		";
+			
 		    $SERVICIO = $database->get("SERVICIO_CLIENTE_ETAPA",
 				["[><]CLIENTES" => ["ID_CLIENTE" => "ID"]],
 				[
@@ -178,9 +161,26 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 							  "I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=>$I_SG_AUDITORIA_GRUPO_FECHAS[$j]['TIPO_AUDITORIA'],
 							  "I_SG_AUDITORIA_GRUPOS.CICLO"=>$I_SG_AUDITORIA_GRUPO_FECHAS[$j]['CICLO']]]
 			);
-		valida_error_medoo_and_die();
-		$SERVICIO["AUDITORES"]=$AUDITORES;
-		    $OJBETO_MES_PT->$dia1 = $SERVICIO["NOMBRE"]."		";
+		    valida_error_medoo_and_die();
+			switch($I_SG_AUDITORIA_GRUPO_FECHAS[$j]["ID_TIPO_SERVICIO"]){
+				case 1:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(C)- ".$SERVICIO["NOMBRE"]."		";
+					break;
+				case 2:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(A)- ".$SERVICIO["NOMBRE"]."		";
+					break;
+				case 12:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(SAST)- ".$SERVICIO["NOMBRE"]."		";
+					break;
+				case 21:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(SGEN)- ".$SERVICIO["NOMBRE"]."		";
+					break;
+				default:
+					$OJBETO_MES_PT->$dia1 = $SERVICIO["NOMBRE"]."		";
+					break;
+			}
+		    $SERVICIO["AUDITORES"]=$AUDITORES;
+		   // $OJBETO_MES_PT->$dia1 = $SERVICIO["NOMBRE"]."		";
 		    $OJBETO_MES_PT->$numero->SCE = $SERVICIO;
 			$personal_tecnico[$i]['DATOS']= $OJBETO_MES_PT;
 			$respuesta[$i] = $OJBETO_MES_PT; 
