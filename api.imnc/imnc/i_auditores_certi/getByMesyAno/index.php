@@ -31,7 +31,9 @@ $respuesta=array();
 $mes = $_REQUEST["mes"];
 $ano = $_REQUEST["ano"];
 
-$personal_tecnico = $database->select("PERSONAL_TECNICO", "*",['STATUS'=>'activo']);
+//$personal_tecnico = $database->select("PERSONAL_TECNICO", "*",["STATUS"=>"activo","ORDER"=>"PADRON"]);
+$consulta = "SELECT * FROM `PERSONAL_TECNICO` WHERE `STATUS`='activo' ORDER BY `PADRON`,`PRIORIDAD_CERTI`,`ID` ASC";
+$personal_tecnico = $database->query($consulta)->fetchAll(PDO::FETCH_ASSOC);
 valida_error_medoo_and_die();
 // A partir de aqui genero las fechas del mes en cuestion
 $diaMayor=0;
@@ -91,7 +93,7 @@ switch($mes){
 			$mesPHP="12";
 			break;
 	}
-$FECHAS="";
+
 $OJBETO_MES =new stdClass();
 $json_response = new stdClass();
 for($i = 0 ; $i <$diaMayor;$i++){
@@ -100,8 +102,7 @@ for($i = 0 ; $i <$diaMayor;$i++){
 }
 $FECHA_INICIO = date("Ymd", strtotime($ano.$mesPHP.'01'));
 $FECHA_FIN= date("Ymd", strtotime($ano.$mesPHP.$diaMayor));
-$FECHAS = '1/'.($mes+1).'/'.$ano.','.$diaMayor.'/'.($mes+1).'/'.$ano;
-$FECHAS = '01/05/2019,31/05/2019';
+
 //A partir de aqui genero un ciclo para recorrer todos los auditores.
 $indice =0; 		//Indice para guardar los datos en la variable de salida
 for($i = 0 ; $i <count($personal_tecnico);$i++){
@@ -111,13 +112,6 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 	$OJBETO_MES_PT->Auditor = $personal_tecnico[$i]['NOMBRE'].' '.$personal_tecnico[$i]['APELLIDO_PATERNO'].' '.$personal_tecnico[$i]['APELLIDO_MATERNO'];
 	$OJBETO_MES_PT->ID = $personal_tecnico[$i]['ID'];
 
-	//$context = "?ID=".$personal_tecnico[$i]['ID']."&FECHAS=".$FECHAS;
-	//$url = $global_apiserver . "/personal_tecnico/isDisponible/".$context;
-	//$json_response = file_get_contents($url);
-	//$json_response = json_decode($json_response);
-	//$personal_tecnico[$i]['DISPONIBLE'] = $json_response;
-	//$json_response->disponible = 'si';
-	//if($personal_tecnico[$i]['STATUS'] == 'activo'){
 	
 // ===================================================================
 // ***** 			VERIFICA SI TIENE AUDITORIAS				 *****
