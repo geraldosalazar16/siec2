@@ -55,7 +55,6 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     fec_ini = fec_ini.substring(6, 8) + "/" + fec_ini.substring(4, 6) + "/" + fec_ini.substring(0, 4);
     var fec_fin = response.FECHA_FIN;
     fec_fin = fec_fin.substring(6, 8) + "/" + fec_fin.substring(4, 6) + "/" + fec_fin.substring(0, 4);
-    cambioServicio(response.ID_TIPO_CONTACTO);
     $("#txtDescripcion").val(response.DESCRIPCION_CONTACTO);
     $("#txtNombreContacto").val(response.NOMBRE_CONTACTO);
     $("#txtCargoContacto").val(response.CARGO);
@@ -65,15 +64,13 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     $("#txtEmail").val(response.EMAIL);
     $("#cmbEsPrincipal").val(response.ES_PRINCIPAL);
     $("#datos_adicionales").val(response.DATOS_ADICIONALES);
+    loadTiposContactos(response.ID_TIPO_CONTACTO);
   });
 }
 
 // Listar todas las solicitudes
- function cambioServicio(seleccionado) {
+ function loadTiposContactos(seleccionado) {
    $.getJSON(`${global_apiserver}/clientes_contactos/getAllTipoContacto/`,function (response){
-     if (response.resultado === 'error') {
-       notify('Error', response.mensaje, 'error');
-     } else {
        $("#txtTipoContacto").html('<option value="" selected disabled>-elige una opción-</option>');
        $.each(response, function( indice, objTipo ) {
          if (seleccionado == objTipo.ID) {
@@ -83,7 +80,7 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
          }
 
        });
-     }
+       $("#txtTipoContacto").val(seleccionado);
    });
 
 }
@@ -315,6 +312,7 @@ function clear_modal_insertar_actualizar_domicilio() {
 
 function clear_modal_insertar_actualizar_contacto() {
   $("#txtTipoContacto").val("");
+  $("#txtDescripcion").val("");
   $("#txtNombreContacto").val("");
   $("#txtCargoContacto").val("");
   $("#txtTelMovil").val("");
@@ -444,7 +442,7 @@ function listener_btn_nuevo_contacto() {
     $("#btnGuardarContacto").attr("id_domicilio", $(this).attr("id_domicilio"));
     $("#modalTituloDomiContacto").html("Insertar nuevo contacto");
     clear_modal_insertar_actualizar_contacto();
-    cambioServicio();
+    loadTiposContactos();
     $("#modalInsertarActualizarDomiContacto").modal("show");
   });
 }
