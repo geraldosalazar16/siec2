@@ -38,6 +38,9 @@
                 <td>{{usuario.USUARIO}}</td>
                 <td>{{usuario.EMAIL}}</td>
                 <td>
+                    <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="modal_usuario_pass(usuario.ID)" style="float: right;">
+                        <i class="fa fa-edit"></i> Actualizar Contraseña
+                    </button>
                   <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="modal_usuario_editar(usuario.ID)" style="float: right;">       
                     <i class="fa fa-edit"></i> Editar usuario 
                   </button>
@@ -85,7 +88,7 @@
                    <input type="text" ng-model="usuario_insertar_editar.EMAIL"  id="txtEmail" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-               <div class="form-group form-vertical">
+               <div class="form-group form-vertical" ng-if="opcion_guardar_usuario == 'insertar'">
                 <label class="control-label col-md-12">Password <span class="required">*</span></label>
                 <div class="col-md-12">
                    <input type="password" ng-model="usuario_insertar_editar.PASSWORD"  id="txtPass" required="required" class="form-control col-md-7 col-xs-12">
@@ -108,7 +111,39 @@
       </div>
     </div>
   </div>
+    <!-- Modal actualizar password-->
+    <div class="modal fade" id="modalActualizarPass" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" >Actualizar Password</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="demo-form2" style="margin-top: -20px;">
 
+                        <div class="form-group form-vertical">
+                            <label class="control-label col-md-12">Password <span class="required">*</span></label>
+                            <div class="col-md-12">
+                                <input type="password" ng-model="usuario_insertar_editar.PASSWORD"  id="txtPass" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="form-group form-vertical">
+                            <label class="control-label col-md-12">Confirmar Password <span class="required">*</span></label>
+                            <div class="col-md-12">
+                                <input type="password" ng-model="usuario_insertar_editar.COMFIRM_PASSWORD"  id="txtPass" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary"  id="btnGuardarPass" ng-click="usuario_guardar_pass()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 

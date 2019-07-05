@@ -14,12 +14,12 @@ app.controller("usuariosc_controller", ['$scope','$window', '$http','$document',
 			 
 				$scope.arr_modulos = JSON.parse(respuesta);
 				});
-				
-		
+
+
 	});
 
-				
-		
+
+
 	});
 	 
   }
@@ -85,6 +85,44 @@ app.controller("usuariosc_controller", ['$scope','$window', '$http','$document',
     });
 
     $('#modalInsertarActualizarUsuarios').modal('show');
+  }
+
+
+    // Abrir modal para editar
+    $scope.modal_usuario_pass = function(id_usuario){
+              var http_request = {
+            method: 'GET',
+            url: global_apiserver + "/usuariosc/getById/?id="+id_usuario,
+        };
+
+        $http(http_request).success(function(data) {
+            if(data) {
+                $scope.usuario_insertar_editar = data;
+            }
+            else  {
+                console.log("No hay datos");
+            }
+        }).error(function(response) {
+            console.log("Error al generar petición: " + response);
+        });
+
+        $('#modalActualizarPass').modal('show');
+    }
+
+  $scope.usuario_guardar_pass = function(){
+      $scope.usuario_insertar_editar.ID_USUARIO = sessionStorage.getItem("id_usuario");
+      if($scope.usuario_insertar_editar.PASSWORD == $scope.usuario_insertar_editar.COMFIRM_PASSWORD)
+      {
+          $.post(global_apiserver + "/usuariosc/updatePass/",angular.toJson($scope.usuario_insertar_editar), function(respuesta){
+              notify("Éxito", "El password fue actualizado", "success");
+              $('#modalActualizarPass').modal('hide');
+              $scope.despliega_usuarios();
+          });
+
+      }
+      else {
+          notify("Error", "Los passwords no son iguales", "error");
+      }
   }
  	
   $scope.usuario_guardar = function(){
