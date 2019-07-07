@@ -7,6 +7,10 @@ app.controller('certi_auditores_controller',['$scope','$http' ,function($scope,$
 //Titulo que aparece en el html
 	
 	$scope.titulo = 'CERTI AUDITORES';
+	$scope.selectServicio = null;
+	$scope.selectTiposServicio= null;
+	$scope.selectRol = null;
+	$scope.selectSector = null;
 	$scope.columns = [];
 	$scope.data = [];
 
@@ -187,167 +191,163 @@ $scope.HeadingTable = function(ano,mes){
 	};
 
 async function getData(mes,anno)
-    {
-    	$http.get(`${global_apiserver}/i_auditores_certi/getByMesyAno/?mes=${mes}&ano=${anno}`)
+    {	
+		var id_servicio = '';
+		var id_tiposervicio = '';
+		var id_rol = '';
+		var id_sector = '';
+		if($scope.selectServicio != null){
+			id_servicio = $scope.selectServicio.ID;
+		}
+		if($scope.selectTiposServicio != null){
+			id_tiposervicio = $scope.selectTiposServicio.ID;
+		}
+		if($scope.selectRol != null){
+			id_rol = $scope.selectRol.ID;
+		}
+		if($scope.selectSector != null){
+			id_sector = $scope.selectSector.ID;
+		}
+		 
+		//
+    	$http.get(`${global_apiserver}/i_auditores_certi/getByMesyAno/?mes=${mes}&ano=${anno}&id_servicio=${id_servicio}&id_tiposervicio=${id_tiposervicio}&id_rol=${id_rol}&id_sector=${id_sector}`)
 			.then(function( response ){
 					$scope.data =  response.data;
 				    $scope.gridOptions.data= [];
 					$scope.gridOptions.data = $scope.data;
 			});
-    }
-/*		
-		Función para limpiar la información del módelo y que no se quede guardada
-		después de realizar alguna transacción.
-*/
-$scope.limpiaCampos = function(){
+	}
 	
-	
-}
-
-/*		
-		Función para hacer que aparezca el formulario de agregar tipos_servicio. Cambiamos el
-		atributo de "accion" del boton guardar para tener una referencia a que tipo
-		transacción se va a hacer (actualizar o insertar)
-*/
-$scope.InsertarTipoServicio = function(){
-
-	
-
-}
-/*
-		Función para hacer que aparezca el formulario de editar. Recibe de parámetro
-		el id del tipo de servicio que se va a editar. Cambiamos el
-		atributo de "accion" del boton guardar para tener una referencia a que tipo
-		transacción se va a hacer (actualizar o insertar) y obtenemos la información
-		del registro que se va a obtener para cambiar los valores en el módelo.
-		
-*/
-$scope.EditarTipoServicio	=	function(tipo_servicio_id){
-	
-}
-/*
-		Función para hacer que desaparezca el formulario de agregar o editar y
-		limpiamos los campos del módelo.
-*/
-$scope.cerrar = function() {		
-
-	
-		
-};	
-/*
-		Valida si la información que tiene el módelo es suficiente apra agregar
-		el nuevo registro. Aquí se modifica el valor de "$scope.respuesta" para checar
-		la validez del módelo.
-		Primero se verifica que los campos no sean nulos y en el caso del Acronimo
-		se verifica que no se repita para ese Servicio.
-		Además se muestra el error conrrespondiente en las etiquetas con los
-		id "txtAcronimoerror","txtNombreerror","clavesServicioerror" y "txtTextoReferror".
-*/
-$scope.valida_agregar = function(){
-		$scope.respuesta = 1;
-		if($scope.txtAcronimo.length > 0 && $scope.claveServicio.length > 0){	
-			$.ajax({
-				type:'GET',
-				dataType: 'json',
-				async: false,
-				url:global_apiserver + "/tipos_servicio/getIfExist/?acronimo="+$scope.txtAcronimo+"&id_servicio="+$scope.claveServicio,
-				success: function(data){
-					if(data.cantidad > 0){
-						$scope.respuesta =  0;	
-						notify("Error","Ya esta registrado este tipo de servicio para este Servicio","error");						
-						//$("#nombreerror").text("Ya esta registrado este tipo de servicio para este Servicio");
-						
-					}else{
-						$("#nombreerror").text("");
-					}
-				}
+// ================================================================================
+// *****                  Funcion Para mostrar los Servicios                  *****
+// ================================================================================
+$scope.TodosServicios = function ()
+{
+	$http.get(`${global_apiserver}/servicios/getAll/`)
+			.then(function( response ){
+					$scope.Servicios =  response.data;
+				    
 			});
-		}else{
-			
-			
+}
+// ================================================================================
+// *****             Funcion Para mostrar los TiposServicios                  *****
+// ================================================================================
+$scope.TodosTiposServicios = function (id)
+{
+	$http.get(`${global_apiserver}/tipos_servicio/getByService/?id=`+id)
+			.then(function( response ){
+					$scope.tiposServicios =  response.data;
+				    
+			});
+}
+// ================================================================================
+// *****             Funcion Para mostrar los Roles                  *****
+// ================================================================================
+$scope.TodosRoles = function (id)
+{
+	$http.get(`${global_apiserver}/personal_tecnico_roles/getByIdTipoServicio/?id=`+id)
+			.then(function( response ){
+					$scope.Roles =  response.data;
+				    
+			});
+}
+// ================================================================================
+// *****             Funcion Para mostrar los Roles                  *****
+// ================================================================================
+$scope.TodosSectores = function (id)
+{
+	$http.get(`${global_apiserver}/sectores/getByIdTipoServicio/?id_tipo_servicio=`+id)
+			.then(function( response ){
+					$scope.Sectores =  response.data;
+				    
+			});
+}
+// ================================================================================
+// *****                 Funcion Para cdo cambia un Servicio                  *****
+// ================================================================================
+$scope.changeServicio = function ()
+{
+	if($scope.selectServicio !=null){
+		$scope.selectServicioValor = true;
+		$scope.TodosTiposServicios($scope.selectServicio.ID);
+	}
+	else{
+		$scope.selectServicioValor = false;
+		$scope.selectTipoServicioValor = false;
+		$scope.selectSectorValor = false;
+	}
+	
+}	
+// ================================================================================
+// *****            Funcion Para cdo cambia un Tipo Servicio                  *****
+// ================================================================================
+$scope.changeTipoServicio = function ()
+{
+	if($scope.selectTiposServicio !=null){
+		$scope.selectTipoServicioValor = true;
+		$scope.TodosRoles($scope.selectTiposServicio.ID);
+		if($scope.selectServicio.ID == 1){
+			$scope.selectSectorValor = true;
+			$scope.TodosSectores($scope.selectTiposServicio.ID);
 		}
-		if($scope.txtNombre.length == 0){
-			$scope.respuesta =  0;
-			$("#txtNombreerror").text("No debe estar vacio");
-		}else{
-			$("#txtNombreerror").text("");
-		}
-		if($scope.txtTextoRef.length == 0){
-			$scope.respuesta =  0;
-			$("#txtTextoReferror").text("No debe estar vacio");
-		}else{
-			$("#txtTextoReferror").text("");
-		}
-		if($scope.txtAcronimo.length == 0){
-			$scope.respuesta =  0;
-			$("#txtAcronimoerror").text("No debe estar vacio");
-		}else{
-			$("#txtAcronimoerror").text("");
-		}
-		if($scope.claveServicio.length == 0){
-			$scope.respuesta =  0;
-			$("#claveServicioerror").text("No debe estar vacio");
-		}else{
-			$("#claveServicioerror").text("");
+		else{
+			$scope.selectSectorValor = false;
 		}
 	}
-
-/*
-		Se checa si es válida la modificación. 
-		Con los id "xxxerror" mostramos
-		el error correspondiente.
-*/
+	else{
+		$scope.selectTipoServicioValor = false;
+		$scope.selectSectorValor = false;
+	}
 	
-	$scope.valida_editar = function(){
-		
-	}	
-/*		
-		Esta función nos sirve para hacer el insert o update. Se checa cual de las
-		dos transacciones se debe de hacer. Al finalizar la transacción se actualiza
-		la tabla.
-*/
-$scope.guardarTipoServicios = function(){
-	
+}	
+// ==============================================================================
+// ***** 		    Funcion mostrar opciones para filtrar           		*****
+// ==============================================================================
+$scope.showFiltrar = function()
+{
+	$scope.mytoggle('divFitrar');
 }
-/*	Funcion para insertar los datos	*/
-$scope.insertar	=	function(){
+// ================================================================================
+// *****                  Funcion Mostrar/Ocultar elementos                   *****
+// ================================================================================
+$scope.mytoggle = function (id)
+{
+	$("#"+id).toggle(function(){
 
-	
-}
-/*	Funcion para editar los datos	*/
-$scope.editar	=	function(){
+	},function(){
 
-	
+	});
+	$scope.selectServicioValor = false;
+	$scope.selectTipoServicioValor = false;
+	$scope.selectSectorValor = false;
+	$scope.selectServicio = null;
+	$scope.selectTiposServicio= null;
+	$scope.selectRol = null;
+	$scope.selectSector = null;
 }
-/*		
-		Función para traer las claves de servicio.
-*/
-$scope.funcionClaveServicio = function(){
-	
-}
+// ================================================================================
+// *****                  onchange cancelar filtro                       *****
+// ================================================================================
+$scope.cancelFilter = function()
+{
+//	$scope.tabla_servicios();
 
-/*
-	Funcion para traer las normas de este servicio
-*/
-$scope.funcionparalistanormas = function(){
-   
-	
-}
-/*
-	Funcion para traer las normas que ya estan asociadas a ese servicio
-*/
-$scope.funciontiposervicionormas = function(id_tipo_servicio){
-	
-}
+	$scope.mytoggle('divFitrar');
+	getData($scope.mesActual-1,$scope.anoActual);
 
-
+}
+// ==============================================================================
+// ***** 		    Funcion btn filtrar accion                   		*****
+// ==============================================================================
+$scope.cargaDatosFiltrados = function() {
+	getData($scope.mesActual-1,$scope.anoActual);
+}
 $(document).ready(function () {
-	$scope.funcionClaveServicio();
-	$scope.funcionparalistanormas(); 
-	$scope.limpiaCampos();
+	$scope.TodosServicios();
 	$scope.InicializarSelectMonthYear();
 	$('#txtDate').datepicker('setDate', new Date());
 	$scope.HeadingTable($scope.anoActual,$scope.mesActual-1);
+
 
 });
 	
