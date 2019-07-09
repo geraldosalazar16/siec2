@@ -68,13 +68,8 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
   });
 }
 
-<<<<<<< HEAD
-// Listar todas las solicitudes
- function loadTiposContactos(seleccionado) {
-=======
 // Listar todas los tipos de contactos
  function cambioServicio(seleccionado) {
->>>>>>> staging
    $.getJSON(`${global_apiserver}/clientes_contactos/getAllTipoContacto/`,function (response){
        $("#txtTipoContacto").html('<option value="" selected disabled>-elige una opción-</option>');
        $.each(response, function( indice, objTipo ) {
