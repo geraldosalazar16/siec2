@@ -57,6 +57,7 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     var fec_fin = response.FECHA_FIN;
     fec_fin = fec_fin.substring(6, 8) + "/" + fec_fin.substring(4, 6) + "/" + fec_fin.substring(0, 4);
     $("#txtDescripcion").val(response.DESCRIPCION_CONTACTO);
+    $("#txtTipoContacto").val(response.ID_TIPO_CONTACTO);
     $("#txtNombreContacto").val(response.NOMBRE_CONTACTO);
     $("#txtCargoContacto").val(response.CARGO);
     $("#txtTelMovil").val(response.TELEFONO_MOVIL);
