@@ -154,6 +154,15 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
                 $scope.areas = response.data;
             });
     }
+// ===================================================================
+// ***** 		FUNCION PARA CARGAR PROSPECTO SEGUIMIENTO   	 *****
+// ===================================================================
+    $scope.cargarProspectoSeguimiento= function(){
+        $http.get(global_apiserver + "/prospecto_estatus_seguimiento/getAll/")
+            .then(function( response ){
+                $scope.prospecto_seguimiento = response.data;
+            });
+    }
 
 // ===================================================================
 // ***** 			FUNCION PARA CARGAR LOS LISTBOX    	 *****
@@ -181,6 +190,7 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
         $scope.accion = "insertar";
         $scope.clear_form();
         $scope.cargarAreas();
+        $scope.cargarProspectoSeguimiento();
 
         if (typeof key !== "undefined") {
             $scope.edit_reporte = $scope.reportes[key];
@@ -235,6 +245,13 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
                 })
 
             }
+            if($scope.formData.select_area.ID_AREA == 4)
+            {
+                $.each($scope.prospecto_seguimiento,function (i,n) {
+                    option +='<option value="'+n.ID+'">'+n.DESCRIPCION+'</option>';
+                })
+
+            }
         }
         else
         {
@@ -264,6 +281,18 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
             }
             if($scope.formData.select_area.ID_AREA == 3) {
                 $.each($scope.auditores,function (i,n) {
+                    if($scope.columns.indexOf(n.value)>-1 && $scope.edit_reporte.ID_AREA == $scope.formData.select_area.ID_AREA)
+                    {
+                        option +='<option value="'+n.value+'" selected="selected">'+n.nombre+'</option>';
+                    }
+                    else
+                    {
+                        option +='<option value="'+n.value+'">'+n.nombre+'</option>';
+                    }
+                })
+            }
+            if($scope.formData.select_area.ID_AREA == 4) {
+                $.each($scope.prospecto_seguimiento,function (i,n) {
                     if($scope.columns.indexOf(n.value)>-1 && $scope.edit_reporte.ID_AREA == $scope.formData.select_area.ID_AREA)
                     {
                         option +='<option value="'+n.value+'" selected="selected">'+n.nombre+'</option>';
