@@ -12,6 +12,7 @@ $(window).load(function () {
   listener_autocomplete_colonia_change();
   colonia_checkbox();
   listar_Servicios();
+  loadTiposContactos();
  });
 
 function notify(titulo, texto, tipo) {
@@ -64,7 +65,7 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     $("#txtEmail").val(response.EMAIL);
     $("#cmbEsPrincipal").val(response.ES_PRINCIPAL);
     $("#datos_adicionales").val(response.DATOS_ADICIONALES);
-    loadTiposContactos(response.ID_TIPO_CONTACTO);
+    //loadTiposContactos(response.ID_TIPO_CONTACTO);
   });
 }
 
@@ -442,7 +443,7 @@ function listener_btn_nuevo_contacto() {
     $("#btnGuardarContacto").attr("id_domicilio", $(this).attr("id_domicilio"));
     $("#modalTituloDomiContacto").html("Insertar nuevo contacto");
     clear_modal_insertar_actualizar_contacto();
-    loadTiposContactos();
+    //loadTiposContactos();
     $("#modalInsertarActualizarDomiContacto").modal("show");
   });
 }
