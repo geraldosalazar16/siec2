@@ -107,7 +107,6 @@ $id = $database->insert("FACTURACION_SOLICITUDES",
 		"HORA_CREACION" => $HORA_CREACION,
 		"USUARIO_CREACION" => $USUARIO_CREACION
 	]);
-print_r($database);
 valida_error_medoo_and_die(); 
 
 $database->insert("FACTURACION_SOLICITUD_HISTORICO",[
