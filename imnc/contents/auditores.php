@@ -369,6 +369,25 @@
                 <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
               </div>
             </div>
+			
+              <label class="control-label col-md-4 col-sm-4 col-xs-12" for="txtRfc">PRIORIDAD CERTI  <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <select class="form-control" id="cmbPRIORIDADCERTI">
+                  <option value="1" >1(Mas Prioritario)</option>
+                  <option value="2" >2</option>
+				  <option value="3" >3</option>
+				  <option value="4" >4</option>
+				  <option value="5" >5</option>
+				  <option value="6" >6</option>
+				  <option value="7" >7</option>
+				  <option value="8" >8</option>
+				  <option value="9" >9</option>
+				  <option value="10" selected>10(Menos Prioritario)</option>
+                </select>
+                <ul class="parsley-errors-list" id="parsley-id-2324"></ul>
+              </div>
+            </div>
 
           </form>
       </div>
@@ -483,6 +502,8 @@ function clear_modal_insertar_actualizar(){
   $("#txtEmail2").val("");
   $("#cmbAuditor").val("elige");
   $("#cmbEstado").val("elige");
+  $("#cmbPRIORIDADCERTI").val("10");
+  
 }
 
 function fill_modal_insertar_actualizar(id_personal_tecnico){
@@ -502,6 +523,8 @@ function fill_modal_insertar_actualizar(id_personal_tecnico){
 		$("#txtEmail2").val(response.EMAIL2);
 		$("#cmbAuditor").val(response.PADRON);
         $("#cmbEstado").val(response.STATUS);
+		$("#cmbPRIORIDADCERTI").val(response.PRIORIDAD_CERTI);
+		
     
      });
   
@@ -684,6 +707,7 @@ function insertar(){
 	  EMAIL2:$("#txtEmail2").val(),
 	  PADRON:$("#cmbAuditor").val(),
       STATUS:$("#cmbEstado").val(),
+	  PRIORIDAD_CERTI:$("#cmbPRIORIDADCERTI").val(),
       ID_USUARIO:sessionStorage.getItem("id_usuario")
     };
     $.post(global_apiserver + "/personal_tecnico/insert/", JSON.stringify(personal_tecnico), function(respuesta){
@@ -717,6 +741,7 @@ function editar(){
 	  EMAIL2:$("#txtEmail2").val(),
 	  PADRON:$("#cmbAuditor").val(),
       STATUS:$("#cmbEstado").val(),
+	  PRIORIDAD_CERTI:$("#cmbPRIORIDADCERTI").val(),
       ID_USUARIO:sessionStorage.getItem("id_usuario")
     };
     $.post(global_apiserver + "/personal_tecnico/update/", JSON.stringify(personal_tecnico), function(respuesta){

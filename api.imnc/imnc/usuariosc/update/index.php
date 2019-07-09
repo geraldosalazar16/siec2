@@ -32,16 +32,16 @@ $ID = $objeto->ID;
 $NOMBRE = $objeto->NOMBRE; 
 $USUARIO = $objeto->USUARIO; 
 $EMAIL = $objeto->EMAIL; 
-$PASSWORD = $objeto->PASSWORD;
-if($PASSWORD!="")
-{
-	$PASSWORD = sha1($PASSWORD);
-}
-
-
-if ($PASSWORD == "") {
-	$PASSWORD = $database->get("USUARIOS", "PASSWORD", ["ID"=>$ID]);
-}
+//$PASSWORD = $objeto->PASSWORD;
+//if($PASSWORD!="")
+//{
+//	$PASSWORD = sha1($PASSWORD);
+//}
+//
+//
+//if ($PASSWORD == "") {
+//	$PASSWORD = $database->get("USUARIOS", "PASSWORD", ["ID"=>$ID]);
+//}
 
 $ID_PERFIL = $objeto->ID_PERFIL;
 $MODULOS = json_decode(json_encode($objeto->MODULOS), True);
@@ -57,7 +57,7 @@ $id = $database->update("USUARIOS", [
 	"NOMBRE" => $NOMBRE, 
 	"USUARIO" => $USUARIO, 
 	"EMAIL" => $EMAIL, 
-	"PASSWORD" => $PASSWORD, 
+//	"PASSWORD" => $PASSWORD,
 	"ID_PERFIL" => $ID_PERFIL,
 	"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
 	"HORA_MODIFICACION" => $HORA_MODIFICACION,

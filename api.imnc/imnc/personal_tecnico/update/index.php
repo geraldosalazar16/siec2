@@ -109,6 +109,8 @@ valida_error_medoo_and_die($PADRON, "Es necesario escoger una opción");
 $PADRON_ANT = $database->get("PERSONAL_TECNICO", ['PADRON'],["ID"=>$ID]); //AQUI BUSCO SI ES EXTERNO O INTERNO ANTES DE ACTUALIZAR
 $STATUS = $objeto->STATUS;
 valida_parametro_and_die($STATUS, "Es necesario capturar un status");
+$PRIORIDAD_CERTI = $objeto->PRIORIDAD_CERTI;
+valida_parametro_and_die($PRIORIDAD_CERTI, "Es necesario capturar la prioridad");
 
 $ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
@@ -130,6 +132,7 @@ $id = $database->update("PERSONAL_TECNICO", [
 	"EMAIL2" => $EMAIL2,
 	"PADRON" => $PADRON,
 	"STATUS" => $STATUS,
+	"PRIORIDAD_CERTI"=>$PRIORIDAD_CERTI,
 	"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
 	"HORA_MODIFICACION" => $HORA_MODIFICACION,
 	"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION
