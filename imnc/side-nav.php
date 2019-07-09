@@ -53,6 +53,8 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
 		   echo '     <li><a href="./?pagina=i_servicios_contratados_tipos_cambios">Tipos de cambio para servicios contratados</a>';
            echo '     </li>';
+		   echo '     <li><a href="./?pagina=dictaminador_tiposervicio">Dictaminadores</a>';
+           echo '     </li>';
            echo '     <li><a href="./?pagina=tramites">Trámites</a>';
            echo '     </li>';
 		   echo '     <li><a href="./?pagina=documentos">Documentos</a>';
@@ -65,6 +67,7 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
            echo '     <li><a href="./?pagina=uso_factura">Uso de la Factura</a>';
            echo '     </li>';
+		   
 
         }
         if ($modulo_permisos["CLIENTES"]["catalogos"] == 1) {
@@ -147,7 +150,13 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '  </ul>';
             echo '</li>';
           }
-
+		if ($modulo_permisos["SERVICIOS"]["ver"] == 1) {
+            echo '<li><a><i class="fa fa-file"></i> Dictaminaci&oacuten </a>';
+            echo '   <ul class="nav child_menu" style="display: none">';
+            echo '      <li><a href="./?pagina=dictaminacion">Solicitudes</a></li>';
+            echo '  </ul>';
+            echo '</li>';
+          }
           if ($modulo_permisos["FACTURACION"]["ver"] == 1) {
             echo '<li><a><i class="fa fa-file"></i> Facturación </a>';
             echo '   <ul class="nav child_menu" style="display: none">';

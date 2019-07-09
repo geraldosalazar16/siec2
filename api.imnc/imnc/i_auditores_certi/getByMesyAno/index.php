@@ -30,8 +30,38 @@ function valida_error_medoo_and_die(){
 $respuesta=array();
 $mes = $_REQUEST["mes"];
 $ano = $_REQUEST["ano"];
+$id_servicio = $_REQUEST["id_servicio"];
+$id_tiposervicio = $_REQUEST["id_tiposervicio"];
+$id_rol = $_REQUEST["id_rol"];
+$id_sector = $_REQUEST["id_sector"];
+//$personal_tecnico = $database->select("PERSONAL_TECNICO", "*",["STATUS"=>"activo","ORDER"=>"PADRON"]);
 
-$personal_tecnico = $database->select("PERSONAL_TECNICO", "*",['STATUS'=>'activo']);
+if($id_servicio == '' ){
+	$consulta = "SELECT * FROM `PERSONAL_TECNICO` WHERE `STATUS`='activo' ORDER BY `PADRON`,`PRIORIDAD_CERTI`,`ID` ASC";
+}
+else{
+	if($id_tiposervicio == ''){
+		$consulta = "SELECT DISTINCT PT.ID,PT.NOMBRE,PT.APELLIDO_MATERNO,PT.APELLIDO_PATERNO,PT.INICIALES,PT.FECHA_NACIMIENTO,PT.CURP,PT.RFC,PT.PADRON,PT.TELEFONO_FIJO,PT.TELEFONO_CELULAR,PT.EMAIL,PT.EMAIL2,PT.STATUS,PT.IMAGEN_BASE64,PT.FECHA_CREACION,PT.HORA_CREACION,PT.FECHA_MODIFICACION,PT.HORA_MODIFICACION,PT.ID_USUARIO_CREACION,PT.ID_USUARIO_MODIFICACION,PT.PRIORIDAD_CERTI FROM PERSONAL_TECNICO AS PT INNER JOIN PERSONAL_TECNICO_CALIFICACIONES AS PTC ON PT.ID = PTC.ID_PERSONAL_TECNICO INNER JOIN TIPOS_SERVICIO AS TS ON PTC.ID_TIPO_SERVICIO = TS.ID INNER JOIN SERVICIOS AS S ON TS.ID_SERVICIO = S.ID  WHERE PT.STATUS='activo' AND S.ID = ${id_servicio} ORDER BY PT.PADRON,PT.PRIORIDAD_CERTI,PT.ID ASC";
+	}
+	else{
+		if($id_rol == '' && $id_sector == ''){
+			$consulta = "SELECT DISTINCT PT.ID,PT.NOMBRE,PT.APELLIDO_MATERNO,PT.APELLIDO_PATERNO,PT.INICIALES,PT.FECHA_NACIMIENTO,PT.CURP,PT.RFC,PT.PADRON,PT.TELEFONO_FIJO,PT.TELEFONO_CELULAR,PT.EMAIL,PT.EMAIL2,PT.STATUS,PT.IMAGEN_BASE64,PT.FECHA_CREACION,PT.HORA_CREACION,PT.FECHA_MODIFICACION,PT.HORA_MODIFICACION,PT.ID_USUARIO_CREACION,PT.ID_USUARIO_MODIFICACION,PT.PRIORIDAD_CERTI FROM PERSONAL_TECNICO AS PT INNER JOIN PERSONAL_TECNICO_CALIFICACIONES AS PTC ON PT.ID = PTC.ID_PERSONAL_TECNICO INNER JOIN TIPOS_SERVICIO AS TS ON PTC.ID_TIPO_SERVICIO = TS.ID INNER JOIN SERVICIOS AS S ON TS.ID_SERVICIO = S.ID  WHERE PT.STATUS='activo' AND TS.ID = ${id_tiposervicio} ORDER BY PT.PADRON,PT.PRIORIDAD_CERTI,PT.ID ASC";
+		}
+		else{
+			if($id_rol!='' && $id_sector ==''){
+				$consulta = "SELECT DISTINCT PT.ID,PT.NOMBRE,PT.APELLIDO_MATERNO,PT.APELLIDO_PATERNO,PT.INICIALES,PT.FECHA_NACIMIENTO,PT.CURP,PT.RFC,PT.PADRON,PT.TELEFONO_FIJO,PT.TELEFONO_CELULAR,PT.EMAIL,PT.EMAIL2,PT.STATUS,PT.IMAGEN_BASE64,PT.FECHA_CREACION,PT.HORA_CREACION,PT.FECHA_MODIFICACION,PT.HORA_MODIFICACION,PT.ID_USUARIO_CREACION,PT.ID_USUARIO_MODIFICACION,PT.PRIORIDAD_CERTI FROM PERSONAL_TECNICO AS PT INNER JOIN PERSONAL_TECNICO_CALIFICACIONES AS PTC ON PT.ID = PTC.ID_PERSONAL_TECNICO INNER JOIN TIPOS_SERVICIO AS TS ON PTC.ID_TIPO_SERVICIO = TS.ID INNER JOIN SERVICIOS AS S ON TS.ID_SERVICIO = S.ID  WHERE PT.STATUS='activo' AND TS.ID = ${id_tiposervicio} AND PTC.ID_ROL = ${id_rol} ORDER BY PT.PADRON,PT.PRIORIDAD_CERTI,PT.ID ASC";
+			}
+			if($id_rol=='' && $id_sector !=''){
+				$consulta = "SELECT DISTINCT PT.ID,PT.NOMBRE,PT.APELLIDO_MATERNO,PT.APELLIDO_PATERNO,PT.INICIALES,PT.FECHA_NACIMIENTO,PT.CURP,PT.RFC,PT.PADRON,PT.TELEFONO_FIJO,PT.TELEFONO_CELULAR,PT.EMAIL,PT.EMAIL2,PT.STATUS,PT.IMAGEN_BASE64,PT.FECHA_CREACION,PT.HORA_CREACION,PT.FECHA_MODIFICACION,PT.HORA_MODIFICACION,PT.ID_USUARIO_CREACION,PT.ID_USUARIO_MODIFICACION,PT.PRIORIDAD_CERTI FROM PERSONAL_TECNICO AS PT INNER JOIN PERSONAL_TECNICO_CALIFICACIONES AS PTC ON PT.ID = PTC.ID_PERSONAL_TECNICO INNER JOIN TIPOS_SERVICIO AS TS ON PTC.ID_TIPO_SERVICIO = TS.ID INNER JOIN SERVICIOS AS S ON TS.ID_SERVICIO = S.ID INNER JOIN PERSONAL_TECNICO_CALIF_SECTOR AS PTCS ON PTC.ID = PTCS.ID_PERSONAL_TECNICO_CALIFICACION WHERE PT.STATUS='activo' AND TS.ID = ${id_tiposervicio} AND PTCS.ID_SECTOR = ${id_sector}  ORDER BY PT.PADRON,PT.PRIORIDAD_CERTI,PT.ID ASC";
+			}
+			if($id_rol!='' && $id_sector !=''){
+				$consulta = "SELECT DISTINCT PT.ID,PT.NOMBRE,PT.APELLIDO_MATERNO,PT.APELLIDO_PATERNO,PT.INICIALES,PT.FECHA_NACIMIENTO,PT.CURP,PT.RFC,PT.PADRON,PT.TELEFONO_FIJO,PT.TELEFONO_CELULAR,PT.EMAIL,PT.EMAIL2,PT.STATUS,PT.IMAGEN_BASE64,PT.FECHA_CREACION,PT.HORA_CREACION,PT.FECHA_MODIFICACION,PT.HORA_MODIFICACION,PT.ID_USUARIO_CREACION,PT.ID_USUARIO_MODIFICACION,PT.PRIORIDAD_CERTI FROM PERSONAL_TECNICO AS PT INNER JOIN PERSONAL_TECNICO_CALIFICACIONES AS PTC ON PT.ID = PTC.ID_PERSONAL_TECNICO INNER JOIN TIPOS_SERVICIO AS TS ON PTC.ID_TIPO_SERVICIO = TS.ID INNER JOIN SERVICIOS AS S ON TS.ID_SERVICIO = S.ID INNER JOIN PERSONAL_TECNICO_CALIF_SECTOR AS PTCS ON PTC.ID = PTCS.ID_PERSONAL_TECNICO_CALIFICACION WHERE PT.STATUS='activo' AND TS.ID = ${id_tiposervicio} AND PTC.ID_ROL = ${id_rol} AND PTCS.ID_SECTOR = ${id_sector} ORDER BY PT.PADRON,PT.PRIORIDAD_CERTI,PT.ID ASC";
+			}
+		}
+	}
+}
+
+$personal_tecnico = $database->query($consulta)->fetchAll(PDO::FETCH_ASSOC);
 valida_error_medoo_and_die();
 // A partir de aqui genero las fechas del mes en cuestion
 $diaMayor=0;
@@ -91,7 +121,7 @@ switch($mes){
 			$mesPHP="12";
 			break;
 	}
-$FECHAS="";
+
 $OJBETO_MES =new stdClass();
 $json_response = new stdClass();
 for($i = 0 ; $i <$diaMayor;$i++){
@@ -100,8 +130,7 @@ for($i = 0 ; $i <$diaMayor;$i++){
 }
 $FECHA_INICIO = date("Ymd", strtotime($ano.$mesPHP.'01'));
 $FECHA_FIN= date("Ymd", strtotime($ano.$mesPHP.$diaMayor));
-$FECHAS = '1/'.($mes+1).'/'.$ano.','.$diaMayor.'/'.($mes+1).'/'.$ano;
-$FECHAS = '01/05/2019,31/05/2019';
+
 //A partir de aqui genero un ciclo para recorrer todos los auditores.
 $indice =0; 		//Indice para guardar los datos en la variable de salida
 for($i = 0 ; $i <count($personal_tecnico);$i++){
@@ -109,28 +138,72 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 	$razon="";
 	$OJBETO_MES_PT = clone $OJBETO_MES;
 	$OJBETO_MES_PT->Auditor = $personal_tecnico[$i]['NOMBRE'].' '.$personal_tecnico[$i]['APELLIDO_PATERNO'].' '.$personal_tecnico[$i]['APELLIDO_MATERNO'];
-	//$context = "?ID=".$personal_tecnico[$i]['ID']."&FECHAS=".$FECHAS;
-	//$url = $global_apiserver . "/personal_tecnico/isDisponible/".$context;
-	//$json_response = file_get_contents($url);
-	//$json_response = json_decode($json_response);
-	//$personal_tecnico[$i]['DISPONIBLE'] = $json_response;
-	//$json_response->disponible = 'si';
-	//if($personal_tecnico[$i]['STATUS'] == 'activo'){
+	$OJBETO_MES_PT->ID = $personal_tecnico[$i]['ID'];
+
 	
 // ===================================================================
 // ***** 			VERIFICA SI TIENE AUDITORIAS				 *****
 // ===================================================================
-	$consulta= "SELECT SGAGF.FECHA FROM PERSONAL_TECNICO_CALIFICACIONES PTC INNER JOIN I_SG_AUDITORIA_GRUPO_FECHAS SGAGF ON PTC.ID = SGAGF.ID_PERSONAL_TECNICO_CALIF  WHERE PTC.ID_PERSONAL_TECNICO =".$personal_tecnico[$i]['ID']." AND SGAGF.FECHA >= ".$FECHA_INICIO." AND SGAGF.FECHA<= ".$FECHA_FIN;
+	$consulta= "SELECT SGAGF.FECHA, SGAGF.ID_SERVICIO_CLIENTE_ETAPA,SGAGF.TIPO_AUDITORIA,SGAGF.CICLO,PTC.ID_TIPO_SERVICIO FROM PERSONAL_TECNICO_CALIFICACIONES PTC INNER JOIN I_SG_AUDITORIA_GRUPO_FECHAS SGAGF ON PTC.ID = SGAGF.ID_PERSONAL_TECNICO_CALIF  WHERE PTC.ID_PERSONAL_TECNICO =".$personal_tecnico[$i]['ID']." AND SGAGF.FECHA >= ".$FECHA_INICIO." AND SGAGF.FECHA<= ".$FECHA_FIN;
 	$I_SG_AUDITORIA_GRUPO_FECHAS = $database->query($consulta)->fetchAll(PDO::FETCH_ASSOC);
 	valida_error_medoo_and_die();
 
 	for ($j=0; $j < count($I_SG_AUDITORIA_GRUPO_FECHAS) ; $j++) {
-            $FECHA = date("Ymd", strtotime($I_SG_AUDITORIA_GRUPO_FECHAS[$j]["FECHA"]));
 
+            $FECHA = date("Ymd", strtotime($I_SG_AUDITORIA_GRUPO_FECHAS[$j]["FECHA"]));
 		    $FLAG = "no";
 			$dia1= (int)substr($FECHA,6,8);
+		    $numero = $dia1;
 			$dia1 = 'd'.$dia1;
-			$OJBETO_MES_PT->$dia1 = "Auditoria para esta fecha.		";
+			
+		    $SERVICIO = $database->get("SERVICIO_CLIENTE_ETAPA",
+				["[><]CLIENTES" => ["ID_CLIENTE" => "ID"]],
+				[
+				 "SERVICIO_CLIENTE_ETAPA.ID",
+				 "SERVICIO_CLIENTE_ETAPA.ID_CLIENTE",
+				 "SERVICIO_CLIENTE_ETAPA.REFERENCIA",
+				 "CLIENTES.NOMBRE"
+				],
+				["SERVICIO_CLIENTE_ETAPA.ID"=>$I_SG_AUDITORIA_GRUPO_FECHAS[$j]['ID_SERVICIO_CLIENTE_ETAPA']] );
+		    valida_error_medoo_and_die();
+		    $AUDITORES = $database->select("I_SG_AUDITORIA_GRUPOS",
+			              [
+			              	"[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID_PERSONAL_TECNICO_CALIF"=>"ID"],
+			              	"[><]PERSONAL_TECNICO_ROLES"=>["ID_ROL"=>"ID"],
+			              	"[><]PERSONAL_TECNICO"=>["PERSONAL_TECNICO_CALIFICACIONES.ID_PERSONAL_TECNICO"=>"ID"],
+						  ],
+			              [
+							  "PERSONAL_TECNICO.NOMBRE",
+							  "PERSONAL_TECNICO.APELLIDO_MATERNO",
+							  "PERSONAL_TECNICO.APELLIDO_PATERNO",
+							  "PERSONAL_TECNICO.EMAIL",
+							  "PERSONAL_TECNICO_ROLES.ACRONIMO",
+						  ],
+			              ["AND"=>["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=>$I_SG_AUDITORIA_GRUPO_FECHAS[$j]['ID_SERVICIO_CLIENTE_ETAPA'],
+							  "I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=>$I_SG_AUDITORIA_GRUPO_FECHAS[$j]['TIPO_AUDITORIA'],
+							  "I_SG_AUDITORIA_GRUPOS.CICLO"=>$I_SG_AUDITORIA_GRUPO_FECHAS[$j]['CICLO']]]
+			);
+		    valida_error_medoo_and_die();
+			switch($I_SG_AUDITORIA_GRUPO_FECHAS[$j]["ID_TIPO_SERVICIO"]){
+				case 1:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(C)- ".$SERVICIO["NOMBRE"]."		";
+					break;
+				case 2:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(A)- ".$SERVICIO["NOMBRE"]."		";
+					break;
+				case 12:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(SAST)- ".$SERVICIO["NOMBRE"]."		";
+					break;
+				case 21:
+					$OJBETO_MES_PT->$dia1 = "Auditoria(SGEN)- ".$SERVICIO["NOMBRE"]."		";
+					break;
+				default:
+					$OJBETO_MES_PT->$dia1 = $SERVICIO["NOMBRE"]."		";
+					break;
+			}
+		    $SERVICIO["AUDITORES"]=$AUDITORES;
+		   // $OJBETO_MES_PT->$dia1 = $SERVICIO["NOMBRE"]."		";
+		    $OJBETO_MES_PT->$numero->SCE = $SERVICIO;
 			$personal_tecnico[$i]['DATOS']= $OJBETO_MES_PT;
 			$respuesta[$i] = $OJBETO_MES_PT; 
 			
@@ -234,7 +307,7 @@ for($i = 0 ; $i <count($personal_tecnico);$i++){
 	
 	
 }
-print_r(json_encode($respuesta));
+print_r(json_encode($respuesta,JSON_PRETTY_PRINT));
 
 
 //-------- FIN --------------
