@@ -75,14 +75,14 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
    $.getJSON(`${global_apiserver}/clientes_contactos/getAllTipoContacto/`,function (response){
        $("#txtTipoContacto").html('<option value="" selected disabled>-elige una opción-</option>');
        $.each(response, function( indice, objTipo ) {
-         if (seleccionado == objTipo.ID) {
-           $("#txtTipoContacto").append('<option value="'+objTipo.ID+'" selected>'+objTipo.TIPO+'</option>');
-         }else{
+         // if (seleccionado == objTipo.ID) {
+         //   $("#txtTipoContacto").append('<option value="'+objTipo.ID+'" selected>'+objTipo.TIPO+'</option>');
+         // }else{
            $("#txtTipoContacto").append('<option value="'+objTipo.ID+'">'+objTipo.TIPO+'</option>');
-         }
+         // }
 
        });
-       $("#txtTipoContacto").val(seleccionado);
+      // $("#txtTipoContacto").val(seleccionado);
    });
 
 }
