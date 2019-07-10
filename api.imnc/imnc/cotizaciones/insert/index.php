@@ -311,6 +311,46 @@ if($id_cotizacion && $id_cotizacion !== 0 && $ID_PRODUCTO){
 	valida_error_medoo_and_die();		
 }
 
+/*		CODIGO PARA AGREGAR FECHAS EN QUE SE CAMBIAN LOS ESTADOS		*/
+	if($ESTADO_COTIZACION==1){
+		$cons2	=	$database->insert("COTIZACIONES_STATUS_FECHA",["ID_COTIZACION"=>$id_cotizacion,"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO_COTIZACION, "FECHA_SOLICITUD_COTIZACION"=>date('Y-m-d')]);
+
+	}
+	if($ESTADO_COTIZACION==2){
+		$cons2	=	$database->insert("COTIZACIONES_STATUS_FECHA",["ID_COTIZACION"=>$id_cotizacion,"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO_COTIZACION, "FECHA_ENVIO_COTIZACION"=>date('Y-m-d')]);
+
+	}
+	if($ESTADO_COTIZACION==3){
+		$cons2	=	$database->insert("COTIZACIONES_STATUS_FECHA",["ID_COTIZACION"=>$id_cotizacion,"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO_COTIZACION, "FECHA_NEGOCIACION"=>date('Y-m-d')]);
+
+	}
+	if($ESTADO_COTIZACION==4){
+		$cons2	=	$database->insert("COTIZACIONES_STATUS_FECHA",["ID_COTIZACION"=>$id_cotizacion,"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO_COTIZACION, "FECHA_FIRMADO"=>date('Y-m-d')]);
+
+	}
+	if($ESTADO_COTIZACION==5){
+		$cons2	=	$database->insert("COTIZACIONES_STATUS_FECHA",["ID_COTIZACION"=>$id_cotizacion,"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO_COTIZACION, "FECHA_PEDIDO"=>date('Y-m-d')]);
+
+	}
+	if($ESTADO_COTIZACION==6){
+		$cons2	=	$database->insert("COTIZACIONES_STATUS_FECHA",["ID_COTIZACION"=>$id_cotizacion,"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO_COTIZACION, "FECHA_CANCELADO"=>date('Y-m-d')]);
+
+	}
+	if($ESTADO_COTIZACION==7){
+		$cons2	=	$database->insert("COTIZACIONES_STATUS_FECHA",["ID_COTIZACION"=>$id_cotizacion,"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO_COTIZACION, "FECHA_EJECUTADO"=>date('Y-m-d')]);
+
+	}
+	if($ESTADO_COTIZACION==8){
+		$cons2	=	$database->insert("COTIZACIONES_STATUS_FECHA",["ID_COTIZACION"=>$id_cotizacion,"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO_COTIZACION, "FECHA_ENVIO_CUESTIONARIO"=>date('Y-m-d')]);
+
+	}
+	if($ESTADO_COTIZACION==9){
+		$cons2	=	$database->insert("COTIZACIONES_STATUS_FECHA",["ID_COTIZACION"=>$id_cotizacion,"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO_COTIZACION, "FECHA_RECEPCION_CUESTIONARIO"=>date('Y-m-d')]);
+
+	}
+    valida_error_medoo_and_die();
+
+
 $respuesta["resultado"]="ok";
 $respuesta["id"]=$id;
 

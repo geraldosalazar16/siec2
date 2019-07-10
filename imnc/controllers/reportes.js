@@ -50,12 +50,48 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
                     "value": "P.USUARIO_CREACION AS PROSPECTO_USUARIO_CREACION|string"
                 },
                 {
-                    "nombre" : "Estado prospecto ",
-                    "value": "PES.ESTATUS_SEGUIMIENTO AS PROSPECTO_ESTATUS|string"
+                    "nombre" : "Estado de la cotización",
+                    "value": "PES.ESTATUS_SEGUIMIENTO AS ESTATUS_COTIZACION|string"
                 },
                 {
-                    "nombre" : "Estado de la cotización",
-                    "value": "COT.ESTADO_COTIZACION AS ESTATUS_COTIZACION|string"
+                    "nombre" : "Monto de la cotización",
+                    "value": "COT.MONTO AS MONTO_COTIZACION|string"
+                },
+                {
+                    "nombre" : "Fecha solicitud cotización",
+                    "value": "CSF.FECHA_SOLICITUD_COTIZACION AS FECHA_SOLICITUD_COTIZACION|date"
+                },
+                {
+                    "nombre" : "Fecha envío cotización",
+                    "value": "CSF.FECHA_ENVIO_COTIZACION AS FECHA_ENVIO_COTIZACION|date"
+                },
+                {
+                    "nombre" : "Fecha cotización firmada",
+                    "value": "CSF.FECHA_FIRMADO AS FECHA_FIRMADO|date"
+                },
+                {
+                    "nombre" : "Fecha cotización pedido",
+                    "value": "CSF.FECHA_PEDIDO AS FECHA_PEDIDO|date"
+                 },
+                {
+                    "nombre" : "Fecha cotización negociación",
+                    "value": "CSF.FECHA_NEGOCIACION AS FECHA_NEGOCIACION|date"
+                },
+                {
+                    "nombre" : "Fecha cotización cancelación",
+                    "value": "CSF.FECHA_CANCELADO AS FECHA_CANCELADO|date"
+                },
+                {
+                    "nombre" : "Fecha cotización ejecutado",
+                    "value": "CSF.FECHA_EJECUTADO AS FECHA_EJECUTADO|date"
+                },
+                {
+                    "nombre" : "Fecha cotización envio cuestionario",
+                    "value": "CSF.FECHA_ENVIO_CUESTIONARIO AS FECHA_ENVIO_CUESTIONARIO|date"
+                },
+                {
+                    "nombre" : "Fecha cotización recepción cuestionario",
+                    "value": "CSF.FECHA_RECEPCION_CUESTIONARIO AS FECHA_RECEPCION_CUESTIONARIO|date"
                 }
 
               ];
@@ -245,13 +281,13 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
                 })
 
             }
-            if($scope.formData.select_area.ID_AREA == 4)
-            {
-                $.each($scope.prospecto_seguimiento,function (i,n) {
-                    option +='<option value="'+n.ID+'">'+n.DESCRIPCION+'</option>';
-                })
-
-            }
+            // if($scope.formData.select_area.ID_AREA == 4)
+            // {
+            //     $.each($scope.prospecto_seguimiento,function (i,n) {
+            //         option +='<option value="'+n.ID+'">'+n.DESCRIPCION+'</option>';
+            //     })
+            //
+            // }
         }
         else
         {
@@ -291,18 +327,18 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
                     }
                 })
             }
-            if($scope.formData.select_area.ID_AREA == 4) {
-                $.each($scope.prospecto_seguimiento,function (i,n) {
-                    if($scope.columns.indexOf(n.value)>-1 && $scope.edit_reporte.ID_AREA == $scope.formData.select_area.ID_AREA)
-                    {
-                        option +='<option value="'+n.value+'" selected="selected">'+n.nombre+'</option>';
-                    }
-                    else
-                    {
-                        option +='<option value="'+n.value+'">'+n.nombre+'</option>';
-                    }
-                })
-            }
+            // if($scope.formData.select_area.ID_AREA == 4) {
+            //     $.each($scope.prospecto_seguimiento,function (i,n) {
+            //         if($scope.columns.indexOf(n.value)>-1 && $scope.edit_reporte.ID_AREA == $scope.formData.select_area.ID_AREA)
+            //         {
+            //             option +='<option value="'+n.value+'" selected="selected">'+n.nombre+'</option>';
+            //         }
+            //         else
+            //         {
+            //             option +='<option value="'+n.value+'">'+n.nombre+'</option>';
+            //         }
+            //     })
+            // }
         }
         list
             .find('option')
@@ -525,6 +561,7 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
             $('#hiddenArea').val($scope.formData.select_area.NOMBRE);
             $('#hiddenColumnas').val(getArrayColumnas($("#column").val()));
         }
+        console.log($('#hiddenColumnas').val());
         window.open('', 'VentanaReporteXLS');
         $("#formReporte").submit();
 

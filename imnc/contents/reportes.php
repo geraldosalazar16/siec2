@@ -117,8 +117,6 @@
                <select ng-model="formData.column" id="column" name="colunm" multiple="multiple" size="10" name="duallistbox_demo1[]" title="duallistbox_demo1[]" ></select>
                 <span class="text-danger" >{{error_column}}</span>
              </div>
-
-           
           </form>
       </div>
       <div class="modal-footer">
