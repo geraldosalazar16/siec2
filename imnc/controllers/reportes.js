@@ -55,7 +55,7 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
                 },
                 {
                     "nombre" : "Monto de la cotización",
-                    "value": "COT.MONTO AS MONTO_COTIZACION|string"
+                    "value": "COT.MONTO AS MONTO_COTIZACION|float"
                 },
                 {
                     "nombre" : "Fecha solicitud cotización",
@@ -561,7 +561,6 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
             $('#hiddenArea').val($scope.formData.select_area.NOMBRE);
             $('#hiddenColumnas').val(getArrayColumnas($("#column").val()));
         }
-        console.log($('#hiddenColumnas').val());
         window.open('', 'VentanaReporteXLS');
         $("#formReporte").submit();
 
