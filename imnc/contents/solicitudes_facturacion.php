@@ -59,10 +59,10 @@
                                         </td>
                                         <td>
                                             Monto: <strong>{{solicitud.MONTO | currency}}</strong><br>
-                                            Requiere orden de compra: <strong>{{solicitud.REQUIERE_ORDEN_COMPRA}}</strong><br>
-                                            Facturar viáticos: <strong>{{solicitud.FACTURAR_VIATICOS}}</strong><br>
-                                            Cargar en portal: <strong>{{solicitud.SUBIR_FACTURA_PORTAL}}</strong><br>
-                                            portal: <strong>{{solicitud.PORTAL}}</strong><br>
+                                            <span ng-if="solicitud.REQUIERE_ORDEN_COMPRA === 'S'">Requiere orden de compra: <strong>{{solicitud.REQUIERE_ORDEN_COMPRA}}</strong><span><br>
+                                            <span ng-if="solicitud.FACTURAR_VIATICOS === 'S'">Facturar viáticos: <strong>{{solicitud.FACTURAR_VIATICOS}}</strong><span><br>
+                                            <span ng-if="solicitud.SUBIR_FACTURA_PORTAL === 'S'">Cargar en portal: <strong>{{solicitud.SUBIR_FACTURA_PORTAL}}</strong><span><br>
+                                            <span ng-if="solicitud.SUBIR_FACTURA_PORTAL === 'S'">Portal: <strong>{{solicitud.PORTAL}}</strong><span><br>
                                         </td>                                     
                                         <td>
                                             <div class="btn-group">                                
