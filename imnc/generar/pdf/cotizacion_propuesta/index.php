@@ -8,8 +8,8 @@ require_once ('../../../phplibs/fpdf181/fpdf.php');
 require_once('../../../phplibs/FPDI-2.0.2/src/autoload.php');
 include  '../../../../api.imnc/imnc/common/conn-apiserver.php'; 
 include  '../../../../api.imnc/imnc/common/conn-medoo.php'; 
-include  '../../../../api.imnc/imnc/common/conn-sendgrid.php'; 
-require_once('../../../diff/direccion.php'); 
+include  '../../../../api.imnc/imnc/common/conn-sendgrid.php';
+require_once('../../../diff/direccion.php');
 //require_once('../../../common/apiserver.php'); //$global_apiserver
 //require_once('../../../diff/selector.php'); //$global_diffname
 //require_once('../../../diff/'.$global_diffname.'/strings.php'); 
@@ -82,7 +82,7 @@ function valida_error_medoo_and_die(){
 	} 
 }
 
-
+$monto_total = 0;
 $id_prospecto = $_REQUEST["id_prospecto"]; 
 valida_parametro_and_die($id_prospecto,"Es necesario seleccionar un prospecto");
 $id_producto = $_REQUEST["id_producto"];
@@ -575,7 +575,7 @@ $html = <<<EOT
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
-
+$monto_total = 0;
 for($i=0;$i<count($datos);$i++){
 	if($i==3 || $i == 7 || $i==11){
 		$pdf1->AddPage();
@@ -591,6 +591,7 @@ for($i=0;$i<count($datos);$i++){
 		$subtotal= $costo_E1+$costo_E2+$viaticos_E1+$viaticos_E2;
 		$IVA16=0.16*$subtotal;
 		$total=$subtotal+$IVA16;
+
 		//Dando formato a los datos
 		$costo_E1_f=number_format($costo_E1,2);
 		$costo_E2_f=number_format($costo_E2,2);
@@ -656,6 +657,7 @@ EOT;
 			$subtotal=$costo_E1+$costo_E2+$suma_tarifa+$viaticos_E1+$viaticos_E2;
 			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
+			$monto_total+=$total;
 			$subtotal_f=number_format($subtotal,2);
 			$IVA16_f=number_format($IVA16,2);
 			$total_f=number_format($total,2);
@@ -728,10 +730,11 @@ EOT;
 			$subtotal=$costo+$suma_tarifa+$viaticos;
 			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
+            $monto_total+=$total;
 			$subtotal_f=number_format($subtotal,2);
 			$IVA16_f=number_format($IVA16,2);
 			$total_f=number_format($total,2);
-			$html .= <<<EOT
+        $html .= <<<EOT
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>Subtotal</strong></td>
 				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
@@ -944,9 +947,12 @@ Este pagaré está sujeto a la condición de que, al no pagarse a su vencimiento
 $pdf1->writeHTML($html, true, false, true, false, '');
 
 // ---------------------------------------------------------
-
+$id = $database->update("COTIZACIONES", [
+    "MONTO" => $monto_total
+], ["ID"=>$id_cotizacion]);
 //Close and output PDF document
 $pdf1->Output();
+
 // ---------------------------------------------------------
 //$pdf->addPage();
 //$pdf->Output();
