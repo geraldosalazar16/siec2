@@ -36,12 +36,12 @@
                                 <table class="table table-striped responsive-utilities jambo_table bulk_action">
                                 <thead>
                                     <tr class="headings">
-                                    <th class="column-title">ID</th>
+                                    <th class="column-title" width="5%">ID</th>
                                     <th class="column-title" width="30%">Cliente</th>
-                                    <th class="column-title">Estatus</th>
-                                    <th class="column-title" width="20%">Detalles</th>
-                                    <th class="column-title">Monto</th>
-                                    <th class="column-title"></th>
+                                    <th class="column-title" width="10%">Estatus</th>
+                                    <th class="column-title" width="30%">Detalles</th>
+                                    <th class="column-title" width="20%">Monto</th>
+                                    <th class="column-title" width="5%"></th>
                                     </tr>
                                 </thead>
 
