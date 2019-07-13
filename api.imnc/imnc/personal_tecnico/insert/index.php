@@ -102,6 +102,8 @@ valida_error_medoo_and_die($PADRON, "Es necesario escoger una opción");
 
 $STATUS = $objeto->STATUS;
 valida_parametro_and_die($STATUS, "Es necesario capturar un status");
+$PRIORIDAD_CERTI = $objeto->PRIORIDAD_CERTI;
+valida_parametro_and_die($PRIORIDAD_CERTI, "Es necesario capturar la prioridad");
 
 $ID_USUARIO_CREACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_CREACION,"Falta ID de USUARIO");
@@ -123,6 +125,7 @@ $id = $database->insert("PERSONAL_TECNICO", [
 	"EMAIL2" => $EMAIL2,
 	"PADRON"=>$PADRON,
 	"STATUS"=>$STATUS,
+	"PRIORIDAD_CERTI"=>$PRIORIDAD_CERTI,
 	"FECHA_CREACION" => $FECHA_CREACION,
 	"HORA_CREACION" => $HORA_CREACION,
 	"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION

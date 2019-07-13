@@ -51,8 +51,9 @@
 				<ul class="list-unstyled user_data" style="display: inline-block !important;">
                      <li><b>
 					Comprobante fiscal:<i>
-                         <a style="margin-left: 10px;" class="btn btn-sm" href="{{solicitud.DOCUMENTO.UBICACION_DOCUMENTOS}}"> {{solicitud.DOCUMENTO.NOMBRE}}</a>
-					</i></b>
+                         <a style="margin-left: 10px;" class="btn btn-sm" ng-if="solicitud.DOCUMENTO.EXIST" href="{{ solicitud.DOCUMENTO.RUTA }}" target="_blank"> {{solicitud.DOCUMENTO.NOMBRE}}</a>
+                             <span ng-if="!solicitud.DOCUMENTO.EXIST"> No se encuentra el documento en la ruta</span>
+                             </i></b>
                      </li>
 
 					<li ng-if="solicitud.DESCRIPCION" ><b>

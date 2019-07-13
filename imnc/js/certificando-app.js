@@ -1,4 +1,16 @@
-var app = angular.module("certificandoApp", ['multipleSelect','checklist-model','720kb.datepicker','multipleDatePicker','ui.grid','ui.grid.pinning','ui.grid.autoFitColumns'])
+var app = angular.module("certificandoApp", [
+	'multipleSelect',
+	'checklist-model',
+	'720kb.datepicker',
+	'multipleDatePicker',
+	'ui.grid.autoFitColumns',
+	'ui.grid',
+	'ui.grid.pagination',
+	'ui.grid.selection',
+	'ui.grid.cellNav',
+	'ui.grid.resizeColumns',
+	'ui.grid.pinning'
+])
 .config(function ($httpProvider) {     
 	$httpProvider.defaults.useXDomain = true;   
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
@@ -82,4 +94,36 @@ var app = angular.module("certificandoApp", ['multipleSelect','checklist-model',
             });
         }
     }
-});
+})
+.directive('dblClickRow', ['$compile', '$parse',  function($compile, $parse) {
+	return {
+		priority : -190, // run after default uiGridCell directive
+		restrict : 'A',
+		scope : false,
+
+		compile: function($element, attr) {
+
+			// Get the function at ng-dblclick for ui-grid
+			var fn = $parse(attr['ngDblclick'], /* interceptorFn */ null, /* expensiveChecks */ true);
+
+			return function ngEventHandler(scope, element) {
+
+				element.on('dblclick', function(event) {
+
+						var callback = function() {
+
+							if ($scope.gridApi.grid.selection.lastSelectedRow)
+							{
+								fn($scope, {$event:event, row: $scope.gridApi.grid.selection.lastSelectedRow.entity });
+							}
+						};
+
+						$scope.$apply(callback);
+
+					}
+				)};
+
+		}
+	}
+}])
+

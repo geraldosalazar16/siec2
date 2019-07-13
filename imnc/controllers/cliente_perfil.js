@@ -55,7 +55,7 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     fec_ini = fec_ini.substring(6, 8) + "/" + fec_ini.substring(4, 6) + "/" + fec_ini.substring(0, 4);
     var fec_fin = response.FECHA_FIN;
     fec_fin = fec_fin.substring(6, 8) + "/" + fec_fin.substring(4, 6) + "/" + fec_fin.substring(0, 4);
-    $("#txtTipoContacto").val(response.ID_TIPO_CONTACTO);
+    $("#txtDescripcion").val(response.DESCRIPCION_CONTACTO);
     $("#txtNombreContacto").val(response.NOMBRE_CONTACTO);
     $("#txtCargoContacto").val(response.CARGO);
     $("#txtTelMovil").val(response.TELEFONO_MOVIL);
@@ -64,7 +64,25 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     $("#txtEmail").val(response.EMAIL);
     $("#cmbEsPrincipal").val(response.ES_PRINCIPAL);
     $("#datos_adicionales").val(response.DATOS_ADICIONALES);
+    loadTiposContactos(response.ID_TIPO_CONTACTO);
   });
+}
+
+// Listar todas los tipos de contactos
+ function cambioServicio(seleccionado) {
+   $.getJSON(`${global_apiserver}/clientes_contactos/getAllTipoContacto/`,function (response){
+       $("#txtTipoContacto").html('<option value="" selected disabled>-elige una opción-</option>');
+       $.each(response, function( indice, objTipo ) {
+         if (seleccionado == objTipo.ID) {
+           $("#txtTipoContacto").append('<option value="'+objTipo.ID+'" selected>'+objTipo.TIPO+'</option>');
+         }else{
+           $("#txtTipoContacto").append('<option value="'+objTipo.ID+'">'+objTipo.TIPO+'</option>');
+         }
+
+       });
+       $("#txtTipoContacto").val(seleccionado);
+   });
+
 }
 
 function fill_autocomplete_pais(seleccionado) {
@@ -294,6 +312,7 @@ function clear_modal_insertar_actualizar_domicilio() {
 
 function clear_modal_insertar_actualizar_contacto() {
   $("#txtTipoContacto").val("");
+  $("#txtDescripcion").val("");
   $("#txtNombreContacto").val("");
   $("#txtCargoContacto").val("");
   $("#txtTelMovil").val("");
@@ -375,7 +394,7 @@ function draw_head_contactos(id_domicilio) {
   var strHtml = "";
   //strHtml += '<strong>Contactos</strong>';
   if (global_permisos["CLIENTES"]["registrar"] == 1) {
-    strHtml += '<button type="button" class="btn btn-primary btn-xs btn-imnc btnAñadirContacto" id_domicilio="' + id_domicilio + '" style="float: right;"> <i class="fa fa-plus"> </i> Agregar contacto </button>';
+    strHtml += '<button type="button" class="btn btn-primary btn-xs btn-imnc btnAnadirContacto" id_domicilio="' + id_domicilio + '" style="float: right;"> <i class="fa fa-plus"> </i> Agregar contacto </button>';
   }
   strHtml += '<br>';
   strHtml += '<div class="col-sm-12 invoice-col" id="Contactosde' + id_domicilio + '"';
@@ -385,7 +404,6 @@ function draw_head_contactos(id_domicilio) {
 }
 
 function listener_btn_contactos() {
-
   $(".btnContactos").click(function () {
     var id_cliente_domicilio = $(this).attr("id");
     var agrego = false;
@@ -407,21 +425,24 @@ function listener_btn_contactos() {
 
           $("#Contactosde" + id_cliente_domicilio).append(draw_row_contactos(num, objContacto));
           agrego = false;
+
         }
+        listener_btn_nuevo_contacto();
+        listener_btn_editar_contacto();
       });
-      listener_btn_nuevo_contacto();
-      listener_btn_editar_contacto();
+
       $("#bodyContactos-" + id_cliente_domicilio).collapse("toggle");
     });
   });
 }
 
 function listener_btn_nuevo_contacto() {
-  $(".btnAñadirContacto").click(function () {
+  $(".btnAnadirContacto").click(function () {
     $("#btnGuardarContacto").attr("accion", "insertar");
     $("#btnGuardarContacto").attr("id_domicilio", $(this).attr("id_domicilio"));
     $("#modalTituloDomiContacto").html("Insertar nuevo contacto");
     clear_modal_insertar_actualizar_contacto();
+    loadTiposContactos();
     $("#modalInsertarActualizarDomiContacto").modal("show");
   });
 }
@@ -459,7 +480,7 @@ function draw_row_contactos(num, objContacto) {
   }
   var strHtml = "";
   strHtml += num + ".-";
-  strHtml += ' Tipo: ' + objContacto.ID_TIPO_CONTACTO + '<br><br>';
+  strHtml += ' Tipo: ' + objContacto.TIPO + '<br><br>';
   strHtml += '<strong> ' + objContacto.NOMBRE_CONTACTO + '</strong>';
   strHtml += '<br>' + objContacto.CARGO;
   strHtml += '<address>';
@@ -632,6 +653,7 @@ function insertar_contacto(id_domicilio) {
   var cliente_domicilio_contacto = {
     ID_CLIENTE_DOMICILIO: parseInt(id_domicilio),
     ID_TIPO_CONTACTO: $("#txtTipoContacto").val(),
+    DESCRIPCION_CONTACTO: $("#txtDescripcion").val(),
     NOMBRE_CONTACTO: $("#txtNombreContacto").val(),
     CARGO: $("#txtCargoContacto").val(),
     TELEFONO_MOVIL: $("#txtTelMovil").val(),
@@ -644,7 +666,6 @@ function insertar_contacto(id_domicilio) {
     DATOS_ADICIONALES: $("#datos_adicionales").val(),
     ID_USUARIO: sessionStorage.getItem("id_usuario")
   };
-  //console.log(cliente_domicilio_contacto);
   $.post(global_apiserver + "/clientes_contactos/insert/", JSON.stringify(cliente_domicilio_contacto), function (respuesta) {
     respuesta = JSON.parse(respuesta);
     if (respuesta.resultado == "ok") {
@@ -669,6 +690,7 @@ function editar_contacto(id, id_domicilio) {
     ID: parseInt(id),
     ID_CLIENTE_DOMICILIO: parseInt(id_domicilio),
     ID_TIPO_CONTACTO: $("#txtTipoContacto").val(),
+    DESCRIPCION_CONTACTO: $("#txtDescripcion").val(),
     NOMBRE_CONTACTO: $("#txtNombreContacto").val(),
     CARGO: $("#txtCargoContacto").val(),
     TELEFONO_MOVIL: $("#txtTelMovil").val(),
@@ -712,7 +734,6 @@ function insertar_cliente_contactos_servicios(id_contacto) {
   $.post(global_apiserver + "/cliente_contactos_servicios/insert/", JSON.stringify(cliente_contactos_servicios), function (respuesta) {
     respuesta = JSON.parse(respuesta);
     if (respuesta.resultado == "ok") {
-      console.log(respuesta.resultado);
     }
     else {
       notify("Error", respuesta.mensaje, "error");
@@ -727,7 +748,6 @@ function actualizar_cliente_contactos_servicios(id_contacto) {
   $.post(global_apiserver + "/cliente_contactos_servicios/update/", JSON.stringify(cliente_contactos_servicios), function (respuesta) {
     respuesta = JSON.parse(respuesta);
     if (respuesta.resultado == "ok") {
-      console.log(respuesta.resultado);
     }
     else {
       notify("Error", respuesta.mensaje, "error");

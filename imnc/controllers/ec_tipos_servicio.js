@@ -15,6 +15,7 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.formDataGeneraNotificacionPDF = {};
     $scope.formDataParticipante = {};
     $scope.formDataConfiguracion = {};
+    $scope.formDataSolicitud = {};
 	$scope.resp={};
 	$scope.resp1={};
 	$scope.DatosSitiosEC={};
@@ -36,6 +37,8 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 	$scope.colapseActual; // Para guardar si hay un colapse activo
 	$scope.estatusAuditoria; // Para guardar el estatus de las auditorías
 	$scope.estatusGastosAuditoria; // Para guardar el estatus de las auditorías
+
+    $scope.listaRazonesSociales = [];
 	
 // =======================================================================================
 // ***** 			FUNCION PARA EL BOTON AGREGAR INFORMACION AUDITORIA				 *****
@@ -3295,6 +3298,211 @@ function llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
 // ***** 	          		 TERMINA GASTOS AUDITORIA		           	 *****
 // ===========================================================================
 // ===========================================================================
+// ===========================================================================
+// ***** 	            INICIA FACTURACION AUDITORIA		           	 *****
+// ===========================================================================
+// ===========================================================================
+// ===========================================================================
+// *****			FUNCION OPEN MODAL CREAR SOLICITUD					*****
+// ===========================================================================
+    // Abrir modal insertar/actualizar
+    $scope.openModalCrearSolicitud = function(tipo,ciclo) {
+        $scope.modal_titulo = "Insertar solicitud";
+        $scope.accion = "insertar";
+		clear_modal_insertar_actualizar_solicitud();
+
+		$scope.formDataSolicitud.auditoria =  {TIPO_AUDITORIA:tipo,CICLO:ciclo};
+
+        $("#modalInsertarActualizarSolicitud").modal("show");
+    }
+// ===========================================================================
+// *****			FUNCION OPEN MODAL EDITAR SOLICITUD					*****
+// ===========================================================================
+	// Abrir modal insertar/actualizar
+	$scope.openModalEditarSolicitud = function(tipo,ciclo,solicitud) {
+		$scope.modal_titulo = "Editar solicitud";
+		$scope.accion = "editar";
+		fill_modal_insertar_actualizar(solicitud);
+
+		$scope.formDataSolicitud.id = solicitud.ID;
+		$scope.formDataSolicitud.auditoria =  {TIPO_AUDITORIA:tipo,CICLO:ciclo};
+
+		$("#modalInsertarActualizarSolicitud").modal("show");
+	}
+// ===========================================================================
+// *****			FUNCION CLEAR MODAL CREAR SOLICITUD					*****
+// ===========================================================================
+    function clear_modal_insertar_actualizar_solicitud() {
+        $scope.formDataSolicitud = {};
+		cargarRazonSocial();
+		listarEstatus();
+		listarFormasPago();
+		cargarMetodosPago();
+		cargarUsosFactura();
+
+    }
+// ===========================================================================
+// *****			FUNCION LLENA MODAL EDITAR SOLICITUD					*****
+// ===========================================================================
+	async function fill_modal_insertar_actualizar(solicitud) {
+		$scope.formDataSolicitud = {};
+		$scope.formDataSolicitud.razon_social = {NOMBRE:solicitud.RAZON_SOCIAL,RFC:solicitud.RFC};
+		$scope.formDataSolicitud.estatus = solicitud.ID_ESTATUS;
+		$scope.formDataSolicitud.forma_pago = (solicitud.ID_FORMA_PAGO==0?"":solicitud.ID_FORMA_PAGO);
+		$scope.formDataSolicitud.metodo_pago = (solicitud.ID_METODO_PAGO==0?"":solicitud.ID_METODO_PAGO);
+		$scope.formDataSolicitud.uso_factura = (solicitud.ID_USO_FACTURA==0?"":solicitud.ID_USO_FACTURA);
+		$scope.formDataSolicitud.monto = parseFloat(solicitud.MONTO);
+		if (solicitud.REQUIERE_ORDEN_COMPRA === 'S') {
+			$scope.formDataSolicitud.orden_compra_requerida = true;
+		} else {
+			$scope.formDataSolicitud.orden_compra_requerida = false;
+		}
+		if (solicitud.FACTURAR_VIATICOS === 'S') {
+			$scope.formDataSolicitud.facturar_viaticos_requerido = true;
+		} else {
+			$scope.formDataSolicitud.facturar_viaticos_requerido = false;
+		}
+		if (solicitud.SUBIR_FACTURA_PORTAL === 'S') {
+			$scope.formDataSolicitud.subir_factura_portal = true;
+			$scope.formDataSolicitud.portal = solicitud.PORTAL;
+		} else {
+			$scope.formDataSolicitud.subir_factura_portal = false;
+		}
+		$scope.formDataSolicitud.descripcion = solicitud.DESCRIPCION;
+		cargarRazonSocial();
+		listarEstatus();
+		listarFormasPago();
+		cargarMetodosPago();
+		cargarUsosFactura();
+
+		//await buscarRazonSocial(solicitud);
+	}
+// ===========================================================================
+// *****			    FUNCION CARGAR RAZON SOCIAL       				*****
+// ===========================================================================
+    async function cargarRazonSocial() {
+        // $scope.listaRazonesSociales = [];
+        const id_cliente = $scope.DatosServicio.ID_CLIENTE;
+        // Obtener todas las razones sociales del cliente
+        response = await $http.get(`${global_apiserver}/i_clientes_razones_sociales/getByIdCliente?id=${id_cliente}`);
+        if (response.data.resultado === 'error') {
+            notify('Error', response.data.mensaje, 'error');
+        } else {
+            $scope.listaRazonesSociales = response.data;
+            $scope.$apply();
+        }
+    }
+// ===========================================================================
+// *****			    FUNCION CARGAR ESTADO              				*****
+// ===========================================================================
+    async function listarEstatus() {
+        // $scope.listaEstatus = [];
+        // Obtener todas las razones sociales del cliente
+        response = await $http.get(`${global_apiserver}/facturacion_solicitudes_estatus/getAll/`);
+        if (response.data.resultado === 'error') {
+            notify('Error', response.data.mensaje, 'error');
+        } else {
+            $scope.listaEstatus = response.data;
+            $scope.$apply();
+        }
+    }
+// ===========================================================================
+// *****			    FUNCION CARGAR FORMAS PAGO      				*****
+// ===========================================================================
+    async function listarFormasPago() {
+        // $scope.listaFormasPago = [];
+        // Obtener todas las razones sociales del cliente
+        response = await $http.get(`${global_apiserver}/facturacion_forma_pago/getAll/`);
+        if (response.data.resultado === 'error') {
+            notify('Error', response.data.mensaje, 'error');
+        } else {
+            $scope.listaFormasPago = response.data;
+            $scope.$apply();
+        }
+    }
+// ===========================================================================
+// *****			    FUNCION CARGAR METODOS PAGO       				*****
+// ===========================================================================
+    async function cargarMetodosPago() {
+        // $scope.listaMetodosPago = [];
+        const id_cliente = $scope.DatosServicio.ID_CLIENTE;
+        // Obtener todas las razones sociales del cliente
+        response = await $http.get(`${global_apiserver}/facturacion_metodos_pago/getAll/`);
+        if (response.data.resultado === 'error') {
+            notify('Error', response.data.mensaje, 'error');
+        } else {
+            $scope.listaMetodosPago = response.data;
+            $scope.$apply();
+        }
+    }
+// ===========================================================================
+// *****			    FUNCION CARGAR USOS FACTURA       				*****
+// ===========================================================================
+	async function cargarUsosFactura() {
+		// $scope.listaUsosFactura = [];
+		const id_cliente = $scope.DatosServicio.ID_CLIENTE;
+		// Obtener todas las razones sociales del cliente
+		response = await $http.get(`${global_apiserver}/facturacion_uso_factura/getAll/`);
+		if (response.data.resultado === 'error') {
+			notify('Error', response.data.mensaje, 'error');
+		} else {
+			$scope.listaUsosFactura = response.data;
+			$scope.$apply();
+		}
+	}
+// ===========================================================================
+// *****			    FUNCION GUARDAR SOLICITUD       				*****
+// ===========================================================================
+	$scope.submitFormSolicitud = function() {
+		$scope.formDataSolicitud.id_sce = $scope.DatosServicio.ID;
+		$scope.formDataSolicitud.id_usuario = sessionStorage.getItem("id_usuario");
+		if ($scope.accion === 'insertar') {
+			$http.post(`${global_apiserver}/facturacion_solicitudes/insert/`, $scope.formDataSolicitud)
+				.then(response => {
+				if (response.data.resultado === 'error') {
+				notify('Error', response.data.mensaje, 'error')
+			} else {
+				cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+				notify('Éxito', 'Se ha creado una nueva solicitud', 'success');
+				$("#modalInsertarActualizarSolicitud").modal("hide");
+
+			}
+		})
+		.catch(error => notify('Error', error.message, 'error'))
+		}else if ($scope.accion === 'editar') {
+			$scope.formDataSolicitud.estatus = 1;
+			$http.post(`${global_apiserver}/facturacion_solicitudes/update/`, $scope.formDataSolicitud)
+				.then(response => {
+				if (response.data.resultado === 'error') {
+				notify('Error', response.data.mensaje, 'error')
+			} else {
+				cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
+				notify('Éxito', 'Se ha modificado la solicitud', 'success');
+				$("#modalInsertarActualizarSolicitud").modal("hide");
+
+			}
+		})
+		.catch(error => notify('Error', error.message, 'error'))
+		}
+
+
+	}
+// ===========================================================================
+// *****			FUNCION BUSCA LA RAZON SOCIAL               		*****
+// ===========================================================================
+	async function buscarRazonSocial(solicitud) {
+		console.log($scope.listaRazonesSociales);
+		$scope.formDataSolicitud.razon_social = $scope.listaRazonesSociales.find(rs => {
+			return rs.RFC === solicitud.RFC;
+	});
+
+		// $scope.$apply();
+	}
+// ===========================================================================
+// ***** 	            TERMINA FACTURACION AUDITORIA		           	 *****
+// ===========================================================================
+
+
 DatosServicioContratado($scope.id_servicio_cliente_etapa);
 cargarValoresMetaDatosServicio($scope.id_servicio_cliente_etapa);
 cargarSectoresServicio($scope.id_servicio_cliente_etapa);

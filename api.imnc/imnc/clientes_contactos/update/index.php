@@ -44,6 +44,8 @@ valida_parametro_and_die($ID_CLIENTE_DOMICILIO, "Falta ID_CLIENTE_DOMICILIO");
 $ID_TIPO_CONTACTO = $objeto->ID_TIPO_CONTACTO;
 valida_parametro_and_die($ID_TIPO_CONTACTO, "Es necesario capturar el tipo de contacto");
 
+$DESCRIPCION_CONTACTO = $objeto->DESCRIPCION_CONTACTO;
+
 $NOMBRE_CONTACTO = $objeto->NOMBRE_CONTACTO;
 valida_parametro_and_die($NOMBRE_CONTACTO, "Es necesario capturar el nombre de contacto");
 
@@ -120,6 +122,7 @@ $HORA_MODIFICACION = date("His");
 $id = $database->update("CLIENTES_CONTACTOS", [
 	"ID_CLIENTE_DOMICILIO" => $ID_CLIENTE_DOMICILIO,
 	"ID_TIPO_CONTACTO" => $ID_TIPO_CONTACTO,
+    "DESCRIPCION_CONTACTO" => $DESCRIPCION_CONTACTO,
 	"NOMBRE_CONTACTO" => $NOMBRE_CONTACTO,
 	"CARGO" => $CARGO,
 	"TELEFONO_MOVIL" => $TELEFONO_MOVIL,

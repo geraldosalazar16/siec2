@@ -275,7 +275,8 @@
 											<th class="column-title">Grupo de auditores</th>
 											<th class="column-title"></th>
 											<th class="column-title"></th>
-											<th class="column-title">Estado Dictaminaci&oacuten </th>											
+											<th class="column-title"></th>
+											<th class="column-title">Estado Dictaminaci&oacuten </th>
 										</tr>
 									</thead>
 									<tbody>
@@ -300,7 +301,7 @@
 													<tr ng-repeat = "z in x.AUDITORIA_FECHAS">
 														<td>
 															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria{{z.ID}}" ng-model="txtFechasAuditoria[z.ID]"  data-date-format='yyyy-mm-dd' data-multiple-dates="false" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaInicio(txtFechasAuditoria[z.ID])}}' jqdatepicker />
-														
+
 														</td>
 														<td>
 															<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,'editar',x.CICLO,z.ID)" >Guardar fecha</button>
@@ -353,6 +354,18 @@
 												<p ng-if='modulo_permisos["registrar"] == 1'>
 													<button type="button"  ng-click='modal_generar_notificacion(DatosServicio.ID_SERVICIO,x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)' class="btn btn-primary btn-xs btn-imnc" style="float: right;">
 														<i class="fa fa-download" aria-hidden="true"></i> Notificaci&oacuten 
+													</button>
+												</p>
+											</td>
+                                            <td>
+												<p ng-if='modulo_permisos["registrar"] == 1 && x.SOLICITUD'>
+													<button type="button"  ng-click='openModalEditarSolicitud(x.TIPO_AUDITORIA,x.CICLO,x.SOLICITUD)' class="btn btn-primary btn-xs btn-imnc" style="float: right;">
+														<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar Facturación
+													</button>
+												</p>
+                                                <p ng-if='modulo_permisos["registrar"] == 1 && !x.SOLICITUD'>
+													<button type="button"  ng-click='openModalCrearSolicitud(x.TIPO_AUDITORIA,x.CICLO)' class="btn btn-primary btn-xs btn-imnc" style="float: right;">
+														<i class="fa fa-send-o" aria-hidden="true"></i> Solicitar Facturación
 													</button>
 												</p>
 											</td>
@@ -496,7 +509,7 @@
 												<table>
 													<tr>
 														<td>
-															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtInsertarFechas-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}" ng-model="txtInsertarFechas[xx.TIPO_AUDITORIA]"  data-date-format='yyyy-mm-dd' data-multiple-dates="true" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaHoy()}}' jqdatepicker />
+															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtInsertarFechas-{{xx.TIPO_AUDITORIA}}-{{xx.CICLO}}" ng-model="txtInsertarFechas[xx.TIPO_AUDITORIA]"  data-date-format='yyyy-mm-dd' data-multiple-dates="true"  fecha-inicio='{{GenerarFechaHoy()}}' jqdatepicker />
 														
 														</td> 
 															
@@ -508,7 +521,7 @@
 													</tr>
 													<tr ng-repeat = "z in xx.AUDITORIA_FECHAS">
 														<td>		
-															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria{{z.ID}}" ng-model="txtFechasAuditoria[z.ID]"  data-date-format='yyyy-mm-dd' data-multiple-dates="false" date-min-limit='{{GenerarFechaHoy()}}' fecha-inicio='{{GenerarFechaInicio(txtFechasAuditoria[z.ID])}}' jqdatepicker />
+															<input type='text' placeholder="Selecciona las fechas" data-parsley-id="2324" class="txtFechasAuditoria" id="txtFechasAuditoria{{z.ID}}" ng-model="txtFechasAuditoria[z.ID]"  data-date-format='yyyy-mm-dd' data-multiple-dates="false" fecha-inicio='{{GenerarFechaInicio(txtFechasAuditoria[z.ID])}}' jqdatepicker />
 														
 														</td>
 														<td>
@@ -563,6 +576,9 @@
 														<i class="fa fa-download" aria-hidden="true"></i> Notificaci&oacuten 
 													</button>
 												</p>
+											</td>
+                                            <td>
+
 											</td>
 											<td>
 												
@@ -951,6 +967,7 @@
   include "ec_tipos_servicio/modal_inserta_actualiza_gastos_auditoria.php";
    include "ec_tipos_servicio/modal_inserta_actualiza_viaticos_auditoria.php";
   include "ec_tipos_servicio/modal_dictaminacion.php";
+  include "ec_tipos_servicio/modal_facturacion.php";
   include "ec_tipos_servicio/modal_confirmacion.php";
   include "ec_tipos_servicio/modal_inserta_actualiza_participante.php";
   include "ec_tipos_servicio/modal_select_instructor.php";

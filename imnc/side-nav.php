@@ -53,12 +53,22 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
 		   echo '     <li><a href="./?pagina=i_servicios_contratados_tipos_cambios">Tipos de cambio para servicios contratados</a>';
            echo '     </li>';
+		   echo '     <li><a href="./?pagina=dictaminador_tiposervicio">Dictaminadores</a>';
+           echo '     </li>';
            echo '     <li><a href="./?pagina=tramites">Trámites</a>';
            echo '     </li>';
 		   echo '     <li><a href="./?pagina=documentos">Documentos</a>';
            echo '     </li>';
            echo '     <li><a href="./?pagina=cursos">Cursos</a>';
-           echo '     </li>'; 
+           echo '     </li>';
+           echo '     <li><a href="./?pagina=formas_pago">Formas de Pago</a>';
+           echo '     </li>';
+           echo '     <li><a href="./?pagina=metodos_pago">Método de Pago</a>';
+           echo '     </li>';
+           echo '     <li><a href="./?pagina=uso_factura">Uso de la Factura</a>';
+           echo '     </li>';
+		   
+
         }
         if ($modulo_permisos["CLIENTES"]["catalogos"] == 1) {
            echo '     <li><a href="./?pagina=entidad_tipo">' . $str_tipo_entidad . '</a>';
@@ -91,8 +101,6 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '<li><a><i class="fa fa-users"></i> ' .  $str_personal_tecnico . ' </a>';
             echo '  <ul class="nav child_menu" style="display: none">';
 			echo '      <li><a href="./?pagina=auditores_agenda_general">Agenda general</a>';
-            echo '      </li>';
-			echo '      <li><a href="./?pagina=certi_auditores">CERTI</a>';
             echo '      </li>';
             echo '      <li><a href="./?pagina=auditores">' .  $str_catalogo_personal_tecnico . '</a>';
             echo '      </li>';
@@ -137,10 +145,18 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '      <li><a href="./?pagina=sg_tipos_auditoria">Tipos de ' . strtolower($str_auditoria) . '</a></li>';
             echo '      <li><a href="./?pagina=sg_status_auditoria">Status de ' .  strtolower($str_auditoria) . '</a></li>';
             echo '      <li><a href="./?pagina=cursos_programados">Cursos Programados</a></li>';
+            echo '      <li><a href="./?pagina=certi_auditores">Eventos por Fecha</a>';
+            echo '      </li>';
             echo '  </ul>';
             echo '</li>';
           }
-
+		if ($modulo_permisos["SERVICIOS"]["ver"] == 1) {
+            echo '<li><a><i class="fa fa-file"></i> Dictaminaci&oacuten </a>';
+            echo '   <ul class="nav child_menu" style="display: none">';
+            echo '      <li><a href="./?pagina=dictaminacion">Solicitudes</a></li>';
+            echo '  </ul>';
+            echo '</li>';
+          }
           if ($modulo_permisos["FACTURACION"]["ver"] == 1) {
             echo '<li><a><i class="fa fa-file"></i> Facturación </a>';
             echo '   <ul class="nav child_menu" style="display: none">';
@@ -193,7 +209,25 @@ $modulo_permisos = $_SESSION["permisos"];
         echo '  </a>';
         echo '</li>';
 
+        if ($modulo_permisos["REPORTES"]["ver"] == 1) {
+            echo '<li>';
+            echo '  <a><i class="fa fa-bar-chart"></i> Indicadores </a>';
+            echo '  <ul class="nav child_menu" style="display: none">';
+            echo '  <li><a>Comercial</a>';
+            echo '  <ul class="nav child_menu" style="display: none">';
+            echo '      <li><a href="#">Ventas</a></li>';
+            echo '      <li><a href="#">Plan vs Real</a></li>';
+            echo '  </ul></li>';
+            echo '  <li><a>Programación</a>';
+            echo '  <ul class="nav child_menu" style="display: none">';
+            echo '      <li><a href="#">Días Auditor</a></li>';
+            echo '      <li><a href="#">Tasa Ocupacional</a></li>';
+            echo '  </ul></li>';
+            echo '  </ul>';
+            echo '</li>';
+        }
         ?>
+
 
         
       </div>
