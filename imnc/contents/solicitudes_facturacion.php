@@ -59,9 +59,9 @@
                                         </td>
                                         <td>
                                             Monto: <strong>{{solicitud.MONTO | currency}}</strong><br>
-                                            <span ng-if="solicitud.REQUIERE_ORDEN_COMPRA === 'S'">Requiere orden de compra: <strong>{{solicitud.REQUIERE_ORDEN_COMPRA}}</strong><span><br>
-                                            <span ng-if="solicitud.FACTURAR_VIATICOS === 'S'">Facturar viáticos: <strong>{{solicitud.FACTURAR_VIATICOS}}</strong><span><br>
-                                            <span ng-if="solicitud.SUBIR_FACTURA_PORTAL === 'S'">Cargar en portal: <strong>{{solicitud.SUBIR_FACTURA_PORTAL}}</strong><span><br>
+                                            Requiere orden de compra: <strong>{{solicitud.REQUIERE_ORDEN_COMPRA || 'Por fefinir'}}</strong><span><br>
+                                            Facturar viáticos: <strong>{{solicitud.FACTURAR_VIATICOS || 'Por fefinir'}}</strong><span><br>
+                                            Cargar en portal: <strong>{{solicitud.SUBIR_FACTURA_PORTAL || 'Por fefinir'}}</strong><span><br>
                                             <span ng-if="solicitud.SUBIR_FACTURA_PORTAL === 'S'">Portal: <strong>{{solicitud.PORTAL}}</strong><span><br>
                                         </td>                                     
                                         <td>
