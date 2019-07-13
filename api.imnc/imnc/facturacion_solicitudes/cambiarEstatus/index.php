@@ -84,7 +84,9 @@ $database->insert("FACTURACION_SOLICITUD_HISTORICO",[
 	"DESCRIPCION" => $descripcion,
 	"FECHA" => $FECHA,
 	"HORA" => $HORA,
-	"USUARIO" => $id_usuario
+	"USUARIO" => $id_usuario,
+	"ESTATUS_ANTERIOR" => $estatus_anterior,
+	"NUEVO_ESTATUS" => $nuevo_estatus
 ]);
 valida_error_medoo_and_die();
 
