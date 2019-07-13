@@ -25,9 +25,9 @@ function valida_error_medoo_and_die(){
 $respuesta=array(); 
 
 $solicitudes = $database->select("FACTURACION_SOLICITUDES", [
-	"[><]SERVICIO_CLIENTE_ETAPA" => ["ID_SERVICIO_CLIENTE_ETAPA" => "ID"],
-	"[><]CLIENTES" => ["SERVICIO_CLIENTE_ETAPA.ID_CLIENTE" => "ID"],
-	"[><]FACTURACION_SOLICITUD_ESTATUS" => ["ID_ESTATUS" => "ID"],
+	"[>]SERVICIO_CLIENTE_ETAPA" => ["ID_SERVICIO_CLIENTE_ETAPA" => "ID"],
+	"[>]CLIENTES" => ["SERVICIO_CLIENTE_ETAPA.ID_CLIENTE" => "ID"],
+	"[>]FACTURACION_SOLICITUD_ESTATUS" => ["ID_ESTATUS" => "ID"],
 	"[>]I_CAT_FORMA_D_PAGO" => ["ID_FORMA_PAGO" => "ID"],
 	"[>]I_CAT_METODO_D_PAGO" => ["ID_METODO_PAGO" => "ID"],
 	"[>]I_CAT_USO_D_L_FACTURA" => ["ID_USO_FACTURA" => "ID"]
