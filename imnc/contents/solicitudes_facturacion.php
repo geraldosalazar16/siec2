@@ -37,9 +37,9 @@
                                 <thead>
                                     <tr class="headings">
                                     <th class="column-title">ID</th>
-                                    <th class="column-title">Cliente</th>
+                                    <th class="column-title" width="30%">Cliente</th>
                                     <th class="column-title">Estatus</th>
-                                    <th class="column-title">Detalles</th>
+                                    <th class="column-title" width="30%">Detalles</th>
                                     <th class="column-title">Monto</th>
                                     <th class="column-title"></th>
                                     </tr>
