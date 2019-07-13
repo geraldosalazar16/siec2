@@ -51,17 +51,17 @@
                                         <td>{{solicitud.CLIENTE}}</td>
                                         <td>{{solicitud.ESTATUS}}</td>   
                                         <td>
-                                            Forma de pago: <strong>{{solicitud.FORMA_PAGO}}</strong><br>
-                                            Método de pago: <strong>{{solicitud.METODO_PAGO}}</strong><br>
-                                            Uso de la factura: <strong>{{solicitud.USO_FACTURA}}</strong><br>
-                                            Razón Social: <strong>{{solicitud.RAZON_SOCIAL}}</strong><br>
-                                            RFC: <strong>{{solicitud.RFC}}</strong><br>
+                                            Forma de pago: <strong>{{solicitud.FORMA_PAGO || 'Por definir'}}</strong><br>
+                                            Método de pago: <strong>{{solicitud.METODO_PAGO || 'Por definir'}}</strong><br>
+                                            Uso de la factura: <strong>{{solicitud.USO_FACTURA || 'Por definir'}}</strong><br>
+                                            Razón Social: <strong>{{solicitud.RAZON_SOCIAL || 'Por definir'}}</strong><br>
+                                            RFC: <strong>{{solicitud.RFC || 'Por definir'}}</strong><br>
                                         </td>
                                         <td>
                                             Monto: <strong>{{solicitud.MONTO | currency}}</strong><br>
-                                            Requiere orden de compra: <strong>{{solicitud.REQUIERE_ORDEN_COMPRA || 'Por fefinir'}}</strong><span><br>
-                                            Facturar viáticos: <strong>{{solicitud.FACTURAR_VIATICOS || 'Por fefinir'}}</strong><span><br>
-                                            Cargar en portal: <strong>{{solicitud.SUBIR_FACTURA_PORTAL || 'Por fefinir'}}</strong><span><br>
+                                            Requiere orden de compra: <strong>{{solicitud.REQUIERE_ORDEN_COMPRA || 'Por definir'}}</strong><span><br>
+                                            Facturar viáticos: <strong>{{solicitud.FACTURAR_VIATICOS || 'Por definir'}}</strong><span><br>
+                                            Cargar en portal: <strong>{{solicitud.SUBIR_FACTURA_PORTAL || 'Por definir'}}</strong><span><br>
                                             <span ng-if="solicitud.SUBIR_FACTURA_PORTAL === 'S'">Portal: <strong>{{solicitud.PORTAL}}</strong><span><br>
                                         </td>                                     
                                         <td>
