@@ -184,19 +184,19 @@
                   <input type="text" ng-model="cotizacion_insertar_editar.ID" id="txtID"  placeholder="asignado automáticamente" required="required" class="form-control col-md-7 col-xs-12" disabled>
                 </div>
               </div>
-
-              <div class="form-group form-vertical" >
-                <label class="control-label col-md-6">Tipo de entidad</label>
+<!-- uso directiva ng-disabled y condición "editando==1" para tener 2 versiones: una para edición y otra para insertar-->
+              <div class="form-group form-vertical">
+                <label class="control-label col-md-6">Tipo de entidad</label>                
                 <div class="col-md-12" style="text-align:center">
-                  <label class="radio-inline"><input type="radio" ng-model="bandera" value="0" name="prospecto-radio" ng-change="cambioRatio(bandera)">Prospecto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                  <label class="radio-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" ng-model="bandera" value="1" name="clienteradio" ng-change="cambioRatio(bandera)">Cliente</label>
-                </div>
+                  <label class="radio-inline"><input type="radio" ng-disabled="editando==1" ng-model="bandera" value="0" name="prospecto-radio" ng-change="cambioRatio(bandera)">Prospecto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                  <label class="radio-inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" ng-disabled="editando==1" ng-model="bandera" value="1" name="clienteradio" ng-change="cambioRatio(bandera)">Cliente</label>
+                </div>                
               </div>
 
               <div class="form-group form-vertical" id="comboProspecto" ng-if="bandera==0">
-                <label class="control-label col-md-12">Prospecto <span class="required">*</span></label>
+                <label class="control-label col-md-12">Prospecto <span class="required">*</span></label>                
                 <div class="col-md-12">
-                  <select id="selectProspecto" ng-model="cotizacion_insertar_editar.PROSPECTO" class="form-control"></select>
+                  <select id="selectProspecto" ng-disabled="editando==1" ng-model="cotizacion_insertar_editar.PROSPECTO" class="form-control"></select>
 <!--                    <select id="selectProspecto" ng-model="cotizacion_insertar_editar.PROSPECTO"-->
 <!--                            class="form-control" ng-change="cambioProspecto(cotizacion_insertar_editar.PROSPECTO)"-->
 <!--                            ng-options="prospecto as prospecto.NOMBRE for prospecto in arr_prospectos track by prospecto.ID">-->
@@ -264,7 +264,7 @@
                   <select id="selectServicio" ng-model="cotizacion_insertar_editar.ID_SERVICIO"
                   ng-options="servicio as servicio.NOMBRE for servicio in Servicios"
                   ng-change ="cambio_servicio()" class="form-control"
-                  ng-disabled="bandera==1">
+                  ng-disabled="bandera==1 || editando==1">
                      <option value="" selected disabled>-- selecciona un servicio --</option>
                   </select>
                 </div>
@@ -276,7 +276,7 @@
                   <select id="selectTipoServicio" ng-model="cotizacion_insertar_editar.ID_TIPO_SERVICIO" class="form-control"
                   ng-options="item_servicio as item_servicio.NOMBRE for item_servicio in Tipos_Servicio"
                   ng-change="cambio_tipo_servicio()"
-                  ng-disabled="bandera==1">
+                  ng-disabled="bandera==1 || editando==1">
                      <option value="" selected disabled>-- selecciona un tipo de servicio --</option>
                   </select>
                 </div>
