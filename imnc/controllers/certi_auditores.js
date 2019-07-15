@@ -6,7 +6,7 @@
 app.controller('certi_auditores_controller',['$scope','$http' ,function($scope,$http){
 //Titulo que aparece en el html
 	
-	$scope.titulo = 'CERTI AUDITORES';
+	$scope.titulo = 'EVENTOS POR FECHAS';
 	$scope.selectServicio = null;
 	$scope.selectTiposServicio= null;
 	$scope.selectRol = null;
