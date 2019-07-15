@@ -35,7 +35,9 @@ if ($insercion === 'N') {
 		]	
 	]); 
 } else {
-	$etapas_proceso = $database->select("ETAPAS_PROCESO", "*"); 
+	$etapas_proceso = $database->select("ETAPAS_PROCESO", "*", [
+		"ID_SERVICIO" => $id
+	]); 
 }
 
 valida_error_medoo_and_die(); 
