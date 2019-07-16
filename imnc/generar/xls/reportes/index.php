@@ -48,6 +48,7 @@ valida_isset($AREA,"NO PUEDE SER VACIO");
 $COLUMNAS= $_REQUEST["COLUMNAS"];
 valida_isset($COLUMNAS,"NO PUEDE SER VACIO");
 
+
 $search = array("[","]","{","}");
 $COLUMNS = str_replace($search,"",$COLUMNAS);
 
@@ -94,9 +95,11 @@ if(strtolower($AREA)=="comercial")
             LEFT JOIN SECTORES SEC 
             ON PS.ID_SECTOR = SEC.ID_SECTOR
             LEFT JOIN COTIZACIONES COT 
-            ON PP.ID_COTIZACION = COT.ID
+            ON P.ID = COT.ID_PROSPECTO
             LEFT JOIN PROSPECTO_ESTATUS_SEGUIMIENTO PES
-            ON P.ID_ESTATUS_SEGUIMIENTO = PES.ID";
+            ON COT.ESTADO_COTIZACION = PES.ID
+			LEFT JOIN COTIZACIONES_STATUS_FECHA CSF
+			ON COT.ID = CSF.ID_COTIZACION";
 
     //$sql = "SELECT ".$SELECT.$FROM." ORDER BY ".$ORDER;
     $sql = "SELECT DISTINCT ".$SELECT.$FROM;
@@ -142,7 +145,6 @@ ORDER BY PT.NOMBRE,PT.ID,FIELD(PTC.ID_ROL,'3','1','6','4','2','8','5','7','11','
 
 $consulta = $database->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
-
 $objPHPExcel = new PHPExcel();
 $objPHPExcel->getProperties()->setCreator("IMNC REPORTES")
     ->setLastModifiedBy("bmyorth")
@@ -177,7 +179,7 @@ $styleArray = array(
         'bold'  => true,
         'color' => array('rgb' => 'FFFFFF'),
     ));
-$ABCD = array("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","");
+$ABCD = array("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z");
 $objWorkSheet = $objPHPExcel->createSheet(0);
 $objPHPExcel->setActiveSheetIndex(0);
 $objWorkSheet = $objPHPExcel->getActiveSheet();
@@ -264,7 +266,21 @@ foreach ($consulta as $row)
         }
         else
         {
-            $objWorkSheet->setCellValue($ABCD[$key].$fila, $row[$index]);
+            if(str_replace('"',"",$value[1])=="float")
+            {
+
+                    $objPHPExcel->getActiveSheet()
+                        ->setCellValue($ABCD[$key].$fila, $row[$index]);
+                    $objPHPExcel->getActiveSheet()
+                        ->getStyle($ABCD[$key].$fila)
+                        ->getNumberFormat()
+                        ->setFormatCode('0.00' );
+
+            }else
+            {
+                $objWorkSheet->setCellValue($ABCD[$key].$fila, $row[$index]);
+            }
+
         }
     }
     $fila++;

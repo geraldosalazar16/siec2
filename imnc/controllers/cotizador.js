@@ -9,6 +9,8 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   $scope.bandera = 0;
   $scope.Normas = [];
   $scope.select_pos = -1;
+  //bandera que sirve para saber el modo: edición o inserción y actuar acorde en el modal de cotizador
+  $scope.editando=1;
 
   function fill_select_servicio () {
     //recibe la url del php que se ejecutará
@@ -262,7 +264,9 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   }
 
   // Abrir modal para insertar
-  $scope.modal_cotizacion_insertar = function(){
+  $scope.modal_cotizacion_insertar = function(){    
+    $scope.editando=0;
+    console.log("editando es ",$scope.editando);    
     //Limpiar el listado de normas sugeridas
     $scope.Normas = [];
     //Limpiar el control de normas
@@ -290,6 +294,8 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
   // Abrir modal para editar
   $scope.modal_cotizacion_editar = function(id_cotizacion){
+    $scope.editando=1;
+    console.log("editando es ",$scope.editando);    
     $('#modalTituloCotizacion').html("Editar datos");
     //$('#btnGuardarUsuario').attr("opcion", "editar");
     $scope.opcion_guardar_cotizacion = "editar";

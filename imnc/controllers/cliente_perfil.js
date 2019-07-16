@@ -12,6 +12,7 @@ $(window).load(function () {
   listener_autocomplete_colonia_change();
   colonia_checkbox();
   listar_Servicios();
+  loadTiposContactos();
  });
 
 function notify(titulo, texto, tipo) {
@@ -56,6 +57,7 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     var fec_fin = response.FECHA_FIN;
     fec_fin = fec_fin.substring(6, 8) + "/" + fec_fin.substring(4, 6) + "/" + fec_fin.substring(0, 4);
     $("#txtDescripcion").val(response.DESCRIPCION_CONTACTO);
+    $("#txtTipoContacto").val(response.ID_TIPO_CONTACTO);
     $("#txtNombreContacto").val(response.NOMBRE_CONTACTO);
     $("#txtCargoContacto").val(response.CARGO);
     $("#txtTelMovil").val(response.TELEFONO_MOVIL);
@@ -64,23 +66,23 @@ function fill_modal_insertar_actualizar_contacto(id_contacto) {
     $("#txtEmail").val(response.EMAIL);
     $("#cmbEsPrincipal").val(response.ES_PRINCIPAL);
     $("#datos_adicionales").val(response.DATOS_ADICIONALES);
-    loadTiposContactos(response.ID_TIPO_CONTACTO);
+    //loadTiposContactos(response.ID_TIPO_CONTACTO);
   });
 }
 
 // Listar todas los tipos de contactos
- function cambioServicio(seleccionado) {
+ function loadTiposContactos(seleccionado) {
    $.getJSON(`${global_apiserver}/clientes_contactos/getAllTipoContacto/`,function (response){
        $("#txtTipoContacto").html('<option value="" selected disabled>-elige una opción-</option>');
        $.each(response, function( indice, objTipo ) {
-         if (seleccionado == objTipo.ID) {
-           $("#txtTipoContacto").append('<option value="'+objTipo.ID+'" selected>'+objTipo.TIPO+'</option>');
-         }else{
+         // if (seleccionado == objTipo.ID) {
+         //   $("#txtTipoContacto").append('<option value="'+objTipo.ID+'" selected>'+objTipo.TIPO+'</option>');
+         // }else{
            $("#txtTipoContacto").append('<option value="'+objTipo.ID+'">'+objTipo.TIPO+'</option>');
-         }
+         // }
 
        });
-       $("#txtTipoContacto").val(seleccionado);
+      // $("#txtTipoContacto").val(seleccionado);
    });
 
 }
@@ -442,7 +444,7 @@ function listener_btn_nuevo_contacto() {
     $("#btnGuardarContacto").attr("id_domicilio", $(this).attr("id_domicilio"));
     $("#modalTituloDomiContacto").html("Insertar nuevo contacto");
     clear_modal_insertar_actualizar_contacto();
-    loadTiposContactos();
+    //loadTiposContactos();
     $("#modalInsertarActualizarDomiContacto").modal("show");
   });
 }
