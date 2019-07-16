@@ -161,7 +161,7 @@ if($id_servicio_cliente_etapa	!=	0){
 		for($i=0;$i<$cont;$i++){
 			$ids_tramites[$i] = $tramites[$i]['ID'];
 		}
-		$domicilios = $database->select("COTIZACION_SITIOS","*",["ID_COTIZACION" => $ids_tramites]);
+		$domicilios = $database->select("COTIZACION_SITIOS","*",["ID_COTIZACION" => $ID_COTIZACION]);
 		if(count($domicilios) > 0){
 			for($i=0;$i<count($domicilios);$i++){
 				$ID_SERVICIO_CLIENTE_ETAPA = $id_servicio_cliente_etapa; 
@@ -381,8 +381,36 @@ if($id_servicio_cliente_etapa	!=	0){
 				}
 			}
 			//Buscar los sitios
-			$sitios = $database->select("COTIZACION_SITIOS", "*", ["ID_COTIZACION"=>$tramite->ID]);
-			valida_error_medoo_and_die();
+			//$sitios = $database->select("COTIZACION_SITIOS", "*", ["ID_COTIZACION"=>$tramite->ID]);
+			//valida_error_medoo_and_die();
+			$campos_sitios = [
+	"COTIZACION_TRAMITES_SITIOS.ID",
+	"COTIZACION_SITIOS.ID_COTIZACION",
+	"COTIZACION_SITIOS.ID_DOMICILIO_SITIO",
+	"COTIZACION_SITIOS.TOTAL_EMPLEADOS",
+	"COTIZACION_SITIOS.NUMERO_EMPLEADOS_CERTIFICACION",
+	"COTIZACION_SITIOS.CANTIDAD_TURNOS",
+	"COTIZACION_SITIOS.CANTIDAD_DE_PROCESOS",
+	"COTIZACION_SITIOS.TEMPORAL_O_FIJO",
+	"COTIZACION_SITIOS.MATRIZ_PRINCIPAL",
+	"COTIZACION_SITIOS.ID_ACTIVIDAD",
+	"COTIZACION_TRAMITES_SITIOS.SELECCIONADO",
+	"COTIZACION_SITIOS.FACTOR_REDUCCION",
+	"COTIZACION_SITIOS.FACTOR_AMPLIACION",
+	"COTIZACION_SITIOS.JUSTIFICACION",
+	
+];
+		$sitios = $database->select("COTIZACION_TRAMITES_SITIOS", 
+										[	"[>]COTIZACION_SITIOS"=>["COTIZACION_TRAMITES_SITIOS.ID_SITIO"=>"ID"],
+											],
+											$campos_sitios,
+											["AND"=>
+												[
+													"COTIZACION_TRAMITES_SITIOS.ID_TRAMITE"=>$tramite_item["ID"],
+													"COTIZACION_SITIOS.ID_COTIZACION"=>$ID_COTIZACION]
+											]);
+		valida_error_medoo_and_die();
+			
 		
 			//Insertar en I_SG_AAUDITORIAS
 			$id_sg_auditoria = $database->insert("I_SG_AUDITORIAS", [ 
