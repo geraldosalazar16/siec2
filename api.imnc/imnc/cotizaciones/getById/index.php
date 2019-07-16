@@ -179,8 +179,34 @@ if($cotizacion[0]["ID_SERVICIO"] == 1){
 			$subtotal = $cotizacion_tarifa_adicional[$i]["TARIFA"] * $cotizacion_tarifa_adicional[$i]["CANTIDAD"];
 			$total_tarifa_adicional += $subtotal;
 		}
-
-		$cotizacion_sitios = $database->select("COTIZACION_SITIOS", "*", ["ID_COTIZACION"=>$tramite_item["ID"]]);
+		
+		//$cotizacion_sitios = $database->select("COTIZACION_SITIOS", "*", ["ID_COTIZACION"=>$tramite_item["ID"]]);
+		$campos_sitios = [
+	"COTIZACION_TRAMITES_SITIOS.ID",
+	"COTIZACION_SITIOS.ID_COTIZACION",
+	"COTIZACION_SITIOS.ID_DOMICILIO_SITIO",
+	"COTIZACION_SITIOS.TOTAL_EMPLEADOS",
+	"COTIZACION_SITIOS.NUMERO_EMPLEADOS_CERTIFICACION",
+	"COTIZACION_SITIOS.CANTIDAD_TURNOS",
+	"COTIZACION_SITIOS.CANTIDAD_DE_PROCESOS",
+	"COTIZACION_SITIOS.TEMPORAL_O_FIJO",
+	"COTIZACION_SITIOS.MATRIZ_PRINCIPAL",
+	"COTIZACION_SITIOS.ID_ACTIVIDAD",
+	"COTIZACION_TRAMITES_SITIOS.SELECCIONADO",
+	"COTIZACION_SITIOS.FACTOR_REDUCCION",
+	"COTIZACION_SITIOS.FACTOR_AMPLIACION",
+	"COTIZACION_SITIOS.JUSTIFICACION",
+	
+];
+		$cotizacion_sitios = $database->select("COTIZACION_TRAMITES_SITIOS", 
+										[	"[>]COTIZACION_SITIOS"=>["COTIZACION_TRAMITES_SITIOS.ID_SITIO"=>"ID"],
+											],
+											$campos_sitios,
+											["AND"=>
+												[
+													"COTIZACION_TRAMITES_SITIOS.ID_TRAMITE"=>$tramite_item["ID"],
+													"COTIZACION_SITIOS.ID_COTIZACION"=>$id]
+											]);
 		valida_error_medoo_and_die();
 
 		$total_dias_auditoria = 0;

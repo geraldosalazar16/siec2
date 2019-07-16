@@ -109,231 +109,292 @@
               </ul>
             </div>
           </div>
-          <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
-            <thead>
-              <tr class="headings">
-                <th class="column-title">ID</th>
-                <th class="column-title">Tipo</th>
-                <th class="column-title">Días de Auditoría</th>
-                <th class="column-title">Descuento del Día Auditor</th>
-                <th class="column-title">Costo</th>
-                <th class="column-title">Costo total<span style="font-size: 10px;"> *costos adicionales incluidos</span></th>
-                <th class="column-title"></th>
-              </tr>
-            </thead>
+          <div class="" role="tabpanel" data-example-id="togglable-tabs">
+            <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+								<li role="presentation" class=""  >
+									<a href="#tab_sitios" id="tab_sitios-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
+                          			Sitios</a>
+								</li>
+                <li role="presentation" class="active" > 
+								  <a href="#tab_cotizacion" id="tab_cotizacion-tab"  role="tab" data-toggle="tab" aria-expanded="true" >
+                          			Cotizaci&oacuten</a>
+								</li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+              <div role="tabpanel" class="tab-pane fade" id="tab_sitios" aria-labelledby="profile-tab">
+                  
+                   <button type="button" id="btnInsertarSitio" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_sitio_insertar()'
+                                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado' style="float: right">
+                                    <i class="fa fa-plus"> </i> Agregar sitio
+                                </button> 
 
-            <tbody>
-              <tr class="even pointer" ng-repeat="tramites_cotizacion in arr_tramites_cotizacion">
-                <td>{{$index + 1}}</td>
-                <td>{{tramites_cotizacion.TIPO }}</td>
-                <td>{{tramites_cotizacion.DIAS_AUDITORIA }}</td>
-                <td>{{tramites_cotizacion.DESCUENTO != null? tramites_cotizacion.DESCUENTO+"%" : "--" }}</td>
-                <td>{{tramites_cotizacion.TRAMITE_COSTO_DES | currency }}</td>
-                <td>{{tramites_cotizacion.TRAMITE_COSTO_TOTAL | currency }}</td>
-                <td>
-                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="modal_tramite_editar(tramites_cotizacion.ID)"
-                  ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
-                    Editar
-                  </button>
-                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
-                  ng-click="mostrar_tramite_sitios(tramites_cotizacion.ID)"
-                  style="float: right;">
-                    Mostrar cotización
-                  </button>
-                  <!--
+                      <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
+                        <thead>
+                          <tr class="headings">
+                            <th class="column-title">#</th>
+                            <th class="column-title">Nombre del sitio</th>
+                            <th class="column-title">Detalles</th>
+                            <th class="column-title">No. de empleados</th>
+                            <th class="column-title"></th>
+                            </tr>
+                          </thead>
 
-                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar"
-                  ng-click="modal_crear_servicio(tramites_cotizacion.ID_ETAPA_PROCESO, true, tramites_cotizacion)"
-                  ng-if='modulo_permisos["editar"] == 1 && bl_firmado && !tramites_cotizacion.ID_SERVICIO_CLIENTE && obj_cotizacion.SG_INTEGRAL == "si"' style="float: right;">
-                    Agregar a servicio integral
-                  </button>
+                          <tbody>
+                            <tr class="even pointer" ng-repeat="sitios_cotizacion in arr_sitios_de_la_cotizacion">
+                              <td>{{$index + 1}}</td>
+                              <td>
+                               {{sitios_cotizacion.NOMBRE }}<br>
+                               Actividad : {{sitios_cotizacion.ACTIVIDAD }}
+                              </td>
+                              <td>
+                                 # de empleados para certificación: {{sitios_cotizacion.NUMERO_EMPLEADOS_CERTIFICACION}} <br>
+                                 Cantidad de turnos: {{sitios_cotizacion.CANTIDAD_TURNOS}} <br>
+                                 Cantidad de procesos: {{sitios_cotizacion.CANTIDAD_DE_PROCESOS}} <br>
+                                 ¿Temporal o fijo? {{sitios_cotizacion.TEMPORAL_O_FIJO}} <br>
+                                 ¿Matriz o principal? {{sitios_cotizacion.MATRIZ_PRINCIPAL}}<br>
+                                 Factor de Reducción :  {{sitios_cotizacion.FACTOR_REDUCCION}}%<br>
+                                 Factor de Ampliación :  {{sitios_cotizacion.FACTOR_AMPLIACION}}%<br>
+                                  Justificación :  {{sitios_cotizacion.JUSTIFICACION}}
+                              </td>
+                              <td>{{sitios_cotizacion.TOTAL_EMPLEADOS}}</td>
+                              
+                             
+                              <td>
+                                 <button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" ng-click="modal_cotizacion_sitio_eliminar(sitios_cotizacion.ID)"
+                                   ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
+                                  <i class="fa fa-trash"></i>
+                                </button>
+                                <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"
+                                  ng-click='modal_sitio_editar(sitios_cotizacion.ID)' ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'>
+                                  <i class="fa fa-edit"> </i> Editar sitio
+                                </button>
+                              </td>
 
-                   <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar"
-                  ng-click="actualizar_servicio(tramites_cotizacion)"
-                  ng-if='modulo_permisos["editar"] == 1 && bl_firmado && obj_cotizacion.FOLIO_UPDATE == "E" && tramites_cotizacion.ID_SERVICIO_CLIENTE != null' style="float: right;">
-                    Actulizar Servicio
-                  </button>
-                  -->
-                  <a type="button" class="btn btn-primary btn-xs btn-imnc btnEditar"
-                  href="./?pagina=sg_tipos_servicio&id_serv_cli_et={{tramites_cotizacion.ID_SERVICIO_CLIENTE}}"
-                  ng-if='tramites_cotizacion.ID_SERVICIO_CLIENTE != null' style="float: right;">
-                    Ver Auditoría
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                            </tr>
+                         </tbody>
+                        </table>            
+              </div>
+              <div role="tabpanel" class="tab-pane fade active in" id="tab_cotizacion" aria-labelledby="home-tab">
+               
+                <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
+                  <thead>
+                    <tr class="headings">
+                      <th class="column-title">ID</th>
+                      <th class="column-title">Tipo</th>
+                      <th class="column-title">Días de Auditoría</th>
+                      <th class="column-title">Descuento del Día Auditor</th>
+                      <th class="column-title">Costo</th>
+                      <th class="column-title">Costo total<span style="font-size: 10px;"> *costos adicionales incluidos</span></th>
+                      <th class="column-title"></th>
+                    </tr>
+                  </thead>
 
-          <div id="sitio_tramite" hidden>
-            <div class="col-md-4 col-sm-4 col-xs-4">
-              <ul class="list-unstyled user_data">
-                  <li id="lbTramite">
-                    <h2><b>Trámite: {{obj_cotizacion_tramite.ETAPA}}</b></h2>
-                  </li>
-                  <li id="lbTotalSitios">
-                    Total de sitios en cotización: {{obj_cotizacion_tramite.COUNT_SITIOS.SITIOS_A_VISITAR}}
-                  </li>
-                  <li id="lbSitiosVisitar">
-                    Sitios a visitar: {{obj_cotizacion_tramite.COUNT_SITIOS.TOTAL_SITIOS}} de {{obj_cotizacion_tramite.COUNT_SITIOS.SITIOS_A_VISITAR}}
-                  </li>
-                  <li id="lbRestriccion">
-                    {{obj_cotizacion_tramite.COUNT_SITIOS.RESTRICCIONES_SITIOS}}
-                  </li>
-                  <li>
-                    <button type="button" id="btnInsertarSitio" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_sitio_insertar()'
-                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'>
-                      <i class="fa fa-plus"> </i> Agregar sitio
-                    </button>
+                  <tbody>
+                    <tr class="even pointer" ng-repeat="tramites_cotizacion in arr_tramites_cotizacion">
+                      <td>{{$index + 1}}</td>
+                      <td>{{tramites_cotizacion.TIPO }}</td>
+                      <td>{{tramites_cotizacion.DIAS_AUDITORIA }}</td>
+                      <td>{{tramites_cotizacion.DESCUENTO != null? tramites_cotizacion.DESCUENTO+"%" : "--" }}</td>
+                      <td>{{tramites_cotizacion.TRAMITE_COSTO_DES | currency }}</td>
+                      <td>{{tramites_cotizacion.TRAMITE_COSTO_TOTAL | currency }}</td>
+                      <td>
+                        <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="modal_tramite_editar(tramites_cotizacion.ID)"
+                          ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
+                          Editar
+                        </button>
+                        <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
+                          ng-click="mostrar_tramite_sitios(tramites_cotizacion.ID)"
+                          style="float: right;">
+                            Mostrar cotización
+                        </button>
+                  
+                        <a type="button" class="btn btn-primary btn-xs btn-imnc btnEditar"
+                         href="./?pagina=sg_tipos_servicio&id_serv_cli_et={{tramites_cotizacion.ID_SERVICIO_CLIENTE}}"
+                         ng-if='tramites_cotizacion.ID_SERVICIO_CLIENTE != null' style="float: right;">
+                           Ver Auditoría
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                 </table>
 
-                    <button type="button" id="btnInsertarTarifa" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_tarifa_adicional_insertar()'
-                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'>
-                      <i class="fa fa-plus"> </i> Agregar Tarifa Adicional
-                    </button>
-                  </li>
-              </ul>
-            </div>
-			<br>
-          <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
-            <thead>
-              <tr class="headings">
-                <th class="column-title">#</th>
-                <th class="column-title">Descripción</th>
-                <th class="column-title">Tarifa Adicional</th>
-                <th class="column-title">Cantidad</th>
-                <th class="column-title">Subtotal Tarifa Adicional</th>
-                <th class="column-title"></th>
-              </tr>
-            </thead>
+                 <div id="sitio_tramite" hidden>
+                    <div class="col-md-4 col-sm-4 col-xs-4">
+                        <ul class="list-unstyled user_data">
+                            <li id="lbTramite">
+                              <h2><b>Trámite: {{obj_cotizacion_tramite.ETAPA}}</b></h2>
+                            </li>
+                            <li id="lbTotalSitios">
+                               Total de sitios en cotización: {{obj_cotizacion_tramite.COUNT_SITIOS.SITIOS_A_VISITAR}}
+                            </li>
+                            <li id="lbSitiosVisitar">
+                               Sitios a visitar: {{obj_cotizacion_tramite.COUNT_SITIOS.TOTAL_SITIOS}} de {{obj_cotizacion_tramite.COUNT_SITIOS.SITIOS_A_VISITAR}}
+                            </li>
+                            <li id="lbRestriccion">
+                               {{obj_cotizacion_tramite.COUNT_SITIOS.RESTRICCIONES_SITIOS}}
+                            </li>
+                            <li>
+                                <button type="button" id="btnInsertarSitio" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_sitio_tramite_insertar()'
+                                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'>
+                                    <i class="fa fa-plus"> </i> Agregar sitio
+                                </button> 
 
-            <tbody>
-              <tr class="even pointer" ng-repeat="tarifa_cotizacion in arr_tarifa_adicional_cotizacion">
-                <td>{{$index + 1}}</td>
-                <td>{{tarifa_cotizacion.DESCRIPCION}}</td>
-                <td>{{tarifa_cotizacion.TARIFA}}</td>
-                <td>{{tarifa_cotizacion.CANTIDAD}}</td>
-                <td>{{tarifa_cotizacion.SUBTOTAL}}</td>
-                <td>
-                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" ng-click="modal_tarifa_adicional_eliminar(tarifa_cotizacion.ID)"
-                    ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
-                    <i class="fa fa-trash"></i>
-                  </button>
-                  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"
-                    ng-click='modal_tarifa_adicional_editar(tarifa_cotizacion.ID)' ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'>
-                    <i class="fa fa-edit"> </i> Editar Tarifa Adicional
-                  </button>
-                </td>
-
-              </tr>
-            </tbody>
-
-          </table>
-
-          <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
-            <thead>
-              <tr class="headings">
-                <th class="column-title">#</th>
-                <th class="column-title">Nombre del sitio</th>
-                <th class="column-title">Detalles</th>
-                <th class="column-title">No. de empleados</th>
-                <th class="column-title">Días de auditoría</th>
-                <th class="column-title">Por visitar</th>
-                <th class="column-title"></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr class="even pointer" ng-repeat="sitios_cotizacion in arr_sitios_cotizacion">
-                <td>{{$index + 1}}</td>
-                <td>
-                  {{sitios_cotizacion.NOMBRE }}<br>
-                  Actividad : {{sitios_cotizacion.ACTIVIDAD }}
-                </td>
-                <td>
-                  # de empleados para certificación: {{sitios_cotizacion.NUMERO_EMPLEADOS_CERTIFICACION}} <br>
-                  Cantidad de turnos: {{sitios_cotizacion.CANTIDAD_TURNOS}} <br>
-                  Cantidad de procesos: {{sitios_cotizacion.CANTIDAD_DE_PROCESOS}} <br>
-                  ¿Temporal o fijo? {{sitios_cotizacion.TEMPORAL_O_FIJO}} <br>
-                  ¿Matriz o principal? {{sitios_cotizacion.MATRIZ_PRINCIPAL}}<br>
-                  Factor de Reducción :  {{sitios_cotizacion.FACTOR_REDUCCION}}%<br>
-                  Factor de Ampliación :  {{sitios_cotizacion.FACTOR_AMPLIACION}}%<br>
-                  Justificación :  {{sitios_cotizacion.JUSTIFICACION}}
-                </td>
-                <td>{{sitios_cotizacion.TOTAL_EMPLEADOS}}</td>
-                <td ng-if="!tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID != 20">
-                  Días base: <b>{{sitios_cotizacion.DIAS_AUDITORIA}}</b><br>
-                  Factor de reducción y ampliación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_RED}}</b><br>
-                  Factor de ajuste por vigilancia o renovación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_SUBTOTAL}}</b>
-                </td>
-				        <td ng-if="tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID != 20">
-                  Días auditor: <b>{{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}}</b><br>
-                </td>
-                <td ng-if="!tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID == 20">
-                  Días base: <b>{{sitios_cotizacion.DIAS_AUDITORIA}}</b><br>
-                  <span ng-repeat-start="norma in obj_cotizacion_tramite.NORMAS">{{norma.ID_NORMA}} : <strong>{{norma.DIAS}}</strong></span>
-                  <br ng-repeat-end>
-                  Factor de reducción y ampliación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_RED}}</b><br>
-                  Factor de ajuste por vigilancia o renovación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_SUBTOTAL}}</b>
-                </td>
-				        <td ng-if="tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID == 20">
-                  Días auditor: <b>{{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}}</b><br>
-                  <span ng-repeat="norma in obj_cotizacion_tramite.NORMAS">{{norma.ID_NORMA}} : <strong>{{norma.DIAS}}</strong></span>
-                </td>
-                <td>
-                  <input type="checkbox" class="flat" ng-click="actualiza_sitio_seleccionado(sitios_cotizacion.ID)"
-                  ng-checked="sitios_cotizacion.SELECCIONADO == 1" ng-disabled="bl_cotizado || modulo_permisos['editar'] != 1">
-                </td>
-                <td>
-                  <button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" ng-click="modal_cotizacion_sitio_eliminar(sitios_cotizacion.ID)"
-                    ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
-                    <i class="fa fa-trash"></i>
-                  </button>
-                  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"
-                    ng-click='modal_sitio_editar(sitios_cotizacion.ID)' ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'>
-                    <i class="fa fa-edit"> </i> Editar sitio
-                  </button>
-                </td>
-
-              </tr>
-            </tbody>
-          </table>
-
-            <form name="form2" id="form2" class="form-horizontal form-label-left" ng-if="arr_sitios_cotizacion.length >= 1" hidden>
-                  <div class="form-group">
-                    <label class="control-label col-md-4 col-sm-4 col-xs-10">Cotizar con el total de empleados</label>
-                      <div class="col-md-1 col-sm-1 col-xs-1">
-                        <input type="checkbox" class="form-control col-md-7 col-xs-12 selector noshadow" ng-model="bl_sum_empleados">
+                                <button type="button" id="btnInsertarTarifa" class="btn btn-primary btn-xs btn-imnc" ng-click='modal_tarifa_adicional_insertar()'
+                                    ng-if='modulo_permisos["registrar"] == 1 && !bl_cotizado'>
+                                    <i class="fa fa-plus"> </i> Agregar Tarifa Adicional
+                                </button>
+                              </li>
+                            </ul>
                       </div>
-                  </div>
-            </form>
+			                <br>
+                      <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
+                        <thead>
+                          <tr class="headings">
+                            <th class="column-title">#</th>
+                            <th class="column-title">Descripción</th>
+                            <th class="column-title">Tarifa Adicional</th>
+                            <th class="column-title">Cantidad</th>
+                            <th class="column-title">Subtotal Tarifa Adicional</th>
+                            <th class="column-title"></th>
+                          </tr>
+                        </thead>
 
-            <div class="alert alert-danger alert-dismissible fade in" role="alert" ng-hide="obj_cotizacion_tramite.RESTRICCIONES.length == 0">
-              <ul class="list-unstyled user_data" ng-repeat="restriccion in obj_cotizacion_tramite.RESTRICCIONES">
-                  <li>
-                    {{restriccion}}
-                  </li>
-              </ul>
+                        <tbody>
+                          <tr class="even pointer" ng-repeat="tarifa_cotizacion in arr_tarifa_adicional_cotizacion">
+                            <td>{{$index + 1}}</td>
+                            <td>{{tarifa_cotizacion.DESCRIPCION}}</td>
+                            <td>{{tarifa_cotizacion.TARIFA}}</td>
+                            <td>{{tarifa_cotizacion.CANTIDAD}}</td>
+                            <td>{{tarifa_cotizacion.SUBTOTAL}}</td>
+                            <td>
+                              <button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" ng-click="modal_tarifa_adicional_eliminar(tarifa_cotizacion.ID)"
+                                ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
+                                  <i class="fa fa-trash"></i>
+                              </button>
+                              <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"
+                                ng-click='modal_tarifa_adicional_editar(tarifa_cotizacion.ID)' ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'>
+                                <i class="fa fa-edit"> </i> Editar Tarifa Adicional
+                              </button>
+                            </td>
+
+                            </tr>
+                          </tbody>
+
+                      </table>
+
+                      <table class="table table-striped responsive-utilities jambo_table bulk_action" style="margin: 25px 0px 45px;">
+                        <thead>
+                          <tr class="headings">
+                            <th class="column-title">#</th>
+                            <th class="column-title">Nombre del sitio</th>
+                            <th class="column-title">Detalles</th>
+                            <th class="column-title">No. de empleados</th>
+                            <th class="column-title">Días de auditoría</th>
+                            <th class="column-title">Por visitar</th>
+                            <th class="column-title"></th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            <tr class="even pointer" ng-repeat="sitios_cotizacion in arr_sitios_cotizacion">
+                              <td>{{$index + 1}}</td>
+                              <td>
+                               {{sitios_cotizacion.NOMBRE }}<br>
+                               Actividad : {{sitios_cotizacion.ACTIVIDAD }}
+                              </td>
+                              <td>
+                                 # de empleados para certificación: {{sitios_cotizacion.NUMERO_EMPLEADOS_CERTIFICACION}} <br>
+                                 Cantidad de turnos: {{sitios_cotizacion.CANTIDAD_TURNOS}} <br>
+                                 Cantidad de procesos: {{sitios_cotizacion.CANTIDAD_DE_PROCESOS}} <br>
+                                 ¿Temporal o fijo? {{sitios_cotizacion.TEMPORAL_O_FIJO}} <br>
+                                 ¿Matriz o principal? {{sitios_cotizacion.MATRIZ_PRINCIPAL}}<br>
+                                 Factor de Reducción :  {{sitios_cotizacion.FACTOR_REDUCCION}}%<br>
+                                 Factor de Ampliación :  {{sitios_cotizacion.FACTOR_AMPLIACION}}%<br>
+                                  Justificación :  {{sitios_cotizacion.JUSTIFICACION}}
+                              </td>
+                              <td>{{sitios_cotizacion.TOTAL_EMPLEADOS}}</td>
+                              <td ng-if="!tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID != 20">
+                                Días base: <b>{{sitios_cotizacion.DIAS_AUDITORIA}}</b><br>
+                                Factor de reducción y ampliación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_RED}}</b><br>
+                                Factor de ajuste por vigilancia o renovación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_SUBTOTAL}}</b>
+                              </td>
+				                      <td ng-if="tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID != 20">
+                                 Días auditor: <b>{{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}}</b><br>
+                              </td>
+                              <td ng-if="!tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID == 20">
+                                 Días base: <b>{{sitios_cotizacion.DIAS_AUDITORIA}}</b><br>
+                                <span ng-repeat-start="norma in obj_cotizacion_tramite.NORMAS">{{norma.ID_NORMA}} : <strong>{{norma.DIAS}}</strong></span>
+                                <br ng-repeat-end>
+                                Factor de reducción y ampliación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_RED}}</b><br>
+                                Factor de ajuste por vigilancia o renovación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_SUBTOTAL}}</b>
+                              </td>
+				                      <td ng-if="tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID == 20">
+                                 Días auditor: <b>{{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}}</b><br>
+                                <span ng-repeat="norma in obj_cotizacion_tramite.NORMAS">{{norma.ID_NORMA}} : <strong>{{norma.DIAS}}</strong></span>
+                              </td>
+                              <td>
+                                <input type="checkbox" class="flat" ng-click="actualiza_sitio_seleccionado(sitios_cotizacion.ID)"
+                                ng-checked="sitios_cotizacion.SELECCIONADO == 1" ng-disabled="bl_cotizado || modulo_permisos['editar'] != 1">
+                              </td>
+                              <td>
+                                 <button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" ng-click="modal_tramite_sitio_eliminar(sitios_cotizacion.ID)"
+                                   ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado' style="float: right;">
+                                  <i class="fa fa-trash"></i>
+                                </button>
+                               <!-- <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;"
+                                  ng-click='modal_sitio_editar(sitios_cotizacion.ID)' ng-if='modulo_permisos["editar"] == 1 && !bl_cotizado'>
+                                  <i class="fa fa-edit"> </i> Editar sitio
+                                </button> -->
+                              </td>
+
+                            </tr>
+                         </tbody>
+                        </table>
+
+                        <form name="form2" id="form2" class="form-horizontal form-label-left" ng-if="arr_sitios_cotizacion.length >= 1" hidden>
+                              <div class="form-group">
+                                <label class="control-label col-md-4 col-sm-4 col-xs-10">Cotizar con el total de empleados</label>
+                                  <div class="col-md-1 col-sm-1 col-xs-1">
+                                    <input type="checkbox" class="form-control col-md-7 col-xs-12 selector noshadow" ng-model="bl_sum_empleados">
+                                  </div>
+                              </div>
+                        </form>
+
+                        <div class="alert alert-danger alert-dismissible fade in" role="alert" ng-hide="obj_cotizacion_tramite.RESTRICCIONES.length == 0">
+                          <ul class="list-unstyled user_data" ng-repeat="restriccion in obj_cotizacion_tramite.RESTRICCIONES">
+                              <li>
+                                {{restriccion}}
+                              </li>
+                          </ul>
+                        </div>
+
+                          <div class="col-md-8 col-md-offset-1 col-sm-8 col-xs-8" ng-hide="obj_cotizacion_tramite.RESTRICCIONES.length > 0">
+                            <ul class="list-unstyled user_data">
+                                <li id="lbTotla" style="font-size: 20px;">
+                                  Total de empleados: {{obj_cotizacion_tramite.TOTAL_EMPLEADOS}}<br>
+                                  Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}}<br>
+                                  <div ng-if="obj_cotizacion.SG_INTEGRAL == 'si'">
+                                    Factor de Integración: {{obj_cotizacion_tramite.FACTOR_INTEGRACION}}%<br>
+                                    Total Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA_INTG}}<br>
+                                  </div>
+                                  Tarifa de Día Auditor <span style="font-size: 12px;"> *c/ descuento</span>: {{obj_cotizacion_tramite.TARIFA_TOTAL.TARIFA | currency}}<br>
+                                  Costo de auditoría : {{obj_cotizacion_tramite.COSTO_DESCUENTO | currency}}<br>
+                                  Viáticos: {{obj_cotizacion_tramite.VIATICOS | currency}}<br>
+                                  Total Tarifa Adicional: {{obj_cotizacion_tramite.TARIFA_ADICIONAL | currency}}<br>
+                                  Costo Total de auditoría<span style="font-size: 12px;"> *costos adicionales incluidos</span>
+                                  : {{obj_cotizacion_tramite.COSTO_TOTAL | currency}}
+                                </li>
+                            </ul>
+                          </div>
+                </div>
+              </div>
             </div>
 
-            <div class="col-md-8 col-md-offset-1 col-sm-8 col-xs-8" ng-hide="obj_cotizacion_tramite.RESTRICCIONES.length > 0">
-              <ul class="list-unstyled user_data">
-                  <li id="lbTotla" style="font-size: 20px;">
-                    Total de empleados: {{obj_cotizacion_tramite.TOTAL_EMPLEADOS}}<br>
-                    Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}}<br>
-                    <div ng-if="obj_cotizacion.SG_INTEGRAL == 'si'">
-                      Factor de Integración: {{obj_cotizacion_tramite.FACTOR_INTEGRACION}}%<br>
-                      Total Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA_INTG}}<br>
-                    </div>
-                    Tarifa de Día Auditor <span style="font-size: 12px;"> *c/ descuento</span>: {{obj_cotizacion_tramite.TARIFA_TOTAL.TARIFA | currency}}<br>
-                    Costo de auditoría : {{obj_cotizacion_tramite.COSTO_DESCUENTO | currency}}<br>
-                    Viáticos: {{obj_cotizacion_tramite.VIATICOS | currency}}<br>
-                    Total Tarifa Adicional: {{obj_cotizacion_tramite.TARIFA_ADICIONAL | currency}}<br>
-                    Costo Total de auditoría<span style="font-size: 12px;"> *costos adicionales incluidos</span>
-                    : {{obj_cotizacion_tramite.COSTO_TOTAL | currency}}
-                  </li>
-              </ul>
-            </div>
           </div>
-          <!--FIN DIV-->
+          
+
+         
+          
         </div>
       </div>
     </div>
@@ -796,6 +857,35 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
           <button type="button" class="btn btn-primary"  id="btnGuardarUsuario" ng-click="insertar_actividad()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Modal insertar sitio en el tramite-->
+  <div class="modal fade" id="modalInsertarActualizarSitioTramite" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="modalTituloSitioTramite">Insertar/Actualizar</h4>
+        </div>
+        <div class="modal-body">
+            <form id="demo-form2" style="margin-top: -20px;">
+               <div class="form-group form-vertical">
+                <label class="control-label col-md-12">Nombre del Domicilio <span class="required">*</span></label>
+                <div class="col-md-12">
+                  <select id="selectDom" ng-model="obj_sitio1.ID_SITIO" class="form-control" ng-options="dom.ID as dom.NOMBRE for dom in arr_sitios_de_la_cotizacion">
+                     <option value="" selected disabled>-- selecciona un domicilio --</option>
+                  </select>
+                </div>
+              </div>
+
+              
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary"  id="btnGuardarUsuario" ng-click="insertar_sitio_tramite()">Guardar</button>
         </div>
       </div>
     </div>

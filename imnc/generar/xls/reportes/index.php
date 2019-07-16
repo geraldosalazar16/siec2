@@ -266,7 +266,21 @@ foreach ($consulta as $row)
         }
         else
         {
-            $objWorkSheet->setCellValue($ABCD[$key].$fila, $row[$index]);
+            if(str_replace('"',"",$value[1])=="float")
+            {
+
+                    $objPHPExcel->getActiveSheet()
+                        ->setCellValue($ABCD[$key].$fila, $row[$index]);
+                    $objPHPExcel->getActiveSheet()
+                        ->getStyle($ABCD[$key].$fila)
+                        ->getNumberFormat()
+                        ->setFormatCode('0.00' );
+
+            }else
+            {
+                $objWorkSheet->setCellValue($ABCD[$key].$fila, $row[$index]);
+            }
+
         }
     }
     $fila++;

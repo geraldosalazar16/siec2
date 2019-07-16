@@ -5,6 +5,7 @@ app.controller("ver_cotizacion_controller", ['$scope','$window', '$http','$docum
   $scope.arr_actividad = [];
   $scope.obj_cotizacion = {};
   $scope.obj_sitio = {};
+  $scope.obj_sitio1 = {};
   $scope.obj_integracion = {};
   $scope.chkboxes = [];
   $scope.listaDomicilios = [];
@@ -238,6 +239,7 @@ $scope.formData = {};
         $scope.fill_select_tramites();
         $scope.fill_select_tarifa();
         $scope.fill_select_estatus(data[0].ESTADO_COTIZACION);
+		$scope.cargar_all_sitios_cotizacion();
         fill_select_tipo_servicio();
         fill_cmb_tarifa_adicional();
         fill_checkbox_cambio();
@@ -554,14 +556,21 @@ $scope.formData = {};
     $('#modalTituloTarifaAdicional').html("Insertar tarifa adicional");
     $('#modalInsertarActualizarTarifaAdicional').modal('show');
   }
- 
-  // Abrir modal para insertar
+ // Abrir modal para insertar sitio en la cotizacion
   $scope.modal_sitio_insertar = function(){
     $scope.obj_sitio = {};
     accion_sitio = "insertar";
     $scope.chkActv = false;
     $('#modalTituloSitioCotizacion').html("Insertar sitio");
     $('#modalInsertarActualizarSitioCotizacion').modal('show');
+  }
+  // Abrir modal para insertar sitio en el tramite
+  $scope.modal_sitio_tramite_insertar = function(){
+    $scope.obj_sitio1 = {};
+    accion_sitio = "insertar";
+    $scope.chkActv = false;
+    $('#modalTituloSitioTramite').html("Insertar sitio");
+    $('#modalInsertarActualizarSitioTramite').modal('show');
   }
   // Abrir modal para insertar
   $scope.modal_tramite_insertar = function(){
@@ -828,10 +837,37 @@ $scope.formData = {};
       console.log("Error al generar petición: " + response);
     });
   }
-
-
+	//Insertar sitio en el tramite
+	$scope.insertar_sitio_tramite = function(){
+		$scope.obj_sitio1.ID_TRAMITE = current_tramite;
+		$scope.obj_sitio1.ID_COTIZACION = global_id_cotizacion;
+		$scope.obj_sitio1.ID_USUARIO= sessionStorage.getItem("id_usuario");
+		var http_request = {
+			method: 'POST',
+			url: global_apiserver + "/cotizacion_tramites_sitios/insert/",
+			data: angular.toJson($scope.obj_sitio1)
+		};
+		$http(http_request).success(function(data) {
+		if(data) { 
+			if (data.resultado == "ok") {
+				notify("Éxito", "Se han guardado los cambios", "success");
+				$('#modalInsertarActualizarSitioTramite').modal('hide');
+				$scope.despliega_cotizacion();
+			}
+			else{
+				notify("Error", data.mensaje, "error");
+				$('#modalInsertarActualizarSitioTramite').modal('hide');
+			}
+		} 
+		else  {
+			console.log("No hay datos");
+		}
+		}).error(function(response) {
+			console.log("Error al generar petición: " + response);
+		});
+	}
   $scope.cotizacion_sitio_guardar = function(){
-    $scope.obj_sitio.ID_COTIZACION = current_tramite;
+    $scope.obj_sitio.ID_COTIZACION = global_id_cotizacion;
     $scope.obj_sitio.ID_USUARIO= sessionStorage.getItem("id_usuario");
 
     if (accion_sitio == 'insertar') {
@@ -857,6 +893,7 @@ $scope.formData = {};
         }
         else{
           notify("Error", data.mensaje, "error");
+		  $('#modalInsertarActualizarSitioCotizacion').modal('hide');
         }
       } 
       else  {
@@ -889,7 +926,7 @@ $scope.formData = {};
       console.log("Error al generar petición: " + response);
     });
   }
-
+	// ELIMINAR SITIO DE LA COTIZACION
   $scope.modal_cotizacion_sitio_eliminar = function(id_cotizacion_sitio){
     var http_request = {
     method: 'GET',
@@ -913,11 +950,34 @@ $scope.formData = {};
       console.log("Error al generar petición: " + response);
     });
   }
-
+	// ELIMINAR SITIO DEL TRAMITE
+  $scope.modal_tramite_sitio_eliminar = function(id_tramite_sitio){
+    var http_request = {
+    method: 'GET',
+    url: global_apiserver + "/cotizacion_tramites_sitios/delete/?id="+id_tramite_sitio,
+    };
+   
+    $http(http_request).success(function(data) {
+      if(data) { 
+        if (data.resultado == "ok") {
+           notify("Éxito", "Se han eliminado el registro", "success");
+           $scope.despliega_cotizacion();
+        }
+        else{
+          notify("Error", data.mensaje, "error");
+        }
+      } 
+      else  {
+        console.log("No hay datos");
+      }
+    }).error(function(response) {
+      console.log("Error al generar petición: " + response);
+    });
+  }
   $scope.actualiza_sitio_seleccionado = function(id_sitio){
     var http_request = {
       method: 'GET',
-      url: global_apiserver + "/cotizacion_sitios/updateSeleccionado/?id="+id_sitio,
+      url: global_apiserver + "/cotizacion_tramites_sitios/updateSeleccionado/?id="+id_sitio,
     };
    
     $http(http_request).success(function(data) {
@@ -1009,7 +1069,30 @@ $scope.formData = {};
     });
   }
 
-
+  $scope.cargar_all_sitios_cotizacion = function(){
+    var http_request = {
+      method: 'GET',
+      url: global_apiserver + "/cotizacion_sitios/getAllByIdCotizacion/?id="+global_id_cotizacion,
+    };
+   
+    $http(http_request).success(function(data) {
+      if(data) { 
+        if (data.resultado == "ok") {
+          $scope.arr_sitios_de_la_cotizacion= data.datos;
+           // $scope.despliega_cotizacion();
+		   var aaa=0;
+        }
+        else{
+          notify("Error", data.mensaje, "error");
+        }
+      } 
+      else  {
+        console.log("No hay datos");
+      }
+    }).error(function(response) {
+      console.log("Error al generar petición: " + response);
+    });
+  }
   // Funcion que recarga la pagina
   $scope.reload = function(){
     $window.location.reload();

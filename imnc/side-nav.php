@@ -215,7 +215,7 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '  <ul class="nav child_menu" style="display: none">';
             echo '  <li><a>Comercial</a>';
             echo '  <ul class="nav child_menu" style="display: none">';
-            echo '      <li><a href="#">Ventas</a></li>';
+            echo '      <li><a href="./?pagina=indicadores_comercial_ventas">Ventas</a></li>';
             echo '      <li><a href="#">Plan vs Real</a></li>';
             echo '  </ul></li>';
             echo '  <li><a>Programación</a>';
