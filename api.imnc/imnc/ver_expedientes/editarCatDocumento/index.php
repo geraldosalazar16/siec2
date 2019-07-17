@@ -52,8 +52,8 @@ valida_parametro_and_die($SERVICIO, "Es necesario seleccionar el servicio");
 $TIPO_SERVICIO = $objeto->TIPO_SERVICIO;
 valida_parametro_and_die($TIPO_SERVICIO, "Es necesario seleccionar el tipo de servicio");
 
-
-$database->update("CATALOGO_DOCUMENTOS", [
+if($database->count("CATALOGO_DOCUMENTOS",["AND"=>["NOMBRE"=>strtoupper($NOMBRE),"ID_SECCION"=>$SECCION,"ID_ETAPA"=>$ETAPA,"ID_TIPO_SERVICIO"=>$TIPO_SERVICIO]]) == 0){
+	$database->update("CATALOGO_DOCUMENTOS", [
     "NOMBRE" => strtoupper($NOMBRE),
     "DESCRIPCION"=>	strtoupper($DESCRIPCION),
     "ID_SECCION" => $SECCION,
@@ -63,5 +63,11 @@ $database->update("CATALOGO_DOCUMENTOS", [
 valida_error_medoo_and_die();
 
 $respuesta["resultado"]="ok";
+}
+else{
+	$respuesta["resultado"]="error";
+	$respuesta["mensaje"]="Este documento ya ha sido cargado para este tipo de servicio,etapa y seccion.";
+}
+
 
 print_r(json_encode($respuesta));

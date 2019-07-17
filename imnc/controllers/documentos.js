@@ -153,12 +153,12 @@ app.controller('cat_documentos_controller',['$scope','$http' ,function($scope,$h
             };
             $http.post(global_apiserver + "/ver_expedientes/guardarCatDocumento/",JSON.stringify(datos)).
             then(function(response){
-                if(response){
+                if(response.data.resultado == 'ok'){
 					notify('Éxito','El tipo de documento se guardó correctamente','success');
                     cargarDocumentos();
                 }
                 else{
-                    notify('Error','No se pudo guardar el tipo de documento','error');
+                    notify('Error',response.data.mensaje,'error');
                 }
                 $("#modalInsertarActualizar").modal("hide");
             });
@@ -175,12 +175,12 @@ app.controller('cat_documentos_controller',['$scope','$http' ,function($scope,$h
             };
             $http.post(global_apiserver + "/ver_expedientes/editarCatDocumento/",datos).
             then(function(response){
-                if(response){
+                if(response.data.resultado == 'ok'){
 					notify('Éxito','El tipo de documento se editó correctamente','success');
                     cargarDocumentos();
                 }
                 else{
-                    notify('Error','No se pudo guardar los cambios','error');
+                    notify('Error','No se pudo guardar los cambios. '+response.data.mensaje,'error');
                 }
                 $("#modalInsertarActualizar").modal("hide");
             });
