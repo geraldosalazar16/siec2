@@ -38,8 +38,8 @@ if (!isset($_SESSION['CREATED'])) {
 <?php include "./diff/".$global_diffname."/strings.php"; ?>
 
 <?php
-  $contollerName = $_REQUEST["pagina"];
-  if ($_REQUEST["pagina"] == "") {
+  $contollerName = @$_REQUEST["pagina"];  
+  if ($contollerName == "") {
     $contollerName = "dashboard";
   }
 ?>
@@ -161,7 +161,7 @@ if (!isset($_SESSION['CREATED'])) {
 
       <!-- page content -->
       <?php
-        if ($_REQUEST["pagina"] == "") {
+        if (@$_REQUEST["pagina"] == "") {
           include "./contents/dashboard.php";
         }
         else{

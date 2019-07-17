@@ -223,6 +223,10 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '      <li><a href="#">Días Auditor</a></li>';
             echo '      <li><a href="#">Tasa Ocupacional</a></li>';
             echo '  </ul></li>';
+            echo '  <li><a>Facturación</a>';
+            echo '  <ul class="nav child_menu" style="display: none">';
+            echo '      <li><a href="./?pagina=estado_actual_facturacion">Estado actual</a></li>';                 
+            echo '  </ul></li>';
             echo '  </ul>';
             echo '</li>';
         }
