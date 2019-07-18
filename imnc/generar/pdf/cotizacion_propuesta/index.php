@@ -267,7 +267,7 @@ if($cotizacion[0]["BANDERA"] == 1){
 //		AQUI VOY A BUSCAR LA CANTIDAD DE SITIOS Y DE EMPLEADOS TOTAL EN ESOS SITIOS
 /*=======================================================================================*/
 $where_sitios="";
-$or="";
+$or="";/*
 for($i=0;$i<count($datos);$i++){
 	if($i==0){
 		$or=" ";
@@ -276,12 +276,49 @@ for($i=0;$i<count($datos);$i++){
 		$or=" OR ";
 	}
 	$where_sitios .= $or.'`ID_COTIZACION`='.$datos[$i]->ID; 
-}
-$query = 'SELECT DISTINCT `ID_DOMICILIO_SITIO`,`TOTAL_EMPLEADOS` FROM `COTIZACION_SITIOS` WHERE'.$where_sitios;
+}*/
+//$query = 'SELECT DISTINCT `ID_DOMICILIO_SITIO`,`TOTAL_EMPLEADOS` FROM `COTIZACION_SITIOS` WHERE'.$where_sitios;
+$query = 'SELECT `ID_DOMICILIO_SITIO`,`TOTAL_EMPLEADOS` FROM `COTIZACION_SITIOS` WHERE ID_COTIZACION = '.$id_cotizacion;
 $respuesta = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
 $suma_emple=0;
 for($i=0;$i<count($respuesta);$i++){
 	$suma_emple += $respuesta[$i]['TOTAL_EMPLEADOS'];
+	// AQUI CARGO LOS DATOS DE LOS DOMICILIOS ADICIONALES (NOMBRE Y DIRECCION)
+	if($cotizacion[0]["BANDERA"] == 0){
+		$domicilio_cotizacion1 =  $database->get("PROSPECTO_DOMICILIO" , 
+				["[>]USUARIOS(USUARIO_CREAR)" => ["PROSPECTO_DOMICILIO.USUARIO_CREACION" => "ID"],
+				"[>]USUARIOS(USUARIO_MOD)" => ["PROSPECTO_DOMICILIO.USUARIO_MODIFICACION" => "ID"]
+				],
+				[
+					"PROSPECTO_DOMICILIO.ID",
+					"PROSPECTO_DOMICILIO.NOMBRE",
+					"PROSPECTO_DOMICILIO.PAIS",
+					"PROSPECTO_DOMICILIO.ESTADO",
+					"PROSPECTO_DOMICILIO.MUNICIPIO",
+					"PROSPECTO_DOMICILIO.COLONIA",
+					"PROSPECTO_DOMICILIO.CODIGO_POSTAL",
+					"PROSPECTO_DOMICILIO.CALLE",
+					"PROSPECTO_DOMICILIO.NUMERO_INTERIOR",
+					"PROSPECTO_DOMICILIO.NUMERO_EXTERIOR",
+					"PROSPECTO_DOMICILIO.FISCAL",
+					"PROSPECTO_DOMICILIO.CENTRAL",
+					"PROSPECTO_DOMICILIO.FECHA_CREACION",
+					"PROSPECTO_DOMICILIO.FECHA_MODIFICACION",
+					"PROSPECTO_DOMICILIO.USUARIO_CREACION",
+					"PROSPECTO_DOMICILIO.USUARIO_MODIFICACION",
+					"USUARIO_CREAR.NOMBRE(NOMBRE_USUARIO_CREAR)",
+					"USUARIO_MOD.NOMBRE(NOMBRE_USUARIO_MOD)"
+			]	
+				, ["PROSPECTO_DOMICILIO.ID"=>$respuesta[$i]['ID_DOMICILIO_SITIO']]);
+			
+			$anexo1[$i]['DOMICILIO'] = "Calle ".$domicilio_cotizacion1["CALLE"]." Exterior ".$domicilio_cotizacion1["NUMERO_EXTERIOR"]." Interior ".$domicilio_cotizacion1["NUMERO_INTERIOR"]." Colonia ".$domicilio_cotizacion1["COLONIA"]." Delegacion ".$domicilio_cotizacion1["MUNICIPIO"].",CP ".$domicilio_cotizacion1["CODIGO_POSTAL"].", ".$domicilio_cotizacion1["ESTADO"].", ".$domicilio_cotizacion1["PAIS"];
+			$anexo1[$i]['NOMBRE'] = $domicilio_cotizacion1["NOMBRE"];	
+	}
+	if($cotizacion[0]["BANDERA"] == 1){
+		$dom_cliente1 = $database->get("CLIENTES_DOMICILIOS", "*", ["ID"=>$respuesta[$i]['ID_DOMICILIO_SITIO']]);
+		$anexo1[$i]['DOMICILIO'] = "Calle ".$dom_cliente1["CALLE"]." Exterior ".$dom_cliente1["NUMERO_EXTERIOR"]." Interior ".$dom_cliente1["NUMERO_INTERIOR"]." Colonia ".$dom_cliente1["COLONIA_BARRIO"]." Delegacion ".$dom_cliente1["DELEGACION_MUNICIPIO"].",CP ".$dom_cliente1["CP"].", ".$dom_cliente1["ENTIDAD_FEDERATIVA"].", ".$dom_cliente1["PAIS"];
+		$anexo1[$i]['NOMBRE'] = $dom_cliente1["NOMBRE_DOMICILIO"];	
+	}
 }
 /*=======================================================================================*/
 
@@ -289,67 +326,9 @@ for($i=0;$i<count($respuesta);$i++){
 $NoEmpleados = $suma_emple;//$NoEmpleados = $cotizacion[0]["NO_EMPLEADOS"];//"3";
 $NoSitios =count($respuesta);//$NoSitios = $cotizacion[0]["NO_SITIOS"];//"3";
 $Importe_Certificado = "";//$Importe_Certificado = $cotizacion[0]["IMPORTE_CERTIFICADO"];//"3";
-//$E1_Dias = $cotizacion[0]["DIAS_E1"];//"0";
-//$E2_Dias = $cotizacion[0]["DIAS_E2"];//"0";
-//$E1_Monto = $cotizacion[0]["MONTO_E1"];//"0,0.00";
-//$E2_Monto = $cotizacion[0]["MONTO_E2"];//"0,0.00";
 
-//$V1_Dias = $cotizacion[0]["DIAS_V1"];//"0";
-//$V1_Monto = $cotizacion[0]["MONTO_V1"];//"0,0.00";
 
-//$V2_Dias = $cotizacion[0]["DIAS_V2"];//"0";
-//$V2_Monto = $cotizacion[0]["MONTO_V2"];//"0,0.00";
 
-/*/////////////////////////////////////////////////////////////////////////*/
-
-/*/////////////////////////////////////////////////////////////////////////*/
-/*
-$No1 = utf8_decode("Cotización ".$area);
-$No2 = utf8_decode("Empresa: ".$name_prospecto);
-$No3 = utf8_decode($fecha);
-$No4 = utf8_decode($referencia_comercial);
-$No5 = utf8_decode("Cotización de ".$area);
-$No6 = utf8_decode($name_prospecto);
-$No7 = utf8_decode($direccion_contacto);
-$No8 = utf8_decode($name_contacto);
-$No9 = utf8_decode($cargo_contacto);
-$No10 = utf8_decode($telefono_contacto);
-$No11 = utf8_decode($email);
-$No12 = utf8_decode($norma);
-$No13 = utf8_decode($NoEmpleados);
-$No14 = utf8_decode($NoSitios);
-$No15 = utf8_decode($E1_Dias);
-$No16 = utf8_decode($E2_Dias);
-$No17 = utf8_decode($E1_Monto);
-$No18 = utf8_decode($E2_Monto);
-$No22 = utf8_decode($Importe_Certificado);
-$No19 = utf8_decode(doubleval($No17)+doubleval($No18)+doubleval($No22));
-$No20 = utf8_decode(0.16*(doubleval($No19)));//$IVA_19;
-$No21 = utf8_decode(doubleval($No19)+doubleval($No20));
-
-$No23 = utf8_decode($V1_Dias);
-$No24 = utf8_decode($V1_Monto);
-$No25 = utf8_decode($V1_Monto);
-$No26 = utf8_decode(0.16*$No25);//$IVA_25;
-$No27 = utf8_decode(doubleval($No25)+doubleval($No26));
-$No28 = utf8_decode($V2_Dias);
-$No29 = utf8_decode($V2_Monto);
-$No30 = utf8_decode($V2_Monto);
-$No31 = utf8_decode(0.16*$No30);//$IVA_30;
-$No32 = utf8_decode(doubleval($No30)+doubleval($No31));
-$No33 = utf8_decode($fecha);
-$NoN="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-*/
-/*/////////////////////////////////////////////////////////////////////////*/
-
-//$pdf = new Fpdi();
-///////////////////////////////////////////
-/*$pdf->AddFont('Calibri','','calibri.php');
-$pdf->AddFont('Calibri','B','calibrib.php');
-$pdf->AddFont('Calibri','I','calibrii.php');
-$pdf->AddFont('Calibri','BI','calibribi.php');
-$pdf->AddFont('Calibril','','calibril.php');*/
-///////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //Prueba
@@ -945,6 +924,51 @@ $html = "Debemos y pagaremos incondicionalmente por este Pagaré a la orden del 
 Este pagaré está sujeto a la condición de que, al no pagarse a su vencimiento será exigible hasta la fecha de su liquidación y causará intereses moratorios al tipo de 15% mensual, pagadero en la Ciudad de México junto con el principal. 
 ";
 $pdf1->writeHTML($html, true, false, true, false, '');
+// ANHADO la pagina del Anexo de ser necesaria
+if($NoSitios > 1){
+	$pdf1->AddPage();
+	$pdf1->SetFont('Calibri', 'B', 14);
+	$pdf1->SetTextColor(0,0,0);
+	$html = '<div style="text-align:center;"><h3>Anexo 1 </h3></div>';
+	$pdf1->writeHTML($html, true, false, true, false, '');
+	$pdf1->SetFont('Calibri', '', 9);
+$html = <<<EOT
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;" width="450">
+	<tr style="background-color: #1F487B;">
+		<th style="font-size: large; color:white;" colspan="1"><strong>En caso de sitios adicionales debe describirlos para cada sitio lo siguiente;nombre </strong> (cuando aplique, en caso contrario indicar solamente direccion del sitio)<strong> y domicilio completo</strong></th>
+	</tr>
+	<tr>
+		<td style="font-size: medium; text-align:center" >Sitios</td>
+		
+	</tr>
+	
+EOT;
+	for($i=0;$i<$NoSitios;$i++){
+		$nnnn = $anexo1[$i]['NOMBRE'];
+		$dddd = $anexo1[$i]['DOMICILIO'];
+		$html .= <<<EOT
+
+	<tr>
+		
+		<td style="font-size: medium;  text-align:left" >
+			Nombre del sitio:  $nnnn<br>
+			Domicilio: $dddd
+		</td>
+	</tr>
+	
+
+EOT;
+	}
+	$html .= <<<EOT
+
+	
+	
+</table>
+EOT;
+	$pdf1->writeHTML($html, true, false, true, false, '');
+	
+}
 
 // ---------------------------------------------------------
 $id = $database->update("COTIZACIONES", [

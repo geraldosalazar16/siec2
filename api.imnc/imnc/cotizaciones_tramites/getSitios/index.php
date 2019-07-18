@@ -61,12 +61,12 @@ valida_error_medoo_and_die();
 $nombre_auditoria = $etapa["TIPO"];
 $tarifa = $database->get("TARIFA_COTIZACION", "*", ["ID"=>$cotizacion[0]["TARIFA"]]);
 valida_error_medoo_and_die(); 
-$cantidad_de_sitios = $database->count("COTIZACION_SITIOS", ["ID_COTIZACION"=>$cotizacio_tramite["ID"]]);
+$cantidad_de_sitios = $database->count("COTIZACION_TRAMITES_SITIOS", ["ID_TRAMITE"=>$cotizacio_tramite["ID"]]);//$cantidad_de_sitios = $database->count("COTIZACION_SITIOS", ["ID_COTIZACION"=>$cotizacio_tramite["ID"]]);
 valida_error_medoo_and_die(); 
 
 
 $campos = [
-	"COTIZACION_SITIOS.ID",
+	"COTIZACION_TRAMITES_SITIOS.ID",
 	"COTIZACION_SITIOS.ID_COTIZACION",
 	"COTIZACION_SITIOS.ID_DOMICILIO_SITIO",
 	"COTIZACION_SITIOS.TOTAL_EMPLEADOS",
@@ -76,7 +76,7 @@ $campos = [
 	"COTIZACION_SITIOS.TEMPORAL_O_FIJO",
 	"COTIZACION_SITIOS.MATRIZ_PRINCIPAL",
 	"COTIZACION_SITIOS.ID_ACTIVIDAD",
-	"COTIZACION_SITIOS.SELECCIONADO",
+	"COTIZACION_TRAMITES_SITIOS.SELECCIONADO",
 	"COTIZACION_SITIOS.FACTOR_REDUCCION",
 	"COTIZACION_SITIOS.FACTOR_AMPLIACION",
 	"COTIZACION_SITIOS.JUSTIFICACION",
@@ -97,8 +97,15 @@ else if($cotizacion[0]["BANDERA"] != 0){
 }
 
 
-$cotizacion_sitios = $database->select("COTIZACION_SITIOS", ["[>]".$tabla_entidad => ["ID_DOMICILIO_SITIO" => "ID"], 
-	"[>]SG_ACTIVIDAD" => ["ID_ACTIVIDAD" => "ID"] ], $campos, ["ID_COTIZACION"=>$cotizacio_tramite["ID"]]);
+$cotizacion_sitios = $database->select("COTIZACION_TRAMITES_SITIOS", 
+										[	"[>]COTIZACION_SITIOS"=>["COTIZACION_TRAMITES_SITIOS.ID_SITIO"=>"ID"],
+											"[>]".$tabla_entidad => ["COTIZACION_SITIOS.ID_DOMICILIO_SITIO" => "ID"], 
+											"[>]SG_ACTIVIDAD" => ["COTIZACION_SITIOS.ID_ACTIVIDAD" => "ID"] ],
+											$campos,
+											["AND"=>
+												[
+													"COTIZACION_TRAMITES_SITIOS.ID_TRAMITE"=>$cotizacio_tramite["ID"],"COTIZACION_SITIOS.ID_COTIZACION"=>$id_cotizacion]
+											]);
 valida_error_medoo_and_die();
 
 $campos_t = [
@@ -131,7 +138,7 @@ $obj_cotizacion["TIPOS_SERVICIO"] = $tipos_servicio;
 $obj_cotizacion["ETAPA"] = $nombre_auditoria;
 $obj_cotizacion["TARIFA_TOTAL"] = $tarifa;
 
-$obj_cotizacion["COUNT_SITIOS"] = count_sitios($id, $const_sitio);
+$obj_cotizacion["COUNT_SITIOS"] = count_sitios($id,$id_cotizacion, $const_sitio);
 $obj_cotizacion["COTIZACION_SITIOS"] = $cotizacion_sitios;
 $obj_cotizacion["COTIZACION_TARIFA_ADICIONAL"] = $cotizacion_tarifa_adicional;
 

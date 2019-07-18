@@ -62,8 +62,9 @@
                 <td>
 					<button type="button" class="btn btn-default btn-xs" style="float: right;" disabled ng-if="auditor.EN_GRUPO"> en auditoria </button>
 					<button type="button" class="btn btn-default btn-xs" style="float: right;" disabled ng-if="!auditor.EN_GRUPO && auditor.STATUS != 'activo'"> {{auditor.STATUS}} </button>
-					<button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarGrupo" style="float: right;" ng-if="!auditor.EN_GRUPO && auditor.STATUS == 'activo'" ng-click="cargarModalInsertarActualizarGrupoAuditor(auditor.PT_CALIF_ID,auditor.NOMBRE_COMPLETO)"> seleccionar </button>
-              <!--      <button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarSitio" 
+					<button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarGrupo" style="float: right;" ng-if="!auditor.EN_GRUPO && auditor.STATUS == 'activo'" disabled> sin calificación sector </button>
+<!--					<button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarGrupo" style="float: right;" ng-if="!auditor.EN_GRUPO && auditor.STATUS == 'activo'" ng-click="cargarModalInsertarActualizarGrupoAuditor(auditor.PT_CALIF_ID,auditor.NOMBRE_COMPLETO)"> seleccionar </button>-->
+              <!--      <button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarSitio"
                     ng-click="agregar_sitio_auditoria()"
                      style="float: right;"> 
                         Seleccionar 

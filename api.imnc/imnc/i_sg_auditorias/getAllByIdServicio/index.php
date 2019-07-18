@@ -44,8 +44,8 @@ $valores = $database->query("SELECT
  INNER JOIN `I_SG_AUDITORIA_STATUS` 
  ON `I_SG_AUDITORIA_STATUS`.`ID` = `I_SG_AUDITORIAS`.`STATUS_AUDITORIA` 
  WHERE `I_SG_AUDITORIAS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id)->fetchAll(PDO::FETCH_ASSOC);
-valida_error_medoo_and_die(); 
-
+valida_error_medoo_and_die();
+$roles = array();
 for ($i=0; $i < count($valores) ; $i++) { 
 	$valores[$i]["SITIOS_ASOCIADOS"] = $database->count("I_SG_AUDITORIA_SITIOS", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$valores[$i]["ID_SERVICIO_CLIENTE_ETAPA"],"TIPO_AUDITORIA"=>$valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"]]]);
 	$valores[$i]["SITIOS"] = $database->query("SELECT `I_SG_AUDITORIA_SITIOS`.`ID_SERVICIO_CLIENTE_ETAPA`,`I_SG_AUDITORIA_SITIOS`.`TIPO_AUDITORIA`,`I_SG_AUDITORIA_SITIOS`.`ID_CLIENTE_DOMICILIO`,`CLIENTES_DOMICILIOS`.`NOMBRE_DOMICILIO`, `TIPOS_SERVICIO`.`NOMBRE`,`I_SG_AUDITORIAS`.`DURACION_DIAS`,  `I_SG_SITIOS`.`CANTIDAD_PERSONAS`,`I_SG_SITIOS`.`CANTIDAD_TURNOS`,`I_SG_SITIOS`.`NUMERO_TOTAL_EMPLEADOS`,`I_SG_SITIOS`.`NUMERO_EMPLEADOS_CERTIFICACION`,`I_SG_SITIOS`.`CANTIDAD_DE_PROCESOS`,`I_SG_SITIOS`.`ID_ACTIVIDAD`,`I_SG_SITIOS`.`TEMPORAL_O_FIJO`,`I_SG_SITIOS`.`MATRIZ_PRINCIPAL` FROM `I_SG_AUDITORIA_SITIOS` INNER JOIN `I_SG_SITIOS` ON `I_SG_SITIOS`.`ID_SERVICIO_CLIENTE_ETAPA` = `I_SG_AUDITORIA_SITIOS`.`ID_SERVICIO_CLIENTE_ETAPA` AND `I_SG_SITIOS`.`ID_CLIENTE_DOMICILIO`= `I_SG_AUDITORIA_SITIOS`.`ID_CLIENTE_DOMICILIO` INNER JOIN `SERVICIO_CLIENTE_ETAPA` ON `SERVICIO_CLIENTE_ETAPA`.`ID` = `I_SG_AUDITORIA_SITIOS`.`ID_SERVICIO_CLIENTE_ETAPA` INNER JOIN `TIPOS_SERVICIO` ON `TIPOS_SERVICIO`.`ID` = `SERVICIO_CLIENTE_ETAPA`.`ID_TIPO_SERVICIO` INNER JOIN `CLIENTES_DOMICILIOS` ON `CLIENTES_DOMICILIOS`.`ID`= `I_SG_AUDITORIA_SITIOS`.`ID_CLIENTE_DOMICILIO`INNER JOIN `I_SG_AUDITORIAS` ON `I_SG_AUDITORIAS`.`ID_SERVICIO_CLIENTE_ETAPA`=`I_SG_AUDITORIA_SITIOS`.`ID_SERVICIO_CLIENTE_ETAPA` AND `I_SG_AUDITORIAS`.`TIPO_AUDITORIA` = `I_SG_AUDITORIA_SITIOS`.`TIPO_AUDITORIA` AND `I_SG_AUDITORIAS`.`CICLO`=`I_SG_AUDITORIA_SITIOS`.`CICLO` WHERE `I_SG_AUDITORIA_SITIOS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id. " AND `I_SG_AUDITORIA_SITIOS`.`TIPO_AUDITORIA`=".$valores[$i]["TIPO_AUDITORIA"]." AND `I_SG_AUDITORIA_SITIOS`.`CICLO`=".$valores[$i]["CICLO"])->fetchAll(PDO::FETCH_ASSOC);
@@ -156,13 +156,20 @@ for ($i=0; $i < count($valores) ; $i++) {
 
 	$sg_sectores = $database->select("I_SG_SECTORES", "ID_SECTOR", ["ID_SERVICIO_CLIENTE_ETAPA"=>$id]); 
 	$ids_pt_califs = $database->select("I_SG_AUDITORIA_GRUPOS", "ID_PERSONAL_TECNICO_CALIF", ["AND"=>["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
-	$sectores_calificados = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs]);
+	$pt_grupo = $database->select("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ids_pt_califs]);
+	$sectores_calificados = $database->select("PERSONAL_TECNICO",
+		                                            ["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID"=>"ID_PERSONAL_TECNICO"],
+													 "[><]PERSONAL_TECNICO_CALIF_SECTOR"=>["PERSONAL_TECNICO_CALIFICACIONES.ID"=>"ID_PERSONAL_TECNICO_CALIFICACION"]],
+		                                            "PERSONAL_TECNICO_CALIF_SECTOR.ID_SECTOR", ["PERSONAL_TECNICO.ID"=>$pt_grupo]);
 
-	
+	//$sectores_calificados = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs]);
+
+
 	// Restricci�n de calificacion del grupo auditor
 	if(( $valores[$i]["TIPO_AUDITORIA"] == "3"|| $valores[$i]["TIPO_AUDITORIA"] == "4" ) && ($sectores_calificados == NULL || count(array_diff($sg_sectores, $sectores_calificados)) > 0)){	
 		$mensaje_restriccion = "- El grupo no esta calificado en todos los sectores";
 		array_push($valores[$i]["RESTRICCIONES_GRUPOS"], $mensaje_restriccion);
+
 	}
 	//Aqui se chequean si los auditores estan capacitados en todos los sectores si tipo auditoria es vigilancia anual 2
 	if($valores[$i]["TIPO_AUDITORIA"] == "7"){
@@ -170,12 +177,17 @@ for ($i=0; $i < count($valores) ; $i++) {
 																										["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,
 																										"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> [6,7],
 																										"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
-		
-		$sectores_calificados1 = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs1]);
+		$pt_grupo = $database->select("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ids_pt_califs1]);
+		$sectores_calificados1 = $database->select("PERSONAL_TECNICO",
+			["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID"=>"ID_PERSONAL_TECNICO"],
+				"[><]PERSONAL_TECNICO_CALIF_SECTOR"=>["PERSONAL_TECNICO_CALIFICACIONES.ID"=>"ID_PERSONAL_TECNICO_CALIFICACION"]],
+			"PERSONAL_TECNICO_CALIF_SECTOR.ID_SECTOR", ["PERSONAL_TECNICO.ID"=>$pt_grupo]);
+		//$sectores_calificados1 = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs1]);
 		if($sectores_calificados1 == NULL || count(array_diff($sg_sectores, $sectores_calificados1)) > 0){
 			$mensaje_restriccion = "- El grupo no esta calificado en todos los sectores";
 			array_push($valores[$i]["RESTRICCIONES_GRUPOS"], $mensaje_restriccion);
 		}
+
 	}
 	//Aqui se chequean si los auditores estan capacitados en todos los sectores si tipo auditoria es vigilancia semestral 5+
 	if($valores[$i]["TIPO_AUDITORIA"] == "12"){
@@ -183,8 +195,12 @@ for ($i=0; $i < count($valores) ; $i++) {
 																										["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,
 																										"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> [8,9,10,11,12],
 																										"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
-		
-		$sectores_calificados1 = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs1]);
+		$pt_grupo = $database->select("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ids_pt_califs1]);
+		$sectores_calificados1 = $database->select("PERSONAL_TECNICO",
+			["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID"=>"ID_PERSONAL_TECNICO"],
+				"[><]PERSONAL_TECNICO_CALIF_SECTOR"=>["PERSONAL_TECNICO_CALIFICACIONES.ID"=>"ID_PERSONAL_TECNICO_CALIFICACION"]],
+			"PERSONAL_TECNICO_CALIF_SECTOR.ID_SECTOR", ["PERSONAL_TECNICO.ID"=>$pt_grupo]);
+		//$sectores_calificados1 = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs1]);
 		if($sectores_calificados1 == NULL || count(array_diff($sg_sectores, $sectores_calificados1)) > 0){
 			$mensaje_restriccion = "- El grupo no esta calificado en todos los sectores";
 			array_push($valores[$i]["RESTRICCIONES_GRUPOS"], $mensaje_restriccion);
@@ -264,5 +280,5 @@ for ($i=0; $i < count($valores) ; $i++) {
 }
 
 
-print_r(json_encode($valores)); 
+print_r(json_encode($valores));
 ?> 
