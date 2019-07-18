@@ -14,7 +14,9 @@
 			</div>
 			<div class="form-group">
 				<label>Rol en grupo<span class="required">*</span></label>
-				<select ng-model="formDataGrupoAuditor.cmbRol" ng-options="cmbRol.ID as cmbRol.ROL for cmbRol in cmbRoles"  class="form-control" ng-change='' required ng-class="{ error: exampleFormGrupoAuditor.cmbRol.$error.required && !exampleFormGrupoAuditor.$pristine}"  ></select>	
+				<select ng-model="formDataGrupoAuditor.cmbRol" ng-options="cmbRol as cmbRol.ROL+' - '+cmbRol.REGISTRO for cmbRol in cmbRoles"  class="form-control" ng-change='' required ng-class="{ error: exampleFormGrupoAuditor.cmbRol.$error.required && !exampleFormGrupoAuditor.$pristine}"  >
+                    <option value="" selected disabled>- Seleccione un rol para el que esta calificado -</option>
+                </select>
 			</div>
 	<!--		<div class="form-group">
 				<label>Asignar fechas  <span class="required">*</span></label>

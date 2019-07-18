@@ -44,15 +44,14 @@ valida_parametro_and_die($ID_USUARIO, "Falta el ID_USUARIO");
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
 
-//foreach ($ID_PERSONAL_TECNICO_CALIF as $item) {
-	if ($database->count("I_SG_AUDITORIA_GRUPOS", ["AND" => ["ID_SERVICIO_CLIENTE_ETAPA" => $ID_SERVICIO_CLIENTE_ETAPA, "TIPO_AUDITORIA" => $TIPO_AUDITORIA, "CICLO" => $CICLO, "ID_PERSONAL_TECNICO_CALIF" => $ID_PERSONAL_TECNICO_CALIF[0]]]) == 0) {
+	if ($database->count("I_SG_AUDITORIA_GRUPOS", ["AND" => ["ID_SERVICIO_CLIENTE_ETAPA" => $ID_SERVICIO_CLIENTE_ETAPA, "TIPO_AUDITORIA" => $TIPO_AUDITORIA, "CICLO" => $CICLO, "ID_PERSONAL_TECNICO_CALIF" => $ID_PERSONAL_TECNICO_CALIF]]) == 0) {
 		$idd = $database->insert("I_SG_AUDITORIA_GRUPOS",
 
 			[
 				"ID_SERVICIO_CLIENTE_ETAPA" => $ID_SERVICIO_CLIENTE_ETAPA,
 				"TIPO_AUDITORIA" => $TIPO_AUDITORIA,
 				"CICLO" => $CICLO,
-				"ID_PERSONAL_TECNICO_CALIF" => $item,
+				"ID_PERSONAL_TECNICO_CALIF" => $ID_PERSONAL_TECNICO_CALIF,
 				"ID_ROL" => $ID_ROL,
 				"FECHA_CREACION" => $FECHA_CREACION,
 				"HORA_CREACION" => $HORA_CREACION,
@@ -65,10 +64,10 @@ $HORA_CREACION = date("His");
 			]);
 		valida_error_medoo_and_die();
 		$respuesta["resultado"] = "ok";
-	} else {
+	}else {
 		$respuesta["resultado"] = "error";
 		$respuesta["mensaje"] = "Este auditor ya ha sido agregado a esta auditoria";
 	}
-//}
+
 print_r(json_encode($respuesta)); 
 ?> 

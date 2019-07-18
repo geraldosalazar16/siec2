@@ -146,8 +146,12 @@ if(sizeof($all_pt) > 0 ){
 				$detalles_de_califs["ALCANCE"] = $all_pt[$i]["ALCANCE"];
 				$detalles_de_califs["ROL"] = $database->get("PERSONAL_TECNICO_ROLES", "ROL", ["ID" => $all_pt[$i]["ID_ROL"]]);
 				array_push($respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CALIFICACIONES"], $detalles_de_califs);
-				array_push($respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["PT_CALIF_ID"], $all_pt[$i]["PT_CALIF_ID"]);
-			}
+				if(!in_array($all_pt[$i]["PT_CALIF_ID"], $respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["PT_CALIF_ID"]))
+				{
+					array_push($respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["PT_CALIF_ID"], $all_pt[$i]["PT_CALIF_ID"]);
+
+				}
+				}
 			//AQUI VOY A PONER TODAS LAS CALIFICACIONES DEL AUDITOR SI ES INTEGRAL
 			//if($tipo_servicio == 20){
 			//	$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["REGISTRO"] .=  ','.$all_pt[$i]['REGISTRO'];
@@ -166,6 +170,7 @@ if(sizeof($all_pt) > 0 ){
 			$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["CALIFICACIONES"] = array();
 			$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["REGISTRO"] = $all_pt[$i]["REGISTRO"];
 			$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["PT_CALIF_ID"] = array();//$all_pt[$i]["PT_CALIF_ID"];
+			array_push($respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["PT_CALIF_ID"], $all_pt[$i]["PT_CALIF_ID"]);
 			$respuesta[$all_pt[$i]["ID_PERSONAL_TECNICO"]]["ID_TIPO_SERVICIO"] = $all_pt[$i]["ID_TIPO_SERVICIO"];
 			//print_r("__");
 			//print_r($respuesta);
