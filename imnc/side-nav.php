@@ -93,8 +93,6 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
 		   echo '     <li><a href="./?pagina=tarifa_cotizacion_adicional">Tarifas Adicionales</a>';
            echo '     </li>';
-           echo '     <li><a href="./?pagina=ventas_objetivos">Objetivos Ventas</a>';
-           echo '     </li>';
         } 
         echo '   </ul>';
         echo ' </li>';  
