@@ -103,16 +103,17 @@ $arr_sectores = $json_object->SERVICIO_CLIENTE_ETAPA->SG_SECTORES; //Es arreglo
 valida_isset($arr_sectores, "Error: No se encuentra arr_sectores en linea: " . __LINE__);
 
 $SECTORES = "";
+$inserted = [];
 for ($i=0; $i < count($arr_sectores); $i++) {
-	if (($i+1) ==  count($arr_sectores)) { //Si es el ultimo elemento
-		$SECTORES .= $arr_sectores[$i]->SECTORES->ID;
-		valida_isset($SECTORES, "Error: No se encuentra SECTORES en linea: " . __LINE__);
-	}
-	else{
-		$SECTORES .= $arr_sectores[$i]->SECTORES->ID . ", ";
-		valida_isset($SECTORES, "Error: No se encuentra SECTORES en linea: " . __LINE__);
-	}
+
+		if (!in_array($arr_sectores[$i]->SECTORES->ID, $inserted)) {
+			array_push($inserted, $arr_sectores[$i]->SECTORES->ID);
+			$SECTORES .= $arr_sectores[$i]->SECTORES->ID . ", ";
+			valida_isset($SECTORES, "Error: No se encuentra SECTORES en linea: " . __LINE__);
+		}
+
 }
+	$SECTORES = substr($SECTORES, 0, -2);
     $SECTORES =   ($SECTORES?$SECTORES:'N/A');
 // Datos de contacto y domicilio
 

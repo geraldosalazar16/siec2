@@ -24,13 +24,22 @@ function valida_error_medoo_and_die(){
 	} 
 } 
 
-$id = $_REQUEST["id"]; 
-$etapas_proceso = $database->select("ETAPAS_PROCESO", "*", [
-	"AND" => [
-		"ID_SERVICIO"=>$id,
-		"HABILITAR_INSERCION" => 0
-	]	
-]); 
+$id = $_REQUEST["id"];
+$insercion = $_REQUEST["insercion"]; // Para saber si las devuevo todas o solo las de inserción
+$etapas = [];
+if ($insercion === 'N') {
+	$etapas_proceso = $database->select("ETAPAS_PROCESO", "*", [
+		"AND" => [
+			"ID_SERVICIO"=>$id,
+			"HABILITAR_INSERCION" => 0
+		]	
+	]); 
+} else {
+	$etapas_proceso = $database->select("ETAPAS_PROCESO", "*", [
+		"ID_SERVICIO" => $id
+	]); 
+}
+
 valida_error_medoo_and_die(); 
 print_r(json_encode($etapas_proceso)); 
 ?> 
