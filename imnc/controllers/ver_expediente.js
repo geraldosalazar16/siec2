@@ -361,8 +361,8 @@ function listener_btn_ver_documento(){
 		var direccion	=	"";
 		var cadena		=	$("#Referencia").val();		
 		var cadena1		=	cadena.split('-');
-		// direccion = $(this).attr("ruta_documento");
-		direccion 		= global_apiserver+"/arch_expediente/"+cadena1[1]+cadena1[2]+"/"+$("#NombreCiclo").val()+"/"+$(this).attr("nombre_etapa")+"/"+$("#ValorSeccion").val()+"/"+$(this).attr("id_documento")+"."+$(this).attr("extension_documento");
+		direccion = $(this).attr("ruta_documento");
+		// direccion 		= global_apiserver+"/arch_expediente/"+cadena1[1]+cadena1[2]+"/"+$("#NombreCiclo").val()+"/"+$(this).attr("nombre_etapa")+"/"+$("#ValorSeccion").val()+"/"+$(this).attr("id_documento")+"."+$(this).attr("extension_documento");
       
 	     abc =	window.open( direccion);
 		// abc.document.title="daniel";
