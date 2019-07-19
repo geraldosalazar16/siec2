@@ -272,7 +272,7 @@ function draw_row_documentos(objDocum){
 			strHtml += '      <a> <span class="labelAcordeon">Eliminar Documento</span></a>';
 			strHtml += '    </li>';
 		}
-		strHtml += '    <li class="btnverdocumento" id_documento="'+objDocum.ID+'" ruta_documento="'+objDocum.UBICACION_DOCUMENTOS+'" nombre_documento="'+objDocum.NOMBRE+'" extension_documento="'+objDocum.EXTENSION+'"  nombre_etapa="'+objDocum.ETAPA+'" id_servicio="'+global_id_servicio_cliente_etapa+'"> ';
+		strHtml += '    <li class="btnverdocumento" id_documento="'+objDocum.ID+'" ruta_documento="'+objDocum.UBICACION+'" nombre_documento="'+objDocum.NOMBRE+'" extension_documento="'+objDocum.EXTENSION+'"  nombre_etapa="'+objDocum.ETAPA+'" id_servicio="'+global_id_servicio_cliente_etapa+'"> ';
 		strHtml += '     <a> <span class="labelAcordeon">Ver Documento</span>  </a>';
 		strHtml += '    </li>';
 	
