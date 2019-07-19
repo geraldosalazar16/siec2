@@ -37,6 +37,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_FILES["fileToUpload"]["type"]
 	$nombre_etapa=$_POST['NombreEtapa'];
 	$nombre_seccion=$_POST['NombreSeccion'];
 	$target_dir = "../../arch_expediente/".$referencia[1].$referencia[2]."/".$nombre_ciclo."/".$nombre_etapa."/".$nombre_seccion."/";
+	// TODO Sustituir por variable global
+	$ubicacion_documento =  "http://apinube.com/imnc/siec2.0/api.imnc/imnc/arch_expediente/".$referencia[1].$referencia[2]."/".$nombre_ciclo."/".$nombre_etapa."/".$nombre_seccion."/";
 	$carpeta=$target_dir;
 	 
 	$uploadOk = 1;
@@ -73,6 +75,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_FILES["fileToUpload"]["type"]
 			mkdir($carpeta, 0777, true);
 		}
 		$target_file = $carpeta . basename($id_documento.".".$FileType);
+		$ubicacion_documento = $ubicacion_documento . basename($id_documento.".".$FileType);
 		$resultado_subir = move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file);
 		if ($resultado_subir) {
 		   
@@ -88,7 +91,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_FILES["fileToUpload"]["type"]
 					] 
 				]);
 				if ($resp1 == null){
-				$UBICACION_DOCUMENTOS	=	$carpeta;
+				$UBICACION_DOCUMENTOS	=	$ubicacion_documento;
 				$ID_CATALOGO_DOCUMENTOS	=	$id_documento;
 				$CICLO					=	$nombre_ciclo;
 				$ID_SERVICIO			=	$id_servicio;
