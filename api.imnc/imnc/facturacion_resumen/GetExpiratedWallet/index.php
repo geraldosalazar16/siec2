@@ -17,8 +17,8 @@ $respuesta=array();
 $sql = "SELECT SUM(monto) total, diasvencida FROM (
  SELECT IDFact, fech, estAct, estatus, monto, DATEDIFF(CURDATE(),fech) hace,
  elt(INTERVAL(DATEDIFF(CURDATE(),fech), 31, 61, 91, 365*10)+1,
- 'Hasta 30 días','De 31 a 60 dias','De 61 a 90 dias','Superior a 90 dias') diasvencida FROM 
-(SELECT ID_SOLICITUD IDFact, adddate(STR_TO_DATE(fecha,'%Y%m%d'),30) fech,id_estatus_actual estAct, monto
+ 'Hasta 30 dï¿½as','De 31 a 60 dias','De 61 a 90 dias','Superior a 90 dias') diasvencida FROM 
+(SELECT ID_SOLICITUD IDFact, STR_TO_DATE(fecha,'%Y%m%d') fech,id_estatus_actual estAct, monto
  FROM facturacion_solicitud_historico fsh
  INNER JOIN facturacion_solicitudes fs ON fsh.ID_SOLICITUD=fs.ID
  WHERE id_estatus_actual=2 AND DATEDIFF(CURDATE(),STR_TO_DATE(fecha,'%Y%m%d'))>30
