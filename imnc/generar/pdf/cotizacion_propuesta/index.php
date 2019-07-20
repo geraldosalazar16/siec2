@@ -561,6 +561,8 @@ for($i=0;$i<count($datos);$i++){
 	}
 	if($datos[$i]->ID_ETAPA_PROCESO == 2 && $datos[$i+1]->ID_ETAPA_PROCESO == 3){
 		$Titulo_Tabla="SERVICIO DE AUDITORÍA DE CERTIFICACIÓN INICIAL";
+		$tarifa_E1 =0;
+		$tarifa_E2 =0;
 		$dias_auditor_E1 = $datos[$i]->DIAS_AUDITORIA;
 		$costo_E1	=	$datos[$i]->TRAMITE_COSTO;
 		$viaticos_E1 = $datos[$i]->VIATICOS;
@@ -607,6 +609,7 @@ EOT;
 				$suma_tarifa += $tarifa;
 				//Dando formato a los datos
 				$tarifa_f=number_format($tarifa,2);
+				$tarifa_E1=number_format($tarifa,2);
 				$html .= <<<EOT
 						<tr>
 							<td style="font-size: medium; text-align:right; color:#5779A3" width="225">$descripcion</td>
@@ -623,6 +626,7 @@ EOT;
 				$suma_tarifa += $tarifa;
 				//Dando formato a los datos
 				$tarifa_f=number_format($tarifa,2);
+				$tarifa_E2=number_format($tarifa,2);
 				$html .= <<<EOT
 						<tr>
 							<td style="font-size: medium; text-align:right; color:#5779A3" width="225">$descripcion</td>
@@ -661,6 +665,15 @@ EOT;
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 $i=$i+1;
+
+		// ---------------------------------------------------------
+		
+	$id = $database->update("COTIZACIONES_TRAMITES", [
+		"MONTO" => $costo_E1+$viaticos_E1+$tarifa_E1
+	], ["AND"=>["ID"=>$id_cotizacion,"ID_ETAPA_PROCESO"=>2]]);
+	$id = $database->update("COTIZACIONES_TRAMITES", [
+		"MONTO" => $costo_E2+$viaticos_E2+$tarifa_E2
+	], ["AND"=>["ID"=>$id_cotizacion,"ID_ETAPA_PROCESO"=>3]]);
 	}
 	else{
 		$Titulo_Tabla="SERVICIO DE AUDITORÍA DE ".strtoupper($datos[$i]->TIPO);
@@ -731,9 +744,12 @@ EOT;
 			</tr>
 		</table>
 EOT;
+$id = $database->update("COTIZACIONES_TRAMITES", [
+		"MONTO" => $subtotal
+	], ["AND"=>["ID_COTIZACION"=>$id_cotizacion,"ID_ETAPA_PROCESO"=>$datos[$i]->ID_ETAPA_PROCESO]]);
+	}
 $pdf1->writeHTML($html, true, false, true, false, '');
 	
-	}
 	
 	
 

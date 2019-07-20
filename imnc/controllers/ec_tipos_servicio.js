@@ -1090,6 +1090,7 @@ cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 			});
 			if(typeof datos_auditoriasSG != 'undefined'){
 				$scope.formDataAuditoria.txtDuracionAuditoria	= datos_auditoriasSG.DURACION_DIAS;
+				$scope.formDataAuditoria.MONTO = datos_auditoriasSG.MONTO;
 				$scope.formDataAuditoria.cmbTipoAuditoria	=	datos_auditoriasSG.TIPO_AUDITORIA;
 				$scope.formDataAuditoria.cmbStatusAuditoria	=	datos_auditoriasSG.STATUS_AUDITORIA;
 				if(datos_auditoriasSG.NO_USA_METODO == 0)
@@ -1143,11 +1144,15 @@ cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 		}	
 		if($scope.DatosServicio.ID_SERVICIO == 2 || $scope.DatosServicio.ID_SERVICIO == 4){	
 			$scope.estatusAuditoria = $scope.DatosAuditoriasEC; // Para guardar cuáles estaban abiertas y cuáles cerradas
-		}		
+		}	
+		if($scope.accion_auditoria == 'insertar'){
+			$scope.formDataAuditoria.MONTO =0;
+		}	
 		var datos	=	{
 				ID	:	$scope.id_servicio_cliente_etapa,
 				DURACION_DIAS:	$scope.formDataAuditoria.txtDuracionAuditoria,
 				DURACION_DIAS_INTEGRAL: $scope.formDataAuditoria.txtDuracionAuditoria1,
+				MONTO: $scope.formDataAuditoria.MONTO,
 				TIPO_AUDITORIA:	$scope.formDataAuditoria.cmbTipoAuditoria,
 				CICLO:	$scope.formDataAuditoria.CICLO,
 				STATUS_AUDITORIA:	$scope.formDataAuditoria.cmbStatusAuditoria,
