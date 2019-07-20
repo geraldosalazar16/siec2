@@ -573,7 +573,7 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
     // ==============================================================================
     function cargarEtapas(id_servicio, seleccion) {
         var inicial = null;
-        $http.get(global_apiserver + "/etapas_proceso/getByIdServicio/?id=" + id_servicio)
+        $http.get(global_apiserver + "/etapas_proceso/getByIdServicio/?id=" + id_servicio + "&insertar=N")
             .then(function(response) { //se ejecuta cuando la petición fue correcta
                     $scope.Etapas = response.data.map(function(item) {
                         if (item.ETAPA == "INSCRITO")

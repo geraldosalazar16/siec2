@@ -1160,7 +1160,7 @@ cargarDatosAuditoriasSG($scope.id_servicio_cliente_etapa);
 				SITIOS_AUDITAR:	$scope.formDataAuditoria.txtSitiosAuditoria,
 				ID_USUARIO:	sessionStorage.getItem("id_usuario")
 			};		
-			
+
 		if($scope.accion_auditoria == 'insertar'){
 			
 						
@@ -1501,13 +1501,9 @@ $scope.btnInsertaGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_aud
 		$http.get(  global_apiserver + "/i_sg_auditorias/getAllAudWithSectorCalif/?idsce="+id_servicio+"&idtipoauditoria="+id_tipo_auditoria+"&ciclo="+ciclo)
 		.then(function( response ){
 			if(response.data.resultado == 'ok'){
-				console.log(response.data);
 				$scope.AuditoresParaAuditoria = response.data.CON_CALIFICACION;
-				console.log($scope.AuditoresParaAuditoria);
 				$scope.AuditoresParaAuditoria1 = response.data.SIN_CALIFICACION;
 				$scope.cant_auditores = $scope.AuditoresParaAuditoria.length;
-				//$scope.grupo_id_tipo_auditoria = id_tipo_auditoria;
-				//$scope.grupo_ciclo=ciclo;
 				$("#modalExplorarGrupo").modal("show");
 				//$("#modalInsertarActualizarGrupoAuditoria").modal("show");
 				
@@ -1524,7 +1520,7 @@ $scope.btnInsertaGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_aud
 $scope.cargarModalInsertarActualizarGrupoAuditor = function(id_pt_calif,nombre_completo){
 	$scope.formDataGrupoAuditor.txtClavePTCalifGrupo = nombre_completo;
 	$scope.formDataGrupoAuditor.idPTCalifGrupo = id_pt_calif;
-	cargarRolesAuditorTipoServicio($scope.DatosServicio.ID_TIPO_SERVICIO);
+	cargarRolesAuditor();
 	if($scope.DatosServicio.ID_SERVICIO == 1){
 		$("#modalExplorarGrupo").modal("hide");
 	}
@@ -1535,13 +1531,14 @@ $scope.cargarModalInsertarActualizarGrupoAuditor = function(id_pt_calif,nombre_c
     $("#modalInsertarActualizarGrupoAuditoria").modal("show");
 }	
 // ======================================================================
-// *****	FUNCION CARGAR AUDITORES ROLES	SEGUN TIPO SERVICIO	 	*****
+// *****	FUNCION CARGAR AUDITORES ROLES	SEGUN CALIFICACIONES 	*****
 // ======================================================================
-function cargarRolesAuditorTipoServicio(idts){
-	$http.get(  global_apiserver + "/personal_tecnico_roles/getByIdTipoServicio/?id="+idts)
+function cargarRolesAuditorCalif(){
+	let idts = $scope.formDataGrupoAuditor.idPTCalifGrupo;
+	$http.get(  global_apiserver + "/i_sg_auditorias/getAllCalifByIds/?ids="+JSON.stringify(idts))
 		.then(function( response ){
 			$scope.cmbRoles = response.data;
-			
+
 		});
 }	
 // ======================================================================
@@ -1580,10 +1577,8 @@ $scope.submitFormGrupoAuditor = function (formDataGrupoAuditor) {
 			CICLO:	$scope.grupo_ciclo,
             ID_PERSONAL_TECNICO_CALIF: $scope.formDataGrupoAuditor.idPTCalifGrupo,
 			ID_ROL:	formDataGrupoAuditor.cmbRol,
-			//FECHAS_ASIGNADAS:$("#txtFechasGrupoAuditor").multiDatesPicker('value'),
             ID_USUARIO:sessionStorage.getItem("id_usuario")
           };
-		
 		$http.post(global_apiserver + "/i_sg_auditoria_grupos/insert/",grupo).
             then(function(response){
 			
@@ -3496,7 +3491,6 @@ function llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
 // *****			FUNCION BUSCA LA RAZON SOCIAL               		*****
 // ===========================================================================
 	async function buscarRazonSocial(solicitud) {
-		console.log($scope.listaRazonesSociales);
 		$scope.formDataSolicitud.razon_social = $scope.listaRazonesSociales.find(rs => {
 			return rs.RFC === solicitud.RFC;
 	});
