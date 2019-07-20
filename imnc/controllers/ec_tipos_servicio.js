@@ -1499,8 +1499,6 @@ $scope.btnInsertaGrupoAuditoria = function(id_servicio_cliente_etapa,id_tipo_aud
 				$scope.AuditoresParaAuditoria = response.data.CON_CALIFICACION;
 				$scope.AuditoresParaAuditoria1 = response.data.SIN_CALIFICACION;
 				$scope.cant_auditores = $scope.AuditoresParaAuditoria.length;
-				//$scope.grupo_id_tipo_auditoria = id_tipo_auditoria;
-				//$scope.grupo_ciclo=ciclo;
 				$("#modalExplorarGrupo").modal("show");
 				//$("#modalInsertarActualizarGrupoAuditoria").modal("show");
 				
@@ -3489,7 +3487,6 @@ function llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
 // *****			FUNCION BUSCA LA RAZON SOCIAL               		*****
 // ===========================================================================
 	async function buscarRazonSocial(solicitud) {
-		console.log($scope.listaRazonesSociales);
 		$scope.formDataSolicitud.razon_social = $scope.listaRazonesSociales.find(rs => {
 			return rs.RFC === solicitud.RFC;
 	});
