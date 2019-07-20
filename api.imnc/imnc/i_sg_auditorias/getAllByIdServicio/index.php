@@ -21,7 +21,7 @@ function valida_error_medoo_and_die(){
 		die(); 
 	} 
 } 
-$id = $_REQUEST["id"]; 
+$id = $_REQUEST["id"];
 
 //Lo primero es buscar el id tipo de servicio que sera un dato importante para trabajar
 	$tipo_servicio = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_TIPO_SERVICIO", ["ID"=>$id]);
@@ -53,7 +53,7 @@ for ($i=0; $i < count($valores) ; $i++) {
 	///////////////////////////////////////////////////////////
 	$valores[$i]["AUDITORIA_FECHAS"] = $database->query("SELECT `I_SG_AUDITORIA_FECHAS`.`ID`,`I_SG_AUDITORIA_FECHAS`.`ID_SERVICIO_CLIENTE_ETAPA`,`I_SG_AUDITORIA_FECHAS`.`TIPO_AUDITORIA`,`I_SG_AUDITORIA_FECHAS`.`FECHA` FROM `I_SG_AUDITORIA_FECHAS` WHERE `I_SG_AUDITORIA_FECHAS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id. " AND `I_SG_AUDITORIA_FECHAS`.`TIPO_AUDITORIA`=".$valores[$i]["TIPO_AUDITORIA"]." AND `I_SG_AUDITORIA_FECHAS`.`CICLO`=".$valores[$i]["CICLO"]." ORDER BY `I_SG_AUDITORIA_FECHAS`.`FECHA`")->fetchAll(PDO::FETCH_ASSOC);
 	///////////////////////////////////////////////////////////
-	$valores[$i]["AUDITORES_ASOCIADOS"] = $database->count("I_SG_AUDITORIA_GRUPOS", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$valores[$i]["ID_SERVICIO_CLIENTE_ETAPA"],"TIPO_AUDITORIA"=>$valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"]]]); 
+	$valores[$i]["AUDITORES_ASOCIADOS"] = $database->count("I_SG_AUDITORIA_GRUPOS", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$valores[$i]["ID_SERVICIO_CLIENTE_ETAPA"],"TIPO_AUDITORIA"=>$valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"]]]);
 	
 	$valores[$i]["AUDITORES"] = $database->query("SELECT 
 	`I_SG_AUDITORIA_GRUPOS`.`ID_SERVICIO_CLIENTE_ETAPA`,
@@ -76,13 +76,12 @@ for ($i=0; $i < count($valores) ; $i++) {
 	INNER JOIN `PERSONAL_TECNICO` ON `PERSONAL_TECNICO`.`ID`= `PERSONAL_TECNICO_CALIFICACIONES`.`ID_PERSONAL_TECNICO`
 	INNER JOIN `I_SG_AUDITORIAS` ON `I_SG_AUDITORIAS`.`ID_SERVICIO_CLIENTE_ETAPA`=`I_SG_AUDITORIA_GRUPOS`.`ID_SERVICIO_CLIENTE_ETAPA` AND `I_SG_AUDITORIAS`.`TIPO_AUDITORIA` = `I_SG_AUDITORIA_GRUPOS`.`TIPO_AUDITORIA` AND `I_SG_AUDITORIAS`.`CICLO`=`I_SG_AUDITORIA_GRUPOS`.`CICLO`
 	WHERE `I_SG_AUDITORIA_GRUPOS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id. " AND `I_SG_AUDITORIA_GRUPOS`.`TIPO_AUDITORIA`=".$valores[$i]["TIPO_AUDITORIA"]." AND `I_SG_AUDITORIA_GRUPOS`.`CICLO`=".$valores[$i]["CICLO"])->fetchAll(PDO::FETCH_ASSOC);
-	valida_error_medoo_and_die(); 
-	
+	valida_error_medoo_and_die();
+
 	for($j=0;$j<$valores[$i]["AUDITORES_ASOCIADOS"];$j++){
 		
 		$valores[$i]["AUDITORES_FECHAS"][$valores[$i]["AUDITORES"][$j]["ID_PERSONAL_TECNICO_CALIF"]] = $database->query("SELECT `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID`,`I_SG_AUDITORIA_GRUPO_FECHAS`.`FECHA`,`I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_NORMA` FROM `I_SG_AUDITORIA_GRUPO_FECHAS` WHERE `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id. " AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`TIPO_AUDITORIA`=".$valores[$i]["TIPO_AUDITORIA"]." AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`CICLO`=".$valores[$i]["CICLO"]." AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_PERSONAL_TECNICO_CALIF`=".$valores[$i]["AUDITORES"][$j]["ID_PERSONAL_TECNICO_CALIF"])->fetchAll(PDO::FETCH_ASSOC);
-		valida_error_medoo_and_die(); 
-		
+		valida_error_medoo_and_die();
 		if($tipo_servicio == 20){
 			$id_pt = $database->get('PERSONAL_TECNICO_CALIFICACIONES','ID_PERSONAL_TECNICO',['ID'=>$valores[$i]['AUDITORES'][$j]['ID_PERSONAL_TECNICO_CALIF']]);
 			$otras_califs = $database->query("SELECT 	
@@ -90,15 +89,14 @@ for ($i=0; $i < count($valores) ; $i++) {
 												FROM `PERSONAL_TECNICO_CALIFICACIONES` PTC
 												INNER JOIN `PERSONAL_TECNICO` PT  ON PTC.`ID_PERSONAL_TECNICO` = PT.ID
 												WHERE PTC.`ID_TIPO_SERVICIO` IN (1,2,12) AND PT.`ID` =".$id_pt." GROUP BY `ID_PERSONAL_TECNICO`")->fetchAll();
+			valida_error_medoo_and_die();
 			$valores[$i]["AUDITORES"][$j]["REGISTRO"] = $otras_califs[0]['REGISTRO'];
 		}
 		
 	}
-	
 	/*======================================================*/
 	//CODIGO PARA RESTRICCIONES
-	
-	
+
 	// RESTRICCIONES PARA GRUPOS
 	$valores[$i]["RESTRICCIONES_GRUPOS"] = array();
 	//$valores[$i]["RESTRICCIONES_DIA_AUDITOR"] =  array();
@@ -152,7 +150,6 @@ for ($i=0; $i < count($valores) ; $i++) {
 		}
 		$valores[$i]["RESTRICCIONES_DIA_AUDITOR"] = $mensaje_restriccion;
 	}
-	
 
 	$sg_sectores = $database->select("I_SG_SECTORES", "ID_SECTOR", ["ID_SERVICIO_CLIENTE_ETAPA"=>$id]); 
 	$ids_pt_califs = $database->select("I_SG_AUDITORIA_GRUPOS", "ID_PERSONAL_TECNICO_CALIF", ["AND"=>["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
