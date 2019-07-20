@@ -50,9 +50,24 @@
         </div>
     </div>
 
-	<br />				 
+	<br />
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12" style="overflow: auto;overflow-y: hidden;">
+			<div class="dashboard_graph" id="grafica2">				
+				<div class="col-md-12 col-sm-12 col-xs-12 bg-white">
+					<h4 align='center'>Cartera vencida</h4>
+					<div style="width: 100%;">
+						<canvas id="RepCarteraVencida" height="80"></canvas>
+					</div>
+				</div>							
+
+             </div>
+
+            <div class="clearfix" style="background-color:white;"></div>
+        </div>
+    </div>		
 
 
-    </div> 
+</div> 
 
 </span>
