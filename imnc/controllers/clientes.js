@@ -47,7 +47,7 @@ function draw_ficha_clientes(objeto)
    }
     if(objeto.TOTAL>1)
     {
-        strHtml += '        <a href="./?pagina=prospecto&id='+objeto.PROSPECTOS+'" class="btn btn-primary btn-xs btn-imnc" style="float: right;">';
+        strHtml += '        <a href="./?pagina=prospecto&ids='+objeto.PROSPECTOS+'" class="btn btn-primary btn-xs btn-imnc" style="float: right;">';
         strHtml += '            <i class="fa fa-user-plus"> </i> Ver prospectos </a>';
     }
 
@@ -326,7 +326,6 @@ function fill_cmb_cliente_factuario(seleccionado){
 function draw_all_fichas(){
   $(".loading").show();
    $.getJSON(  global_apiserver + "/clientes/getAll/", function( response ) {
-        //console.log();
         $("#area_fichas").html("");
         $.each(response, function( index, objeto ) {
           $("#area_fichas").append(draw_ficha_clientes(objeto));  
@@ -673,7 +672,8 @@ function insertar_prospecto(id_cliente){
 		ID_USUARIO:sessionStorage.getItem("id_usuario"),
 		ID_USUARIO_SECUNDARIO:$("#cmbUsuarios").val(),
 		DEPARTAMENTO:$("#cmbDepartamentos").val(),
-        TIPO_PERSONA:tipo_persona
+        TIPO_PERSONA:tipo_persona,
+        DESDE_CLIENTE:true
     };
 
     $.post( global_apiserver + "/prospecto/insert/", JSON.stringify(prospecto), function(respuesta){

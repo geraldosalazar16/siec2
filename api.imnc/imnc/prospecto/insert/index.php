@@ -72,6 +72,7 @@ function valida_error_medoo_and_die(){
 	$ID_USUARIO_SECUNDARIO = $objeto->ID_USUARIO_SECUNDARIO;
 	valida_parametro_and_die($ID_USUARIO_SECUNDARIO, "Es necesario seleccionar u usuario secundario");
 	$TIPO_PERSONA = $objeto->TIPO_PERSONA;
+    $DESDE_CLIENTE = $objeto->DESDE_CLIENTE;
 
 	/*
 	$DEPARTAMENTO = $objeto->DEPARTAMENTO;
@@ -100,15 +101,7 @@ function valida_error_medoo_and_die(){
 
 		]);
      valida_error_medoo_and_die();
-//	$consulta = "INSERT INTO PROSPECTO
-//	(ID, ID_CLIENTE, RFC, NOMBRE,  GIRO, FECHA_CREACION,USUARIO_CREACION, FECHA_MODIFICACION, USUARIO_MODIFICACION, ACTIVO,
-//	ORIGEN,ID_COMPETENCIA,ID_ESTATUS_SEGUIMIENTO, ID_TIPO_CONTRATO,ID_USUARIO_PRINCIPAL,ID_USUARIO_SECUNDARIO,ID_PORCENTAJE,TIPO_PERSONA) VALUES
-//	(".$ID.",".$ID_CLIENTE.",'".$RFC."','".$NOMBRE."','".$GIRO."','".$FECHA_CREACION."',
-//	".$ID_USUARIO_CREACION.",'".$FECHA_MODIFICACION."',".$ID_USUARIO_MODIFICACION.",".$ACTIVO.",".$ORIGEN.",".$COMPETENCIA.","
-//	.$ESTATUS_SEGUIMIENTO.",".$TIPO_CONTRATO.",".$ID_USUARIO_PRINCIPAL.",".$ID_USUARIO_SECUNDARIO.",3,'".$TIPO_PERSONA."');";
-//
-//
-//	$database->query($consulta);
+
 
 	
 	
@@ -155,7 +148,79 @@ function valida_error_medoo_and_die(){
 		
 		}
 		
-	
+	if($ID &&  $DESDE_CLIENTE)
+	{
+		$cliente_domicilios = $database->select("CLIENTES_DOMICILIOS",
+			[
+				"[>]CLIENTES_CONTACTOS" =>["ID"=>"ID_CLIENTE_DOMICILIO"]
+			],
+			[
+				"CLIENTES_DOMICILIOS.ID",
+				"CLIENTES_DOMICILIOS.NOMBRE_DOMICILIO",
+				"CLIENTES_DOMICILIOS.PAIS",
+				"CLIENTES_DOMICILIOS.ENTIDAD_FEDERATIVA",
+				"CLIENTES_DOMICILIOS.DELEGACION_MUNICIPIO",
+				"CLIENTES_DOMICILIOS.COLONIA_BARRIO",
+				"CLIENTES_DOMICILIOS.CP",
+				"CLIENTES_DOMICILIOS.CALLE",
+				"CLIENTES_DOMICILIOS.NUMERO_INTERIOR",
+				"CLIENTES_DOMICILIOS.NUMERO_EXTERIOR",
+				"CLIENTES_DOMICILIOS.ES_FISCAL",
+				"CLIENTES_DOMICILIOS.ID_CLIENTE",
+
+				"CLIENTES_CONTACTOS.NOMBRE_CONTACTO",
+				"CLIENTES_CONTACTOS.EMAIL",
+				"CLIENTES_CONTACTOS.EMAIL2",
+				"CLIENTES_CONTACTOS.TELEFONO_FIJO",
+				"CLIENTES_CONTACTOS.TELEFONO_MOVIL",
+				"CLIENTES_CONTACTOS.CARGO",
+				"CLIENTES_CONTACTOS.DATOS_ADICIONALES",
+			],["ID_CLIENTE"=>$ID_CLIENTE]);
+		valida_error_medoo_and_die();
+
+        $id_d = null;
+		foreach ($cliente_domicilios as $item)
+		{
+			if($id_d!=$item["ID"])
+			{
+				$c = $database->insert("PROSPECTO_DOMICILIO",
+					[
+						"ID_PROSPECTO" => $ID,
+						"NOMBRE" => $item["NOMBRE_DOMICILIO"],
+						"PAIS" => $item["PAIS"],
+						"ESTADO" => $item["ENTIDAD_FEDERATIVA"],
+						"MUNICIPIO" => $item["DELEGACION_MUNICIPIO"],
+						"COLONIA" => $item["COLONIA_BARRIO"],
+						"CODIGO_POSTAL" => $item["CP"],
+						"CALLE" => $item["CALLE"],
+						"NUMERO_INTERIOR" => $item["NUMERO_INTERIOR"],
+						"NUMERO_EXTERIOR" => $item["NUMERO_EXTERIOR"],
+						"FISCAL" => $item["ES_FISCAL"],
+						"ID_CLIENTE_DOMICILIO" => $item["ID_CLIENTE"],
+					]);
+				valida_error_medoo_and_die();
+				$id_d=$item["ID"];
+			}
+
+			$c = $database->insert("PROSPECTO_CONTACTO",
+				[
+					"ID_PROSPECTO" => $ID,
+					"ID_PROSPECTO_DOMICILIO" => $item["ID"],
+					"NOMBRE" => $item["NOMBRE_CONTACTO"],
+					"CORREO" => $item["EMAIL"],
+					"CORREO2" => $item["EMAIL2"],
+					"TELEFONO" => $item["TELEFONO_FIJO"],
+					"CELULAR" => $item["TELEFONO_MOVIL"],
+					"PUESTO" => $item["CARGO"],
+					"DATOS_ADICIONALES" => $item["DATOS_ADICIONALES"],
+					"ACTIVO" => 1,
+				]);
+			valida_error_medoo_and_die();
+
+		}
+
+
+	}
 	/*////////////////////////////////////////////////////////////////////////////////////////////*/
 
 	creacion_expediente_registro($ID, 3, $rutaExpediente, $database);
