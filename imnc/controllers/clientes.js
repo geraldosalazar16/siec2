@@ -35,8 +35,22 @@ function draw_ficha_clientes(objeto)
   strHtml += '    <div class="col-xs-12 bottom text-center">';
   strHtml += '      <div class="col-xs-12 col-sm-12 emphasis">';
   //Agregar como prospecto
-  strHtml += '        <button type="button" class="btn btn-primary btn-xs btn-imnc btnAgregarProspecto" cliente="'+objeto.ID+'" style="float: right;">';
-  strHtml += '            <i class="fa fa-user-plus"> </i> Agregar prospecto </button>';
+  if(objeto.TOTAL==0)
+  {
+      strHtml += '        <button type="button" class="btn btn-primary btn-xs btn-imnc btnAgregarProspecto" cliente="'+objeto.ID+'" style="float: right;">';
+      strHtml += '            <i class="fa fa-user-plus"> </i> Agregar prospecto </button>';
+  }
+   if(objeto.TOTAL==1)
+   {
+       strHtml += '        <a href="./?pagina=perfilprospecto&id='+objeto.PROSPECTOS+'&entidad=1" class="btn btn-primary btn-xs btn-imnc" style="float: right;">';
+       strHtml += '            <i class="fa fa-user-plus"> </i> Ver prospecto </a>';
+   }
+    if(objeto.TOTAL>1)
+    {
+        strHtml += '        <a href="./?pagina=prospecto&id='+objeto.PROSPECTOS+'" class="btn btn-primary btn-xs btn-imnc" style="float: right;">';
+        strHtml += '            <i class="fa fa-user-plus"> </i> Ver prospectos </a>';
+    }
+
  if (global_permisos["CLIENTES"]["editar"] == 1) {
       strHtml += '        <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" cliente="'+objeto.ID+'" style="float: right;">';
       strHtml += '            <i class="fa fa-edit"> </i> Editar </button>';
@@ -635,6 +649,14 @@ function insertar_prospecto(id_cliente){
 	{
 		habilitado = 1;
 	}
+    var value_rfc = $("#rfc").val();
+    value_rfc = value_rfc.replace("_","");
+    value_rfc = value_rfc.trim();
+    var tipo_persona = "";
+    if(value_rfc.length == 12)
+        tipo_persona = "Moral";
+    if(value_rfc.length == 13)
+        tipo_persona = "Física";
     var prospecto = {
 	    NOMBRE:$("#nombre").val(),
 		RFC:$("#rfc").val(),
@@ -650,8 +672,10 @@ function insertar_prospecto(id_cliente){
 		TIPO_CONTRATO : $("#cmbTipoContrato").val(),
 		ID_USUARIO:sessionStorage.getItem("id_usuario"),
 		ID_USUARIO_SECUNDARIO:$("#cmbUsuarios").val(),
-		DEPARTAMENTO:$("#cmbDepartamentos").val()
+		DEPARTAMENTO:$("#cmbDepartamentos").val(),
+        TIPO_PERSONA:tipo_persona
     };
+
     $.post( global_apiserver + "/prospecto/insert/", JSON.stringify(prospecto), function(respuesta){
         respuesta = JSON.parse(respuesta);
         if (respuesta.resultado == "ok") {
