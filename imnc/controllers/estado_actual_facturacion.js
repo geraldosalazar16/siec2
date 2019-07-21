@@ -13,7 +13,7 @@ $scope.graficaRepCantFactxEstad = function(){
 			var datos=[];
 			var estado=[];
 			var fondo=[]; 
-			colores=["#6cafdb","#c1e1f7","#0099ff","#16365d","#2067a2","#4e9ad9","#84c7ff","0660ac","0a64fe","0000fe"];
+			colores=["#6cafdb","#c1e1f7","#0099ff","#16365d","#2067a2","#4e9ad9","#84c7ff","#0660ac","#0a64fe","#0000fe"];			
 			for(var i = 0 ; i < data.length ; i++){				
 				datos[i] = data[i].cantidad;
 				estado[i] = data[i].estatus;
@@ -28,7 +28,8 @@ $scope.graficaRepCantFactxEstad = function(){
 					  backgroundColor: fondo}]					
 				}	
 			});	        
-		}
+		},
+		error:()=>{console.log("ERROR: ejecutando consulta cant fact x estado ")}
 	});
 };
 
@@ -59,7 +60,8 @@ $scope.graficaRepMontoFactxEstad = function(){
 					  backgroundColor: fondo}]					
 				}	
 			});	        
-		}
+		},
+		error:()=>{console.log("ERROR: ejecutando consulta monto fact x estado ")}
 	});
 };
 
@@ -73,7 +75,9 @@ $scope.graficaRepCarteraVencida = function(){
 			var datos=[];
 			var estado=[];
 			var fondo=[];
-			colores=["#6cafdb","#c1e1f7","#0099ff","#16365d","#2067a2","#4e9ad9","#84c7ff","0660ac","0a64fe","0000fe"];
+			//4 tonalidades de azul mate ordenados del más claro al más oscuro en correspondecia
+			//a lo significativo en tiempo de vejes de las facturas. El backend los devuelve ordenados
+			colores=["#c1e1f7","#6cafdb","#2067a2","#16365d"];
 			for(var i = 0 ; i < data.length ; i++){				
 				datos[i] = data[i].total;
 				estado[i] = data[i].diasvencida;
@@ -88,9 +92,7 @@ $scope.graficaRepCarteraVencida = function(){
 				}	
 			});	        
 		},
-		error:function(data){
-			console.log("algo salió mal");
-		}
+		error:()=>{console.log("ERROR: ejecutando consulta cartera vencida")}
 	});
 };
 
