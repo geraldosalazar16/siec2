@@ -220,7 +220,7 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '  </ul></li>';
             echo '  <li><a>Programación</a>';
             echo '  <ul class="nav child_menu" style="display: none">';
-            echo '      <li><a href="#">Días Auditor</a></li>';
+            echo '      <li><a href="./?pagina=indicadores_programacion_dias_auditor">Días Auditor</a></li>';
             echo '      <li><a href="#">Tasa Ocupacional</a></li>';
             echo '  </ul></li>';
             echo '  </ul>';

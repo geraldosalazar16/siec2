@@ -377,7 +377,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default">Cerrar</button>
-        <button type="button" class="btn btn-primary" ng-click="guardar()"  id="btnGuardarProspecto">Guardar</button>
+        <button type="button" class="btn btn-primary"  id="btnGuardarProspecto">Guardar</button>
       </div>
     </div>
   </div>

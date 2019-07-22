@@ -58,6 +58,7 @@ $objeto = json_decode($json);
 $ID_SERVICIO_CLIENTE_ETAPA = $objeto->ID; 
 valida_parametro_and_die($ID_SERVICIO_CLIENTE_ETAPA, "Falta el ID_SERVICIO_CLIENTE_ETAPA");
 $DURACION_DIAS = $objeto->DURACION_DIAS; 
+$MONTO = $objeto->MONTO; 
 $TIPO_AUDITORIA = $objeto->TIPO_AUDITORIA; 
 $CICLO =  $objeto->CICLO;
 valida_parametro_and_die($TIPO_AUDITORIA, "Falta el TIPO_AUDITORIA");
@@ -84,6 +85,7 @@ $id1 = $database->update("I_SG_AUDITORIAS",
 											
 											[
 												"DURACION_DIAS"=>$DURACION_DIAS,
+												"MONTO"=>$MONTO,
 												"STATUS_AUDITORIA" => $STATUS_AUDITORIA,
 												"NO_USA_METODO" => $NO_USA_METODO,
 												"SITIOS_AUDITAR" => $SITIOS_AUDITAR,

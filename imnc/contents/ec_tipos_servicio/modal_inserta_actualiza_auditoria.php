@@ -28,6 +28,10 @@
 				<label class="control-label">Días auditor para {{x.ID_NORMA}}<span class="required">*</span></label>
                 <input type="text" class="form-control"   ng-model="formDataAuditoria.txtDuracionAuditoria1[x.ID_NORMA]" ng-change='CambioDiaAuditor()' required ng-class="{ error: exampleFormAuditoria.txtDuracionAuditoria.$error.required && !exampleFormAuditoria.$pristine}" >
 			</div>
+			<div class="form-group" ng-show="accion_auditoria=='editar'">
+				<label class="control-label">Monto<span class="required">*</span></label>
+                <input type="text" class="form-control"   ng-model="formDataAuditoria.MONTO"   ng-class="{ error: exampleFormAuditoria.txtDuracionAuditoria.$error.required && !exampleFormAuditoria.$pristine}" >
+			</div>
 			<div class="form-group">
 				<label class="control-label">Tipo de Auditor&iacutea <span class="required">*</span></label>
                 <select ng-model="formDataAuditoria.cmbTipoAuditoria" ng-options="TiposAuditoria.ID as TiposAuditoria.TIPO for TiposAuditoria in TiposAuditorias"  class="form-control"  ng-change='cambiocmbTipoAuditoria()' required ng-class="{ error: exampleFormAuditoria.cmbTipoAuditoria.$error.required && !exampleFormAuditoria.$pristine}"  ng-disabled="accion_auditoria=='editar'" ></select>

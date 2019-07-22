@@ -132,6 +132,7 @@ if($id_servicio_cliente_etapa	!=	0){
 				"STATUS_AUDITORIA" => "1",
 				"NO_USA_METODO" => 0,
 				"SITIOS_AUDITAR" => count($sitios),
+				"MONTO" => $tramite->MONTO,
 				"ID_USUARIO_CREACION" => $ID_USUARIO_CREACION
 			]); 
 			valida_error_medoo_and_die();
