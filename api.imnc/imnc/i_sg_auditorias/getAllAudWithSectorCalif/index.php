@@ -165,7 +165,7 @@ if(sizeof($all_pt) > 0 ){
 			$respuesta[$all_pt[$i]["PT_CALIF_ID"]]["ID_TIPO_SERVICIO"] = $all_pt[$i]["ID_TIPO_SERVICIO"];
 			$respuesta[$all_pt[$i]["PT_CALIF_ID"]]["ROL"] = $database->get("PERSONAL_TECNICO_ROLES", "ROL", ["ID" => $all_pt[$i]["ID_ROL"]]);
 
-			array_push($array_pt_califs, $all_pt[$i]["ID_PERSONAL_TECNICO"]);
+			array_push($array_pt_califs, $all_pt[$i]["PT_CALIF_ID"]);
 
 			// Verfica que auditor no tenga las fechas de la auditoria asignadas
 
@@ -199,10 +199,15 @@ if(sizeof($all_pt) > 0 ){
 	$normas = $database->select("SCE_NORMAS", "ID_NORMA", ["ID_SCE"=>$id_sce]);
 	valida_error_medoo_and_die();
     $query = "";
-
+    $str_norma = "";
+    foreach ($normas as $item)
+	{
+		$str_norma = "'".$item."'";
+	}
 
 		if (count($array_pt_califs) > 0) {
-			$str_calif = " WHERE PT.`ID` NOT IN  (".implode(',',$array_pt_califs).") ";
+//			$str_calif = " WHERE PTC.`ID` NOT IN  (".implode(',',$array_pt_califs).") AND CN.`ID_NORMA` IN (".$str_norma.") ";
+		$str_calif = " WHERE PTC.`ID` NOT IN  (".implode(',',$array_pt_califs).") ";
 		} // Si hay auditores con calificacion se hace un query con todos menos ellos
 	    $query .=  "SELECT 	PTC.`ID`,
 		PTC.`ID_ROL`,
@@ -219,7 +224,7 @@ if(sizeof($all_pt) > 0 ){
 		FROM `PERSONAL_TECNICO_CALIFICACIONES` PTC
 		INNER JOIN `PERSONAL_TECNICO` PT  ON PTC.`ID_PERSONAL_TECNICO` = PT.ID
 		INNER JOIN `PERSONAL_TECNICO_ROLES` PTR  ON PTC.`ID_ROL` = PTR.ID
-		INNER JOIN `CALIFICACIONES_NORMAS` CN ON PTC.ID = CN.ID_CALIFICACION
+		INNER JOIN `CALIFICACIONES_NORMAS` CN ON PTC.ID = CN.`ID_CALIFICACION`
 		".$str_calif." GROUP BY PTC.`ID`,PTC.`ID_TIPO_SERVICIO`,CN.`ID_NORMA` ORDER BY PTC.`ID_PERSONAL_TECNICO`, PTC.`ID`";
 			//$otras_califs = $database->select("PERSONAL_TECNICO_CALIFICACIONES", "*", ["AND"=>["ID[!]"=>$array_pt_califs, "ID_TIPO_SERVICIO"=>$tipo_servicio]]);
 
