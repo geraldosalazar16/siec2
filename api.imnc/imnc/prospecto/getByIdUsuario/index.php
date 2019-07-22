@@ -31,6 +31,7 @@ function valida_error_medoo_and_die(){
 $respuesta=array();
 
 $ID_USUARIO = $_REQUEST["id"];
+$ids = $_REQUEST["ids"];
 //Determinar el perfil del usuario
 $QUERY = "SELECT PERFILES.ID FROM PERFIL_MODULO_USUARIO
 INNER JOIN USUARIOS ON USUARIOS.ID = PERFIL_MODULO_USUARIO.ID_USUARIO
@@ -41,10 +42,14 @@ AND USUARIOS.ID = ".$ID_USUARIO;
 $perfil = $database->query($QUERY)->fetchAll();
 $valor_perfil = $perfil[0]['ID'];
 
-$where = " WHERE P.ID_USUARIO_PRINCIPAL = ".$ID_USUARIO." OR P.ID_USUARIO_SECUNDARIO = ".$ID_USUARIO;
+$where = " WHERE (P.ID_USUARIO_PRINCIPAL = ".$ID_USUARIO." OR P.ID_USUARIO_SECUNDARIO = ".$ID_USUARIO.")";
 if($valor_perfil == 1 || $valor_perfil == 3 || $valor_perfil == 9)
 {
-    $where = ";";
+    $where = "";
+}
+if($ids)
+{
+    $where.= ($where?" AND ":" WHERE ")." P.ID IN (".$ids.")";
 }
 $consulta = "SELECT
     P.ID AS ID,
@@ -69,8 +74,7 @@ LEFT JOIN PROSPECTO_TIPO_CONTRATO p_tipo_contrato ON
     P.ID_TIPO_CONTRATO = p_tipo_contrato.ID
 LEFT JOIN PROSPECTO_PORCENTAJE p_porcentaje ON
     P.ID_PORCENTAJE = p_porcentaje.ID"
-	.$where; 
-
+	.$where;
 $tareas = $database->query($consulta)->fetchAll();
 valida_error_medoo_and_die();
 

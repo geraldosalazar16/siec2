@@ -3,7 +3,7 @@
 */
 app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http) { 
 	var id_user = sessionStorage.getItem("id_usuario");
-	
+	$scope.filtros=getQueryVariable("ids");
 	//Titulo que aparece en el html
 	$scope.titulo = 'Prospectos';
 	$scope.modulo_permisos =  global_permisos["CRM"];
@@ -105,10 +105,14 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 	  			});
 			},
 			function (response){});
-		//url:global_apiserver + "/prospecto/getAll/",
+		var url = global_apiserver + "/prospecto/getByIdUsuario/?id="+id_user;
+		if($scope.filtros)
+		{
+			url = global_apiserver + "/prospecto/getByIdUsuario/?id="+id_user+"&ids="+$scope.filtros;
+		}
 		$.ajax({
 			type:'GET',
-			url:global_apiserver + "/prospecto/getByIdUsuario/?id="+id_user,
+			url:url,
 			success: function(data){
 				$scope.$apply(function(){
 					$scope.prospecto = angular.fromJson(data);
@@ -1033,3 +1037,14 @@ $scope.limpiaCamposDomicilio = function(){
 		});
 	}
 
+function getQueryVariable(variable) {
+	var query = window.location.search.substring(1);
+	var vars = query.split("&");
+	for (var i=0;i<vars.length;i++) {
+		var pair = vars[i].split("=");
+		if (pair[0] == variable) {
+			return pair[1];
+		}
+	}
+	console.log('Query Variable ' + variable + ' not found');
+}

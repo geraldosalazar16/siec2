@@ -271,12 +271,13 @@
 											<th class="column-title">Fechas</th>
 											<th class="column-title">D&iacuteas auditor</th>
 											<th class="column-title">Tipo y status de auditor&iacutea </th>
+											<th class="column-title">Monto</th>
 											<th class="column-title">Sitios de auditor&iacutea </th>
 											<th class="column-title">Grupo de auditores</th>
 											<th class="column-title"></th>
+										<!--	<th class="column-title"></th>
 											<th class="column-title"></th>
-											<th class="column-title"></th>
-											<th class="column-title">Estado Dictaminaci&oacuten </th>
+											<th class="column-title">Estado Dictaminaci&oacuten </th> -->
 										</tr>
 									</thead>
 									<tbody>
@@ -324,6 +325,7 @@
 												
 											</td>
 											<td>Tipo: {{x.TIPO}} <br> Ciclo: {{x.CICLO}}<br>Status: {{x.STATUS}}</td>
+											<td>$ {{x.MONTO}}</td>
 											<td>
 													<button class="btn btn-success btn-xs btnSitiosAuditoria" ng-click="btnSitiosAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)" >{{x.SITIOS_ASOCIADOS}} sitios</button>
 													<ul class="list-unstyled user_data">
@@ -344,13 +346,39 @@
 													</ul>
 											</td>
 											<td>
-												<p ng-if='modulo_permisos["registrar"] == 1'>
+												<div class="btn-group">
+													<button type="button" class="btn btn-primary btn-xs btn-imnc " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones   
+														<span class="caret"></span>
+														 <span class="sr-only">Toggle Dropdown</span>
+													</button>
+													<ul class="dropdown-menu">
+														<li>
+															<a ng-click="agregar_editar_auditorias('editar',x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)"> <span class="labelAcordeon" >Editar auditor&iacuteas </span>  </a>
+														</li>
+														<li>
+															<a ng-click='modal_generar_notificacion(DatosServicio.ID_SERVICIO,x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)'> <span class="labelAcordeon" > Notificaci&oacuten  </span>  </a>
+														</li>
+														<li ng-if='modulo_permisos["registrar"] == 1 && x.SOLICITUD'>
+															<a ng-click='openModalEditarSolicitud(x.TIPO_AUDITORIA,x.CICLO,x.SOLICITUD)'> <span class="labelAcordeon" > Editar Facturación  </span>  </a>
+														</li>
+														<li ng-if='modulo_permisos["registrar"] == 1 && !x.SOLICITUD'>
+															<a ng-click='openModalCrearSolicitud(x.TIPO_AUDITORIA,x.CICLO)'> <span class="labelAcordeon" > Solicitar Facturación  </span>  </a>
+														</li>
+														<li ng-if="x.ESTADO_DICTAMINACION == 'Pendiente Solicitud'">
+															<a  ng-click='modal_dictaminacion(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)' > <span class="labelAcordeon" >Solicitar Dictaminaci&oacuten </span>  </a>
+														</li>
+													</ul>
+												</div>
+												<p ng-show="x.ESTADO_DICTAMINACION =='0'">Estado Dictaminaci&oacuten: Solicitud enviada</p>
+												<p ng-show="x.ESTADO_DICTAMINACION =='1'">Estado Dictaminaci&oacuten: Dictaminaci&oacuten aprobada</p>
+												<p ng-show="x.ESTADO_DICTAMINACION =='2'">Estado Dictaminaci&oacuten: Dictaminaci&oacuten negada</p>
+												<!--<p ng-if='modulo_permisos["registrar"] == 1'>
 													<button type="button"  ng-click="agregar_editar_auditorias('editar',x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
 														<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar auditor&iacuteas 
 													</button>
-												</p>
+												</p> -->
 											</td>
-											<td>
+										<!--	<td>
 												<p ng-if='modulo_permisos["registrar"] == 1'>
 													<button type="button"  ng-click='modal_generar_notificacion(DatosServicio.ID_SERVICIO,x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)' class="btn btn-primary btn-xs btn-imnc" style="float: right;">
 														<i class="fa fa-download" aria-hidden="true"></i> Notificaci&oacuten 
@@ -380,7 +408,7 @@
 												<p ng-show="x.ESTADO_DICTAMINACION =='1'">Dictaminaci&oacuten aprobada</p>
 												<p ng-show="x.ESTADO_DICTAMINACION =='2'">Dictaminaci&oacuten negada</p>
 												
-											</td>
+											</td> -->
 										</tr>
 										
 										<!--++++++++++++++++++++Sitios de Auditoria++++++++++++++++++++-->

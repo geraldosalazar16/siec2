@@ -13,63 +13,70 @@
             <tr>
 				<th>Datos del Auditor</th>
 				<th>Sectores que cubre</th>
-				<th></th>
+                <th></th>
+
 			</tr>
           </thead>
           <tbody id="tbody-modal-explora-sitios">
             <tr ng-repeat="auditor in AuditoresParaAuditoria">
                 <td td style="font-size: 12px;">
                     {{auditor.NOMBRE_COMPLETO}}<br>
-					{{auditor.REGISTRO}}<br>
-					{{auditor.STATUS}}<br>
-					
+                    {{auditor.STATUS}}<br>
+
                 </td>
                 <td style="font-size: 11px;">
-					<ul class="list-unstyled user_data">
-						<li> {{auditor.TOTAL}}</li>
-						<li ng-repeat="r in auditor.CALIFICACIONES">
-								{{r.ID_SECTOR}}-{{r.NOMBRE_SECTOR}}({{r.ROL}}) Sector NACE: {{r.SECTOR_NACE}}
-														
-						</li>
-					</ul>	
+                    <ul class="list-unstyled user_data">
+                        <li> {{auditor.TOTAL}}</li>
+                        <li><strong>{{auditor.REGISTRO}} - {{auditor.ROL}}</strong></li>
+                        <li ng-repeat="r in auditor.CALIFICACIONES">
+                            {{r.ID_SECTOR}}-{{r.NOMBRE_SECTOR}} Sector NACE: {{r.SECTOR_NACE}}
+                        </li>
+                    </ul>
                 </td>
-               
+
                 <td>
-					<button type="button" class="btn btn-default btn-xs" style="float: right;" disabled ng-if="auditor.EN_GRUPO"> en auditoria </button>
-					<button type="button" class="btn btn-default btn-xs" style="float: right;" disabled ng-if="!auditor.EN_GRUPO && auditor.STATUS != 'activo'"> {{auditor.STATUS}} </button>
-					<button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarGrupo" style="float: right;" ng-if="!auditor.EN_GRUPO && auditor.STATUS == 'activo'" ng-click="cargarModalInsertarActualizarGrupoAuditor(auditor.PT_CALIF_ID,auditor.NOMBRE_COMPLETO)"> seleccionar </button>
-              <!--      <button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarSitio" 
-                    ng-click="agregar_sitio_auditoria()"
-                     style="float: right;"> 
-                        Seleccionar 
-                    </button> -->
+                    <button type="button" class="btn btn-default btn-xs" style="float: right;" disabled ng-if="auditor.EN_GRUPO"> en auditoria </button>
+                    <button type="button" class="btn btn-default btn-xs" style="float: right;" disabled ng-if="!auditor.EN_GRUPO && auditor.STATUS != 'activo'"> {{auditor.STATUS}} </button>
+                    <button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarGrupo" style="float: right;" ng-if="!auditor.EN_GRUPO && auditor.STATUS == 'activo'" ng-click="cargarModalInsertarActualizarGrupoAuditor(auditor.PT_CALIF_ID,auditor.NOMBRE_COMPLETO)"> seleccionar </button>
+                    <!--      <button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarSitio"
+                          ng-click="agregar_sitio_auditoria()"
+                           style="float: right;">
+                              Seleccionar
+                          </button> -->
                 </td>
+
             </tr>
 			 <tr ng-repeat="auditor in AuditoresParaAuditoria1">
-                <td td style="font-size: 12px;">
-                    {{auditor.NOMBRE_COMPLETO}}<br>
-					{{auditor.REGISTRO}}<br>
-					{{auditor.STATUS}}<br>
-					
-                </td>
-                <td style="font-size: 11px;">
-					<ul class="list-unstyled user_data">
-						<li> {{auditor.TOTAL}}</li>
-						<li>{{auditor.ROL}}</li>
-					</ul>	
-                </td>
-               
-                <td>
-					<button type="button" class="btn btn-default btn-xs" style="float: right;" disabled ng-if="auditor.EN_GRUPO"> en auditoria </button>
-					<button type="button" class="btn btn-default btn-xs" style="float: right;" disabled ng-if="!auditor.EN_GRUPO && auditor.STATUS != 'activo'"> {{auditor.STATUS}} </button>
-					<button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarGrupo" style="float: right;" ng-if="!auditor.EN_GRUPO && auditor.STATUS == 'activo'" disabled> sin calificación sector </button>
-<!--					<button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarGrupo" style="float: right;" ng-if="!auditor.EN_GRUPO && auditor.STATUS == 'activo'" ng-click="cargarModalInsertarActualizarGrupoAuditor(auditor.PT_CALIF_ID,auditor.NOMBRE_COMPLETO)"> seleccionar </button>-->
-              <!--      <button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarSitio"
-                    ng-click="agregar_sitio_auditoria()"
-                     style="float: right;"> 
-                        Seleccionar 
-                    </button> -->
-                </td>
+                 <td td style="font-size: 12px;">
+                     {{auditor.NOMBRE_COMPLETO}}<br>
+                     {{auditor.STATUS}}<br>
+
+                 </td>
+                 <td style="font-size: 11px;">
+                     <ul class="list-unstyled user_data">
+                         <li> {{auditor.TOTAL}}</li>
+                         <li ng-if=" auditor.CALIFICACIONES.length>0" ><strong>{{auditor.REGISTRO}} - {{auditor.ROL}}</strong><br></li>
+                         <li ng-repeat="r in auditor.CALIFICACIONES" ng-if=" auditor.CALIFICACIONES.length>0">
+                             Norma: {{r.NORMA}}
+                         </li>
+                         <li ng-if=" auditor.CALIFICACIONES.length==0">
+                             No posee calificaciones asociadas por normas, ni cubre ningun sector
+                         </li>
+                     </ul>
+                 </td>
+
+                 <td>
+                     <button type="button" class="btn btn-default btn-xs" style="float: right;" disabled ng-if="auditor.EN_GRUPO"> en auditoria </button>
+                     <button type="button" class="btn btn-default btn-xs" style="float: right;" disabled ng-if="!auditor.EN_GRUPO && auditor.STATUS != 'activo'"> {{auditor.STATUS}} </button>
+                     <button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarGrupo" style="float: right;" ng-if="!auditor.EN_GRUPO && auditor.STATUS == 'activo' && auditor.CALIFICACIONES.length>0" ng-click="cargarModalInsertarActualizarGrupoAuditor(auditor.PT_CALIF_ID,auditor.NOMBRE_COMPLETO)"> seleccionar </button>
+                     <button type="button" class="btn btn-default btn-xs" style="float: right;" ng-if="!auditor.EN_GRUPO && auditor.STATUS == 'activo' && auditor.CALIFICACIONES.length==0" disabled  > sin calificiación </button>
+                     <!--      <button type="button" class="btn btn-primary btn-xs btn-imnc btnSeleccionarSitio"
+                           ng-click="agregar_sitio_auditoria()"
+                            style="float: right;">
+                               Seleccionar
+                           </button> -->
+                 </td>
+
             </tr>
 			
           </tbody>
