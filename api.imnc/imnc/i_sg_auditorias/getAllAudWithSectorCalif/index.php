@@ -243,7 +243,7 @@ if(sizeof($all_pt) > 0 ){
 
 					if($respuesta_otra[$otras_califs[$i]["PT_CALIF_ID"]]["EN_GRUPO"]==0)
 					{
-						$en_grupo = $database->count("I_SG_AUDITORIA_GRUPOS", ["AND" => ["ID_PERSONAL_TECNICO_CALIF"=>$otras_califs[$i]["PT_CALIF_ID"], "ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$idtipoauditoria,"CICLO"=>$ciclo]]);
+						$en_grupo = $database->count("I_SG_AUDITORIA_GRUPOS",["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID_PERSONAL_TECNICO_CALIF"=>"ID"]],"I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA", ["AND" => ["PERSONAL_TECNICO_CALIFICACIONES.ID_PERSONAL_TECNICO"=>$otras_califs[$i]["ID_PERSONAL_TECNICO"], "I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=>$idtipoauditoria,"I_SG_AUDITORIA_GRUPOS.CICLO"=>$ciclo]]);
 						valida_error_medoo_and_die();
 						$respuesta_otra[$otras_califs[$i]["PT_CALIF_ID"]]["EN_GRUPO"] = $en_grupo;
 					}
@@ -268,7 +268,7 @@ if(sizeof($all_pt) > 0 ){
 						array_push($respuesta_otra[$otras_califs[$i]["PT_CALIF_ID"]]["CALIFICACIONES"], $detalles_de_califs);
 					}
 
-				$en_grupo = $database->count("I_SG_AUDITORIA_GRUPOS", ["AND" => ["ID_PERSONAL_TECNICO_CALIF"=>$otras_califs[$i]["PT_CALIF_ID"], "ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"TIPO_AUDITORIA"=>$idtipoauditoria,"CICLO"=>$ciclo]]);
+				$en_grupo = $database->count("I_SG_AUDITORIA_GRUPOS",["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID_PERSONAL_TECNICO_CALIF"=>"ID"]],"I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA", ["AND" => ["PERSONAL_TECNICO_CALIFICACIONES.ID_PERSONAL_TECNICO"=>$otras_califs[$i]["ID_PERSONAL_TECNICO"], "I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA" => $id_sce,"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=>$idtipoauditoria,"I_SG_AUDITORIA_GRUPOS.CICLO"=>$ciclo]]);
 				valida_error_medoo_and_die();
 				$respuesta_otra[$otras_califs[$i]["PT_CALIF_ID"]]["EN_GRUPO"] = $en_grupo;
 			}

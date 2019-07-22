@@ -67,6 +67,8 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
            echo '     <li><a href="./?pagina=uso_factura">Uso de la Factura</a>';
            echo '     </li>';
+           echo '     <li><a href="./?pagina=objetivos">Objetivos</a>';
+           echo '     </li>';
 		   
 
         }
