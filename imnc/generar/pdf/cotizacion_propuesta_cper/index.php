@@ -505,6 +505,9 @@ EOT;
 			$subtotal=$costo+$suma_tarifa+$viaticos;
 			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
+			$monto = $database->update("COTIZACIONES_TRAMITES_CPER", [
+				"MONTO" => $total
+			], ["ID"=>$datos[$i]->ID]);
 			//Dando formato a los datos
 			$viaticos_f=number_format($viaticos,2);
 			$subtotal_f=number_format($subtotal,2);

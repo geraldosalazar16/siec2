@@ -439,7 +439,6 @@ $html = <<<EOT
 
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
-
 for($i=0;$i<count($datos);$i++){
 	if($i!=0){
 		$pdf1->AddPage();
@@ -463,6 +462,9 @@ for($i=0;$i<count($datos);$i++){
 		$subtotal = $cotizacion[0]->COTIZACION_TRAMITES[$i]->TRAMITE_COSTO_TOTAL;
 		$IVA = 0.16*$subtotal;//Aqui es necesario asegurarse que sea IVA 16%
 		$Total=$subtotal+$IVA;
+		$monto = $database->update("COTIZACIONES_TRAMITES_CIL", [
+			"MONTO" => $Total
+		], ["ID"=>$datos[$i]->ID]);
 		//Dando formato a los datos
 		$costo_dias_encuesta=number_format($costo_dias_encuesta,2);
 		$tarifa_dia_auditor=number_format($tarifa_dia_auditor,2);
@@ -472,6 +474,7 @@ for($i=0;$i<count($datos);$i++){
 		$subtotal=number_format($subtotal,2);
 		$IVA=number_format($IVA,2);
 		$Total=number_format($Total,2);
+
 $html = <<<EOT
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;" width="450">
@@ -880,6 +883,8 @@ $pdf1->SetFont('helvetica','',9);
 $html ="Los datos personales proporcionados por la organización, serán tratados conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares vigente";
 $pdf1->writeHTML($html, true, false, true, false, '');
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+
 
 //Close and output PDF document
 $pdf1->Output();

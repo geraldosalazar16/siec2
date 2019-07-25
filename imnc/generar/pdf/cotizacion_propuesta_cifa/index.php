@@ -355,6 +355,9 @@ if($modalidad == 'programado'){
 $subtotal = $cotizacion[0]->TOTAL_COTIZACION;
 $iva = $subtotal*0.16;
 $total = $subtotal +  $iva;
+$monto = $database->update("COTIZACIONES_TRAMITES_INF_COM", [
+    "MONTO" => $total
+], ["ID"=>$datos[$i]->ID]);
 //////////////////////////
 // create new PDF document
 //$pdf1 = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
