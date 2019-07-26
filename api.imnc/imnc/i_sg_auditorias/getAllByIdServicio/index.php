@@ -152,13 +152,16 @@ for ($i=0; $i < count($valores) ; $i++) {
 		$valores[$i]["RESTRICCIONES_DIA_AUDITOR"] = $mensaje_restriccion;
 	}
 
-	$sg_sectores = $database->select("I_SG_SECTORES", "ID_SECTOR", ["ID_SERVICIO_CLIENTE_ETAPA"=>$id]); 
+//	$sg_sectores = $database->select("I_SG_SECTORES", "ID_SECTOR", ["ID_SERVICIO_CLIENTE_ETAPA"=>$id]);
+//	$ids_pt_califs = $database->select("I_SG_AUDITORIA_GRUPOS", "ID_PERSONAL_TECNICO_CALIF", ["AND"=>["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
+//	$pt_grupo = $database->select("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ids_pt_califs]);
+//	$sectores_calificados = $database->select("PERSONAL_TECNICO",
+//		                                            ["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID"=>"ID_PERSONAL_TECNICO"],
+//													 "[><]PERSONAL_TECNICO_CALIF_SECTOR"=>["PERSONAL_TECNICO_CALIFICACIONES.ID"=>"ID_PERSONAL_TECNICO_CALIFICACION"]],
+//		                                            "PERSONAL_TECNICO_CALIF_SECTOR.ID_SECTOR", ["PERSONAL_TECNICO.ID"=>$pt_grupo]);
+	$sg_sectores = $database->select("I_SG_SECTORES", "ID_SECTOR", ["ID_SERVICIO_CLIENTE_ETAPA"=>$id]);
 	$ids_pt_califs = $database->select("I_SG_AUDITORIA_GRUPOS", "ID_PERSONAL_TECNICO_CALIF", ["AND"=>["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> $valores[$i]["TIPO_AUDITORIA"],"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
-	$pt_grupo = $database->select("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ids_pt_califs]);
-	$sectores_calificados = $database->select("PERSONAL_TECNICO",
-		                                            ["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID"=>"ID_PERSONAL_TECNICO"],
-													 "[><]PERSONAL_TECNICO_CALIF_SECTOR"=>["PERSONAL_TECNICO_CALIFICACIONES.ID"=>"ID_PERSONAL_TECNICO_CALIFICACION"]],
-		                                            "PERSONAL_TECNICO_CALIF_SECTOR.ID_SECTOR", ["PERSONAL_TECNICO.ID"=>$pt_grupo]);
+	$sectores_calificados = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs]);
 
 	//$sectores_calificados = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs]);
 
@@ -175,12 +178,12 @@ for ($i=0; $i < count($valores) ; $i++) {
 																										["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,
 																										"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> [6,7],
 																										"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
-		$pt_grupo = $database->select("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ids_pt_califs1]);
-		$sectores_calificados1 = $database->select("PERSONAL_TECNICO",
-			["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID"=>"ID_PERSONAL_TECNICO"],
-				"[><]PERSONAL_TECNICO_CALIF_SECTOR"=>["PERSONAL_TECNICO_CALIFICACIONES.ID"=>"ID_PERSONAL_TECNICO_CALIFICACION"]],
-			"PERSONAL_TECNICO_CALIF_SECTOR.ID_SECTOR", ["PERSONAL_TECNICO.ID"=>$pt_grupo]);
-		//$sectores_calificados1 = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs1]);
+//		$pt_grupo = $database->select("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ids_pt_califs1]);
+//		$sectores_calificados1 = $database->select("PERSONAL_TECNICO",
+//			["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID"=>"ID_PERSONAL_TECNICO"],
+//				"[><]PERSONAL_TECNICO_CALIF_SECTOR"=>["PERSONAL_TECNICO_CALIFICACIONES.ID"=>"ID_PERSONAL_TECNICO_CALIFICACION"]],
+//			"PERSONAL_TECNICO_CALIF_SECTOR.ID_SECTOR", ["PERSONAL_TECNICO.ID"=>$pt_grupo]);
+		$sectores_calificados1 = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs1]);
 		if($sectores_calificados1 == NULL || count(array_diff($sg_sectores, $sectores_calificados1)) > 0){
 			$mensaje_restriccion = "- El grupo no esta calificado en todos los sectores";
 			array_push($valores[$i]["RESTRICCIONES_GRUPOS"], $mensaje_restriccion);
@@ -193,12 +196,12 @@ for ($i=0; $i < count($valores) ; $i++) {
 																										["I_SG_AUDITORIA_GRUPOS.ID_SERVICIO_CLIENTE_ETAPA"=> $id,
 																										"I_SG_AUDITORIA_GRUPOS.TIPO_AUDITORIA"=> [8,9,10,11,12],
 																										"I_SG_AUDITORIA_GRUPOS.CICLO"=>$valores[$i]["CICLO"]]]);
-		$pt_grupo = $database->select("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ids_pt_califs1]);
-		$sectores_calificados1 = $database->select("PERSONAL_TECNICO",
-			["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID"=>"ID_PERSONAL_TECNICO"],
-				"[><]PERSONAL_TECNICO_CALIF_SECTOR"=>["PERSONAL_TECNICO_CALIFICACIONES.ID"=>"ID_PERSONAL_TECNICO_CALIFICACION"]],
-			"PERSONAL_TECNICO_CALIF_SECTOR.ID_SECTOR", ["PERSONAL_TECNICO.ID"=>$pt_grupo]);
-		//$sectores_calificados1 = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs1]);
+//		$pt_grupo = $database->select("PERSONAL_TECNICO_CALIFICACIONES","ID_PERSONAL_TECNICO",["ID"=>$ids_pt_califs1]);
+//		$sectores_calificados1 = $database->select("PERSONAL_TECNICO",
+//			["[><]PERSONAL_TECNICO_CALIFICACIONES"=>["ID"=>"ID_PERSONAL_TECNICO"],
+//				"[><]PERSONAL_TECNICO_CALIF_SECTOR"=>["PERSONAL_TECNICO_CALIFICACIONES.ID"=>"ID_PERSONAL_TECNICO_CALIFICACION"]],
+//			"PERSONAL_TECNICO_CALIF_SECTOR.ID_SECTOR", ["PERSONAL_TECNICO.ID"=>$pt_grupo]);
+		$sectores_calificados1 = $database->select("PERSONAL_TECNICO_CALIF_SECTOR", "ID_SECTOR", ["ID_PERSONAL_TECNICO_CALIFICACION"=>$ids_pt_califs1]);
 		if($sectores_calificados1 == NULL || count(array_diff($sg_sectores, $sectores_calificados1)) > 0){
 			$mensaje_restriccion = "- El grupo no esta calificado en todos los sectores";
 			array_push($valores[$i]["RESTRICCIONES_GRUPOS"], $mensaje_restriccion);

@@ -11,7 +11,7 @@ app.controller('dashboard_controller', ['$scope', function($scope,$http) {
 	var repServRealizSG = document.getElementById("repServRealizSGChart");
 	var repServRealizSGHist = document.getElementById("repServRealizSGHistChart");
 	var repDiasAudSG = document.getElementById("repDiasAudSGChart");
-	var repDiasAudSGHist = document.getElementById("repDiasAudSGHistChart");
+	var repDiasAudSGHist = document.getElementById("repDiasAudSGHistChart");	
 	var hoy = new Date();
 	$scope.ano_actual = hoy.getFullYear();
 // REPORTES CERTIFICADOS VIGENTES	

@@ -67,6 +67,8 @@ $modulo_permisos = $_SESSION["permisos"];
            echo '     </li>';
            echo '     <li><a href="./?pagina=uso_factura">Uso de la Factura</a>';
            echo '     </li>';
+           echo '     <li><a href="./?pagina=objetivos">Objetivos</a>';
+           echo '     </li>';
 		   
 
         }
@@ -226,6 +228,10 @@ $modulo_permisos = $_SESSION["permisos"];
 			echo '      		<li><a href="./?pagina=indicadores_programacion_tasa_ocupacional_auditores">Auditores</a></li>';
 			echo '      		<li><a href="./?pagina=indicadores_programacion_tasa_ocupacional_instituto">Instituto</a></li>';
 			echo '  		</ul></li>';
+            echo '  </ul></li>';
+            echo '  <li><a>Facturación</a>';
+            echo '  <ul class="nav child_menu" style="display: none">';
+            echo '      <li><a href="./?pagina=estado_actual_facturacion">Estado actual</a></li>';                 
             echo '  </ul></li>';
             echo '  </ul>';
             echo '</li>';

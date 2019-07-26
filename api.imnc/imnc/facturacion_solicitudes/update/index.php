@@ -25,7 +25,7 @@ $respuesta=array();
 $json = file_get_contents("php://input"); 
 $objeto = json_decode($json); 
 
-$id = $objeto->id;
+$id_solicitud_facturacion = $objeto->id;
 valida_parametro_and_die($id,"Falta ID de Solicitud");
 $id_sce = $objeto->id_sce;
 valida_parametro_and_die($id_sce,"Falta ID de Servicio");
@@ -107,13 +107,13 @@ $id = $database->update("FACTURACION_SOLICITUDES",
 	"HORA_MODIFICACION" => $HORA,
 	"USUARIO_MODIFICACION" => $id_usuario
 ],[
-	"ID" => $id
+	"ID" => $id_solicitud_facturacion
 ]); 
 
 valida_error_medoo_and_die(); 
 
 $database->insert("FACTURACION_SOLICITUD_HISTORICO",[
-	"ID_SOLICITUD" => $id,
+	"ID_SOLICITUD" => $id_solicitud_facturacion,
 	"CAMBIO" => 'Solicitud modificada desde Facturación/Solicitudes',
 	"DESCRIPCION" => 'Actualización general de datos',
 	"FECHA" => $FECHA,

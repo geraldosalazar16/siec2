@@ -266,7 +266,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   // Abrir modal para insertar
   $scope.modal_cotizacion_insertar = function(){    
     $scope.editando=0;
-    console.log("editando es ",$scope.editando);    
+    
     //Limpiar el listado de normas sugeridas
     $scope.Normas = [];
     //Limpiar el control de normas
@@ -294,8 +294,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
   // Abrir modal para editar
   $scope.modal_cotizacion_editar = function(id_cotizacion){
-    $scope.editando=1;
-    console.log("editando es ",$scope.editando);    
+    $scope.editando=1;    
     $('#modalTituloCotizacion').html("Editar datos");
     //$('#btnGuardarUsuario').attr("opcion", "editar");
     $scope.opcion_guardar_cotizacion = "editar";
