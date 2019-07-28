@@ -55,6 +55,8 @@ $mes_curso = date('m')-1;
 	$datos1['Y1'][9] =	0;
 	$datos1['Y1'][10] =	0;
 	$datos1['Y1'][11] =	0;
+	
+	
 
 	
 	
@@ -130,7 +132,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."01%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][0]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][0]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][0] =	0;
+	}
 	//FEBRERO
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -143,7 +150,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."02%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][1]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][1]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][1] =	0;
+	}
 	//MARZO
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -156,7 +168,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."03%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][2]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][2]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][2] =	0;
+	}
 	//ABRIL
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -169,7 +186,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."04%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][3]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][3]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][3] =	0;
+	}
 	//MAYO
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -182,7 +204,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."05%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][4]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][4]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][4] =	0;
+	}
 	//JUNIO
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -195,7 +222,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."06%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][5]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][5]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][5] =	0;
+	}
 	//JULIO
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -208,7 +240,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."07%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][6]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][6]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][6] =	0;
+	}
 	//AGOSTO
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -221,7 +258,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."08%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][7]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][7]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][7] =	0;
+	}
 	//SEPTIEMBRE
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -234,7 +276,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."09%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][8]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][8]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][8] =	0;
+	}
 	//OCTUBRE
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -247,7 +294,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."10%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][9]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][9]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][9] =	0;
+	}
 	//NOVIEMBRE
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -260,7 +312,12 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."11%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][10]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][10]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][10] =	0;
+	}
 	//DICIEMBRE
 	$consulta = "SELECT SUM(TT.MONTO)  AS SUM_TOT
 					FROM(	SELECT 
@@ -273,35 +330,40 @@ $mes_curso = date('m')-1;
 							WHERE 
 								`ISA`.`STATUS_AUDITORIA`='2' AND `ISAF`.`FECHA` LIKE  '".$ano_curso."12%') AS TT";
 	$datos = $database->query($consulta)->fetchAll();
-	$datos1['Z1'][11]= $datos[0]['SUM_TOT'];
+	if($datos[0]['SUM_TOT'] != null){
+		$datos1['Z1'][11]= $datos[0]['SUM_TOT'];
+	}
+	else{
+		$datos1['Z1'][11] =	0;
+	}
 		
 		
 	$respuesta[0]['DATOS'] = "Dias auditor";	
 	$respuesta[1]['DATOS'] =  "Monto";						
-	$respuesta[0]['ENERO'] = $datos1['Y1'][0]??0;	
-	$respuesta[1]['ENERO'] = '$'. ( $datos1['Z1'][0]??0);	
-	$respuesta[0]['FEBRERO'] = $datos1['Y1'][1]??0;	
-	$respuesta[1]['FEBRERO'] = '$'. ( $datos1['Z1'][1]??0);	
-	$respuesta[0]['MARZO'] = $datos1['Y1'][2]??0;	
-	$respuesta[1]['MARZO'] = '$'. ( $datos1['Z1'][2]??0);	
-	$respuesta[0]['ABRIL'] = $datos1['Y1'][3]??0;	
-	$respuesta[1]['ABRIL'] = '$'. ( $datos1['Z1'][3]??0);	
-	$respuesta[0]['MAYO'] = $datos1['Y1'][4]??0;	
-	$respuesta[1]['MAYO'] = '$'. ( $datos1['Z1'][4]??0);	
-	$respuesta[0]['JUNIO'] = $datos1['Y1'][5]??0;	
-	$respuesta[1]['JUNIO'] = '$'. ( $datos1['Z1'][5]??0);	
-	$respuesta[0]['JULIO'] = $datos1['Y1'][6]??0;	
-	$respuesta[1]['JULIO'] = '$'. ( $datos1['Z1'][6]??0);	
-	$respuesta[0]['AGOSTO'] = $datos1['Y1'][7]??0;	
-	$respuesta[1]['AGOSTO'] =  '$'. ($datos1['Z1'][7]??0);	
-	$respuesta[0]['SEPTIEMBRE'] = $datos1['Y1'][8]??0;	
-	$respuesta[1]['SEPTIEMBRE'] =  '$'. ($datos1['Z1'][8]??0);	
-	$respuesta[0]['OCTUBRE'] = $datos1['Y1'][9]??0;	
-	$respuesta[1]['OCTUBRE'] =  '$'. ($datos1['Z1'][9]??0);	
-	$respuesta[0]['NOVIEMBRE'] = $datos1['Y1'][10]??0;	
-	$respuesta[1]['NOVIEMBRE'] = '$'. ($datos1['Z1'][10]??0);	
-	$respuesta[0]['DICIEMBRE'] = $datos1['Y1'][11]??0;	
-	$respuesta[1]['DICIEMBRE'] =  '$'. ($datos1['Z1'][11]??0);	
+	$respuesta[0]['ENERO'] = $datos1['Y1'][0];	
+	$respuesta[1]['ENERO'] = '$ '. number_format( $datos1['Z1'][0],2);	
+	$respuesta[0]['FEBRERO'] = $datos1['Y1'][1];	
+	$respuesta[1]['FEBRERO'] = '$ '. number_format( $datos1['Z1'][1],2);	
+	$respuesta[0]['MARZO'] = $datos1['Y1'][2];	
+	$respuesta[1]['MARZO'] = '$ '. number_format( $datos1['Z1'][2],2);	
+	$respuesta[0]['ABRIL'] = $datos1['Y1'][3];	
+	$respuesta[1]['ABRIL'] = '$ '. number_format( $datos1['Z1'][3],2);	
+	$respuesta[0]['MAYO'] = $datos1['Y1'][4];	
+	$respuesta[1]['MAYO'] = '$ '. number_format( $datos1['Z1'][4],2);	
+	$respuesta[0]['JUNIO'] = $datos1['Y1'][5];	
+	$respuesta[1]['JUNIO'] = '$ '. number_format( $datos1['Z1'][5],2);	
+	$respuesta[0]['JULIO'] = $datos1['Y1'][6];	
+	$respuesta[1]['JULIO'] = '$ '. number_format( $datos1['Z1'][6],2);	
+	$respuesta[0]['AGOSTO'] = $datos1['Y1'][7];	
+	$respuesta[1]['AGOSTO'] =  '$ '. number_format($datos1['Z1'][7],2);	
+	$respuesta[0]['SEPTIEMBRE'] = $datos1['Y1'][8];	
+	$respuesta[1]['SEPTIEMBRE'] =  '$ '. number_format($datos1['Z1'][8],2);	
+	$respuesta[0]['OCTUBRE'] = $datos1['Y1'][9];	
+	$respuesta[1]['OCTUBRE'] =  '$ '. number_format($datos1['Z1'][9],2);	
+	$respuesta[0]['NOVIEMBRE'] = $datos1['Y1'][10];	
+	$respuesta[1]['NOVIEMBRE'] = '$ '. number_format($datos1['Z1'][10],2);	
+	$respuesta[0]['DICIEMBRE'] = $datos1['Y1'][11];	
+	$respuesta[1]['DICIEMBRE'] =  '$ '. number_format($datos1['Z1'][11],2);	
 		
 print_r(json_encode($respuesta));
 

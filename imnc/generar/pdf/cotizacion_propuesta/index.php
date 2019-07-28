@@ -609,7 +609,7 @@ EOT;
 				$suma_tarifa += $tarifa;
 				//Dando formato a los datos
 				$tarifa_f=number_format($tarifa,2);
-				$tarifa_E1=number_format($tarifa,2);
+				$tarifa_E1=$tarifa;
 				$html .= <<<EOT
 						<tr>
 							<td style="font-size: medium; text-align:right; color:#5779A3" width="225">$descripcion</td>
@@ -626,7 +626,7 @@ EOT;
 				$suma_tarifa += $tarifa;
 				//Dando formato a los datos
 				$tarifa_f=number_format($tarifa,2);
-				$tarifa_E2=number_format($tarifa,2);
+				$tarifa_E2=$tarifa;
 				$html .= <<<EOT
 						<tr>
 							<td style="font-size: medium; text-align:right; color:#5779A3" width="225">$descripcion</td>
@@ -674,6 +674,7 @@ $i=$i+1;
 	$id = $database->update("COTIZACIONES_TRAMITES", [
 		"MONTO" => $costo_E2+$viaticos_E2+$tarifa_E2
 	], ["AND"=>["ID"=>$id_cotizacion,"ID_ETAPA_PROCESO"=>3]]);
+	
 	}
 	else{
 		$Titulo_Tabla="SERVICIO DE AUDITORÍA DE ".strtoupper($datos[$i]->TIPO);
@@ -744,11 +745,12 @@ EOT;
 			</tr>
 		</table>
 EOT;
+$pdf1->writeHTML($html, true, false, true, false, '');
 $id = $database->update("COTIZACIONES_TRAMITES", [
 		"MONTO" => $subtotal
 	], ["AND"=>["ID_COTIZACION"=>$id_cotizacion,"ID_ETAPA_PROCESO"=>$datos[$i]->ID_ETAPA_PROCESO]]);
 	}
-$pdf1->writeHTML($html, true, false, true, false, '');
+
 	
 	
 	
