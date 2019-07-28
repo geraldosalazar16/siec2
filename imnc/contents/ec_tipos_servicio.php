@@ -274,6 +274,7 @@
 											<th class="column-title">Monto</th>
 											<th class="column-title">Sitios de auditor&iacutea </th>
 											<th class="column-title">Grupo de auditores</th>
+											<th class="column-title">Estado Facturaci&oacuten</th>
 											<th class="column-title"></th>
 										<!--	<th class="column-title"></th>
 											<th class="column-title"></th>
@@ -314,14 +315,14 @@
 												</table>
 											</td>
 											<td>
-											<ul class="list-unstyled user_data">
-												<li>
-													{{x.DURACION_DIAS}}		
-												</li>
-												<li>
-													{{x.RESTRICCIONES_DIA_AUDITOR}}		
-												</li>
-											</ul>
+												<ul class="list-unstyled user_data">
+													<li>
+														{{x.DURACION_DIAS}}		
+													</li>
+													<li>
+														{{x.RESTRICCIONES_DIA_AUDITOR}}		
+													</li>
+												</ul>
 												
 											</td>
 											<td>Tipo: {{x.TIPO}} <br> Ciclo: {{x.CICLO}}<br>Status: {{x.STATUS}}</td>
@@ -345,6 +346,7 @@
 														
 													</ul>
 											</td>
+											<td>{{x.estado_fact}} por ${{x.importe}}</td>
 											<td>
 												<div class="btn-group">
 													<button type="button" class="btn btn-primary btn-xs btn-imnc " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones   
@@ -572,6 +574,8 @@
 												
 											</td>
 											<td>Tipo: {{xx.TIPO}} <br> Ciclo: {{xx.CICLO}}<br>Status: {{xx.STATUS}}</td>
+											<!-- faltaba esta columna para monto -->
+											<td></td>
 											<td>
 													<button class="btn btn-success btn-xs btnSitiosAuditoria" ng-click="btnSitiosAuditoriaEC(xx.ID_SERVICIO_CLIENTE_ETAPA,xx.TIPO_AUDITORIA,xx.CICLO)" >{{xx.SITIOS_ASOCIADOS}} sitios</button>
 												<!--	<ul class="list-unstyled user_data">
