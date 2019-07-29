@@ -531,6 +531,7 @@ $scope.formData = {};
   // Abrir modal para insertar
   $scope.modal_tramite_insertar = function(){
     $scope.tramite_insertar_editar = {};
+	$scope.tramite_insertar_editar.REVISION_DOCUMENTAL = '1';
     //clean_checkbox_cambio();
     accion_tramite ="insertar";
     $('#modalTituloTramite').html("Insertar tramite");
@@ -728,7 +729,7 @@ $scope.formData = {};
       DESCUENTO : $scope.tramite_insertar_editar.DESCUENTO,
       AUMENTO : $scope.tramite_insertar_editar.AUMENTO,
   //    REDUCCION : $scope.tramite_insertar_editar.REDUCCION,
- //   DIAS_MULTISITIO : $scope.tramite_insertar_editar.DIAS_MULTISITIO,
+	  REVISION_DOCUMENTAL : $scope.tramite_insertar_editar.REVISION_DOCUMENTAL,
       ID_USUARIO : sessionStorage.getItem("id_usuario"),
 
     }

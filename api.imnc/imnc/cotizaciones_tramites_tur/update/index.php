@@ -37,16 +37,16 @@ $VIATICOS = $objeto->VIATICOS;
 $DESCUENTO = $objeto->DESCUENTO; 
 $AUMENTO = $objeto->AUMENTO; 
 //$REDUCCION = $objeto->REDUCCION; 
-//$DIAS_MULTISITIO = $objeto->DIAS_MULTISITIO; 
+$REVISION_DOCUMENTAL = $objeto->REVISION_DOCUMENTAL; 
 //valida_parametro_and_die($CAMBIO,"Falta indicar si hay cambio");
 
-
+/*
 if($DIAS_MULTISITIO!="" && !is_numeric($DIAS_MULTISITIO)){
 		$respuesta["resultado"] = "error"; 
 		$respuesta["mensaje"] = "Los DIAS_MULTISITIO debe ser un número"; 
 		print_r(json_encode($respuesta)); 
 		die(); 
-	}
+	}*/
 if($VIATICOS!="" && !is_numeric($VIATICOS)){
 		$respuesta["resultado"] = "error"; 
 		$respuesta["mensaje"] = "VIATICOS debe ser un número"; 
@@ -86,7 +86,7 @@ $id = $database->update("COTIZACIONES_TRAMITES_TUR", [
 	"DESCUENTO" => $DESCUENTO,
 	"AUMENTO" => $AUMENTO,
 //	"REDUCCION" => $REDUCCION,
-//	"DIAS_MULTISITIO" => $DIAS_MULTISITIO,
+	"REVISION_DOCUMENTAL" => $REVISION_DOCUMENTAL,
 	"FECHA_MODIFICACION" => $FECHA_MODIFICACION,
 	"ID_USUARIO_MODIFICACION" => $ID_USUARIO_MODIFICACION
 ], ["ID"=>$ID]); 

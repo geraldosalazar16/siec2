@@ -753,7 +753,7 @@ if($cotizacion[0]["ID_SERVICIO"] == 2 || $cotizacion[0]["ID_SERVICIO"] == 4){
 				"COTIZACIONES_TRAMITES_TUR.ID_TIPO_AUDITORIA",
 				"COTIZACIONES_TRAMITES_TUR.AUMENTO",
 			//	"COTIZACIONES_TRAMITES_CIL.REDUCCION",
-			//	"COTIZACIONES_TRAMITES_TUR.DIAS_MULTISITIO",
+				"COTIZACIONES_TRAMITES_TUR.REVISION_DOCUMENTAL",
 				"I_SG_AUDITORIAS_TIPOS.TIPO"
 			];
 			$tramites =  $database->select("COTIZACIONES_TRAMITES_TUR", 
@@ -800,8 +800,14 @@ if($cotizacion[0]["ID_SERVICIO"] == 2 || $cotizacion[0]["ID_SERVICIO"] == 4){
 				valida_error_medoo_and_die();
 
 				$total_dias_auditoria = 0;
+				$dias_rd = 0;
 				if($normas[0]["ID_NORMA"]=='NMX-AA-120-SCFI-2006' || $normas[0]["ID_NORMA"]=='NMX-AA-120-SCFI-2016'){
 					$dias = 0;
+					if($tramite_item["ID_TIPO_AUDITORIA"] == 14 || $tramite_item["ID_TIPO_AUDITORIA"] == 16 ){
+						if($tramite_item["REVISION_DOCUMENTAL"] == 1){
+							$dias_rd = 1;
+						}
+					}
 						//AQUI SE DEBE CALCULAR LA CANTIDAD DE DIAS BASE SEGUN LAS TABLAS QUE NOS DIERON
 						$dias = $database->get("COTIZACION_LONGITUD_PLAYA_DIAS_TUR", ["DIAS","AUDITORES"],
 							[
@@ -867,8 +873,9 @@ if($cotizacion[0]["ID_SERVICIO"] == 2 || $cotizacion[0]["ID_SERVICIO"] == 4){
 				}	
 						
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_DES"] = (floatval($tarifa['TARIFA'])*(1-($tramite_item["DESCUENTO"]/100)+($tramite_item["AUMENTO"]/100)));
-						$total_dias_auditoria=$dias_base;
+						$total_dias_auditoria=$dias_base+$dias_rd;
 						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_BASE"] = $dias_base;
+						$cotizacion[0]["COTIZACION_TRAMITES"][$key]["DIAS_REVISION_DOCUMENTAL"] = $dias_rd;
 						$costo_inicial = (($total_dias_auditoria) * floatval($tarifa['TARIFA']));
 						$costo_desc = (($total_dias_auditoria) *  floatval($cotizacion[0]["COTIZACION_TRAMITES"][$key]["TARIFA_DES"]));
 						

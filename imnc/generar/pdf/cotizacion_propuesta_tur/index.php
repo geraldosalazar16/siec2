@@ -464,6 +464,7 @@ for($i=0;$i<count($datos);$i++){
 		$total_dias_auditoria = $cotizacion[0]->COTIZACION_TRAMITES[$i]->DIAS_AUDITORIA;
 		//Dando formato a los datos
 		$costo_f=number_format($costo,2);
+		$usado = 0;
 		if(($norma2 == 'NMX-AA-133-SCFI-2013')&&($cotizacion[0]->COTIZACION_TRAMITES[$i]->ID_TIPO_AUDITORIA == 14)&&(false)){
 			$total_dias_auditoria1 = $total_dias_auditoria-1 ;
 			$costo1	=	$costo/$total_dias_auditoria;
@@ -496,9 +497,43 @@ for($i=0;$i<count($datos);$i++){
 			</tr>
 			
 EOT;
-	
+	$usado =1;
 		}
-		else{
+		if((($norma2 == 'NMX-AA-120-SCFI-2006')||($norma2 == 'NMX-AA-120-SCFI-2016'))&&($cotizacion[0]->COTIZACION_TRAMITES[$i]->ID_TIPO_AUDITORIA == 14||$cotizacion[0]->COTIZACION_TRAMITES[$i]->ID_TIPO_AUDITORIA == 16) && ($cotizacion[0]->COTIZACION_TRAMITES[$i]->REVISION_DOCUMENTAL == 1)){
+			$total_dias_auditoria1 = $total_dias_auditoria-1 ;
+			$costo1	=	$costo/$total_dias_auditoria;
+			$costo2	=	$costo1*$total_dias_auditoria1;
+			//Dando formato a los datos
+			$costo1_f=number_format($costo1,2);
+			$costo2_f=number_format($costo2,2);
+				$html = <<<EOT
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;" width="450">
+			<tr style="background-color: #1F487B;">
+				<th style="font-size: medium; color:white;" colspan="1"><strong>$Titulo_Tabla</strong></th>
+			</tr>
+			<tr>
+				<th style="font-size: medium;" width="225"><strong>Descripción del servicio</strong></th>
+				<th style="font-size: medium; background-color: #D8E4F0;" width="100"><strong>Dias auditos requeridos</strong></th>
+				<th style="font-size: medium;" width="125"><strong>Costo</strong></th>
+			</tr>
+			<tr>
+				<td style="font-size: medium; text-align:right; color:#5779A3" width="225">Revisión Documental</td>
+				<td style="font-size: medium; background-color: #D8E4F0;" width="100">1</td>
+				<td style="font-size: medium; color:#5779A3" width="25">$</td>
+				<td style="font-size: medium;" width="100">$costo1_f</td> 
+			</tr>
+			<tr>
+				<td style="font-size: medium; text-align:right; color:#5779A3" width="225">$Descripcion_servicio</td>
+				<td style="font-size: medium; background-color: #D8E4F0;" width="100">$total_dias_auditoria1</td>
+				<td style="font-size: medium; color:#5779A3" width="25">$</td>
+				<td style="font-size: medium;" width="100">$costo2_f</td>
+			</tr>
+			
+EOT;
+	$usado  =1;
+		}
+		if($usado == 0){
 			$html = <<<EOT
 		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<table cellpadding="2" cellspacing="0"  border="1" bordercolor=#0000FF style="text-align:center;" width="450">

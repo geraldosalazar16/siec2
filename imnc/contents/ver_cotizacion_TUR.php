@@ -111,8 +111,11 @@
             <tbody>
               <tr class="even pointer" ng-repeat="tramites_cotizacion in arr_tramites_cotizacion">
                 <td>{{tramites_cotizacion.TIPO }}</td>
-                <td>Días total: <b>{{tramites_cotizacion.DIAS_AUDITORIA }}</b><br>
-				
+                <td>
+					Días total: <b>{{tramites_cotizacion.DIAS_AUDITORIA }}</b><br>
+					<p ng-show="tramites_cotizacion.ID_TIPO_AUDITORIA=='14' || tramites_cotizacion.ID_TIPO_AUDITORIA=='16'">
+					Días base: <b>{{tramites_cotizacion.DIAS_BASE }}</b><br>
+					Días revisi&oacuten documental: <b>{{tramites_cotizacion.DIAS_REVISION_DOCUMENTAL }}</b><br></p>
 				</td>
 				<td>{{tramites_cotizacion.DESCUENTO != null? tramites_cotizacion.DESCUENTO+"%" : "--" }}</td>
 				<td>{{tramites_cotizacion.AUMENTO != null? tramites_cotizacion.AUMENTO+"%" : "--" }}</td>
@@ -276,7 +279,7 @@
 					Longitud de la playa: {{obj_cotizacion_tramite.LONGITUD_PLAYA}} <br>
 				</li>
 				<li id="lbTotla" style="font-size: 20px;">
-                    Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}} <br>
+                    Días de auditoría: {{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}} <i>(Dias Base-{{obj_cotizacion_tramite.DIAS_BASE}} Dias Revisi&oacuten Documental-{{obj_cotizacion_tramite.DIAS_REVISION_DOCUMENTAL}})</i><br>
 				</li>
 				<li id="lbTotla" style="font-size: 20px;">
                     Tarifa de Día Auditor<!-- <span style="font-size: 12px;"> *c/ descuento</span>-->: {{obj_cotizacion_tramite.TARIFA | currency}}<br>
@@ -585,13 +588,17 @@
 					<div class="col-md-12">
 						<input type="numeric" ng-model="tramite_insertar_editar.REDUCCION" required="required" class="form-control col-md-7 col-xs-12">
 					</div>
-				</div>	
-				<div class="form-group form-vertical" ng-show="false">
-					<label class="control-label col-md-12">D&iacuteas para multisitio</label>
-					<div class="col-md-12">
-						<input type="numeric" ng-model="tramite_insertar_editar.DIAS_MULTISITIO" required="required" class="form-control col-md-7 col-xs-12">
-					</div>
 				</div>	-->
+				<div class="form-group form-vertical" ng-show="tramite_insertar_editar.ID_TIPO_AUDITORIA == '14' || tramite_insertar_editar.ID_TIPO_AUDITORIA == '16'">
+					<label class="control-label col-md-12">Revisi&oacuten Documental</label>
+					<div class="col-md-12">
+						<select  ng-model="tramite_insertar_editar.REVISION_DOCUMENTAL" class="form-control">
+							<option value="1" selected>Si</option>
+							<option value="0">No</option>
+					
+						</select>
+					</div>
+				</div>	
          
              
             </form>
