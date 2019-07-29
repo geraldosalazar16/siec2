@@ -14,7 +14,7 @@ function valida_error_medoo_and_die(){
 
 $respuesta=array();
 
-$sql = "SELECT ID_estatus,estatus,SUM(monto) amount FROM facturacion_solicitudes AS fs, facturacion_solicitud_estatus AS fse WHERE fs.id_estatus=fse.id GROUP BY ID_estatus ORDER BY id_estatus;";
+$sql = "SELECT ID_estatus,estatus,SUM(monto) amount FROM FACTURACION_SOLICITUDES AS fs, FACTURACION_SOLICITUD_ESTATUS AS fse WHERE fs.id_estatus=fse.id GROUP BY ID_estatus ORDER BY id_estatus;";
 
 $count = $database->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
