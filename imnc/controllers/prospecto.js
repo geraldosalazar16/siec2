@@ -674,7 +674,7 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 				type:'GET',
 				dataType: 'json',
 				async: false,
-				url:global_apiserver + "/prospecto/getByNombre/?nombre="+$scope.nombre,
+				url:global_apiserver + "/prospecto/getByVentaPlanReal/?nombre="+$scope.nombre,
 				success: function(data){
 					if(data.cantidad > 0){
 						$scope.respuesta=0;	

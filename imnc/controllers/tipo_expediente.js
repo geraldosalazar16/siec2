@@ -144,7 +144,7 @@ app.controller('tipo_expediente_controller', ['$scope', function($scope) {
 				type:'GET',
 				dataType: 'json',
 				async: false,
-				url:global_apiserver + "/ex_tipo_expediente/getByNombre/?nombre="+$scope.nombre,
+				url:global_apiserver + "/ex_tipo_expediente/getByVentaPlanReal/?nombre="+$scope.nombre,
 				success: function(data){
 					if(data.cantidad > 0){
 						$scope.respuesta =  0;	

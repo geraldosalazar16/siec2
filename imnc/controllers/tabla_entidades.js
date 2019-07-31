@@ -100,7 +100,7 @@ app.controller('tabla_entidades_controller', ['$scope', function($scope) {
 				type:'GET',
 				dataType: 'json',
 				async: false,
-				url:global_apiserver + "/ex_tabla_entidades/getByNombre/?nombre="+$scope.nombre,
+				url:global_apiserver + "/ex_tabla_entidades/getByVentaPlanReal/?nombre="+$scope.nombre,
 				success: function(data){
 					if(data.cantidad > 0){
 						$scope.respuesta =  0;	

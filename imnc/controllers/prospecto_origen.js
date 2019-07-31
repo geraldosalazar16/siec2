@@ -97,7 +97,7 @@ app.controller('prospecto_origen_controller', ['$scope', function($scope) {
 				type:'GET',
 				dataType: 'json',
 				async: false,
-				url:global_apiserver + "/prospecto_origen/getByNombre/?origen="+$scope.origen,
+				url:global_apiserver + "/prospecto_origen/getByVentaPlanReal/?origen="+$scope.origen,
 				success: function(data){
 					if(data.cantidad > 0){
 						$scope.respuesta =  0;	
