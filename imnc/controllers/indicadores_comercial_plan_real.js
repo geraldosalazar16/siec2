@@ -142,159 +142,73 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
         $("#expander").empty();
         var html = '';
         var tipo = null;
-        var id = null;
         html += '';
         var totalE = 0;
         var totalG = 0;
         var totalAE = 0;
         var totalAG = 0;
         var totalAC = 0;
-        var tlE = 0;
-        var tlG = 0;
-        var tlAE = 0;
-        var tlAG = 0;
-        var tlAC = 0;
-        $.each($scope.prospectos,function(index,item) {
-            if(id != item.ID)
-            {
-                if(html!='')
-                {
-                    if(flag==1)
-                    {
-                        html += '  <tr style="font-weight: 700"><td bgcolor="silver" >TOTAL</td>\n' +
-                            '                   <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAE, 2, '.', ',')+'</td>\n' +
-                            '                    <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAG, 2, '.', ',')+'</td>\n' +
-                            '                    <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAC, 2, '.', ',')+'</td>\n' +
-                            '                </tr>';
-                    }
-                    if(flag==2)
-                    {
-                        html += '  <tr style="font-weight: 700"><td bgcolor="silver" >TOTAL</td>\n' +
-                            '                    <td bgcolor="#e6e6fa" style="text-align: right;">'+number_format(totalE, 2, '.', ',')+'</td>\n' +
-                            '                    <td bgcolor="#e6e6fa" style="text-align: right;">'+number_format(totalG, 2, '.', ',')+'</td>\n' +
-                            '                    <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAE, 2, '.', ',')+'</td>\n' +
-                            '                    <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAG, 2, '.', ',')+'</td>\n' +
-                            '                    <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAC, 2, '.', ',')+'</td>\n' +
-                            '                </tr>';
-                    }
-
-                    html += '</table>';
-                    totalE = 0;
-                    totalG = 0;
-                    totalAE = 0;
-                    totalAG = 0;
-                    totalAC = 0;
-
-                }
-                html += '<table class="table table-border text-dark">';
-                if(flag==1) {
-                    html += '<thead style="font-weight: 700"><td bgcolor="silver" width="20%">' + item.NOMBRE + '</td><td bgcolor="#f0e68c" width="80%" style="text-align: center;" colspan="3">ACUMULADO ENERO - ' + acumulado + '</td></thead>';
-                    html += ' <thead style="font-weight: 700"><td bgcolor="silver" ></td><td bgcolor="#f0e68c">PROPUESTAS EMITIDAS</td><td bgcolor="#f0e68c">PROPUESTAS GANADAS</td><td bgcolor="#f0e68c">PROPUESTAS ACTIVAS</td></thead>';
-                }
-                if(flag==2) {
-                    html += '<thead style="font-weight: 700"><td bgcolor="silver" width="20%">'+item.NOMBRE+'</td><td bgcolor="#e6e6fa" width="40%" style="text-align: center;" colspan="2">'+mes+'</td><td bgcolor="#f0e68c" width="40%" style="text-align: center;" colspan="3">ACUMULADO ENERO - '+acumulado+'</td></thead>';
-                    html += ' <thead style="font-weight: 700"><td bgcolor="silver" ></td><td bgcolor="#e6e6fa" >PROPUESTAS EMITIDAS</td><td bgcolor="#e6e6fa" >PROPUESTAS GANADAS</td><td bgcolor="#f0e68c">PROPUESTAS EMITIDAS</td><td bgcolor="#f0e68c">PROPUESTAS GANADAS</td><td bgcolor="#f0e68c">PROPUESTAS ACTIVAS</td></thead>';
-
-                }
-                id = item.ID;
-            }
-            if(flag==1) {
-                html += '  <tr><td bgcolor="silver" ><strong>' + item.TIPO + '</strong></td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat(item.ACUME), 2, '.', ',') + '</td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat(item.ACUMG), 2, '.', ',') + '</td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat(item.ACTIVAS), 2, '.', ',') + '</td>\n' +
-                    '                </tr>';
-            }
-            if(flag==2)
-            {
-                html += '  <tr><td bgcolor="silver" ><strong>' + item.TIPO + '</strong></td>\n' +
-                    '                    <td bgcolor="#e6e6fa" style="text-align: right;">' + number_format(parseFloat(item.TOTALE), 2, '.', ',') + '</td>\n' +
-                    '                    <td bgcolor="#e6e6fa" style="text-align: right;">' + number_format(parseFloat(item.TOTALG), 2, '.', ',') + '</td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat(item.ACUME), 2, '.', ',') + '</td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat(item.ACUMG), 2, '.', ',') + '</td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat(item.ACTIVAS), 2, '.', ',') + '</td>\n' +
-                    '                </tr>';
-            }
-
-            totalE += parseFloat(item.TOTALE);
-            tlE += parseFloat(item.TOTALE);
-            totalG += parseFloat(item.TOTALG);
-            tlG += parseFloat(item.TOTALG);
-            totalAE += parseFloat(item.ACUME);
-            tlAE += parseFloat(item.ACUME);
-            totalAG += parseFloat(item.ACUMG);
-            tlAG += parseFloat(item.ACUMG);
-            totalAC += parseFloat(item.ACTIVAS);
-            tlAC += parseFloat(item.ACTIVAS);
-
-        });
-        if(html!='')
-        {
-            if(flag==1)
-            {
-                html += '  <tr style="font-weight: 700"><td bgcolor="silver" >TOTAL</td>\n' +
-                    '                   <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAE, 2, '.', ',')+'</td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAG, 2, '.', ',')+'</td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAC, 2, '.', ',')+'</td>\n' +
-                    '                </tr>';
-            }
-            if(flag==2)
-            {
-                html += '  <tr style="font-weight: 700"><td bgcolor="silver" >TOTAL</td>\n' +
-                    '                    <td bgcolor="#e6e6fa" style="text-align: right;">'+number_format(totalE, 2, '.', ',')+'</td>\n' +
-                    '                    <td bgcolor="#e6e6fa" style="text-align: right;">'+number_format(totalG, 2, '.', ',')+'</td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAE, 2, '.', ',')+'</td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAG, 2, '.', ',')+'</td>\n' +
-                    '                    <td bgcolor="#f0e68c" style="text-align: right;">'+number_format(totalAC, 2, '.', ',')+'</td>\n' +
-                    '                </tr>';
-            }
-
-            html += '</table>';
-
-            html += '<table class="table table-border text-dark">';
-
-            if(flag==1)
-            {
-                html += '<thead style="font-weight: 700"><td bgcolor="#e6e6fa" width="20%">TOTALES GENERALES ' + mes + '</td><td bgcolor="#e6e6fa" width="80%" style="text-align: center;" colspan="3">ACUMULADO ENERO - ' + acumulado + '</td></thead>';
-                html += ' <thead style="font-weight: 700"><td></td><td>PROPUESTAS EMITIDAS</td><td>PROPUESTAS GANADAS</td><td>PROPUESTAS ACTIVAS</td></thead>';
-
-                html += '  <tr style="font-weight: 700"><td>REAL</td>\n' +
-                    '                   <td style="text-align: right;">'+number_format(tlAE, 2, '.', ',')+'</td>\n' +
-                    '                    <td style="text-align: right;">'+number_format(tlAG, 2, '.', ',')+'</td>\n' +
-                    '                    <td style="text-align: right;">'+number_format(tlAC, 2, '.', ',')+'</td>\n' +
-                    '                </tr>';
-                html += '  <tr style="font-weight: 700"><td>OBJETIVO</td>\n' +
-                    '                   <td style="text-align: right;">'+number_format($scope.objetivos.OBJETIVOS_ACUM.E, 2, '.', ',')+'</td>\n' +
-                    '                    <td style="text-align: right;">'+number_format($scope.objetivos.OBJETIVOS_ACUM.G, 2, '.', ',')+'</td>\n' +
-                    '                    <td  style="text-align: right;"></td>\n' +
-                    '                </tr>';
-            }
-            if(flag==2)
-            {
-                html += '<thead style="font-weight: 700" bgcolor="#e6e6fa"><td width="20%">TOTALES GENERALES ' + mes + '</td><td  width="40%" style="text-align: center;" colspan="2"></td><td width="40%" style="text-align: center;" colspan="3">ACUMULADO ENERO - '+acumulado+'</td></thead>';
-                html += ' <thead style="font-weight: 700"><td></td><td>PROPUESTAS EMITIDAS</td><td>PROPUESTAS GANADAS</td><td>PROPUESTAS EMITIDAS</td><td>PROPUESTAS GANADAS</td><td>PROPUESTAS ACTIVAS</td></thead>';
-
-                html += '  <tr style="font-weight: 700"><td>REAL</td>\n' +
-                    '                    <td  style="text-align: right;">'+number_format(tlE, 2, '.', ',')+'</td>\n' +
-                    '                    <td  style="text-align: right;">'+number_format(tlG, 2, '.', ',')+'</td>\n' +
-                    '                    <td  style="text-align: right;">'+number_format(tlAE, 2, '.', ',')+'</td>\n' +
-                    '                    <td  style="text-align: right;">'+number_format(tlAG, 2, '.', ',')+'</td>\n' +
-                    '                    <td  style="text-align: right;">'+number_format(tlAC, 2, '.', ',')+'</td>\n' +
-                    '                </tr>';
-                html += '  <tr style="font-weight: 700"><td>OBJETIVO</td>\n' +
-                    '                    <td  style="text-align: right;">'+number_format($scope.objetivos.OBJETIVOS.E, 2, '.', ',')+'</td>\n' +
-                    '                    <td  style="text-align: right;">'+number_format($scope.objetivos.OBJETIVOS.G, 2, '.', ',')+'</td>\n' +
-                    '                    <td  style="text-align: right;">'+number_format($scope.objetivos.OBJETIVOS_ACUM.E, 2, '.', ',')+'</td>\n' +
-                    '                    <td  style="text-align: right;">'+number_format($scope.objetivos.OBJETIVOS_ACUM.G, 2, '.', ',')+'</td>\n' +
-                    '                    <td  style="text-align: right;"></td>\n' +
-                    '                </tr>';
-            }
-
-            html += '</table>';
-
-
+        html += '<table class="table table-border text-dark">';
+        if(flag==1) {
+            html += '<thead style="font-weight: 700"><td bgcolor="silver" width="20%"></td><td bgcolor="#f0e68c" width="80%" style="text-align: center;" colspan="5"> ENERO - ' + acumulado + '</td></thead>';
+            html += ' <thead style="font-weight: 700"><td bgcolor="silver" ></td><td bgcolor="#f0e68c">PROPUESTAS EMITIDAS</td><td bgcolor="#f0e68c">OBJETIVO EMITIDAS</td><td bgcolor="#f0e68c">PROPUESTAS GANADAS</td><td bgcolor="#f0e68c">OBJETIVO GANADAS</td><td bgcolor="#f0e68c">PROPUESTAS ACTIVAS</td></thead>';
+        }
+        if(flag==2) {
+            html += '<thead style="font-weight: 700"><td bgcolor="silver" width="20%"></td><td bgcolor="#e6e6fa" width="40%" style="text-align: center;" colspan="4">'+mes+'</td></thead>';
+            html += ' <thead style="font-weight: 700"><td bgcolor="silver" ></td><td bgcolor="#e6e6fa">PROPUESTAS EMITIDAS</td><td bgcolor="#e6e6fa">OBJETIVO EMITIDAS</td><td bgcolor="#e6e6fa">PROPUESTAS GANADAS</td><td bgcolor="#e6e6fa">OBJETIVO GANADAS</td></thead>';
 
         }
+        $.each($scope.prospectos,function(index,item) {
+               if(tipo!=item.TIPO)
+               {
+
+                   if(flag==1) {
+                       html += '  <tr><td bgcolor="silver" ><strong>' + item.TIPO + '</strong></td>\n' +
+                           '                    <td style="text-align: right;">' + number_format(parseFloat(item.TOTALE), 2, '.', ',') + '</td>\n' +
+                           '                    <td style="text-align: right;"></td>\n' +
+                           '                    <td style="text-align: right;">' + number_format(parseFloat(item.TOTALG), 2, '.', ',') + '</td>\n' +
+                           '                    <td style="text-align: right;"></td>\n' +
+                           '                    <td style="text-align: right;">' + number_format(parseFloat(item.ACTIVAS), 2, '.', ',') + '</td>\n' +
+                           '                </tr>';
+                   }
+                   if(flag==2)
+                   {
+                       html += '  <tr><td bgcolor="silver" ><strong>' + item.TIPO + '</strong></td>\n' +
+                           '                    <td  style="text-align: right;">' + number_format(parseFloat(item.TOTALE), 2, '.', ',') + '</td>\n' +
+                           '                    <td  style="text-align: right;"></td>\n' +
+                           '                    <td  style="text-align: right;">' + number_format(parseFloat(item.TOTALG), 2, '.', ',') + '</td>\n' +
+                           '                    <td  style="text-align: right;"></td>\n' +
+                           '                </tr>';
+                   }
+
+                   tipo = item.TIPO;
+               }
+
+            totalE += parseFloat(item.TOTALE);
+            totalG += parseFloat(item.TOTALG);
+            totalAC += parseFloat(item.ACTIVAS);
+        });
+        if (flag == 1) {
+            html += '  <tr style="font-weight: 700"><td bgcolor="silver" >TOTAL</td>\n' +
+                '                   <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(totalE, 2, '.', ',') + '</td>\n' +
+                '                   <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat($scope.objetivos.OBJETIVOS.E), 2, '.', ',') + '</td>\n' +
+                '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(totalG, 2, '.', ',') + '</td>\n' +
+                '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat($scope.objetivos.OBJETIVOS.G), 2, '.', ',') + '</td>\n' +
+                '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(totalAC, 2, '.', ',') + '</td>\n' +
+                '                </tr>';
+        }
+        if (flag == 2) {
+            html += '  <tr style="font-weight: 700"><td bgcolor="silver" >TOTAL</td>\n' +
+                '                    <td bgcolor="#e6e6fa" style="text-align: right;">' + number_format(totalE, 2, '.', ',') + '</td>\n' +
+                '                    <td bgcolor="#e6e6fa" style="text-align: right;">' + number_format(parseFloat($scope.objetivos.OBJETIVOS.E), 2, '.', ',') + '</td>\n' +
+                '                    <td bgcolor="#e6e6fa" style="text-align: right;">' + number_format(totalG, 2, '.', ',') + '</td>\n' +
+                '                    <td bgcolor="#e6e6fa" style="text-align: right;">' + number_format(parseFloat($scope.objetivos.OBJETIVOS.G), 2, '.', ',') + '</td>\n' +
+                '                </tr>';
+        }
+        html += '</table>';
+
+
+
 
         if($scope.prospectos.length == 0)
         {

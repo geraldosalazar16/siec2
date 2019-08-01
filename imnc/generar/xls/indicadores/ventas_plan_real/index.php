@@ -102,14 +102,14 @@ $objWorkSheet->getStyle('B1')->getAlignment()->applyFromArray(
 
 $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
 $objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_LETTER);
-$hasta = 7;
-$fila = 3;
+$hasta = 5;
+$fila = 2;
 $objWorkSheet->setCellValue($ABCD[0]."1", "RESULTADO DE VENTAS - ".$MES);
 if($flag==1) {
-    $objPHPExcel->getActiveSheet()->mergeCells($ABCD[0] . '1:' . $ABCD[3] . "1");
+    $objPHPExcel->getActiveSheet()->mergeCells($ABCD[0] . '1:' . $ABCD[5] . "1");
 }
 if($flag==2) {
-    $objPHPExcel->getActiveSheet()->mergeCells($ABCD[0] . '1:' . $ABCD[5] . "1");
+    $objPHPExcel->getActiveSheet()->mergeCells($ABCD[0] . '1:' . $ABCD[4] . "1");
 }
 $objPHPExcel->getActiveSheet()->getRowDimension(1)->setRowHeight(90);
 $objWorkSheet->getStyle($ABCD[0].'1:'.$ABCD[$hasta]."1")->getAlignment()->applyFromArray(
@@ -118,12 +118,11 @@ $objWorkSheet->getStyle($ABCD[0].'1:'.$ABCD[$hasta]."1")->getAlignment()->applyF
 );
 $objPHPExcel->getActiveSheet()->getStyle($ABCD[0]."1")->getAlignment()->setWrapText(true);
 $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].'1:'.$ABCD[$hasta]."1")->getFont()->setBold(true);
-$objPHPExcel->getActiveSheet()->getStyle($ABCD[0]."1")->applyFromArray($styleborder);
+
 $objPHPExcel->getActiveSheet()->getStyle($ABCD[0]."1")->getFont()->setSize(14);
 $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].'2:'.$ABCD[$hasta]."2")->getFill();
 //$objPHPExcel->getActiveSheet()->setAutoFilter($objPHPExcel->getActiveSheet()->calculateWorksheetDimension());
-$objPHPExcel->getActiveSheet()->freezePane($ABCD[0]."3");
-$id = null;
+$tipo = null;
 
 $totalE = 0;
 $totalG = 0;
@@ -146,230 +145,146 @@ if($flag == 2)
     $MES = strtoupper($MES);
     $acumulado = $MES;
 }
+
+
+if($flag == 1) {
+    $objWorkSheet->setCellValue($ABCD[0] . $fila, $row->NOMBRE);
+    $objWorkSheet->setCellValue($ABCD[1] . $fila, "ENERO - " . $acumulado);
+    $objPHPExcel->getActiveSheet()->mergeCells($ABCD[1].$fila.':'.$ABCD[5].$fila);
+    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[5].$fila)->getAlignment()->applyFromArray(
+        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
+    );
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
+    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[5].$fila );
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila)->getAlignment()->setWrapText(true);
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[1].$fila)->getFill()
+        ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+        ->getStartColor()->setARGB('CCCCCC');
+    $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
+        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
+    );
+    $fila++;
+    $objWorkSheet->setCellValue($ABCD[1] . $fila, "PROPUESTAS EMITIDAS");
+    $objWorkSheet->setCellValue($ABCD[2] . $fila, "OBJETIVO EMITIDAS");
+    $objWorkSheet->setCellValue($ABCD[3] . $fila, "PROPUESTAS GANADAS");
+    $objWorkSheet->setCellValue($ABCD[4] . $fila, "OBJETIVO GANADAS");
+    $objWorkSheet->setCellValue($ABCD[5] . $fila, "PROPUESTAS ACTIVAS");
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
+    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[5].$fila );
+    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[5].$fila)->getAlignment()->applyFromArray(
+        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
+    );
+}
+if($flag == 2)
+{
+    $objWorkSheet->setCellValue($ABCD[0] . $fila, '');
+    $objWorkSheet->setCellValue($ABCD[1] . $fila, $MES);
+    $objPHPExcel->getActiveSheet()->mergeCells($ABCD[1].$fila.':'.$ABCD[4].$fila);
+    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[4].$fila)->getAlignment()->applyFromArray(
+        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
+    );
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
+    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[4].$fila );
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila)->getAlignment()->setWrapText(true);
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[4].$fila)->getFill()
+        ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+        ->getStartColor()->setARGB('CCCCCC');
+    $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
+        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
+    );
+    $fila++;
+    $objWorkSheet->setCellValue($ABCD[1] . $fila, "PROPUESTAS EMITIDAS");
+    $objWorkSheet->setCellValue($ABCD[2] . $fila, "OBJETIVO EMITIDAS");
+    $objWorkSheet->setCellValue($ABCD[3] . $fila, "PROPUESTAS GANADAS");
+    $objWorkSheet->setCellValue($ABCD[4] . $fila, "OBJETIVO GANADAS");
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
+    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[4].$fila );
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila)->getAlignment()->setWrapText(true);
+    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[4].$fila)->getAlignment()->applyFromArray(
+        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
+    );
+}
 $fila++;
 foreach ($PROSPECTOS as $key=>$row)
 {
 
-
-    if($id!=$row->ID)
+    if($tipo!=$row->TIPO)
     {
-        if(!$start)
-        {
-            if($flag == 1)
-            {
-                $objWorkSheet->setCellValue($ABCD[0].$fila, "TOTAL");
-                $objPHPExcel->getActiveSheet()
-                        ->setCellValue($ABCD[1].$fila,$totalAE);
-                    $objPHPExcel->getActiveSheet()
-                        ->getStyle($ABCD[1].$fila)
-                        ->getNumberFormat()
-                        ->setFormatCode('0.00' );
-                $objPHPExcel->getActiveSheet()
-                    ->setCellValue($ABCD[2].$fila,$totalAG);
-                $objPHPExcel->getActiveSheet()
-                    ->getStyle($ABCD[2].$fila)
-                    ->getNumberFormat()
-                    ->setFormatCode('0.00' );
-                $objPHPExcel->getActiveSheet()
-                    ->setCellValue($ABCD[3].$fila,$totalAC);
-                $objPHPExcel->getActiveSheet()
-                    ->getStyle($ABCD[3].$fila)
-                    ->getNumberFormat()
-                    ->setFormatCode('0.00' );
-                $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-                $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[3].$fila );
-
-                $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[$hasta].$fila)->getFont()->setBold(true);
-                $fila = $fila+2;
-            }
-            if($flag == 2)
-            {
-                $objWorkSheet->setCellValue($ABCD[0].$fila, "TOTAL");
-                $objPHPExcel->getActiveSheet()
-                    ->setCellValue($ABCD[1].$fila,$totalE);
-                $objPHPExcel->getActiveSheet()
-                    ->getStyle($ABCD[1].$fila)
-                    ->getNumberFormat()
-                    ->setFormatCode('0.00' );
-                $objPHPExcel->getActiveSheet()
-                    ->setCellValue($ABCD[2].$fila,$totalG);
-                $objPHPExcel->getActiveSheet()
-                    ->getStyle($ABCD[2].$fila)
-                    ->getNumberFormat()
-                    ->setFormatCode('0.00' );
-                $objPHPExcel->getActiveSheet()
-                    ->setCellValue($ABCD[3].$fila,$totalAE);
-                $objPHPExcel->getActiveSheet()
-                    ->getStyle($ABCD[3].$fila)
-                    ->getNumberFormat()
-                    ->setFormatCode('0.00' );
-                $objPHPExcel->getActiveSheet()
-                    ->setCellValue($ABCD[4].$fila,$totalAG);
-                $objPHPExcel->getActiveSheet()
-                    ->getStyle($ABCD[4].$fila)
-                    ->getNumberFormat()
-                    ->setFormatCode('0.00' );
-                $objPHPExcel->getActiveSheet()
-                    ->setCellValue($ABCD[5].$fila,$totalAC);
-                $objPHPExcel->getActiveSheet()
-                    ->getStyle($ABCD[5].$fila)
-                    ->getNumberFormat()
-                    ->setFormatCode('0.00' );
-                $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-                $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[5].$fila );
-
-                $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[$hasta].$fila)->getFont()->setBold(true);
-                $fila = $fila+2;
-            }
-
-            $totalE = 0;
-            $totalG = 0;
-            $totalAE = 0;
-            $totalAG = 0;
-            $totalAC = 0;
-            $fila++;
-        }
-
-        if($flag == 1) {
-            $objWorkSheet->setCellValue($ABCD[0] . $fila, $row->NOMBRE);
-            $objWorkSheet->setCellValue($ABCD[1] . $fila, "ACUMULADO ENERO - " . $acumulado);
-            $objPHPExcel->getActiveSheet()->mergeCells($ABCD[1].$fila.':'.$ABCD[3].$fila);
-            $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[3].$fila)->getAlignment()->applyFromArray(
-                array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                    'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-            );
-            $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-            $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[3].$fila );
-            $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila)->getAlignment()->setWrapText(true);
-            $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[1].$fila)->getFill()
-                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('CCCCCC');
-            $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
-                array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-                    'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-            );
-            $fila++;
-            $objWorkSheet->setCellValue($ABCD[1] . $fila, "PROPUESTAS EMITIDAS");
-            $objWorkSheet->setCellValue($ABCD[2] . $fila, "PROPUESTAS GANADAS");
-            $objWorkSheet->setCellValue($ABCD[3] . $fila, "PROPUESTAS ACTIVAS");
-            $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[3].$fila)->getAlignment()->applyFromArray(
-                array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                    'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-            );
-        }
-        if($flag == 2)
-        {
-            $objWorkSheet->setCellValue($ABCD[0] . $fila, $row->NOMBRE);
-            $objWorkSheet->setCellValue($ABCD[1] . $fila, $MES);
-            $objWorkSheet->setCellValue($ABCD[3] . $fila, "ACUMULADO ENERO - " . $acumulado);
-            $objPHPExcel->getActiveSheet()->mergeCells($ABCD[1].$fila.':'.$ABCD[2].$fila);
-            $objPHPExcel->getActiveSheet()->mergeCells($ABCD[3].$fila.':'.$ABCD[5].$fila);
-            $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[5].$fila)->getAlignment()->applyFromArray(
-                array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                    'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-            );
+        if($flag==1) {
+            $objWorkSheet->setCellValue($ABCD[0].$fila, $row->TIPO);
+            $objPHPExcel->getActiveSheet()
+                ->setCellValue($ABCD[1].$fila,$row->TOTALE);
+            $objPHPExcel->getActiveSheet()
+                ->getStyle($ABCD[1].$fila)
+                ->getNumberFormat()
+                ->setFormatCode('0.00' );
+            $objWorkSheet->setCellValue($ABCD[2].$fila, '');
+            $objPHPExcel->getActiveSheet()
+                ->setCellValue($ABCD[3].$fila,$row->TOTALG);
+            $objPHPExcel->getActiveSheet()
+                ->getStyle($ABCD[3].$fila)
+                ->getNumberFormat()
+                ->setFormatCode('0.00' );
+            $objWorkSheet->setCellValue($ABCD[4].$fila, '');
+            $objPHPExcel->getActiveSheet()
+                ->setCellValue($ABCD[5].$fila,$row->ACTIVAS);
+            $objPHPExcel->getActiveSheet()
+                ->getStyle($ABCD[5].$fila)
+                ->getNumberFormat()
+                ->setFormatCode('0.00' );
             $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
             $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[5].$fila );
-            $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila)->getAlignment()->setWrapText(true);
-            $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[5].$fila)->getFill()
-                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('CCCCCC');
+            $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[5].$fila)->applyFromArray($styleborder);
+            $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[5].$fila)->getAlignment()->applyFromArray(
+                array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                    'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
+            );
             $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
                 array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
                     'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
             );
-            $fila++;
-            $objWorkSheet->setCellValue($ABCD[1] . $fila, "PROPUESTAS EMITIDAS");
-            $objWorkSheet->setCellValue($ABCD[2] . $fila, "PROPUESTAS GANADAS");
-            $objWorkSheet->setCellValue($ABCD[3] . $fila, "PROPUESTAS EMITIDAS");
-            $objWorkSheet->setCellValue($ABCD[4] . $fila, "PROPUESTAS GANADAS");
-            $objWorkSheet->setCellValue($ABCD[5] . $fila, "PROPUESTAS ACTIVAS");
-            $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[5].$fila)->getAlignment()->applyFromArray(
-                array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+
+        }
+        if($flag==2) {
+            $objWorkSheet->setCellValue($ABCD[0].$fila, $row->TIPO);
+            $objPHPExcel->getActiveSheet()
+                ->setCellValue($ABCD[1].$fila,$row->TOTALE);
+            $objPHPExcel->getActiveSheet()
+                ->getStyle($ABCD[1].$fila)
+                ->getNumberFormat()
+                ->setFormatCode('0.00' );
+            $objWorkSheet->setCellValue($ABCD[2].$fila, '');
+            $objPHPExcel->getActiveSheet()
+                ->setCellValue($ABCD[3].$fila,$row->TOTALG);
+            $objPHPExcel->getActiveSheet()
+                ->getStyle($ABCD[3].$fila)
+                ->getNumberFormat()
+                ->setFormatCode('0.00' );
+            $objWorkSheet->setCellValue($ABCD[4].$fila, '');
+
+            $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
+            $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[4].$fila );
+            $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[4].$fila)->applyFromArray($styleborder);
+            $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[4].$fila)->getAlignment()->applyFromArray(
+                array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
                     'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
             );
-        }
+            $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
+                array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+                    'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
+            );
 
-        $id = $row->ID;
-        $start = false;
+
+        $TIPO = $row->TIPO;
     }
 
-    if($flag==1) {
-        $objWorkSheet->setCellValue($ABCD[0].$fila, $row->TIPO);
-        $objPHPExcel->getActiveSheet()
-            ->setCellValue($ABCD[1].$fila,$row->ACUME);
-        $objPHPExcel->getActiveSheet()
-            ->getStyle($ABCD[1].$fila)
-            ->getNumberFormat()
-            ->setFormatCode('0.00' );
-        $objPHPExcel->getActiveSheet()
-            ->setCellValue($ABCD[2].$fila,$row->ACUMG);
-        $objPHPExcel->getActiveSheet()
-            ->getStyle($ABCD[2].$fila)
-            ->getNumberFormat()
-            ->setFormatCode('0.00' );
-        $objPHPExcel->getActiveSheet()
-            ->setCellValue($ABCD[3].$fila,$row->ACTIVAS);
-        $objPHPExcel->getActiveSheet()
-            ->getStyle($ABCD[3].$fila)
-            ->getNumberFormat()
-            ->setFormatCode('0.00' );
-        $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-        $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[3].$fila );
-        $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[3].$fila)->applyFromArray($styleborder);
-        $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[3].$fila)->getAlignment()->applyFromArray(
-            array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
-                'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-        );
-        $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
-            array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-                'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-        );
 
-    }
-    if($flag==2) {
-        $objWorkSheet->setCellValue($ABCD[0].$fila, $row->TIPO);
-        $objPHPExcel->getActiveSheet()
-            ->setCellValue($ABCD[1].$fila,$row->TOTALE);
-        $objPHPExcel->getActiveSheet()
-            ->getStyle($ABCD[1].$fila)
-            ->getNumberFormat()
-            ->setFormatCode('0.00' );
-        $objPHPExcel->getActiveSheet()
-            ->setCellValue($ABCD[2].$fila,$row->TOTALG);
-        $objPHPExcel->getActiveSheet()
-            ->getStyle($ABCD[2].$fila)
-            ->getNumberFormat()
-            ->setFormatCode('0.00' );
-        $objPHPExcel->getActiveSheet()
-            ->setCellValue($ABCD[3].$fila,$row->ACUME);
-        $objPHPExcel->getActiveSheet()
-            ->getStyle($ABCD[3].$fila)
-            ->getNumberFormat()
-            ->setFormatCode('0.00' );
-        $objPHPExcel->getActiveSheet()
-            ->setCellValue($ABCD[4].$fila,$row->ACUMG);
-        $objPHPExcel->getActiveSheet()
-            ->getStyle($ABCD[4].$fila)
-            ->getNumberFormat()
-            ->setFormatCode('0.00' );
-        $objPHPExcel->getActiveSheet()
-            ->setCellValue($ABCD[5].$fila,$row->ACTIVAS);
-        $objPHPExcel->getActiveSheet()
-            ->getStyle($ABCD[5].$fila)
-            ->getNumberFormat()
-            ->setFormatCode('0.00' );
-        $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-        $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[5].$fila );
-        $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[5].$fila)->applyFromArray($styleborder);
-        $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[5].$fila)->getAlignment()->applyFromArray(
-            array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
-                'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-        );
-        $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
-            array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-                'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-        );
     }
 
     $objPHPExcel->getActiveSheet()->getColumnDimension($ABCD[0])->setWidth(40);
@@ -382,221 +297,86 @@ foreach ($PROSPECTOS as $key=>$row)
 
 
     $fila++;
-    $totalE += $row->TOTAL;
-    $tlE += $row->TOTALE;
+    $totalE += $row->TOTALE;
     $totalG += $row->TOTALG;
-    $tlG += $row->TOTALG;
-    $totalAE += $row->ACUME;
-    $tlAE += $row->ACUME;
-    $totalAG +=$row->ACUMG;
-    $tlAG += $row->ACUMG;
     $totalAC += $row->ACTIVAS;
-    $tlAC += $row->ACTIVAS;
 
 }
-$fila = $fila+2;
-if($flag == 1) {
-    $objWorkSheet->setCellValue($ABCD[0] . $fila, "TOTALES GENERALES ". $MES);
-    $objWorkSheet->setCellValue($ABCD[1] . $fila, "ACUMULADO ENERO - " . $acumulado);
-    $objPHPExcel->getActiveSheet()->mergeCells($ABCD[1].$fila.':'.$ABCD[3].$fila);
-    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[3].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[3].$fila );
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila)->getAlignment()->setWrapText(true);
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[1].$fila)->getFill()
-        ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-        ->getStartColor()->setARGB('FFFFCC');
-    $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $fila++;
-    $objWorkSheet->setCellValue($ABCD[1] . $fila, "PROPUESTAS EMITIDAS");
-    $objWorkSheet->setCellValue($ABCD[2] . $fila, "PROPUESTAS GANADAS");
-    $objWorkSheet->setCellValue($ABCD[3] . $fila, "PROPUESTAS ACTIVAS");
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[3].$fila );
-    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[3].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $fila++;
-    $objWorkSheet->setCellValue($ABCD[0].$fila, "REAL");
-    $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[1].$fila,$tlAE);
-    $objPHPExcel->getActiveSheet()
-        ->getStyle($ABCD[1].$fila)
-        ->getNumberFormat()
-        ->setFormatCode('0.00' );
-    $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[2].$fila,$tlAG);
-    $objPHPExcel->getActiveSheet()
-        ->getStyle($ABCD[2].$fila)
-        ->getNumberFormat()
-        ->setFormatCode('0.00' );
-    $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[3].$fila,$tlAC);
-    $objPHPExcel->getActiveSheet()
-        ->getStyle($ABCD[3].$fila)
-        ->getNumberFormat()
-        ->setFormatCode('0.00' );
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[3].$fila );
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[3].$fila)->applyFromArray($styleborder);
-    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[3].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $fila++;
-    $objWorkSheet->setCellValue($ABCD[0].$fila, "OBJETIVO");
-    $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[1].$fila,$objetivos->OBJETIVOS_ACUM->E);
-    $objPHPExcel->getActiveSheet()
-        ->getStyle($ABCD[1].$fila)
-        ->getNumberFormat()
-        ->setFormatCode('0.00' );
-    $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[2].$fila,$objetivos->OBJETIVOS_ACUM->G);
-    $objPHPExcel->getActiveSheet()
-        ->getStyle($ABCD[2].$fila)
-        ->getNumberFormat()
-        ->setFormatCode('0.00' );
-
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[3].$fila );
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[3].$fila)->applyFromArray($styleborder);
-    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[3].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-
-}
-if($flag == 2)
+if($flag == 1)
 {
-    $objWorkSheet->setCellValue($ABCD[0] . $fila, "TOTALES GENERALES ". $MES);
-    $objWorkSheet->setCellValue($ABCD[3] . $fila, "ACUMULADO ENERO - " . $acumulado);
-    $objPHPExcel->getActiveSheet()->mergeCells($ABCD[1].$fila.':'.$ABCD[2].$fila);
-    $objPHPExcel->getActiveSheet()->mergeCells($ABCD[3].$fila.':'.$ABCD[5].$fila);
-    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[5].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[5].$fila );
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila)->getAlignment()->setWrapText(true);
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[5].$fila)->getFill()
-        ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-        ->getStartColor()->setARGB('FFFFCC');
-    $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $fila++;
-    $objWorkSheet->setCellValue($ABCD[1] . $fila, "PROPUESTAS EMITIDAS");
-    $objWorkSheet->setCellValue($ABCD[2] . $fila, "PROPUESTAS GANADAS");
-    $objWorkSheet->setCellValue($ABCD[3] . $fila, "PROPUESTAS EMITIDAS");
-    $objWorkSheet->setCellValue($ABCD[4] . $fila, "PROPUESTAS GANADAS");
-    $objWorkSheet->setCellValue($ABCD[5] . $fila, "PROPUESTAS ACTIVAS");
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[5].$fila );
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila)->getAlignment()->setWrapText(true);
-    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[5].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $fila++;
-    $objWorkSheet->setCellValue($ABCD[0].$fila, "REAL");
+    $objWorkSheet->setCellValue($ABCD[0].$fila, "TOTAL");
     $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[1].$fila,$tlE);
+        ->setCellValue($ABCD[1].$fila,$totalE);
     $objPHPExcel->getActiveSheet()
         ->getStyle($ABCD[1].$fila)
         ->getNumberFormat()
         ->setFormatCode('0.00' );
     $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[2].$fila,$tlG);
+        ->setCellValue($ABCD[2].$fila,$objetivos->OBJETIVOS->E);
     $objPHPExcel->getActiveSheet()
         ->getStyle($ABCD[2].$fila)
         ->getNumberFormat()
         ->setFormatCode('0.00' );
     $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[3].$fila,$tlAE);
+        ->setCellValue($ABCD[3].$fila,$totalG);
     $objPHPExcel->getActiveSheet()
         ->getStyle($ABCD[3].$fila)
         ->getNumberFormat()
         ->setFormatCode('0.00' );
     $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[4].$fila,$tlAG);
+        ->setCellValue($ABCD[4].$fila,$objetivos->OBJETIVOS->G);
     $objPHPExcel->getActiveSheet()
         ->getStyle($ABCD[4].$fila)
         ->getNumberFormat()
         ->setFormatCode('0.00' );
     $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[5].$fila,$tlAC);
+        ->setCellValue($ABCD[5].$fila,$totalAC);
     $objPHPExcel->getActiveSheet()
         ->getStyle($ABCD[5].$fila)
         ->getNumberFormat()
         ->setFormatCode('0.00' );
     $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
     $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[5].$fila );
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[5].$fila)->applyFromArray($styleborder);
-    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[5].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $fila++;
-    $objWorkSheet->setCellValue($ABCD[0].$fila, "OBJETIVO");
+
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[$hasta].$fila)->getFont()->setBold(true);
+    $fila = $fila+2;
+}
+if($flag == 2)
+{
+    $objWorkSheet->setCellValue($ABCD[0].$fila, "TOTAL");
     $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[1].$fila,$objetivos->OBJETIVOS->E);
+        ->setCellValue($ABCD[1].$fila,$totalE);
     $objPHPExcel->getActiveSheet()
         ->getStyle($ABCD[1].$fila)
         ->getNumberFormat()
         ->setFormatCode('0.00' );
     $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[2].$fila,$objetivos->OBJETIVOS->G);
+        ->setCellValue($ABCD[2].$fila,$objetivos->OBJETIVOS->E);
     $objPHPExcel->getActiveSheet()
         ->getStyle($ABCD[2].$fila)
         ->getNumberFormat()
         ->setFormatCode('0.00' );
     $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[3].$fila,$objetivos->OBJETIVOS_ACUM->E);
+        ->setCellValue($ABCD[3].$fila,$totalG);
     $objPHPExcel->getActiveSheet()
         ->getStyle($ABCD[3].$fila)
         ->getNumberFormat()
         ->setFormatCode('0.00' );
     $objPHPExcel->getActiveSheet()
-        ->setCellValue($ABCD[4].$fila,$objetivos->OBJETIVOS_ACUM->G);
+        ->setCellValue($ABCD[4].$fila,$objetivos->OBJETIVOS->G);
     $objPHPExcel->getActiveSheet()
         ->getStyle($ABCD[4].$fila)
         ->getNumberFormat()
         ->setFormatCode('0.00' );
-
     $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila)->applyFromArray($styleborder);
-    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[5].$fila );
-    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[5].$fila)->applyFromArray($styleborder);
-    $objWorkSheet->getStyle($ABCD[1].$fila.':'.$ABCD[5].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
-    $objWorkSheet->getStyle($ABCD[0].$fila.':'.$ABCD[0].$fila)->getAlignment()->applyFromArray(
-        array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-            'vertical'=> PHPExcel_Style_Alignment::VERTICAL_CENTER,)
-    );
+    $objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle($ABCD[1].$fila), $ABCD[0].$fila.':'.$ABCD[4].$fila );
+
+    $objPHPExcel->getActiveSheet()->getStyle($ABCD[0].$fila.':'.$ABCD[4].$fila)->getFont()->setBold(true);
+    $fila = $fila+2;
 }
+
+$fila++;
+
 
 
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
