@@ -1,4 +1,5 @@
 app.controller("cotizador_controller", ['$scope','$window', '$http','$document', function($scope,$window,$http,$document){
+  
   $scope.modulo_permisos =  global_permisos["COTIZADOR"];
   $scope.arr_cotizaciones = [];
   $scope.arr_prospectos = [];
@@ -9,6 +10,28 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   $scope.bandera = 0;
   $scope.Normas = [];
   $scope.select_pos = -1;
+  $scope.Usuarios=new Array();
+  $scope.fechInicial="";
+  var desde = $('#fechInicial').datepicker({    
+    dateFormat: "yymmdd",   
+    language: "es", 
+   // startDate: new Date(),
+  //  range: true,     
+   // autoClose: true,  
+    onSelect: function (dateText, ins) {       
+       $scope.fechInicial= dateText;      
+    }
+    }).css("display", "inline-block");
+  
+    var hasta = $('#fechFinal').datepicker({      
+      dateFormat: "yymmdd",     
+      language: "es",     
+      onSelect: function (dateText, ins) {          
+         $scope.fechFinal = dateText;      
+      }
+      }).css("display", "inline-block");  
+
+
   //bandera que sirve para saber el modo: edición o inserción y actuar acorde en el modal de cotizador
   $scope.editando=1;
 
@@ -21,7 +44,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
               ID : item.ID,
               NOMBRE : item.NOMBRE
             }
-          });
+          });         
       },
       function (response){});
   }
@@ -42,9 +65,21 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     });
   }
   $scope.servicioFiltroChange = function () {
+    debugger;
     const id_servicio = $scope.selectFiltroServicio;
     $scope.despliega_cotizaciones_filtradas(id_servicio);
   }
+
+  $scope.UsuarioCreacFiltroChange = function () {    
+    const id_usuario = $scope.selectFiltroUsuarioCreac;
+    $scope.filtra_cotizaciones_usuarioCreac(id_usuario);
+  }
+
+  $scope.EstadoFiltroChange = function () {    
+    const id_estado = $scope.selectFiltroEstado;
+    $scope.filtra_estados(id_estado);
+  }
+
   function fill_select_tipo_servicio(){
     //recibe la url del php que se ejecutará
     $http.get(  global_apiserver + "/tipos_servicio/getList")
@@ -207,8 +242,16 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     });
   }
 
+  $scope.muestra=function(){
+    debugger;
+    if (($scope.fechInicial!="") && ($scope.fechFinal!=""))
+       $scope.filtra_fechas($scope.fechInicial,$scope.fechFinal)
+     else 
+       notify("Error", "Seleccione fecha inicial y final", "error");
+    }
+
   // Pinta tabla de cotizaciones
-  $scope.despliega_cotizaciones = function () {
+  $scope.despliega_cotizaciones = function () {   
     $scope.fill_select_prospectos("");
     $scope.fill_select_clientes("");
     $scope.fill_select_estatus("");
@@ -227,8 +270,48 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     };
 
     $http(http_request).success(function(data) {
+      var UsuariosTodos =[];
+      $scope.Usuarios=[];
+      $scope.Estados=[];
       if(data) {
-        $scope.arr_cotizaciones = data;
+        $scope.arr_cotizaciones = data;  
+        UsuariosTodos=data;
+        var esta=false;
+        var agregado=false;
+        var miembro={};
+        var estado={};
+        UsuariosTodos.forEach(function(valor,pos)
+        {
+            esta=false;
+            agregado=false;
+            miembro={ID: valor.ID_USUARIO_CREACION,
+                 NOMBRE : valor.UsuarioCreac
+                  }            
+            estado={ID:valor.ESTADO_COTIZACION,
+                  NOMBRE:valor.ESTATUS_SEGUIMIENTO}
+            nombEnc=valor.UsuarioCreac;
+            nombEst=valor.ESTATUS_SEGUIMIENTO;            
+            $scope.Usuarios.forEach(function(valor1){
+            otronomb=valor1.NOMBRE;            
+            if (nombEnc==otronomb)
+              esta=true;              
+          })
+
+          $scope.Estados.forEach(function(valor1){
+            otronomb=valor1.NOMBRE;            
+            if (nombEst==otronomb)
+            agregado=true;              
+          })
+
+          if (!esta)
+            $scope.Usuarios.push(miembro);
+            // $scope.Usuarios.push({ID:valor.ID_USUARIO_CREACION, NOMBRE:valor.UsuarioCreac})  
+
+          if (!agregado)
+            $scope.Estados.push(estado);
+                      
+        })
+                       
       }
       else  {
         console.log("No hay datos");
@@ -262,6 +345,63 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       console.log("Error al generar petición: " + response);
     });
   }
+
+  //Filtrar por el id del usuario creador
+  $scope.filtra_cotizaciones_usuarioCreac = function (id_usuario) {   
+    var http_request = {
+      method: 'GET',
+      url: global_apiserver + "/cotizaciones/getAllByIdServicio/?id_usuario="+id_usuario,
+    };
+
+    $http(http_request).success(function(data) {
+      if(data) {
+        $scope.arr_cotizaciones = data;
+      }
+      else  {
+        console.log("No hay datos");
+      }
+    }).error(function(response) {
+      console.log("Error al generar petición: " + response);
+    });
+  }
+  
+//Filtrar por el id del estado
+$scope.filtra_estados = function (id_estado) {   
+  var http_request = {
+    method: 'GET',
+    url: global_apiserver + "/cotizaciones/getAllByIdServicio/?id_estado="+id_estado,
+  };
+
+  $http(http_request).success(function(data) {
+    if(data) {
+      $scope.arr_cotizaciones = data;
+    }
+    else  {
+      console.log("No hay datos");
+    }
+  }).error(function(response) {
+    console.log("Error al generar petición: " + response);
+  });
+}
+
+//Filtrar por el id del estado
+$scope.filtra_fechas = function (inicio,fin) {   
+  var http_request = {
+    method: 'GET',
+    url: global_apiserver + "/cotizaciones/getAllByIdServicio/?fech_inic="+inicio+"&fech_fin="+fin,
+  };
+
+  $http(http_request).success(function(data) {
+    if(data) {
+      $scope.arr_cotizaciones = data;
+    }
+    else  {
+      console.log("No hay datos");
+    }
+  }).error(function(response) {
+    console.log("Error al generar petición: " + response);
+  });
+}
 
   // Abrir modal para insertar
   $scope.modal_cotizacion_insertar = function(){    
@@ -823,6 +963,5 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 		});
 	}
   }
-
 
 }]);
