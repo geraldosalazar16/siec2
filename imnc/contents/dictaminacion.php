@@ -131,6 +131,38 @@
     </div>
   </div>
 </div>
-
+<!-- Modal insertar/actualizar FECHA DE CERTIFICADO-->
+<div class="modal fade" id="modalFechaCertificado" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalTituloFechaCertificado">Fecha de Certificado</h4>
+      </div>
+      <div class="modal-body">
+	  
+		<form name="exampleFormFechaCertificado" >
+			<input type="hidden" id="inputId" ng-model="formDataFechaCertificado.ID" />
+			<input type="hidden" id="inputStatus" ng-model="formDataFechaCertificado.STATUS" />
+			 <div class="form-group">
+				<label class="control-label col-md-4 col-sm-4 col-xs-12">Fecha Certificado
+				<span class="required">*</span></label>
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<input type="text" required="required" ng-model="formDataFechaCertificado.FECHA_CERTIFICADO"  class="form-control col-md-5 col-xs-10" id="fecha_inicio" data-parsley-id="2324">
+					<span id="fechainicioerror" class="text-danger"></span>
+				</div>
+				
+			</div>
+	
+            <input type="submit" class="btn btn-success pull-right mt-2" ng-click="submitFormFechaCertificado(formDataFechaCertificado)" value="Dictaminar"/>
+          </form>
+		  
+      </div>
+      <div class="modal-footer">
+        
+      </div>
+    </div>
+  </div>
+</div>
 
 </span>

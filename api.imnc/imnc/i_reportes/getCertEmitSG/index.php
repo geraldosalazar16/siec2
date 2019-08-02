@@ -47,51 +47,51 @@ $mes_curso = date('m')-1;
 	
 	
 	//MES DE ENERO
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."01%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."01%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][0] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE FEBRERO
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."02%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."02%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][1] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE MARZO
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."03%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."03%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][2] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE ABRIL
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."04%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."04%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][3] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE MAYO
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."05%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."05%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][4] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE JUNIO
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."06%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."06%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][5] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE JULIO
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."07%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."07%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][6] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE AGOSTO
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."08%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."08%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][7] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE SEPTIEMBRE
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."09%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."09%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][8] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE OCTUBRE
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."10%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."10%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][9] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE NOVIEMBRE
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."11%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."11%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][10] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 	//MES DE DICIEMBRE
-	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."12%' ";
+	$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."12%' ";
 	$datos = $database->query($consulta)->fetchAll();
 	$datos1['Y1'][11] = $datos[0]['CANT_CERT_EMITIDOS_SG'];
 /**************************************/
