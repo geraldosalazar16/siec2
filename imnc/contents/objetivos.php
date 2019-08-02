@@ -39,7 +39,7 @@
 					<?php
 						if ($modulo_permisos["SERVICIOS"]["catalogos"] == 1 ) {
 							echo '    <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" style="float: right;" ng-click="openModalEditar(x)"> ';
-							echo '      <i class="fa fa-edit"> </i> Editar curso';
+							echo '      <i class="fa fa-edit"> </i> Editar';
 							echo '    </button>';
 						}					
 					?>

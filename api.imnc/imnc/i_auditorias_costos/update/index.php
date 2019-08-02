@@ -55,14 +55,14 @@ valida_parametro_and_die($ID_USUARIO, "Falta el ID_TIPO_AUDITORIA");
 /*******************************************************************/
 $INPUT	=	json_decode($objeto->INPUT,true);
 // AQUI BUSCO LOS GASTOS DEFINIDOS POR CATALOGO
-$catalogo = $database->select('I_CAT_AUDITORIAS_COSTOS',['ID','NOMBRE'],['ORDER'=>'ID']);
+$catalogo = $database->select('I_CAT_AUDITORIAS_COSTOS',['ID','NOMBRE'],['ORDER'=>'PRIORIDAD']);
 valida_error_medoo_and_die();
 $nombre_tabla = "I_AUDITORIAS_COSTOS";
 for($i=0;$i<count($catalogo);$i++){
 	if($INPUT[$i]['VALOR'] != 0){ // AQUI COMPRUEBO SI EL GASTO ES DISTINTO DE 0
 		if($database->count('I_AUDITORIAS_COSTOS',['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id_servicio_cliente_etapa,'ID_TIPO_AUDITORIA'=>$ID_TA,'CICLO'=>$CICLO,'ID_PERSONAL_TECNICO_CALIF'=>$ID_PT,'ID_CAT_AUDITORIAS_COSTOS'=>$catalogo[$i]['ID']]]) != 1){ // AQUI COMPRUEBO SI ES EDICION O NUEVO REGISTRO
 			//SI ES DISTINTO DE 1 ES NUEVO REGISTRO
-			if($catalogo[$i]['ID'] != 4 &&  $catalogo[$i]['ID'] != 6){
+			if($catalogo[$i]['ID'] != 4 &&  $catalogo[$i]['ID'] != 6 ){
 				$id1 = $database->insert($nombre_tabla, [ 
 				"ID_SERVICIO_CLIENTE_ETAPA" => $id_servicio_cliente_etapa, 
 				"ID_TIPO_AUDITORIA"	=> 	$ID_TA,

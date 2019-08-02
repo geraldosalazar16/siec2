@@ -133,9 +133,15 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 	}
 
 	$total_dias_auditoria = 0;
-
+	$dias_rd = 0;
 				if($normas[0]["ID_NORMA"]=='NMX-AA-120-SCFI-2006' || $normas[0]["ID_NORMA"]=='NMX-AA-120-SCFI-2016'){
 					$dias = 0;
+					
+					if($cotizacio_tramite["ID_TIPO_AUDITORIA"] == 14 || $cotizacio_tramite["ID_TIPO_AUDITORIA"] == 16 ){
+						if($cotizacio_tramite["REVISION_DOCUMENTAL"] == 1){
+							$dias_rd = 1;
+						}
+					}
 						//AQUI SE DEBE CALCULAR LA CANTIDAD DE DIAS BASE SEGUN LAS TABLAS QUE NOS DIERON
 						$dias = $database->get("COTIZACION_LONGITUD_PLAYA_DIAS_TUR", ["DIAS","AUDITORES"],
 							[
@@ -200,9 +206,11 @@ if ($obj_cotizacion["COUNT_SITIOS"]["TOTAL_SITIOS"] < $obj_cotizacion["COUNT_SIT
 					}
 				}					
 	//TOTAL DE DIAS PARA EL TRAMITE DIAS_BASE+DIAS_ENCUESTA+DIAS_MULTISITIO
-	$total_dias_auditoria=$dias_base;
+	$total_dias_auditoria=$dias_base+$dias_rd;
 
 	$obj_cotizacion["TOTAL_DIAS_AUDITORIA"] = $total_dias_auditoria;
+	$obj_cotizacion["DIAS_BASE"] = $dias_base;
+	$obj_cotizacion["DIAS_REVISION_DOCUMENTAL"] = $dias_rd;
 	$obj_cotizacion["TARIFA_ADICIONAL"] = $total_tarifa_adicional;
 	$obj_cotizacion["LONGITUD_PLAYA"] = $obj_cotizacion["COTIZACION_SITIOS"][0]["LONGITUD_PLAYA"];
 	

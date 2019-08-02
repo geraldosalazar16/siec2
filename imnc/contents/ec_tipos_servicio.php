@@ -873,12 +873,12 @@
 										<ul class="list-unstyled user_data" style="display: inline-block !important;">
 											<li>
 												<p><b>
-												Total Vi&aacuteticos Servicio:</b> {{GastosAuditorias.TOTAL_VIATICOS}} </p>
+												Total Vi&aacuteticos Servicio:</b> {{GastosAuditorias.TOTAL_VIATICOS | currency}} </p>
 												
 											</li>
 
 											<li><b>
-												Total Gastos Servicio:</b> &nbsp;&nbsp;{{GastosAuditorias.TOTAL_GASTOS}}
+												Total Gastos Servicio:</b> &nbsp;&nbsp;{{GastosAuditorias.TOTAL_GASTOS | currency}}
 											</li>
 										</ul>
 									</div> 
@@ -896,9 +896,9 @@
 											</ul>
 												<b>Ciclo:</b> {{xyz.CICLO}}<br>
 												<b>Tipo Auditoria:</b> {{xyz.TIPO}} <br>
-												<b>Total Gastos:</b> {{xyz.TOTAL_GASTOS}}<br>
-												<b>Total Vi&aacuteticos:</b> {{xyz.TOTAL_VIATICOS}} <br>
-												<b>Diferencia:</b> {{xyz.TOTAL_GASTOS-xyz.TOTAL_VIATICOS}}<br>
+												<b>Total Gastos:</b> {{xyz.TOTAL_GASTOS | currency}}<br>
+												<b>Total Vi&aacuteticos:</b> {{xyz.TOTAL_VIATICOS | currency}} <br>
+												<b>Diferencia:</b> {{xyz.TOTAL_GASTOS-xyz.TOTAL_VIATICOS | currency}}<br>
 												<p ng-if='modulo_permisos["registrar"] == 1'>
 														<button type="button" ng-click="agregar_editar_viaticos(xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO)" class="btn btn-primary btn-xs btn-imnc" style="float: left;"> 
 															<i class="fa fa-plus"> </i> Editar vi&aacuteticos auditor&iacuteas 
@@ -924,10 +924,10 @@
 														<tbody>
 															<tr ng-repeat='xyz1 in xyz.AUDITORES' class="ng-scope  even pointer">
 																<td>{{xyz1.NOMBRE}} {{xyz1.APELLIDO_MATERNO}} {{xyz1.APELLIDO_PATERNO}}</td>
-																<td ng-repeat="xyz3 in xyz1.MONTO">{{xyz3.VALOR}}</td>
+																<td ng-repeat="xyz3 in xyz1.MONTO">{{xyz3.VALOR | currency}}</td>
 															
-																<td>{{xyz1.TOTAL_AUDITOR}}</td>
-																<td>{{xyz1.TOTAL_AUDITOR_SIN_IVA}}</td>
+																<td>{{xyz1.TOTAL_AUDITOR | currency}}</td>
+																<td>{{xyz1.TOTAL_AUDITOR_SIN_IVA | currency}}</td>
 																<td>
 																	<p ng-if='modulo_permisos["registrar"] == 1'>
 																		<button type="button"  ng-click="agregar_editar_gastos('auditor',xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO,xyz1.ID_PERSONAL_TECNICO_CALIF)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 
@@ -954,9 +954,9 @@
 														<tbody>
 															<tr ng-repeat='xyz1 in xyz.EXP_TECNICOS' class="ng-scope  even pointer">
 																<td>{{xyz1.NOMBRE}} {{xyz1.APELLIDO_MATERNO}} {{xyz1.APELLIDO_PATERNO}}</td>
-																<td ng-repeat="xyz3 in xyz1.MONTO">{{xyz3.VALOR}}</td>
-																<td>{{xyz1.TOTAL_AUDITOR}}</td>
-																<td>{{xyz1.TOTAL_AUDITOR_SIN_IVA}}</td>
+																<td ng-repeat="xyz3 in xyz1.MONTO">{{xyz3.VALOR | currency}}</td>
+																<td>{{xyz1.TOTAL_AUDITOR | currency}}</td>
+																<td>{{xyz1.TOTAL_AUDITOR_SIN_IVA | currency}}</td>
 																<td>
 																	<p ng-if='modulo_permisos["registrar"] == 1'>
 																		<button type="button"  ng-click="agregar_editar_gastos('exptec',xyz.ID_SERVICIO_CLIENTE_ETAPA,xyz.TIPO_AUDITORIA,xyz.CICLO,xyz1.ID_PERSONAL_TECNICO_CALIF)" class="btn btn-primary btn-xs btn-imnc" style="float: right;"> 

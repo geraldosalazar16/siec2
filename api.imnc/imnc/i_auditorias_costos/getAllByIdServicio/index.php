@@ -50,16 +50,16 @@ if($ID_SERVICIO == 2 || $ID_SERVICIO == 4){
 }
 
 $valores["TOTAL_VIATICOS"] = $database->sum('I_AUDITORIAS_VIATICOS','MONTO',['ID_SERVICIO_CLIENTE_ETAPA'=>$id]); //TOTAL VIATICOS DE TODOS LOS TIPOS DE AUDITORIA DEL SERVICIO
-$valores["TOTAL_GASTOS"] = $database->sum('I_AUDITORIAS_COSTOS','MONTO',['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id,'ID_CAT_AUDITORIAS_COSTOS[!]'=>[4,6,9]]]);	//TOTAL GASTOS DE TODOS LOS TIPOS DE AUDITORIA DEL SERVICIO
+$valores["TOTAL_GASTOS"] = $database->sum('I_AUDITORIAS_COSTOS','MONTO',['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id,'ID_CAT_AUDITORIAS_COSTOS[!]'=>[4,6,10,11,12,8]]]);	//TOTAL GASTOS DE TODOS LOS TIPOS DE AUDITORIA DEL SERVICIO
 // AQUI BUSCO LOS GASTOS DEFINIDOS POR CATALOGO
-$catalogo = $database->select('I_CAT_AUDITORIAS_COSTOS',['ID','NOMBRE'],['ORDER'=>'ID']);
+$catalogo = $database->select('I_CAT_AUDITORIAS_COSTOS',['ID','NOMBRE'],['ORDER'=>'PRIORIDAD']);
 valida_error_medoo_and_die();
 
 for ($i=0; $i < count($valores['AUDITORIAS']) ; $i++) { 
 	// AQUI BUSCO EL VIATICO PARA ESTE id_sce,id_tipo_auditoria,cilo
 	$valores['AUDITORIAS'][$i]["TOTAL_VIATICOS"] = $database->sum('I_AUDITORIAS_VIATICOS','MONTO',['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id,'ID_TIPO_AUDITORIA'=>$valores['AUDITORIAS'][$i]['TIPO_AUDITORIA'],'CICLO'=>$valores['AUDITORIAS'][$i]['CICLO']]]);
 	// AQUI BUSCO EL GASTO TOTAL PARA ESTE id_sce,id_tipo_auditoria,ciclo
-	$valores['AUDITORIAS'][$i]["TOTAL_GASTOS"] = $database->sum('I_AUDITORIAS_COSTOS','MONTO',['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id,'ID_TIPO_AUDITORIA'=>$valores['AUDITORIAS'][$i]['TIPO_AUDITORIA'],'CICLO'=>$valores['AUDITORIAS'][$i]['CICLO'],'ID_CAT_AUDITORIAS_COSTOS[!]'=>[4,6,9]]]);
+	$valores['AUDITORIAS'][$i]["TOTAL_GASTOS"] = $database->sum('I_AUDITORIAS_COSTOS','MONTO',['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id,'ID_TIPO_AUDITORIA'=>$valores['AUDITORIAS'][$i]['TIPO_AUDITORIA'],'CICLO'=>$valores['AUDITORIAS'][$i]['CICLO'],'ID_CAT_AUDITORIAS_COSTOS[!]'=>[4,6,10,11,12,8]]]);
 	// AQUI BUSCO LOS AUDITORES POR AUDITORIA
 	$valores['AUDITORIAS'][$i]["AUDITORES"] =  $database->query("SELECT
 	`PERSONAL_TECNICO`.`NOMBRE`,
@@ -91,10 +91,10 @@ FROM
 				valida_error_medoo_and_die();
 				
 			$valores['AUDITORIAS'][$i]["AUDITORES"][$j]['MONTO'][$k]['VALOR']= $a;
-			if($catalogo[$k]['ID'] != 4 && $catalogo[$k]['ID'] != 6 &&  $catalogo[$k]['ID'] != 9){
+			if($catalogo[$k]['ID'] != 4 && $catalogo[$k]['ID'] != 6 &&  $catalogo[$k]['ID'] != 10 && $catalogo[$k]['ID'] != 11 && $catalogo[$k]['ID'] != 12 && $catalogo[$k]['ID'] != 8){
 				$valores['AUDITORIAS'][$i]["AUDITORES"][$j]['TOTAL_AUDITOR'] +=$a;
 			}
-			if($catalogo[$k]['ID'] != 3 && $catalogo[$k]['ID'] != 5 && $catalogo[$k]['ID'] != 9){
+			if($catalogo[$k]['ID'] != 3 && $catalogo[$k]['ID'] != 5 && $catalogo[$k]['ID'] != 1 && $catalogo[$k]['ID'] != 2 && $catalogo[$k]['ID'] != 7 && $catalogo[$k]['ID'] != 8){
 				$valores['AUDITORIAS'][$i]["AUDITORES"][$j]['TOTAL_AUDITOR_SIN_IVA'] +=$a;
 			}	
 			
@@ -132,10 +132,10 @@ FROM
 				valida_error_medoo_and_die();
 				
 			$valores['AUDITORIAS'][$i]["EXP_TECNICOS"][$j]['MONTO'][$k]['VALOR']= $a;
-			if($catalogo[$k]['ID'] != 4 && $catalogo[$k]['ID'] != 6 &&  $catalogo[$k]['ID'] != 9){
+			if($catalogo[$k]['ID'] != 4 && $catalogo[$k]['ID'] != 6 &&  $catalogo[$k]['ID'] != 10 && $catalogo[$k]['ID'] != 11 && $catalogo[$k]['ID'] != 12 && $catalogo[$k]['ID'] != 8){
 				$valores['AUDITORIAS'][$i]["EXP_TECNICOS"][$j]['TOTAL_AUDITOR'] +=$a;
 			}
-			if($catalogo[$k]['ID'] != 3 && $catalogo[$k]['ID'] != 5 &&  $catalogo[$k]['ID'] != 9){
+			if($catalogo[$k]['ID'] != 3 && $catalogo[$k]['ID'] != 5 && $catalogo[$k]['ID'] != 1 && $catalogo[$k]['ID'] != 2 && $catalogo[$k]['ID'] != 7 && $catalogo[$k]['ID'] != 8){
 				$valores['AUDITORIAS'][$i]["EXP_TECNICOS"][$j]['TOTAL_AUDITOR_SIN_IVA'] +=$a;
 			}	
 			
