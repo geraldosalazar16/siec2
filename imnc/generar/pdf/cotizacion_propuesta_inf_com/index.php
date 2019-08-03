@@ -501,6 +501,9 @@ EOT;
 			$subtotal=$costo+$suma_tarifa+$viaticos;
 			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
+			$monto = $database->update("COTIZACIONES_TRAMITES_INF_COM", [
+				"MONTO" => $total
+			], ["ID"=>$datos[$i]->ID]);
 			//Dando formato a los datos
 			$viaticos_f=number_format($viaticos,2);
 			$subtotal_f=number_format($subtotal,2);
@@ -569,7 +572,6 @@ $html = <<<EOT
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 // ---------------------------------------------------------
-
 //Close and output PDF document
 $pdf1->Output();
 // ---------------------------------------------------------

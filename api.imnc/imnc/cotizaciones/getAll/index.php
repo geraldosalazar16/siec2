@@ -25,12 +25,20 @@ function valida_error_medoo_and_die(){
 } 
 
 $respuesta=array(); 
-$query = "SELECT * FROM TABLA_ENTIDADES,COTIZACIONES WHERE ID_PROSPECTO = ID_VISTA AND BANDERA_VISTA = BANDERA";
+$query = "SELECT USUARIOS.NOMBRE UsuarioCreac, ESTATUS_SEGUIMIENTO, TABLA_ENTIDADES.*, COTIZACIONES.* 
+		FROM TABLA_ENTIDADES
+		INNER JOIN COTIZACIONES
+		ON ID_PROSPECTO = ID_VISTA AND BANDERA_VISTA = BANDERA
+		 INNER JOIN USUARIOS ON USUARIOS.ID=COTIZACIONES.ID_USUARIO_CREACION
+		 INNER JOIN PROSPECTO_ESTATUS_SEGUIMIENTO PES ON ESTADO_COTIZACION=PES.ID";
+
+ // "SELECT * FROM TABLA_ENTIDADES,COTIZACIONES WHERE ID_PROSPECTO = ID_VISTA AND BANDERA_VISTA = BANDERA";
 $cotizaciones = $database->query($query)->fetchAll(PDO::FETCH_ASSOC); 
 
 valida_error_medoo_and_die(); 
 
-for ($i=0; $i < count($cotizaciones); $i++) { 
+for ($i=0; $i < count($cotizaciones); $i++) {
+	 
 	$servicio = $database->get("SERVICIOS", "*", ["ID"=>$cotizaciones[$i]["ID_SERVICIO"]]);
 	valida_error_medoo_and_die(); 
 	$tipos_servicio = $database->get("TIPOS_SERVICIO", "*", ["ID"=>$cotizaciones[$i]["ID_TIPO_SERVICIO"]]);

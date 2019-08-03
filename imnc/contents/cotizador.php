@@ -27,6 +27,58 @@
             </div>
           </div>          
         </div>
+		
+		<!-- Filtrar por usuario creación-->		
+    <div class="x-title">
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label class="control-label" for="selectFiltroUsuarioCreac">Filtrar por usuario creador</label>
+              <select id="selectFiltroUsuarioCreac" ng-model="selectFiltroUsuarioCreac"
+                  ng-change="UsuarioCreacFiltroChange()"
+                  ng-options="usuario.ID as usuario.NOMBRE for usuario in Usuarios" class="form-control">
+                     <option value="" selected disabled>-- selecciona un usuario --</option>
+                  </select>
+            </div>
+          </div>          
+        </div> 
+
+        <!-- Filtrar por estado-->		
+    <div class="x-title">
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label class="control-label" for="selectFiltroEstado">Filtrar por estado</label>
+              <select id="selectFiltroEstado" ng-model="selectFiltroEstado"
+                  ng-change="EstadoFiltroChange()"
+                  ng-options="estado.ID as estado.NOMBRE for estado in Estados" class="form-control">
+                     <option value="" selected disabled>-- selecciona un estado --</option>
+                  </select>
+            </div>
+          </div>          
+        </div> 
+
+         <!-- Filtrar por fecha-->		
+        <div class="x-title">
+          <div class="row">
+           <div class="form-group col-md-12"> 
+              <h4>Filtar por fecha</h4>
+              <div class="row">
+                <div class="form-group col-md-4">            
+                  <label class="control-label" for="fechInicial">Fecha inicial</label>
+                  <input type='text' id='fechInicial' ng-model="fechInicial" data-language='es' />
+                </div>
+                <div class="form-group col-md-4">            
+                  <label class="control-label" for="fechFinal">Fecha final</label>
+                  <input type='text' id='fechFinal' ng-model="fechFinal" data-language='es' />
+                </div>
+                <div class="form-group col-md-4">            
+                   <button type="button" class="btn btn-primary btn-xs btn-imnc" ng-click="muestra()" style="float: right;">
+                    <i class="fa fa-filter"></i> Mostrar coincidentes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>          
+        </div> 
         
         <div class="x_content">
           <table class="table table-striped responsive-utilities jambo_table bulk_action">

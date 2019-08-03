@@ -25,8 +25,49 @@ function valida_error_medoo_and_die(){
 } 
 
 $respuesta=array(); 
-$ID_SERVICIO = $_REQUEST["id_servicio"];
-$query = "SELECT * FROM TABLA_ENTIDADES,COTIZACIONES WHERE ID_PROSPECTO = ID_VISTA AND BANDERA_VISTA = BANDERA AND COTIZACIONES.ID_SERVICIO = ".$ID_SERVICIO;
+
+if(null!=@$_REQUEST["id_servicio"]){
+  $ID_SERVICIO = $_REQUEST["id_servicio"];
+}else{
+  $ID_SERVICIO = "";
+}
+
+if(null!=@$_REQUEST["id_usuario"]){
+  $ID_USUARIO = $_REQUEST["id_usuario"];
+}else{
+  $ID_USUARIO = "";
+}
+
+if(null!=@$_REQUEST["id_estado"]){
+	$ID_ESTADO = $_REQUEST["id_estado"];
+  }else{
+	$ID_ESTADO = "";
+  }
+
+if(null!=@$_REQUEST["fech_inic"]){
+  $FECH_INIC = $_REQUEST["fech_inic"];
+}else{
+  $FECH_INIC = "";
+}
+
+if(null!=@$_REQUEST["fech_fin"]){
+  $FECH_FIN = $_REQUEST["fech_fin"];
+}else
+  $FECH_FIN = "";
+
+$query = "SELECT * FROM TABLA_ENTIDADES,COTIZACIONES WHERE ID_PROSPECTO = ID_VISTA AND BANDERA_VISTA = BANDERA";
+if ($ID_SERVICIO != "")
+ $query.= " AND COTIZACIONES.ID_SERVICIO = ".$ID_SERVICIO;
+
+if ($ID_USUARIO != "")
+ $query.= " AND COTIZACIONES.ID_USUARIO_CREACION = ".$ID_USUARIO;
+
+if ($ID_ESTADO != "")
+  $query.= " AND COTIZACIONES.ESTADO_COTIZACION=".$ID_ESTADO;
+
+if ($FECH_INIC != "")
+ $query.= " AND COTIZACIONES.FECHA_CREACION BETWEEN '".$FECH_INIC."' AND '".$FECH_FIN."'";
+
 $cotizaciones = $database->query($query)->fetchAll(PDO::FETCH_ASSOC); 
 
 valida_error_medoo_and_die(); 
@@ -134,4 +175,4 @@ for ($i=0; $i < count($cotizaciones); $i++) {
 
 print_r(json_encode($cotizaciones)); 
 
-?> 
+?>

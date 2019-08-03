@@ -465,7 +465,7 @@ $html = <<<EOT
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
-
+$monto_total = 0;
 for($i=0;$i<count($datos);$i++){
 	if($i==3 || $i == 7 || $i==11){
 		$pdf1->AddPage();
@@ -519,6 +519,9 @@ EOT;
 			$subtotal=$costo+$suma_tarifa+$viaticos;
 			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
+            $monto = $database->update("COTIZACIONES_TRAMITES_HM", [
+                "MONTO" => $total
+            ], ["ID"=>$datos[$i]->ID]);
 			//Dando formato a los datos
 			$viaticos_f=number_format($viaticos,2);
 			$subtotal_f=number_format($subtotal,2);

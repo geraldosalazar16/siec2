@@ -447,7 +447,7 @@ $html = <<<EOT
 </table>
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
-
+$monto_total = 0;
 for($i=0;$i<count($datos);$i++){
 	if($i==3 || $i == 7 || $i==11){
 		$pdf1->AddPage();
@@ -512,6 +512,9 @@ EOT;
 			$subtotal=$costo+$viaticos;
 			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
+			$monto = $database->update("COTIZACIONES_TRAMITES_PIND", [
+				"MONTO" => $total
+			], ["ID"=>$datos[$i]->ID]);
 			//Dando formato a los datos
 			$viaticos_f=number_format($viaticos,2);
 			$subtotal_f=number_format($subtotal,2);
@@ -612,7 +615,6 @@ $pdf1->writeHTML($html, true, false, true, false, '');
 
 
 // ---------------------------------------------------------
-
 //Close and output PDF document
 $pdf1->Output();
 // ---------------------------------------------------------
