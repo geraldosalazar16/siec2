@@ -90,6 +90,7 @@
                 </th>
                 <th class="column-title">Folio</th>
                 <th class="column-title">Estado</th>
+                <th class="column-title" ng-click="ordenarXfecha()" style="cursor: pointer;">Fecha creaci&oacuten</th>
                 <!--<th class="column-title">{{titulo_columna_tarifa}}</th>-->
                 <th class="column-title"></th>
                 <th class="column-title"></th>
@@ -121,6 +122,7 @@
                 </td>
                 <td>{{cotizacion.FOLIO}}</td>
                 <td>{{cotizacion.ESTADO.ESTATUS_SEGUIMIENTO}}</td>
+                <td>{{cotizacion.FECHA_CREACION}}</td>
                 <!--<td>{{cotizacion.VALOR_TARIFA | currency}}</td>-->
                 <td>
                   <button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="modal_cotizacion_editar(cotizacion.ID)"
