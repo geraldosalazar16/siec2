@@ -17,7 +17,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     dateFormat: "dd/mm/yy",   
     language: "es", 
    // startDate: new Date(),
-  //  range: true,     
+   //range: true,     
    // autoClose: true,  
     onSelect: function (dateText, ins) {       
        $scope.fechInicial = dateText;      
