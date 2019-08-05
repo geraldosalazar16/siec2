@@ -10,6 +10,7 @@ app.controller('dictaminacion_controller',['$scope','$http',function($scope,$htt
 	$scope.modulo_permisos =  global_permisos["SERVICIOS"];
 	$scope.DatosServicio = {};
 	$scope.DatosDictaminaciones = {};
+	$scope.formDataFechaCertificado = {};
 	$scope.selectPendientesDictaminadas = "Pendientes";
 	$scope.titulo_tabla = 'Servicios Pendientes';
 	/*
@@ -56,11 +57,31 @@ app.controller('dictaminacion_controller',['$scope','$http',function($scope,$htt
 		Funcion para cambiar el estado de la dictaminacion
 	*/
 	$scope.editarStatus = function(id,estado){
+		// A PARTIR DE AQUI ABRO EL MODAL PARA SELECCIONAR LA FECHA DEL CERTIFICADO
+			$scope.formDataFechaCertificado.ID = id;
+			$scope.formDataFechaCertificado.STATUS = estado;
+				
+		if(estado == 1){
+			$('#fecha_inicio').datepicker("setDate", new Date());
+			$scope.formDataFechaCertificado.FECHA_CERTIFICADO = $('#fecha_inicio').val();
+			$("#modalFechaCertificado").modal("show");
+		}
+		else{
+			$scope.formDataFechaCertificado.FECHA_CERTIFICADO = "";
+			$scope.submitFormFechaCertificado($scope.formDataFechaCertificado);
+		}
+		
+		
+		
+	}	
+	$scope.submitFormFechaCertificado = function(formDataFechaCertificado){
 		var datos	=	{
-				ID	:	id,
-				STATUS	:	estado,
+				ID	:	formDataFechaCertificado.ID,
+				STATUS	:	formDataFechaCertificado.STATUS,
+				FECHA_CERTIFICADO : formDataFechaCertificado.FECHA_CERTIFICADO,
 				ID_USUARIO:	sessionStorage.getItem("id_usuario")
 			};
+			
 			$.post(global_apiserver + "/dictaminaciones/update/", JSON.stringify(datos), function(respuesta){
 				respuesta = JSON.parse(respuesta);
 				if (respuesta.resultado == "ok") {
@@ -70,9 +91,9 @@ app.controller('dictaminacion_controller',['$scope','$http',function($scope,$htt
 				else {
 					notify('Error',respuesta.mensaje,'error');
 				}
-					
+				$("#modalFechaCertificado").modal("hide");	
 			});
-	}	
+	}
 	/*
 		Funcion para elegir entre Pendientes y Dictaminadas
 	*/
@@ -93,13 +114,23 @@ $scope.mostrarFecha = function(fecha){
 	
 	return fecha.substring(0,4)+"-"+fecha.substring(4,6)+"-"+fecha.substring(6,8);
 }
+function onCalendar() {
+	$('#fecha_inicio').datepicker({
+                    dateFormat: "yy-mm-dd",
+                    minDate: "+0D",
+					onSelect: function (dateText, ins) {
+                        $scope.formDataFechaCertificado.FECHA_CERTIFICADO = dateText;
+                    }
+                }).css("display", "inline-block");
+			
+				
+}
 
 
 
 
 
-
-
+onCalendar();
 $scope.Funcion_Datos_Dictaminador();	
 $scope.Funcion_Dictaminaciones_Pendientes_x_Usuario();
 }]);

@@ -56,7 +56,7 @@ $ano_4 = $ano_curso - 4;
 		
 		
 // ANO ACTUAL
-$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_curso."%' ";
+$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_curso."%' ";
 //$consulta = "SELECT `SECTOR_PUBLICO`,`SECTOR_PRIVADO` FROM `REPORTES_CLIENTES` WHERE `FECHA` LIKE '".$ano_curso."%'  ORDER BY `ID` DESC";
 $dd0 = $database->query($consulta)->fetchAll();
 	if(empty($dd0)){
@@ -68,7 +68,7 @@ $dd0 = $database->query($consulta)->fetchAll();
 		
 	}
 // ANO ACTUAL - 1
-$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_1."%' ";
+$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_1."%' ";
 //$consulta = "SELECT `SECTOR_PUBLICO`,`SECTOR_PRIVADO` FROM `REPORTES_CLIENTES` WHERE `FECHA` LIKE '".$ano_1."%'  ORDER BY `ID` DESC";
 $dd1 = $database->query($consulta)->fetchAll();
 	if(empty($dd1)){
@@ -78,7 +78,7 @@ $dd1 = $database->query($consulta)->fetchAll();
 		$datos1['Y1'][1] = $dd1[0]['CANT_CERT_EMITIDOS_SG'];   
 	}
 // ANO ACTUAL - 2
-$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_2."%' ";
+$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_2."%' ";
 //$consulta = "SELECT `SECTOR_PUBLICO`,`SECTOR_PRIVADO` FROM `REPORTES_CLIENTES` WHERE `FECHA` LIKE '".$ano_2."%'  ORDER BY `ID` DESC";
 $dd2 = $database->query($consulta)->fetchAll();
 	if(empty($dd2)){
@@ -88,7 +88,7 @@ $dd2 = $database->query($consulta)->fetchAll();
 		$datos1['Y1'][2] = $dd2[0]['CANT_CERT_EMITIDOS_SG'];   
 	}
 // ANO ACTUAL - 3
-$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_3."%' ";
+$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_3."%' ";
 //$consulta = "SELECT `SECTOR_PUBLICO`,`SECTOR_PRIVADO` FROM `REPORTES_CLIENTES` WHERE `FECHA` LIKE '".$ano_3."%'  ORDER BY `ID` DESC";
 $dd3 = $database->query($consulta)->fetchAll();
 	if(empty($dd3)){
@@ -98,7 +98,7 @@ $dd3 = $database->query($consulta)->fetchAll();
 		$datos1['Y1'][3] = $dd3[0]['CANT_CERT_EMITIDOS_SG'];   
 	}
 // ANO ACTUAL - 4
-$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_MODIFICACION` LIKE '".$ano_4."%' ";
+$consulta = "SELECT COUNT(`STATUS`) AS `CANT_CERT_EMITIDOS_SG` FROM `DICTAMINACIONES` WHERE `STATUS`='1' AND `FECHA_CERTIFICADO` LIKE '".$ano_4."%' ";
 //$consulta = "SELECT `SECTOR_PUBLICO`,`SECTOR_PRIVADO` FROM `REPORTES_CLIENTES` WHERE `FECHA` LIKE '".$ano_4."%'  ORDER BY `ID` DESC";
 $dd4 = $database->query($consulta)->fetchAll();
 	if(empty($dd4)){

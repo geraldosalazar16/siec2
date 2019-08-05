@@ -156,7 +156,6 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
         if(flag==2) {
             html += '<thead style="font-weight: 700"><td bgcolor="silver" width="20%"></td><td bgcolor="#e6e6fa" width="40%" style="text-align: center;" colspan="4">'+mes+'</td></thead>';
             html += ' <thead style="font-weight: 700"><td bgcolor="silver" ></td><td bgcolor="#e6e6fa">PROPUESTAS EMITIDAS</td><td bgcolor="#e6e6fa">OBJETIVO EMITIDAS</td><td bgcolor="#e6e6fa">PROPUESTAS GANADAS</td><td bgcolor="#e6e6fa">OBJETIVO GANADAS</td></thead>';
-
         }
         $.each($scope.prospectos,function(index,item) {
                if(tipo!=item.TIPO)
