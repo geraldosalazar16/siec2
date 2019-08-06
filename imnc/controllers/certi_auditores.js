@@ -13,7 +13,7 @@ app.controller('certi_auditores_controller',['$scope','$http' ,function($scope,$
 	$scope.selectSector = null;
 	$scope.columns = [];
 	$scope.data = [];
-
+	
 	$scope.gridOptions = {};
 /*	 $scope.gridOptions = {
     enableSorting: true,
@@ -24,38 +24,53 @@ app.controller('certi_auditores_controller',['$scope','$http' ,function($scope,$
  //FECHA DE HOY
 $scope.mesActual= moment().format('M'); 
 $scope.anoActual= moment().format('YYYY'); 
+$scope.mesSelect = $scope.mesActual;
+$scope.anhioSelect = $scope.anoActual;
 /*		
 		Función para generar la fecha donde comenzara la tabla (FECHA ACTUAL) .
 */
 $scope.InicializarSelectMonthYear = function(){
+		
+	
 	 $('#txtDate').datepicker({
      changeMonth: true,
      changeYear: true,
      dateFormat: 'MM yy',
-       
-     onClose: function() {
+     
+     onClose: function(input,inst) {
         var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
         var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+		$scope.mesSelect = iMonth;
+		$scope.anhioSelect = iYear;
         $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
 		//Creando Cabecera
 		$scope.HeadingTable(iYear,iMonth);
+		$('.ui-datepicker-calendar').hide();
+		inst.dpDiv.removeClass('noCalendar');
+		
      },
        
-     beforeShow: function() {
+     beforeShow: function(input, inst) {
+		inst.dpDiv.addClass('noCalendar');
 		if ((selDate = $(this).val()).length > 0) 
 		{
 			iYear = selDate.substring(selDate.length - 4, selDate.length);
 			iMonth = jQuery.inArray(selDate.substring(0, selDate.length - 5), $(this).datepicker('option', 'monthNames'));
 			$(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
 			$(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+			
 		}
 		
     }
 	
 	
   });
+   $('#txtDate').focusin(function(){
+			$('.ui-datepicker-calendar').css('display','none');
+		});	
   
 }	
+ 
 /*		
 		Función que crea la cabecera de la tabla de forma dinamica.
 */
@@ -215,6 +230,7 @@ async function getData(mes,anno)
 					$scope.data =  response.data;
 				    $scope.gridOptions.data= [];
 					$scope.gridOptions.data = $scope.data;
+					$scope.optionsList=angular.fromJson($scope.data);
 			});
 	}
 	
@@ -333,16 +349,65 @@ $scope.cancelFilter = function()
 //	$scope.tabla_servicios();
 
 	$scope.mytoggle('divFitrar');
-	getData($scope.mesActual-1,$scope.anoActual);
+	$scope.HeadingTable($scope.anhioSelect,$scope.mesSelect);
 
 }
 // ==============================================================================
 // ***** 		    Funcion btn filtrar accion                   		*****
 // ==============================================================================
 $scope.cargaDatosFiltrados = function() {
-	getData($scope.mesActual-1,$scope.anoActual);
+	$scope.HeadingTable($scope.anhioSelect,$scope.mesSelect);
 }
+
+// ==============================================================================
+// ***** 	  Funcion para cargar modal de agregar eventos                 	*****
+// ==============================================================================
+$scope.agregar_evento =  function(){
+	$("#modalAgregarEvento").modal("show");
+}
+/*
+		Funcion para Agregar el Evento
+	*/
+$scope.submitFormNuevoEvento = function(formDataNuevoEvento){
+	var datos	=	{
+				EVENTO	:	formDataNuevoEvento.EVENTO,
+				FECHA_INICIO	:	formDataNuevoEvento.FECHA_INICIO,
+				FECHA_FIN : formDataNuevoEvento.FECHA_FIN,
+				AUDITORES : formDataNuevoEvento.AUDITORES,
+				ID_USUARIO:	sessionStorage.getItem("id_usuario")
+			};
+			
+	$.post(global_apiserver + "/i_auditores_certi/insert/", JSON.stringify(datos), function(respuesta){
+				respuesta = JSON.parse(respuesta);
+				if (respuesta.resultado == "ok") {
+					notify("Éxito", "Se ha insertado el evento","success");
+					$scope.HeadingTable($scope.anhioSelect,$scope.mesSelect);
+				}
+				else {
+					notify('Error',respuesta.mensaje,'error');
+				}
+				$("#modalAgregarEvento").modal("hide");	
+			});		
+}
+function  onCalendar() {
+	$('#fechaInicio').datepicker({
+                    dateFormat: "yy-mm-dd",
+                    minDate: "+0D",
+					onSelect: function (dateText, ins) {
+                        $scope.formDataNuevoEvento.FECHA_INICIO = dateText;
+                    }
+                }).css('display' , 'inline-block');
+	$('#fechaFin').datepicker({
+                    dateFormat: "yy-mm-dd",
+                    minDate: "+0D",
+					onSelect: function (dateText, ins) {
+                        $scope.formDataNuevoEvento.FECHA_FIN = dateText;
+                    }
+                }).css('display' , 'inline-block');		
+				
+}	
 $(document).ready(function () {
+	onCalendar();
 	$scope.TodosServicios();
 	$scope.InicializarSelectMonthYear();
 	$('#txtDate').datepicker('setDate', new Date());
@@ -350,7 +415,9 @@ $(document).ready(function () {
 
 
 });
-	
+
+
+
 }]);
 
 function notify(titulo, texto, tipo){

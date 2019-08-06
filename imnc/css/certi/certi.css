@@ -1,6 +1,4 @@
-.ui-datepicker-calendar {
-	display: none;
-}
+#ui-datepicker-div.noCalendar .ui-datepicker-calendar {display: none;}
 .calidad {background-color: #FBFB32 !important;}
 .ambiente {background-color: #B2F84C !important;}
 .sast {background-color: #D790FC !important;}
