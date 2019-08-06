@@ -32,6 +32,7 @@ $respuesta=array();
 
 $ID_USUARIO = $_REQUEST["id"];
 $ids = $_REQUEST["ids"];
+
 //Determinar el perfil del usuario
 $QUERY = "SELECT PERFILES.ID FROM PERFIL_MODULO_USUARIO
 INNER JOIN USUARIOS ON USUARIOS.ID = PERFIL_MODULO_USUARIO.ID_USUARIO

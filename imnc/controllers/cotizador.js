@@ -413,15 +413,16 @@ $scope.ordenaXfech=function(datos){
     // llevar la fecha del formato 04/08/2019 a 20190804 para facilitar el ordenamiento
     fech1=fech1.substr(6,4)+fech1.substr(3,2)+fech1.substr(0,2);
     fech2=fech2.substr(6,4)+fech2.substr(3,2)+fech2.substr(0,2);
+    //devolver valor negat o positivo según corresponda al orden y forma de ord asc o descendente
     if ($scope.ascendentemente)
-      return fech1>fech2
+      return (fech1<fech2?-1:1);
      else 
-      return fech1<fech2
+      return (fech1<fech2?1:-1);
   })
 }
 
 $scope.formatFecha=function(datos)
-{
+{  
   datos.forEach(function(elto)
   {
     // desglosar la fecha para luego componerla en un formato visual más legible

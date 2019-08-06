@@ -257,12 +257,12 @@
 																		</td>
 																		<td>																																		
 																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" 
-																			ng-if="producto.sectores_mostrandose == false && producto.id_servicio!=3"
+																			ng-if="producto.sectores_mostrandose == false && producto.id_servicio==1"
 																			ng-click="verSectores(producto)" style=	"float: right;">
 																				<i class="fa fa-eye"> </i> Ver sectores
 																			</button>
 																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEliminar" 
-																			ng-if="producto.sectores_mostrandose == true && producto.id_servicio!=3"
+																			ng-if="producto.sectores_mostrandose == true && producto.id_servicio==1"
 																			ng-click="ocultarSectores(producto)" style=	"float: right;">
 																				<i class="fa fa-eye"> </i> Ocultar sectores
 																			</button>
