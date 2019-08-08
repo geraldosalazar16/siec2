@@ -274,7 +274,8 @@
 											<th class="column-title">Monto</th>
 											<th class="column-title">Sitios de auditor&iacutea </th>
 											<th class="column-title">Grupo de auditores</th>
-											<th class="column-title">Estado Facturaci&oacuten</th>
+											<th ng-if="DatosServicio.ID_SERVICIO == 1" class="column-title">Estado Facturaci&oacuten</th>
+											<!-- <th ng-if="DatosServicio.NombreCiclo==0" class="column-title">Estado Facturaci&oacuten</th> -->
 											<th class="column-title"></th>
 										<!--	<th class="column-title"></th>
 											<th class="column-title"></th>
@@ -326,7 +327,7 @@
 												
 											</td>
 											<td>Tipo: {{x.TIPO}} <br> Ciclo: {{x.CICLO}}<br>Status: {{x.STATUS}}</td>
-											<td>$ {{x.MONTO}}</td>
+											<td>{{x.MONTO | currency}}</td>
 											<td>
 													<button class="btn btn-success btn-xs btnSitiosAuditoria" ng-click="btnSitiosAuditoria(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO)" >{{x.SITIOS_ASOCIADOS}} sitios</button>
 													<ul class="list-unstyled user_data">
@@ -346,7 +347,8 @@
 														
 													</ul>
 											</td>
-											<td>{{x.estado_fact}} por ${{x.importe}}</td>
+											<td ng-if="DatosServicio.ID_SERVICIO == 1">{{x.estado_fact}} por {{x.importe | currency}}</td>
+											<!-- <td ng-if="x.importe>0" >{{x.estado_fact}} por {{x.importe | currency}}</td> -->
 											<td>
 												<div class="btn-group">
 													<button type="button" class="btn btn-primary btn-xs btn-imnc " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones   
