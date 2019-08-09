@@ -748,6 +748,7 @@ EOT;
 			</tr>
 		</table>
 EOT;
+$pdf1->writeHTML($html, true, false, true, false, '');
 //$id = $database->update("COTIZACIONES_TRAMITES", [
 //		"MONTO" => $subtotal
 //	], ["AND"=>["ID_COTIZACION"=>$id_cotizacion,"ID_ETAPA_PROCESO"=>$datos[$i]->ID_ETAPA_PROCESO]]);
