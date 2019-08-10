@@ -26,7 +26,9 @@ $ciclo = $_REQUEST["ciclo"];
 
 //Lo primero es buscar el id tipo de servicio que sera un dato importante para trabajar
 	$tipo_servicio = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_TIPO_SERVICIO", ["ID"=>$id]);
-											
+				
+// 7-8-2019 Agregué estado fact e importe y modifiqué la consulta de forma similar a GetAllByIdServicio
+// para que la vista muestre correctamente las 2 info
 $valores = $database->query("SELECT 
 `isga`.`ID_SERVICIO_CLIENTE_ETAPA`,
 `isga`.`DURACION_DIAS`,
@@ -39,6 +41,7 @@ $valores = $database->query("SELECT
  `isga`.`ID_USUARIO_MODIFICACION`,
  `isga`.`TIPO_AUDITORIA`,
  `isga`.`STATUS_AUDITORIA`,
+<<<<<<< HEAD
  `isga`.`CICLO`,
  (SELECT FSE.ESTATUS FROM FACTURACION_SOLICITUDES FS INNER JOIN FACTURACION_SOLICITUD_ESTATUS FSE ON FS.ID_ESTATUS = FSE.ID WHERE FS.id_servicio_cliente_etapa=isga.ID_SERVICIO_CLIENTE_ETAPA and  FS.ID_TIPO_AUDITORIA=isga.TIPO_AUDITORIA AND FS.CICLO=isga.CICLO) AS estado_fact,
  (SELECT FS.MONTO FROM FACTURACION_SOLICITUDES FS WHERE FS.id_servicio_cliente_etapa=isga.ID_SERVICIO_CLIENTE_ETAPA and FS.ID_TIPO_AUDITORIA=isga.TIPO_AUDITORIA AND FS.CICLO=isga.CICLO) AS  importe
@@ -49,6 +52,20 @@ $valores = $database->query("SELECT
  ON `I_SG_AUDITORIA_STATUS`.`ID` = `isga`.`STATUS_AUDITORIA` 
  WHERE `isga`.`ID_SERVICIO_CLIENTE_ETAPA`=".$id." AND `isga`.`CICLO`= ".$ciclo)->fetchAll(PDO::FETCH_ASSOC);
 valida_error_medoo_and_die(); 
+=======
+ `isga`.`CICLO` , estatus estado_fact, fs.MONTO importe 
+ FROM `I_SG_AUDITORIAS` isga 
+ INNER JOIN `I_SG_AUDITORIAS_TIPOS` 
+ ON `I_SG_AUDITORIAS_TIPOS`.`ID` = `isga`.`TIPO_AUDITORIA` 
+ INNER JOIN `I_SG_AUDITORIA_STATUS` 
+ ON `I_SG_AUDITORIA_STATUS`.`ID` = `isga`.`STATUS_AUDITORIA` 
+ INNER JOIN FACTURACION_SOLICITUDES fs ON (fs.id_servicio_cliente_etapa=isga.ID_SERVICIO_CLIENTE_ETAPA and
+ fs.ID_TIPO_AUDITORIA=isga.TIPO_AUDITORIA AND fs.CICLO=isga.CICLO)
+ INNER JOIN FACTURACION_SOLICITUD_ESTATUS fse ON fs.ID_ESTATUS=fse.ID 
+ WHERE `isga`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id." AND `isga`.`CICLO`= ".$ciclo)->fetchAll(PDO::FETCH_ASSOC);
+
+ valida_error_medoo_and_die(); 
+>>>>>>> 582fa5d8f6785f12919b57fd468d931a8f3b3d43
 
 for ($i=0; $i < count($valores) ; $i++) { 
 	$valores[$i]["SITIOS_ASOCIADOS"] = $database->count("I_SG_AUDITORIA_SITIOS", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$valores[$i]["ID_SERVICIO_CLIENTE_ETAPA"],"TIPO_AUDITORIA"=>$valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"]]]);

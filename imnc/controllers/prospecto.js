@@ -94,7 +94,8 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 		//recibe la url del php que se ejecutará
 		$http.get(  global_apiserver + "/prospecto/getByIdUsuario/?id="+id_user)
 		//$http.get(  global_apiserver + "/prospecto/getAll/")
-	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
+			  .then(function( response ) {//se ejecuta cuando la petición fue correcta
+				debugger
 				$scope.cantidad_prospectos = response.data.length;
 	  			$scope.Prospectos = response.data.map(function(item){
 	  				return{
@@ -113,7 +114,7 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 		$.ajax({
 			type:'GET',
 			url:url,
-			success: function(data){
+			success: function(data){				
 				$scope.$apply(function(){
 					$scope.prospecto = angular.fromJson(data);
 				});

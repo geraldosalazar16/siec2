@@ -235,8 +235,7 @@ function clear_modal_agregar_informacion(){
 // ==============================================================================
 	function DatosServicioContratado(id_servicio){
 		$http.get(  global_apiserver + "/servicio_cliente_etapa/getById/?id="+id_servicio)
-		.then(function( response ){
-			
+		.then(function( response ){		
 			$scope.DatosServicio = response.data;
 			$scope.DatosServicio.CICLO = ObtenerCicloDeReferencia($scope.DatosServicio.REFERENCIA);
 			$scope.titulo = $scope.DatosServicio.NOMBRE_SERVICIO;
@@ -1252,7 +1251,7 @@ function cargarDatosAuditoriasSG(id_servicio){
 function cargarDatosAuditoriasSG_Ciclo(id_servicio,cc){
 	$http.get(  global_apiserver + "/i_sg_auditorias/getAllByIdServicioAndCiclo/?id="+id_servicio+"&ciclo="+cc)
 		.then(function( response ){
-            $scope.DatosAuditoriasSG = response.data;
+			$scope.DatosAuditoriasSG = response.data;
 			const temp = [];
 			let auditoriaSalvada;
 			$scope.DatosAuditoriasSG.forEach(auditoria => {
@@ -3500,7 +3499,6 @@ function llenar_modal_viaticos(id_servicio_cliente_etapa,id_ta,ciclo,id_pt){
 // ===========================================================================
 // ***** 	            TERMINA FACTURACION AUDITORIA		           	 *****
 // ===========================================================================
-
 
 DatosServicioContratado($scope.id_servicio_cliente_etapa);
 cargarValoresMetaDatosServicio($scope.id_servicio_cliente_etapa);

@@ -12,22 +12,23 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
   $scope.select_pos = -1;
   $scope.Usuarios=new Array();
   $scope.fechInicial="";
+  $scope.ascendentemente=true;
   var desde = $('#fechInicial').datepicker({    
-    dateFormat: "yymmdd",   
+    dateFormat: "dd/mm/yy",   
     language: "es", 
    // startDate: new Date(),
-  //  range: true,     
+   //range: true,     
    // autoClose: true,  
     onSelect: function (dateText, ins) {       
-       $scope.fechInicial= dateText;      
+       $scope.fechInicial = dateText;      
     }
     }).css("display", "inline-block");
   
     var hasta = $('#fechFinal').datepicker({      
-      dateFormat: "yymmdd",     
+      dateFormat: "dd/mm/yy",     
       language: "es",     
-      onSelect: function (dateText, ins) {          
-         $scope.fechFinal = dateText;      
+      onSelect: function (dateText, ins) {                  
+         $scope.fechFinal = dateText;//dateText.substr(6,4)+dateText.substr(3,2)+dateText.substr(0,2);     
       }
       }).css("display", "inline-block");  
 
@@ -64,8 +65,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       }
     });
   }
-  $scope.servicioFiltroChange = function () {
-    debugger;
+  $scope.servicioFiltroChange = function () {    
     const id_servicio = $scope.selectFiltroServicio;
     $scope.despliega_cotizaciones_filtradas(id_servicio);
   }
@@ -242,10 +242,28 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
     });
   }
 
-  $scope.muestra=function(){
-    debugger;
+  $scope.ordenarXfecha=function(){    
+    if ($scope.arr_cotizaciones.length<2)
+      { notify("Ordenando","No tiene sentido el ordenamiento","error"); 
+        return ;
+      }
+    $scope.ascendentemente=!$scope.ascendentemente;
+    $scope.ordenaXfech($scope.arr_cotizaciones);
+    if ($scope.ascendentemente)
+      notify("Ordenando","Se ha ordenado iniciando por el más antiguo","success"); 
+     else
+      notify("Ordenando","Se ha ordenado iniciando por el más reciente","success");  
+  }
+
+  $scope.muestra=function(){    
     if (($scope.fechInicial!="") && ($scope.fechFinal!=""))
-       $scope.filtra_fechas($scope.fechInicial,$scope.fechFinal)
+       {
+        dateText=$scope.fechInicial;  
+        fde=dateText.substr(6,4)+dateText.substr(3,2)+dateText.substr(0,2); 
+        dateText=$scope.fechFinal;         
+        fhasta=dateText.substr(6,4)+dateText.substr(3,2)+dateText.substr(0,2);    
+        $scope.filtra_fechas(fde,fhasta);
+       }
      else 
        notify("Error", "Seleccione fecha inicial y final", "error");
     }
@@ -274,6 +292,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
       $scope.Usuarios=[];
       $scope.Estados=[];
       if(data) {
+        $scope.formatFecha(data); 
         $scope.arr_cotizaciones = data;  
         UsuariosTodos=data;
         var esta=false;
@@ -336,6 +355,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
     $http(http_request).success(function(data) {
       if(data) {
+        $scope.formatFecha(data); 
         $scope.arr_cotizaciones = data;
       }
       else  {
@@ -355,6 +375,7 @@ app.controller("cotizador_controller", ['$scope','$window', '$http','$document',
 
     $http(http_request).success(function(data) {
       if(data) {
+        $scope.formatFecha(data); 
         $scope.arr_cotizaciones = data;
       }
       else  {
@@ -373,7 +394,8 @@ $scope.filtra_estados = function (id_estado) {
   };
 
   $http(http_request).success(function(data) {
-    if(data) {
+    if(data) {      
+      $scope.formatFecha(data);     
       $scope.arr_cotizaciones = data;
     }
     else  {
@@ -384,8 +406,34 @@ $scope.filtra_estados = function (id_estado) {
   });
 }
 
-//Filtrar por el id del estado
-$scope.filtra_fechas = function (inicio,fin) {   
+$scope.ordenaXfech=function(datos){
+  datos.sort(function(el1,el2){
+    fech1=el1.FECHA_CREACION;
+    fech2=el2.FECHA_CREACION;
+    // llevar la fecha del formato 04/08/2019 a 20190804 para facilitar el ordenamiento
+    fech1=fech1.substr(6,4)+fech1.substr(3,2)+fech1.substr(0,2);
+    fech2=fech2.substr(6,4)+fech2.substr(3,2)+fech2.substr(0,2);
+    //devolver valor negat o positivo según corresponda al orden y forma de ord asc o descendente
+    if ($scope.ascendentemente)
+      return (fech1<fech2?-1:1);
+     else 
+      return (fech1<fech2?1:-1);
+  })
+}
+
+$scope.formatFecha=function(datos)
+{  
+  datos.forEach(function(elto)
+  {
+    // desglosar la fecha para luego componerla en un formato visual más legible
+    anio=elto.FECHA_CREACION.substr(0,4);
+    mes=elto.FECHA_CREACION.substr(4,2);
+    dia=elto.FECHA_CREACION.substr(6,2);
+    elto.FECHA_CREACION=dia+'/'+mes+'/'+anio;
+  });
+} 
+//Filtrar por rango de fechas
+$scope.filtra_fechas = function (inicio,fin) {
   var http_request = {
     method: 'GET',
     url: global_apiserver + "/cotizaciones/getAllByIdServicio/?fech_inic="+inicio+"&fech_fin="+fin,
@@ -393,6 +441,7 @@ $scope.filtra_fechas = function (inicio,fin) {
 
   $http(http_request).success(function(data) {
     if(data) {
+      $scope.formatFecha(data); 
       $scope.arr_cotizaciones = data;
     }
     else  {
