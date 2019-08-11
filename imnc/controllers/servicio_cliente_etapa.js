@@ -144,7 +144,7 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
         // =======================================================================================
         // ***** 			FUNCION PARA EL BOTON EDITAR SERVICIOS CONTRATADOS				 *****
         // =======================================================================================
-    $scope.editarServicio = function(id_servicio) {
+    $scope.editarServicio = function(id_servicio) {        
         $scope.modal_titulo = "Editar servicio";
         $scope.accion = "editar";
         $scope.id_servicio = id_servicio;
@@ -585,6 +585,11 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
                     });
                     if (inicial) {
                         $scope.formData.etapa = seleccion ? seleccion : inicial;
+                    }
+                    //para los de tipo SG en modo edición quitar etapas Asignación(3) y transferencia(12)
+                    if (id_servicio==1 && $scope.accion == "editar")
+                    {
+                        $scope.Etapas = $scope.Etapas.filter(function(etapa){return (etapa.ID_ETAPA!=3 && etapa.ID_ETAPA!=12)})  
                     }
                 },
                 function(response) {});

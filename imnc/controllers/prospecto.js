@@ -94,8 +94,7 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 		//recibe la url del php que se ejecutará
 		$http.get(  global_apiserver + "/prospecto/getByIdUsuario/?id="+id_user)
 		//$http.get(  global_apiserver + "/prospecto/getAll/")
-			  .then(function( response ) {//se ejecuta cuando la petición fue correcta
-				debugger
+			  .then(function( response ) {//se ejecuta cuando la petición fue correcta				
 				$scope.cantidad_prospectos = response.data.length;
 	  			$scope.Prospectos = response.data.map(function(item){
 	  				return{
