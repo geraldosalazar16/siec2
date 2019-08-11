@@ -347,7 +347,19 @@
 														
 													</ul>
 											</td>
-											<td ng-if="DatosServicio.ID_SERVICIO == 1">{{x.estado_fact}} por {{x.importe | currency}}</td>
+											<td ng-if="DatosServicio.ID_SERVICIO == 1">
+												<ul ng-if='x.ESTADO_FACTURACION == "Sin Solicitud"' class="list-unstyled user_data">
+													<li >
+														{{x.ESTADO_FACTURACION}}
+													</li>
+												</ul>
+												<ul ng-if='x.ESTADO_FACTURACION != "Sin Solicitud"' class="list-unstyled user_data">
+													<li ng-repeat = "hhh in x.ESTADO_FACTURACION">
+													{{$index+1}}- {{hhh.ESTATUS}}
+													</li>
+												</ul>
+													
+											</td>
 											<!-- <td ng-if="x.importe>0" >{{x.estado_fact}} por {{x.importe | currency}}</td> -->
 											<td>
 												<div class="btn-group">
