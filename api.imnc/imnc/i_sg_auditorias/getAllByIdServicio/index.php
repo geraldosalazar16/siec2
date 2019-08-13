@@ -38,15 +38,13 @@ $valores = $database->query("SELECT
  `isga`.`ID_USUARIO_MODIFICACION`,
  `isga`.`TIPO_AUDITORIA`,
  `isga`.`STATUS_AUDITORIA`,
- `isga`.`CICLO`, estatus estado_fact, fs.MONTO importe
+ `isga`.`CICLO`
  FROM `I_SG_AUDITORIAS` isga
  INNER JOIN `I_SG_AUDITORIAS_TIPOS`
  ON `I_SG_AUDITORIAS_TIPOS`.`ID` = `isga`.`TIPO_AUDITORIA` 
  INNER JOIN `I_SG_AUDITORIA_STATUS` 
  ON `I_SG_AUDITORIA_STATUS`.`ID` = `isga`.`STATUS_AUDITORIA` 
- INNER JOIN FACTURACION_SOLICITUDES fs ON (fs.id_servicio_cliente_etapa=isga.ID_SERVICIO_CLIENTE_ETAPA and
- fs.ID_TIPO_AUDITORIA=isga.TIPO_AUDITORIA AND fs.CICLO=isga.CICLO)
- INNER JOIN FACTURACION_SOLICITUD_ESTATUS fse ON fs.ID_ESTATUS=fse.ID
+ 
  WHERE `isga`.`ID_SERVICIO_CLIENTE_ETAPA`=".$id)->fetchAll(PDO::FETCH_ASSOC);
 valida_error_medoo_and_die();
 $roles = array();
@@ -275,7 +273,19 @@ for ($i=0; $i < count($valores) ; $i++) {
 		$valores[$i]["ESTADO_DICTAMINACION"] = $database->get("DICTAMINACIONES","STATUS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id,"TIPO_AUDITORIA" => $valores[$i]["TIPO_AUDITORIA"], "CICLO" => $valores[$i]["CICLO"] ]]);
 	}
     /*==============================================================*/
-	//aqui buscamos si tiene solicitud
+	//aqui buscamos si tiene solicitud FACTURACION
+	if($database->count("FACTURACION_SOLICITUDES", ["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id,"ID_TIPO_AUDITORIA" => $valores[$i]["TIPO_AUDITORIA"], "CICLO" => $valores[$i]["CICLO"] ]]) == 0){
+		$valores[$i]["ESTADO_FACTURACION"] = "Sin Solicitud";
+	}
+	else{
+		$valores[$i]["ESTADO_FACTURACION"]  = $database->query("SELECT FSE.ESTATUS 
+										FROM FACTURACION_SOLICITUDES FS 
+										INNER JOIN FACTURACION_SOLICITUD_ESTATUS FSE ON FS.ID_ESTATUS = FSE.ID 
+										WHERE FS.ID_SERVICIO_CLIENTE_ETAPA=".$id." AND  FS.ID_TIPO_AUDITORIA=".$valores[$i]["TIPO_AUDITORIA"]." AND FS.CICLO=".$valores[$i]["CICLO"])->fetchAll(PDO::FETCH_ASSOC);
+		valida_error_medoo_and_die();
+		
+	//	$valores[$i]["ESTADO_FACTURACION"] = $database->get("FACTURACION_SOLICITUDES","STATUS",["AND"=>["ID_SERVICIO_CLIENTE_ETAPA" => $id,"TIPO_AUDITORIA" => $valores[$i]["TIPO_AUDITORIA"], "CICLO" => $valores[$i]["CICLO"] ]]);
+	}
 	$solicitud = $database->get("FACTURACION_SOLICITUDES","*",
 		[
 			"AND"=>["ID_SERVICIO_CLIENTE_ETAPA"=>$id,"ID_TIPO_AUDITORIA"=>$valores[$i]["TIPO_AUDITORIA"],"CICLO"=>$valores[$i]["CICLO"]]

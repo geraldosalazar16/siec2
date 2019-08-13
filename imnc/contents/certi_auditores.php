@@ -52,8 +52,10 @@
              
 
               </div>
-			<input type='text' id='txtDate' class='txtFechasAuditoria' />
-		
+			<input type='text' id='txtDate' name='txtDate' class='txtFechasAuditoria txtDate' />
+			<button type="button" ng-click="agregar_evento()" class="btn btn-primary btn-xs btn-imnc" style="float: right;" > 
+												 Agregar evento 
+											</button>
 		<br><br>
 			<div id="tntGridServices" ui-grid="gridOptions" ui-grid-auto-fit-columns ui-grid-pagination ui-grid-move-columns class='grid' ></div>
         </div>
@@ -97,5 +99,54 @@
         </div>
     </div>
 </div>
-
+<!-- MODAL AGREGAR EVENTO-->
+<div class="modal fade" id="modalAgregarEvento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalCrearEventoTitulo">Nuevo Evento</h4>
+      </div>
+      <div class="modal-body">
+			
+			<form name="exampleFormNuevoEvento" >
+				<div class="form-group">
+					<label class="control-label ">Evento <span class="required">*</span>
+					</label>
+						<input type="text" id="evento" required="required" class="form-control col-md-5 col-xs-10" ng-model="formDataNuevoEvento.EVENTO">
+					
+				</div>
+				<div class="form-group">
+					<label class="control-label " >Fecha Inicio <span class="required">*</span>
+					</label>
+						<input type="text" id="fechaInicio" required="required" class="form-control col-md-5 col-xs-10" ng-model="formDataNuevoEvento.FECHA_INICIO">
+					
+				</div>
+				<div class="form-group">
+					<label class="control-label " >Fecha Fin <span class="required">*</span>
+					</label>
+					<input type="text" id="fechaFin" required="required" class="form-control col-md-5 col-xs-10" ng-model="formDataNuevoEvento.FECHA_FIN">
+					
+				</div>
+				<div class="form-group">
+					<label class="control-label" for="txtRfc">Auditor(es)  
+					</label>
+					<multiple-autocomplete ng-model="formDataNuevoEvento.AUDITORES" 
+						object-property="Auditor"
+						suggestions-arr="optionsList"
+						required="required">
+					</multiple-autocomplete>
+				</div>
+				
+	
+            <input type="submit" class="btn btn-success pull-right mt-2" ng-click="submitFormNuevoEvento(formDataNuevoEvento)" value="Agregar" ng-disabled="!exampleFormNuevoEvento.$valid" />
+          </form>
+         
+      </div>
+      <div class="modal-footer">
+       
+      </div>
+    </div>
+  </div>
+</div>
 </span>
