@@ -40,6 +40,7 @@ app.controller('ec_tipos_servicio_controller',['$scope','$http' ,function($scope
 
     $scope.listaRazonesSociales = [];
 	
+	$scope.AUDITOR_NORMAS = [];
 // =======================================================================================
 // ***** 			FUNCION PARA EL BOTON AGREGAR INFORMACION AUDITORIA				 *****
 // =======================================================================================	
@@ -1600,15 +1601,19 @@ $scope.submitFormGrupoAuditor = function (formDataGrupoAuditor) {
 // ==============================================================================
 // ***** 			Funcion para agregar las fechas de un auditor			*****
 // ==============================================================================
-$scope.agregar_editar_fechasAuditoriaGrupo = function(id_sce,id_ta,ciclo,id_pt){
+$scope.agregar_editar_fechasAuditoriaGrupo = function(id_sce,id_ta,ciclo,id_pt,aud_normas){
 	
 	//VERIFICAMOS SI ES UNA AUDITORIA INTEGRAL
 	var norma_serv_integral = 0;
+	$scope.formDataGrupoAuditorFechaNorma.norma = "";
 	if($scope.DatosServicio.ID_TIPO_SERVICIO==20){
-	$scope.formDataGrupoAuditorFechaNorma.id_sce	=	id_sce;
-	$scope.formDataGrupoAuditorFechaNorma.id_ta	=	id_ta;
-	$scope.formDataGrupoAuditorFechaNorma.ciclo	=	ciclo;
-	$scope.formDataGrupoAuditorFechaNorma.id_pt	=	id_pt;
+		$scope.AUDITOR_NORMAS  = aud_normas;
+		if(aud_normas.length == 1)
+			$scope.formDataGrupoAuditorFechaNorma.norma = aud_normas[0]['ID_NORMA'];
+		$scope.formDataGrupoAuditorFechaNorma.id_sce	=	id_sce;
+		$scope.formDataGrupoAuditorFechaNorma.id_ta	=	id_ta;
+		$scope.formDataGrupoAuditorFechaNorma.ciclo	=	ciclo;
+		$scope.formDataGrupoAuditorFechaNorma.id_pt	=	id_pt;
 		$("#modalNormaFechaServIntegral").modal("show");
 	}
 	else{
