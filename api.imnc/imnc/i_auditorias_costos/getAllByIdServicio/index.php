@@ -55,7 +55,7 @@ if($ID_SERVICIO == 2 || $ID_SERVICIO == 4){
 $valores["TOTAL_VIATICOS"] = redondeado($database->sum('I_AUDITORIAS_VIATICOS','MONTO',['ID_SERVICIO_CLIENTE_ETAPA'=>$id]),2); //TOTAL VIATICOS DE TODOS LOS TIPOS DE AUDITORIA DEL SERVICIO
 $valores["TOTAL_GASTOS"] = redondeado($database->sum('I_AUDITORIAS_COSTOS','MONTO',['AND'=>['ID_SERVICIO_CLIENTE_ETAPA'=>$id,'ID_CAT_AUDITORIAS_COSTOS[!]'=>[4,6,10,11,12,8]]]),2);	//TOTAL GASTOS DE TODOS LOS TIPOS DE AUDITORIA DEL SERVICIO
 // AQUI BUSCO LOS GASTOS DEFINIDOS POR CATALOGO
-$catalogo = $database->select('I_CAT_AUDITORIAS_COSTOS',['ID','NOMBRE'],['ORDER'=>'PRIORIDAD']);
+$catalogo = $database->select('I_CAT_AUDITORIAS_COSTOS',['ID','NOMBRE'],['PRIORIDAD[>]'=>0,'ORDER'=>'PRIORIDAD']);
 valida_error_medoo_and_die();
 
 for ($i=0; $i < count($valores['AUDITORIAS']) ; $i++) { 
@@ -94,10 +94,10 @@ FROM
 				valida_error_medoo_and_die();
 				
 			$valores['AUDITORIAS'][$i]["AUDITORES"][$j]['MONTO'][$k]['VALOR']= redondeado($a,2);
-			if($catalogo[$k]['ID'] != 4 && $catalogo[$k]['ID'] != 6 &&  $catalogo[$k]['ID'] != 10 && $catalogo[$k]['ID'] != 11 && $catalogo[$k]['ID'] != 12 && $catalogo[$k]['ID'] != 8){
+			if($catalogo[$k]['ID'] != 4 && $catalogo[$k]['ID'] != 6 &&  $catalogo[$k]['ID'] != 10 && $catalogo[$k]['ID'] != 11 && $catalogo[$k]['ID'] != 12 && $catalogo[$k]['ID'] != 8 ){
 				$valores['AUDITORIAS'][$i]["AUDITORES"][$j]['TOTAL_AUDITOR'] +=$a;
 			}
-			if($catalogo[$k]['ID'] != 3 && $catalogo[$k]['ID'] != 5 && $catalogo[$k]['ID'] != 1 && $catalogo[$k]['ID'] != 2 && $catalogo[$k]['ID'] != 7 && $catalogo[$k]['ID'] != 8){
+			if($catalogo[$k]['ID'] != 3 && $catalogo[$k]['ID'] != 5 && $catalogo[$k]['ID'] != 1 && $catalogo[$k]['ID'] != 2 && $catalogo[$k]['ID'] != 7 && $catalogo[$k]['ID'] != 8 && $catalogo[$k]['ID'] != 13 && $catalogo[$k]['ID'] != 14){
 				$valores['AUDITORIAS'][$i]["AUDITORES"][$j]['TOTAL_AUDITOR_SIN_IVA'] +=$a;
 			}	
 			
@@ -138,7 +138,7 @@ FROM
 			if($catalogo[$k]['ID'] != 4 && $catalogo[$k]['ID'] != 6 &&  $catalogo[$k]['ID'] != 10 && $catalogo[$k]['ID'] != 11 && $catalogo[$k]['ID'] != 12 && $catalogo[$k]['ID'] != 8){
 				$valores['AUDITORIAS'][$i]["EXP_TECNICOS"][$j]['TOTAL_AUDITOR'] +=$a;
 			}
-			if($catalogo[$k]['ID'] != 3 && $catalogo[$k]['ID'] != 5 && $catalogo[$k]['ID'] != 1 && $catalogo[$k]['ID'] != 2 && $catalogo[$k]['ID'] != 7 && $catalogo[$k]['ID'] != 8){
+			if($catalogo[$k]['ID'] != 3 && $catalogo[$k]['ID'] != 5 && $catalogo[$k]['ID'] != 1 && $catalogo[$k]['ID'] != 2 && $catalogo[$k]['ID'] != 7 && $catalogo[$k]['ID'] != 8 && $catalogo[$k]['ID'] != 13 && $catalogo[$k]['ID'] != 14){
 				$valores['AUDITORIAS'][$i]["EXP_TECNICOS"][$j]['TOTAL_AUDITOR_SIN_IVA'] +=$a;
 			}	
 			
