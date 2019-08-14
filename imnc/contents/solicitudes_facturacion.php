@@ -26,6 +26,16 @@
                     <div class="clearfix"></div>
                 </div>
             </div>
+
+            <div class="form-group">
+			<label class="control-label col-sm-2" for="filtroEstadoc">Seleccione estado: <span class="required"></span></label>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <select class="form-control" id="filtroEstadoc" ng-model="filtroEstado" 
+                      ng-options="Estado.ID as Estado.ESTATUS for Estado in listaEstatus" ng-change="cambioFiltroEstado()">
+                    </select><br>                    
+                </div>
+			</div>
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="x_panel">
@@ -37,7 +47,7 @@
                                 <thead>
                                     <tr class="headings">
                                     <th class="column-title" width="5%">ID</th>
-                                    <th class="column-title" width="30%">Cliente</th>
+                                    <th class="column-title" width="30%">Informaci&oacuten</th>
                                     <th class="column-title" width="10%">Estatus</th>
                                     <th class="column-title" width="30%">Detalles</th>
                                     <th class="column-title" width="20%">Monto</th>
@@ -48,7 +58,11 @@
                                 <tbody >
                                     <tr ng-repeat="solicitud in listaSolicitudes" class="ng-scope  even pointer">
                                         <td>{{solicitud.ID}}</td>
-                                        <td>{{solicitud.CLIENTE}}</td>
+                                        <td>Cliente:<strong>{{solicitud.CLIENTE}}</strong><br>
+                                            Ciclo: <strong>{{solicitud.CICLO}}</strong><br>
+                                            Auditor&iacutea: <strong>{{solicitud.AUDITORIA}}</strong><br>
+                                            Tipo de servicio: <strong>{{solicitud.TIPO_SERVICIO}}</strong><br>
+                                        </td>
                                         <td>{{solicitud.ESTATUS}}</td>   
                                         <td>
                                             Forma de pago: <strong>{{solicitud.FORMA_PAGO || 'Por definir'}}</strong><br>

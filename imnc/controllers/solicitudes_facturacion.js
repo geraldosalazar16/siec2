@@ -7,7 +7,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
     $scope.accion = '';
     $scope.formData = {};
     $scope.idSolicitud;
-
+    $scope.filtroEstado;
     $scope.listaSolicitudes = [];
     $scope.listaServicios = [];
     $scope.listaEstatus = [];
@@ -527,17 +527,28 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
         }
     }
 
-    // Listar todas las solicitudes
-    function listarSolicitudes() {
+    //devolver sólo las que tengan estado el seleccionado por el filtro y informar si está vacio
+    $scope.cambioFiltroEstado=function(){       
+        listarSolicitudes($scope.filtroEstado, true);                    
+    }
+
+    // Listar todas las solicitudes, opcionalmente especificar estado y si desea notificar no tener datos
+    function listarSolicitudes(queEstado=0,notificaSiVacio=false) {      
         $http.get(`${global_apiserver}/facturacion_solicitudes/getAll/`)
         .then(response => {
             if (response.data.resultado === 'error') {
                 notify('Error', response.data.mensaje, 'error')
             } else {
+                if (queEstado!=0) //si se especificó un estado, devolver sólo ese
+                   response.data = response.data.filter(function(solicitud){
+                                         return (solicitud.ID_ESTATUS==$scope.filtroEstado);
+                                      });
                 $scope.listaSolicitudes = response.data;
+                if ($scope.listaSolicitudes.length==0 && notificaSiVacio)
+                    notify('Atenci&oacuten!!!', "No existen solicitudes en ese estado", 'info'); 
             }
         })
-        .catch(error => notify('Error', error.message, 'error'))
+        .catch(error => notify('Error', error.message, 'error'))        
     }
 
     // Listar todas las servicios (SCE)
@@ -635,7 +646,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
     // Entry point
     inicializacion();
     listarServicios();
-    listarEstatus()
+    listarEstatus();
     listarFormasPago();
     listarMetodosPago();
     listarUsosFactura();
