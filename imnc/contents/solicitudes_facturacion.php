@@ -26,6 +26,16 @@
                     <div class="clearfix"></div>
                 </div>
             </div>
+
+            <div class="form-group">
+			<label class="control-label col-sm-2" for="filtroEstadoc">Seleccione estado: <span class="required"></span></label>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <select class="form-control" id="filtroEstadoc" ng-model="filtroEstado" 
+                      ng-options="Estado.ID as Estado.ESTATUS for Estado in listaEstatus" ng-change="cambioFiltroEstado()">
+                    </select><br>                    
+                </div>
+			</div>
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="x_panel">
