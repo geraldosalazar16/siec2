@@ -13,7 +13,7 @@ app.controller('certi_auditores_controller',['$scope','$http' ,function($scope,$
 	$scope.selectSector = null;
 	$scope.columns = [];
 	$scope.data = [];
-	
+	$scope.formDataNuevoEvento = {};
 	$scope.gridOptions = {};
 /*	 $scope.gridOptions = {
     enableSorting: true,
@@ -363,7 +363,18 @@ $scope.cargaDatosFiltrados = function() {
 // ***** 	  Funcion para cargar modal de agregar eventos                 	*****
 // ==============================================================================
 $scope.agregar_evento =  function(){
+	$scope.clear_modal_eventos();
 	$("#modalAgregarEvento").modal("show");
+}
+// ===============================================================================
+// *****	Funcion para limpiar las variables del modal de agregar eventos	 *****
+// ===============================================================================
+$scope.clear_modal_eventos =  function(){
+	
+	$scope.formDataNuevoEvento	=	{};
+	$scope.formDataNuevoEvento.AUDITORES = [];
+	
+	
 }
 /*
 		Funcion para Agregar el Evento

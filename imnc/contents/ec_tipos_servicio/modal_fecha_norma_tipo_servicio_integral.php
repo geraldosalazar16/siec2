@@ -10,7 +10,7 @@
 		<form name="exampleFormGrupoAuditorFechaNorma" >
 			<div class="form-group">
 				<label>Norma a auditar<span class="required">*</span></label>
-				<select ng-model="formDataGrupoAuditorFechaNorma.norma" ng-options="norma.ID_NORMA as norma.ID_NORMA for norma in DatosServicio.NORMAS"  class="form-control" ng-change='' required ng-class="{ error: exampleFormGrupoAuditor.cmbRol.$error.required && !exampleFormGrupoAuditor.$pristine}"  ></select>	
+				<select ng-model="formDataGrupoAuditorFechaNorma.norma" ng-options="norma.ID_NORMA as norma.ID_NORMA for norma in AUDITOR_NORMAS"  class="form-control" ng-change='' required ng-class="{ error: exampleFormGrupoAuditor.cmbRol.$error.required && !exampleFormGrupoAuditor.$pristine}"  ></select>	
 			</div>
 	
 			<br><br><br>

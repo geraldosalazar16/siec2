@@ -22,7 +22,7 @@ function valida_error_medoo_and_die(){
 } 
 
 
-$valores = $database->select('I_CAT_AUDITORIAS_COSTOS',['ID','NOMBRE'],['ORDER'=>'PRIORIDAD']);
+$valores = $database->select('I_CAT_AUDITORIAS_COSTOS',['ID','NOMBRE'],['PRIORIDAD[>]'=>0,'ORDER'=>'PRIORIDAD']);
 valida_error_medoo_and_die();
 
 

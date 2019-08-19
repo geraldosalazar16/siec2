@@ -55,7 +55,7 @@ valida_parametro_and_die($ID_USUARIO, "Falta el ID_TIPO_AUDITORIA");
 /*******************************************************************/
 $INPUT	=	json_decode($objeto->INPUT,true);
 // AQUI BUSCO LOS GASTOS DEFINIDOS POR CATALOGO
-$catalogo = $database->select('I_CAT_AUDITORIAS_COSTOS',['ID','NOMBRE'],['ORDER'=>'PRIORIDAD']);
+$catalogo = $database->select('I_CAT_AUDITORIAS_COSTOS',['ID','NOMBRE'],['PRIORIDAD[>]'=>0,'ORDER'=>'PRIORIDAD']);
 valida_error_medoo_and_die();
 $nombre_tabla = "I_AUDITORIAS_COSTOS";
 for($i=0;$i<count($catalogo);$i++){

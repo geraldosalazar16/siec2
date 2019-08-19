@@ -25,7 +25,15 @@ $id = $_REQUEST["id"];
 
 //Lo primero es buscar el id tipo de servicio que sera un dato importante para trabajar
 	$tipo_servicio = $database->get("SERVICIO_CLIENTE_ETAPA", "ID_TIPO_SERVICIO", ["ID"=>$id]);
-											
+	
+// AQUI BUSCO LAS NORMAS DEL SERVICIO SI ES INTEGRAL
+if($tipo_servicio == 20){
+	$normas_sce = array();
+	$normas_sce = $database->select("SCE_NORMAS", "ID_NORMA", ["ID_SCE"=>$id]);
+	valida_error_medoo_and_die();
+	$str_normas = implode("','",$normas_sce);
+   
+}											
 $valores = $database->query("SELECT 
 `isga`.`ID_SERVICIO_CLIENTE_ETAPA`,
 `isga`.`DURACION_DIAS`,
@@ -79,7 +87,7 @@ for ($i=0; $i < count($valores) ; $i++) {
 	INNER JOIN `I_SG_AUDITORIAS` ON `I_SG_AUDITORIAS`.`ID_SERVICIO_CLIENTE_ETAPA`=`I_SG_AUDITORIA_GRUPOS`.`ID_SERVICIO_CLIENTE_ETAPA` AND `I_SG_AUDITORIAS`.`TIPO_AUDITORIA` = `I_SG_AUDITORIA_GRUPOS`.`TIPO_AUDITORIA` AND `I_SG_AUDITORIAS`.`CICLO`=`I_SG_AUDITORIA_GRUPOS`.`CICLO`
 	WHERE `I_SG_AUDITORIA_GRUPOS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id. " AND `I_SG_AUDITORIA_GRUPOS`.`TIPO_AUDITORIA`=".$valores[$i]["TIPO_AUDITORIA"]." AND `I_SG_AUDITORIA_GRUPOS`.`CICLO`=".$valores[$i]["CICLO"])->fetchAll(PDO::FETCH_ASSOC);
 	valida_error_medoo_and_die();
-
+	
 	for($j=0;$j<$valores[$i]["AUDITORES_ASOCIADOS"];$j++){
 		
 		$valores[$i]["AUDITORES_FECHAS"][$valores[$i]["AUDITORES"][$j]["ID_PERSONAL_TECNICO_CALIF"]] = $database->query("SELECT `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID`,`I_SG_AUDITORIA_GRUPO_FECHAS`.`FECHA`,`I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_NORMA` FROM `I_SG_AUDITORIA_GRUPO_FECHAS` WHERE `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_SERVICIO_CLIENTE_ETAPA`= ".$id. " AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`TIPO_AUDITORIA`=".$valores[$i]["TIPO_AUDITORIA"]." AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`CICLO`=".$valores[$i]["CICLO"]." AND `I_SG_AUDITORIA_GRUPO_FECHAS`.`ID_PERSONAL_TECNICO_CALIF`=".$valores[$i]["AUDITORES"][$j]["ID_PERSONAL_TECNICO_CALIF"])->fetchAll(PDO::FETCH_ASSOC);
@@ -93,6 +101,13 @@ for ($i=0; $i < count($valores) ; $i++) {
 												WHERE PTC.`ID_TIPO_SERVICIO` IN (1,2,12) AND PT.`ID` =".$id_pt." GROUP BY `ID_PERSONAL_TECNICO`")->fetchAll();
 			valida_error_medoo_and_die();
 			$valores[$i]["AUDITORES"][$j]["REGISTRO"] = $otras_califs[0]['REGISTRO'];
+			//A PARTIR DE AQUI BUSCO LAS NORMAS EN QUE ESTA CALIFICADO EL AUDITOR
+			$sql_cons = "SELECT DISTINCT CN.ID_NORMA 
+																			FROM PERSONAL_TECNICO_CALIFICACIONES AS PTC
+																			INNER JOIN CALIFICACIONES_NORMAS AS CN ON PTC.ID = CN.ID_CALIFICACION
+																			WHERE CN.ID_NORMA IN('".$str_normas."') AND PTC.ID_PERSONAL_TECNICO =".$id_pt;
+			$valores[$i]["AUDITORES"][$j]["AUDITORES_NORMAS"] =$database->query($sql_cons)->fetchAll(PDO::FETCH_ASSOC);
+			valida_error_medoo_and_die();
 		}
 		
 	}

@@ -38,7 +38,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_FILES["fileToUpload"]["type"]
 	$nombre_seccion=$_POST['NombreSeccion'];
 	$target_dir = "../../arch_expediente/".$referencia[1].$referencia[2]."/".$nombre_ciclo."/".$nombre_etapa."/".$nombre_seccion."/";
 	// TODO Sustituir por variable global
-	$ubicacion_documento =  "http://apinube.com/imnc/siec2.0/api.imnc/imnc/arch_expediente/".$referencia[1].$referencia[2]."/".$nombre_ciclo."/".$nombre_etapa."/".$nombre_seccion."/";
+	//$ubicacion_documento =  "http://apinube.com/imnc/siec2.0/api.imnc/imnc/arch_expediente/".$referencia[1].$referencia[2]."/".$nombre_ciclo."/".$nombre_etapa."/".$nombre_seccion."/";
+	$ubicacion_documento =  $global_apiserver."/arch_expediente/".$referencia[1].$referencia[2]."/".$nombre_ciclo."/".$nombre_etapa."/".$nombre_seccion."/";
 	$carpeta=$target_dir;
 	 
 	$uploadOk = 1;

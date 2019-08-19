@@ -516,7 +516,7 @@
 																		
 																		</td>
 																		<td>
-																			<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoriaGrupo(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO,w.ID_PERSONAL_TECNICO_CALIF)" >Agregar Fechas</button>
+																			<button class="btn btn-primary btn-xs btn-imnc" ng-click="agregar_editar_fechasAuditoriaGrupo(x.ID_SERVICIO_CLIENTE_ETAPA,x.TIPO_AUDITORIA,x.CICLO,w.ID_PERSONAL_TECNICO_CALIF,w.AUDITORES_NORMAS)" >Agregar Fechas</button>
 																		</td>
 																	</tr>
 																</table>
