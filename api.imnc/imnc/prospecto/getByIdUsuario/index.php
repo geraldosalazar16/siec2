@@ -32,7 +32,7 @@ $respuesta=array();
 
 $ID_USUARIO = $_REQUEST["id"];
 $ids = $_REQUEST["ids"];
-
+/*
 //Determinar el perfil del usuario
 $QUERY = "SELECT PERFILES.ID FROM PERFIL_MODULO_USUARIO
 INNER JOIN USUARIOS ON USUARIOS.ID = PERFIL_MODULO_USUARIO.ID_USUARIO
@@ -51,7 +51,15 @@ if($valor_perfil == 1 || $valor_perfil == 3 || $valor_perfil == 9)
 if($ids)
 {
     $where.= ($where?" AND ":" WHERE ")." P.ID IN (".$ids.")";
+}*/
+//-----------------------------------------------------------------------------------------
+//ESTO LO AGREGUE PARA RESOLVER LA TAREA Y COMENTE LA FUNCIONALIDAD DE OBTENER LOS PROSPECTOS SEGUN EL USUARIO MOMENTANEAMENTE.
+if($ids)
+{
+    $where.= " WHERE P.ID IN (".$ids.")";
 }
+//
+//-----------------------------------------------------------------------------------------
 $consulta = "SELECT
     P.ID AS ID,
     ID_CLIENTE,
@@ -78,7 +86,19 @@ LEFT JOIN PROSPECTO_PORCENTAJE p_porcentaje ON
 	.$where;
 $tareas = $database->query($consulta)->fetchAll();
 valida_error_medoo_and_die();
-
+//-----------------------------------------------------------------------------------------
+for($i=0;$i<count($tareas);$i++){
+	$sql1 = "SELECT * FROM PROSPECTO_PRODUCTO WHERE ID_PROSPECTO = ".$tareas[$i]['ID'];
+	$tt = $database->query($sql1)->fetchAll();
+	if($tt){
+		$tareas[$i]['PRODUCTOS'] = $tt;
+	}
+	else{
+		$tareas[$i]['PRODUCTOS'] = "No tiene Productos";
+	}
+	
+}
+//-----------------------------------------------------------------------------------------
 print_r(json_encode($tareas));
 
 

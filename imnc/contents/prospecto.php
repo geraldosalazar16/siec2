@@ -41,16 +41,40 @@
               <select id="cmbEstatus" 
               ng-model="filtroEstatus" 
               class="form-control col-md-7 col-xs-12"
-              ng-change="cambioFiltroStatus()" 
+              ng-change="cambioFiltro()" 
               ng-options="estatus.id_estatus_seguimiento as estatus.estatus_seguimiento for estatus in Estatus_seguimiento"> 
                 <option value="elige" ng-selected="true" disabled>Seleccione un estaus</option>
+              </select>	
+            </div>
+          </div>
+		  <div class="row">
+            <div class="col-sm-12">	
+              <label class="control-label col-md-12 col-sm-12 col-xs-12">Filtrar por Servicios</label>
+              <select id="cmbServicios" 
+              ng-model="filtroServicios" 
+              class="form-control col-md-7 col-xs-12"
+              ng-change="cambioFiltro()" 
+              ng-options="servicio.ID as servicio.NOMBRE for servicio in Servicios"> 
+                <option value="elige" ng-selected="true" disabled>Seleccione un servicio</option>
+              </select>	
+            </div>
+          </div>
+		  <div class="row">
+            <div class="col-sm-12">	
+              <label class="control-label col-md-12 col-sm-12 col-xs-12">Filtrar por Tipos de Servicio</label>
+              <select id="cmbTiposServicio" 
+              ng-model="filtroTiposServicio" 
+              class="form-control col-md-7 col-xs-12"
+              ng-change="cambioFiltro()" 
+              ng-options="tiposervicio.ID as tiposervicio.NOMBRE for tiposervicio in TiposServicios"> 
+                <option value="elige" ng-selected="true" disabled>Seleccione un servicio</option>
               </select>	
             </div>
           </div>
           <div class="row">
             <div class="col-sm-12">
               <p>
-                Cantidad de prospectos asignados al comercial: {{cantidad_prospectos}}
+                Cantidad de prospectos<!-- asignados al comercial-->: {{cantidad_prospectos}}
               </p>
             </div>
           <div class="row">
@@ -204,7 +228,7 @@
                 <span id="usuarioserror" class="text-danger"></span>
               </div>
             </div>
-			-->
+			--> <!--
 			<div class="form-group" ng-show="mostrarUsuarioPrincipal">
               <label class="control-label col-md-4 col-sm-4 col-xs-12">Usuario Principal
               <span class="required">*</span></label>
@@ -224,7 +248,7 @@
                 </select>
                 <span id="usuarioserror" class="text-danger"></span>
               </div>
-            </div>
+            </div> -->
 			<!--
 			<div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12">Departamento

@@ -46,9 +46,9 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 	$TIPO_CONTRATO =$objeto->TIPO_CONTRATO;
 	valida_parametro_and_die1($TIPO_CONTRATO, "Es necesario seleccionar un tipo de contrato");
 	$ID_USUARIO_SECUNDARIO = $objeto->USUARIO_SECUNDARIO;
-	valida_parametro_and_die1($ID_USUARIO_SECUNDARIO, "Es necesario seleccionar un usuario secundario");
+	//valida_parametro_and_die1($ID_USUARIO_SECUNDARIO, "Es necesario seleccionar un usuario secundario");
 	$ID_USUARIO_PRINCIPAL = $objeto->ID_USUARIO;
-	valida_parametro_and_die1($ID_USUARIO_PRINCIPAL, "Es necesario seleccionar un usuario principal");
+	//valida_parametro_and_die1($ID_USUARIO_PRINCIPAL, "Es necesario seleccionar un usuario principal");
     $TIPO_PERSONA = $objeto->TIPO_PERSONA;
       
 	$id = $database->update($nombre_tabla, [ 
@@ -62,8 +62,8 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 		"ID_COMPETENCIA" => $COMPETENCIA,
 		"ID_ESTATUS_SEGUIMIENTO" => $ESTATUS_SEGUIMIENTO,
 		"ID_TIPO_CONTRATO" => $TIPO_CONTRATO,
-		"ID_USUARIO_SECUNDARIO" => $ID_USUARIO_SECUNDARIO,
-		"ID_USUARIO_PRINCIPAL" => $ID_USUARIO_PRINCIPAL,
+		//"ID_USUARIO_SECUNDARIO" => $ID_USUARIO_SECUNDARIO,
+	//	"ID_USUARIO_PRINCIPAL" => $ID_USUARIO_PRINCIPAL,
 		"TIPO_PERSONA" => $TIPO_PERSONA,
 	], ["ID"=>$ID]);
 	

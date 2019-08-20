@@ -70,7 +70,15 @@ function valida_error_medoo_and_die(){
     valida_parametro_and_die($TIPO_CONTRATO, "Es necesario seleccionar un tipo de contrato");
 	$ID_USUARIO_PRINCIPAL = $objeto->ID_USUARIO;
 	$ID_USUARIO_SECUNDARIO = $objeto->ID_USUARIO_SECUNDARIO;
-	valida_parametro_and_die($ID_USUARIO_SECUNDARIO, "Es necesario seleccionar u usuario secundario");
+	//valida_parametro_and_die($ID_USUARIO_SECUNDARIO, "Es necesario seleccionar u usuario secundario");
+	if(!$ID_USUARIO_PRINCIPAL)
+    {
+        $ID_USUARIO_PRINCIPAL = 0;
+    }
+	if(!$ID_USUARIO_SECUNDARIO)
+    {
+        $ID_USUARIO_SECUNDARIO = 0;
+    }
 	$TIPO_PERSONA = $objeto->TIPO_PERSONA;
     $DESDE_CLIENTE = $objeto->DESDE_CLIENTE;
 

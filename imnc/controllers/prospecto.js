@@ -231,7 +231,8 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 	}
 	$scope.cambioFiltroStatus = function(){
 		var estatus = $scope.filtroEstatus;
-		if($scope.prospectos_total){
+		//$scope.prospectos_total = $scope.prospecto;
+	$scope.prospectos_total = $scope.prospecto;$scope.prospectos_total = $scope.prospecto;	if($scope.prospectos_total){
 			if($scope.prospectos_total.length == 0){
 				$scope.prospectos_total = $scope.prospecto;
 			}						
@@ -890,6 +891,7 @@ $scope.limpiaCamposDomicilio = function(){
 				});
 			}
 		}
+		$("#modalInsertarActualizar").modal("hide");
 		$scope.actualizaTabla();
 	};
 // ================================================================================
@@ -1008,7 +1010,123 @@ $scope.limpiaCamposDomicilio = function(){
 		}
 		$scope.$apply();
 	});
-
+	 // ==================================================================
+    // ***** 	Función para traer las claves de servicio.			*****
+    // ==================================================================
+    function cargarServicios() {
+        $http.get(global_apiserver + "/servicios/getAll/")
+            .then(function(response) {
+                $scope.Servicios = response.data;
+            });
+    }
+	// ==========================================================
+    // ***** 	Funcion para traer los tipos de Servicios 	*****
+    // ==========================================================
+    function cargartipoServicio() {
+        $http.get(global_apiserver + "/tipos_servicio/getAll/")
+            .then(function(response) {
+                $scope.TiposServicios = response.data;
+            });
+    }
+	$scope.cambioFiltro = function(){
+		var servicio = $scope.filtroServicios;
+		var tipo_servicio = $scope.filtroTiposServicio;
+		var estatus = $scope.filtroEstatus;
+		
+		if($scope.prospectos_total){
+			if($scope.prospectos_total.length == 0){
+				$scope.prospectos_total = $scope.prospecto;
+				
+			}	
+			$scope.prospecto = [];			
+		} else {
+			$scope.prospectos_total = $scope.prospecto;
+			$scope.prospecto = [];
+		}
+		//$scope.prospectos_total = $scope.prospecto;
+		
+		if(estatus){
+			
+			$scope.prospectos_total.forEach(prospecto => {
+				if(prospecto.ID_ESTATUS_SEGUIMIENTO == estatus){				
+					$scope.prospecto.push(prospecto);
+				}
+			});
+		}		
+		//$scope.prospecto = [];
+		if(estatus){
+			$scope.prospectos_total1 = $scope.prospecto;
+			$scope.prospecto = [];
+		}
+		else{
+			if($scope.prospectos_total1){
+				if($scope.prospectos_total1.length == 0){
+					$scope.prospectos_total1 = $scope.prospectos_total;
+					
+				}	
+				$scope.prospecto = [];				
+			} else {
+				$scope.prospectos_total1 = $scope.prospectos_total;
+				$scope.prospecto = [];
+			}	
+		}
+		
+		if(servicio){
+			$scope.prospectos_total1.forEach(prospecto => {
+				if(prospecto.PRODUCTOS !="No tiene Productos"){
+					prospecto.PRODUCTOS.every(function(producto,index){
+						if(producto.ID_SERVICIO == servicio){
+							$scope.prospecto.push(prospecto);
+							return false;
+						}
+						else{
+							return true;
+						}
+					});
+				
+				}
+		
+			
+			});
+		}
+		if(estatus||servicio){
+			$scope.prospectos_total2 = $scope.prospecto;
+			$scope.prospecto = [];
+		}
+		else{
+			if($scope.prospectos_total2){
+				if($scope.prospectos_total2.length == 0){
+					$scope.prospectos_total2 = $scope.prospectos_total1;
+					
+				}	
+				$scope.prospecto = [];				
+			} else {
+				$scope.prospectos_total2 = $scope.prospectos_total1;
+				$scope.prospecto = [];
+			}	
+		}
+		if(tipo_servicio){
+			$scope.prospectos_total2.forEach(prospecto => {
+				if(prospecto.PRODUCTOS !="No tiene Productos"){
+					prospecto.PRODUCTOS.every(function(producto,index){
+						if(producto.ID_TIPO_SERVICIO == tipo_servicio){
+							$scope.prospecto.push(prospecto);
+							return false;
+						}
+						else{
+							return true;
+						}
+					});
+				
+				}
+		
+			
+			});
+		}
+		$scope.cantidad_prospectos = $scope.prospecto.length;
+	}
+	cargarServicios();
+	cargartipoServicio();
 	$scope.OrigenLista();
 	$scope.CompetenciaLista();
 	$scope.EstatusSeguimientoLista();
