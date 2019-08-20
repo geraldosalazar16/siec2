@@ -6,8 +6,8 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
     $scope.modal_titulo = '';
     $scope.accion = '';
     $scope.formData = {};
-    $scope.idSolicitud;
-    $scope.filtroEstado;
+    $scope.idSolicitud;    
+    $scope.filtroEstados=[];
     $scope.listaSolicitudes = [];
     $scope.listaServicios = [];
     $scope.listaEstatus = [];
@@ -527,25 +527,35 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
         }
     }
 
-    //devolver sólo las que tengan estado el seleccionado por el filtro y informar si está vacio
-    $scope.cambioFiltroEstado=function(){       
-        listarSolicitudes($scope.filtroEstado, true);                    
+    //devolver sólo las que tengan el/los estado(s) seleccionado(s) por el filtro o informar si no existe ninguna
+    $scope.cambioFiltroEstado=function(){        
+        listarSolicitudes($scope.filtroEstados, true);                    
     }
 
     // Listar todas las solicitudes, opcionalmente especificar estado y si desea notificar no tener datos
-    function listarSolicitudes(queEstado=0,notificaSiVacio=false) {      
+    function listarSolicitudes(queEstado=[],notificaSiVacio=false) {      
         $http.get(`${global_apiserver}/facturacion_solicitudes/getAll/`)
         .then(response => {
             if (response.data.resultado === 'error') {
                 notify('Error', response.data.mensaje, 'error')
-            } else {
-                if (queEstado!=0) //si se especificó un estado, devolver sólo ese
-                   response.data = response.data.filter(function(solicitud){
-                                         return (solicitud.ID_ESTATUS==$scope.filtroEstado);
-                                      });
+            } else {                               
+                if (queEstado.length>0)
+                {
+                    //dejar sólo las que tienen el estado seleccionado
+                    response.data = response.data.filter(function(solicitud){
+                        estBuscar=solicitud.ID_ESTATUS;
+                        esta=queEstado.some(function(valor){
+                            return valor.ID==estBuscar;
+                           
+                        })
+                        return esta;
+                     });
+                }
+                 else
+                    notify('Mostrando todo', "No ha seleccionado ning&uacuten estado en particular", 'info'); 
                 $scope.listaSolicitudes = response.data;
                 if ($scope.listaSolicitudes.length==0 && notificaSiVacio)
-                    notify('Atenci&oacuten!!!', "No existen solicitudes en ese estado", 'info'); 
+                    notify('Atenci&oacuten!!!', "No existen solicitudes en dicho(s) estado(s)", 'info'); 
             }
         })
         .catch(error => notify('Error', error.message, 'error'))        
@@ -570,8 +580,8 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
         .then(response => {
             if (response.data.resultado === 'error') {
                 notify('Error', response.data.mensaje, 'error')
-            } else {
-                $scope.listaEstatus = response.data;
+            } else {                            
+                $scope.listaEstatus = response.data;               
             }
         })
         .catch(error => notify('Error', error.message, 'error'))
