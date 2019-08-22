@@ -761,92 +761,91 @@ $pdf1->writeHTML($html, true, false, true, false, '');
 }
 // add a page (ESTA ES LA TERCERA PAGINA)
 $pdf1->AddPage();
-$pdf1->SetFont('Calibri', 'B', 14);
+$pdf1->SetFont('Calibri', 'B', 16);
 $pdf1->SetTextColor(0,0,0);
 $html = '<h3 > Propuesta económica/Cotización del servicio de certificación de sistemas
 de gestión. </h3>';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri', '', 9);
-$html = '<br><h3 > 1. Impuestos. </h3>';
-$html .= ' Lo referente al I.V.A. o impuestos ya están incluidos en la presente Propuesta económica/Cotización.';
-$html .= '<h3 > 2. Gastos de Servicio. </h3>';
+$html = '<br><b> 1. Impuestos. </b><br>';
+$html .= ' Lo referente al I.V.A. o impuestos ya están incluidos en la presente Propuesta económica/Cotización.<br>';
+$html .= '<br><b> 2. Gastos de Servicio. </b><br>';
 $html .= ' La presente Propuesta económica/Cotización no incluye lo relacionado a gastos de servicio (Transportación, Alimentación y Hospedaje) y tendrán que ser cubiertos por la empresa.<br>
 En caso de que la empresa requiera hacerse cargo de los gastos de servicio para economizar recursos, tendrá que notificar al IMNC al momento de aceptación (firma) de la propuesta.<br>
 En el caso de que la Empresa requiera que el IMNC se haga cargo de los gastos, se cargará un 20% del valor de los mismos por gastos administrativos.<br>
-Cuando el cliente se haga cargo de los gastos, los itinerarios de vuelos deberán ser aprobados por el IMNC antes de ser comprados. Es necesario que como máximo 5 días hábiles antes de la fecha de ejecución del servicio se envíen al IMNC los vuelos, hospedajes y transportación local.';
-$html .= '<h3 > 3. Vigencia de la Propuesta económica/Cotización. </h3>';
-$html .= ' La presente Propuesta económica/Cotización tiene una vigencia de 120 (ciento veinte) días naturales y contaran a partir de la fecha de emisión, pasado este periodo la propuesta se actualizará conforme la política de precios vigente.';
-$html .= '<h3>4. Especificaciones Técnicas.</h3>';
-$html .= 'El número de días auditor de esta Propuesta económica/Cotización, tiene como base las directrices del IAF (Foro Internacional de Acreditación), norma ISO/IEC 17021-1:2015 documentos Mandatorios (MD´s) y Reglamentos complementarios aplicables. La presente propuesta económica ha sido emitida con base a la información que el cliente ha hecho del conocimiento al IMNC, mediante la “Solicitud de servicio de certificación” correspondiente.';
-$html .= '<h3>4.1. Etapa 1 y Etapa 2.</h3>';
-$html .= ' La Auditoría Etapa 1 se realizará en las instalaciones del cliente con el objetivo de confirmar si el tiempo especificado en la presente Propuesta económica/Cotización para conducir la auditoría Etapa 2, es suficiente.  El IMNC tiene la facultad de analizar si requerirá generar una reducción, o un incremento del tiempo de auditoría cotizado inicialmente en la presente oferta. ';
-$html .= '<h3>4.2 Auditoría de Vigilancia.</h3>';
-$html .= ' Los servicios de Auditoría de Vigilancia se especifican en la presente Propuesta económica/Cotización sobre la base que deben realizarse al menos una vez al año, excepto las auditorías de renovación y considerando que la auditoría de primera vigilancia no debe realizarse transcurridos más de 12 meses después de la fecha de toma de decisión de la certificación inicial.';
-$html .= '<h3>4.3 Auditorías de Seguimiento.</h3>';
-$html .= ' Si el IMNC requiere conducir Auditorías de Seguimiento en las instalaciones del cliente, con el objeto de verificar la implementación de las acciones para dar atención a las no conformidades reportadas durante cualquier auditoría sobre la certificación, éstas tendrán un costo de $11,000.00 pesos más I.V.A. por día/auditor más viáticos. Si esta revisión se requiere hacer en instalaciones del IMNC, tendrá un costo de $5,500.00 pesos por esta actividad.';
-$html .= '<h3>4.4 Auditorías con notificación a corto plazo.</h3>';
-$html .= ' El IMNC tiene la facultad de tener que realizar auditorías a sus clientes certificados, bajo la forma de visita notificada a corto plazo, con el fin de investigar quejas, o respuestas a cambios, o como seguimientos de clientes cuya certificación haya sido suspendida. Este tipo de auditorías, no tendrán ningún costo para el cliente.';
+Cuando el cliente se haga cargo de los gastos, los itinerarios de vuelos deberán ser aprobados por el IMNC antes de ser comprados. Es necesario que como máximo 5 días hábiles antes de la fecha de ejecución del servicio se envíen al IMNC los vuelos, hospedajes y transportación local.<br>';
+$html .= '<br><b> 3. Vigencia de la Propuesta económica/Cotización. </b><br>';
+$html .= ' La presente Propuesta económica/Cotización tiene una vigencia de 120 (ciento veinte) días naturales y contaran a partir de la fecha de emisión, pasado este periodo la propuesta se actualizará conforme la política de precios vigente.<br>';
+$html .= '<br><b>4. Especificaciones Técnicas.</b><br>';
+$html .= 'El número de días auditor de esta Propuesta económica/Cotización, tiene como base las directrices del IAF (Foro Internacional de Acreditación), norma ISO/IEC 17021-1:2015 documentos Mandatorios (MD´s) y Reglamentos complementarios aplicables. La presente propuesta económica ha sido emitida con base a la información que el cliente ha hecho del conocimiento al IMNC, mediante la “Solicitud de servicio de certificación” correspondiente.<br>';
+$html .= '<br><b>4.1. Etapa 1 y Etapa 2.</b><br>';
+$html .= ' La Auditoría Etapa 1 se realizará en las instalaciones del cliente con el objetivo de confirmar si el tiempo especificado en la presente Propuesta económica/Cotización para conducir la auditoría Etapa 2, es suficiente.  El IMNC tiene la facultad de analizar si requerirá generar una reducción, o un incremento del tiempo de auditoría cotizado inicialmente en la presente oferta.<br> ';
+$html .= '<br><b>4.2 Auditoría de Vigilancia.</b><br>';
+$html .= ' Los servicios de Auditoría de Vigilancia se especifican en la presente Propuesta económica/Cotización sobre la base que deben realizarse al menos una vez al año, excepto las auditorías de renovación y considerando que la auditoría de primera vigilancia no debe realizarse transcurridos más de 12 meses después de la fecha de toma de decisión de la certificación inicial.<br>';
+$html .= '<br><b>4.3 Auditorías de Seguimiento.</b><br>';
+$html .= ' Si el IMNC requiere conducir Auditorías de Seguimiento en las instalaciones del cliente, con el objeto de verificar la implementación de las acciones para dar atención a las no conformidades reportadas durante cualquier auditoría sobre la certificación, éstas tendrán un costo de $11,000.00 pesos más I.V.A. por día/auditor más viáticos. Si esta revisión se requiere hacer en instalaciones del IMNC, tendrá un costo de $5,500.00 pesos por esta actividad.<br>';
+$html .= '<br><b>4.4 Auditorías con notificación a corto plazo.</b>';
+$html .= ' El IMNC tiene la facultad de tener que realizar auditorías a sus clientes certificados, bajo la forma de visita notificada a corto plazo, con el fin de investigar quejas, o respuestas a cambios, o como seguimientos de clientes cuya certificación haya sido suspendida. Este tipo de auditorías, no tendrán ningún costo para el cliente.<br>';
 $pdf1->writeHTML($html, true, false, true, false, '');
 
 $pdf1->AddPage();
-$html = '<h3>4.5 Certificado.</h3>';
+$html = '<b>4.5 Certificado.</b><br>';
 $html .= ' La Vigencia del Certificado emitido por el IMNC, será de 3 años.  Los certificados emitidos bajo una norma que se encuentre en periodo de transición, quedarán obsoletos a partir de la fecha límite dada a conocer por el IMNC.<br>
-Cuando el cliente solicite su certificado en Placa, la entrega se hará en un plazo no mayor a los 30 días hábiles posteriores a la aprobación del boceto y tendrá un costo de $11,000 pesos por cada placa más gastos de envió. Cuando el cliente solicite duplicado de su certificado en papel tendrá un costo de $700.00 más I.V.A.';
-$html .= '<h3>4.6 Modificaciones al certificado.</h3>';
-$html .= ' Si durante la vigencia de este contrato, surge la necesidad de hacer modificaciones al Certificado (por ejemplo: nombre o razón social de la empresa, dirección, norma, alcance y número de sitios), tendrá un costo de $11,000.00 pesos más I.V.A. ';
-$html .= '<h3>4.7 Cambios en la organización del cliente.</h3>';
+Cuando el cliente solicite su certificado en Placa, la entrega se hará en un plazo no mayor a los 30 días hábiles posteriores a la aprobación del boceto y tendrá un costo de $11,000 pesos por cada placa más gastos de envió. Cuando el cliente solicite duplicado de su certificado en papel tendrá un costo de $700.00 más I.V.A.<br>';
+$html .= '<br><b>4.6 Modificaciones al certificado.</b><br>';
+$html .= ' Si durante la vigencia de este contrato, surge la necesidad de hacer modificaciones al Certificado (por ejemplo: nombre o razón social de la empresa, dirección, norma, alcance y número de sitios), tendrá un costo de $11,000.00 pesos más I.V.A. <br>';
+$html .= '<br><b>4.7 Cambios en la organización del cliente.</b><br>';
 $html .= ' El Cliente se obliga a informar al IMNC dentro de los primeros 15 días posteriores a estos, que puedan afectar la capacidad de su sistema de gestión certificado para continuar cumpliendo los requisitos de la norma utilizada para la certificación (por ejemplo: cambios en la condición legal, comercial o de propiedad); la organización y la gestión (por ejemplo: personal clave como directivos, personal que toma decisiones o personal técnico), cambio de domicilio y lugar de contacto; el alcance de las operaciones, procesos y productos cubiertos por el sistema de gestión certificado. <br>
- En tales casos el IMNC tiene la facultad de determinar si es necesario conducir una auditoría especial, y en su caso emitirá una nueva Propuesta económica/Cotización del servicio para el visto bueno del cliente. ';
-$html .= '<h3>4.8 Renovación</h3>';
+ En tales casos el IMNC tiene la facultad de determinar si es necesario conducir una auditoría especial, y en su caso emitirá una nueva Propuesta económica/Cotización del servicio para el visto bueno del cliente. <br>';
+$html .= '<br><b>4.8 Renovación</b><br>';
 $html .= ' Para renovar el certificado, se tendrá que realizar una auditoría de Renovación, y tendrá que ejecutarse preferentemente con una antelación de 3 meses al vencimiento del certificado.<br>
-En caso de que la renovación sea concluida después de la fecha del vencimiento del certificado, se podrá conservar la fecha de antigüedad del certificado de origen siempre y cuando no transcurra un periodo mayor a 6 meses después de la expiración de la certificación.';
-$html .= '<h3>4.9 Testificación.</h3>';
+En caso de que la renovación sea concluida después de la fecha del vencimiento del certificado, se podrá conservar la fecha de antigüedad del certificado de origen siempre y cuando no transcurra un periodo mayor a 6 meses después de la expiración de la certificación.<br>';
+$html .= '<br><b>4.9 Testificación.</b><br>';
 $html .= ' En una testificación se evalúa al Organismo de Certificación por parte del Organismo de Acreditación ema durante la realización de una auditoría practicada a un cliente. La ema en ningún caso estará evaluando al cliente y esto no afectará su auditoría.<br>
 En caso de que el Organismo de Acreditación (ema) solicite que se haga una testificación durante alguna de sus auditorías, esta se deberá realizar de acuerdo a lo solicitado. En caso de no poder recibir esta auditoría se deberá emitir una justificación, en caso de no ser autorizada por la ema, o por el IMNC, se deberá recibir la auditoría de testificación.<br>
-En caso de no cumplir con lo citado anteriormente, se podría proceder a la CANCELACIÓN DE SU CERTIFICADO con base en lo establecido en el Documento Mandatorio IAF MD 17:2015 en su punto 2.2.2.';
-$html .= '<h3>5</h3>';
-$html .= ' En el caso de que algún elemento de los párrafos anteriores sea incumplido por parte del cliente, el IMNC podrá poner en proceso de Suspensión la certificación; en caso de no atenderse los plazos y actividades marcadas en el plazo de suspensión, se procederá a la Cancelación del Certificado del Cliente.';
-$html .= '<h3>6. Cancelación.</h3>';
+En caso de no cumplir con lo citado anteriormente, se podría proceder a la CANCELACIÓN DE SU CERTIFICADO con base en lo establecido en el Documento Mandatorio IAF MD 17:2015 en su punto 2.2.2.<br>';
+$html .= '<br> <b>5</b> En el caso de que algún elemento de los párrafos anteriores sea incumplido por parte del cliente, el IMNC podrá poner en proceso de Suspensión la certificación; en caso de no atenderse los plazos y actividades marcadas en el plazo de suspensión, se procederá a la Cancelación del Certificado del Cliente.<br>';
+$html .= '<br><b>6. Cancelación.</b><br>';
 $html .= ' La cancelación de esta Propuesta económica/Cotización, podrá ser en cualquier momento por cualquiera de las partes, cuando se presenten los siguientes supuestos:<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.  a.	A solicitud del cliente, mediante un comunicado por escrito y con una antelación de 3 meses en relación a la fecha de inicio de cualquiera de los servicios programados.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b.  b.	Por no pagar las contraprestaciones correspondientes a los anticipos y/o a los servicios ejecutados por el IMNC.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c.  c.	Por incumplimiento de las obligaciones definidas a cargo de cada una de las partes en el presente documento.<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.  A solicitud del cliente, mediante un comunicado por escrito y con una antelación de 3 meses en relación a la fecha de inicio de cualquiera de los servicios programados.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b.  Por no pagar las contraprestaciones correspondientes a los anticipos y/o a los servicios ejecutados por el IMNC.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c.  Por incumplimiento de las obligaciones definidas a cargo de cada una de las partes en el presente documento.<br><br>
 En caso de cancelación después del tiempo establecido en el inciso a, el cliente tendrá que pagar un monto del 70% del servicio a realizar, con la finalidad de cubrir gastos administrativos inherentes al cierre de la certificación. ';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->AddPage();
-$html = '<h3>7. Programación y Logística.</h3>';
+$html = '<b>7. Programación y Logística.</b><br>';
 $html .= ' Para la programación y ejecución de las auditorías, es requisito indispensable que el cliente ingrese al IMNC la Propuesta económica/Cotización firmada.<br><br>
 Las fechas para realizar las auditorías, serán programadas de común acuerdo con al menos 30 días naturales de antelación. En caso de que la organización solicite la reprogramación y/o cancelación de su auditoría ya confirmada, dentro de los 15 días naturales de antelación a la fecha de ejecución del servicio, el IMNC facturará el 25% del importe del servicio correspondiente por gastos administrativos.<br><br>
 En reprogramaciones por parte del cliente dentro de los 15 días naturales de antelación al servicio donde se requiera realizar modificaciones al equipo auditor para cubrir el ejercicio de auditoría, el cliente absorberá los gastos correspondientes. <br><br>
-En caso de ser necesario requerir la participación de un Experto Técnico que soporte al equipo auditor este tendrá un costo de $1500.00 pesos por día de participación.';
-$html .= '<h3>8. Facturación.</h3>';
+En caso de ser necesario requerir la participación de un Experto Técnico que soporte al equipo auditor este tendrá un costo de $1500.00 pesos por día de participación.<br>';
+$html .= '<br><b>8. Facturación.</b><br>';
 $html .= ' El IMNC emitirá un borrador de factura al cliente. Toda re facturación tendrá un costo administrativo del 30% adicional al monto de la factura, toda factura con adeudo mayor a 30 días tendrá un cargo del 10% de interés mensual tomando como referencia el monto total del adeudo de la factura, hasta la fecha de su liquidación, si se rebasan los 45 días su adeudo será turnado al área legal.<br>';
-$html .= '<h3>9. Condiciones de pago.</h3>';
-$html .= ' IMPORTANTE: Los pagos de los servicios serán con depósito bancario o transferencia bancaria a nombre del Instituto Mexicano de Normalización y Certificación, A.C. a cualquiera de las cuentas siguientes: 
-1.  1.	SCOTIABANK cuenta No. 001 006 90669 suc. 28 Sullivan Plaza 1 México, D.F., Para transferencia Inter. Bancaria CUENTA CLABE 044 18000 100690669 8 (tiene que solicitar en IMNC una referencia para pago en caja).
-2.  2.	BANAMEX cuenta No. 096530-8 suc. No. 224 San Rafael. Para transferencia Inter. Bancaria: CUENTA CLABE 002180022409653080.';
-$html .= '<h3>10. Aceptación de la Propuesta económica/Cotización.</h3>';
-$html .= ' Al firmar esta Propuesta económica/Cotización, está generando la aceptación de la Contratación de los servicios y su organización manifiesta que ha leído, comprendido y acepta las Condiciones Generales para la Certificación de Sistemas de Gestión vigentes, que se encuentran disponibles en la página del IMNC:  http://www.imnc.org.mx “Condiciones generales de certificación”.<br>
-Para certificaciones iniciales en caso de aceptar la siguiente propuesta económica/cotización el cliente deberá efectuar el pago del 100% de la etapa 1 y para los servicios de etapa dos, vigilancias y renovaciones se deberá efectuar mínimo el pago por el 50% sobre el monto total. Para cualquier caso se debe considerar el 100% de los viáticos o Gastos adicionales en el momento de la programación de cada auditoría, como mínimo 5 días antes de la ejecución de la auditoría, para tal efecto se deberá enviar por correo electrónico el comprobante de pago (ficha de depósito o transferencia bancaria) a facturacion@imnc.org.mx, el 50% restante se cubrirá a la conclusión del servicio, en caso contrario se procederá conforme a la Condiciones de Certificación vigentes. Para la emisión del dictamen y/o certificado se deberá contar con el comprobante de pago. Lo referido anteriormente se modificará de acuerdo a las condiciones establecidas con el cliente. <br>
+$html .= '<br><b>9. Condiciones de pago.</b><br>';
+$html .= ' IMPORTANTE: Los pagos de los servicios serán con depósito bancario o transferencia bancaria a nombre del Instituto Mexicano de Normalización y Certificación, A.C. a cualquiera de las cuentas siguientes:<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.	SCOTIABANK cuenta No. 001 006 90669 suc. 28 Sullivan Plaza 1 México, D.F., Para transferencia Inter. Bancaria CUENTA CLABE 044 18000 100690669 8 (tiene que solicitar en IMNC una referencia para pago en caja).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.	BANAMEX cuenta No. 096530-8 suc. No. 224 San Rafael. Para transferencia Inter. Bancaria: CUENTA CLABE 002180022409653080.<br>';
+$html .= '<br><b>10. Aceptación de la Propuesta económica/Cotización.</b><br>';
+$html .= ' Al firmar esta Propuesta económica/Cotización, está generando la aceptación de la Contratación de los servicios y su organización manifiesta que ha leído, comprendido y acepta las Condiciones Generales para la Certificación de Sistemas de Gestión vigentes, que se encuentran disponibles en la página del IMNC:  http://www.imnc.org.mx “Condiciones generales de certificación”.<br><br>
+Para certificaciones iniciales en caso de aceptar la siguiente propuesta económica/cotización el cliente deberá efectuar el pago del 100% de la etapa 1 y para los servicios de etapa dos, vigilancias y renovaciones se deberá efectuar mínimo el pago por el 50% sobre el monto total. Para cualquier caso se debe considerar el 100% de los viáticos o Gastos adicionales en el momento de la programación de cada auditoría, como mínimo 5 días antes de la ejecución de la auditoría, para tal efecto se deberá enviar por correo electrónico el comprobante de pago (ficha de depósito o transferencia bancaria) a facturacion@imnc.org.mx, el 50% restante se cubrirá a la conclusión del servicio, en caso contrario se procederá conforme a la Condiciones de Certificación vigentes. Para la emisión del dictamen y/o certificado se deberá contar con el comprobante de pago. Lo referido anteriormente se modificará de acuerdo a las condiciones establecidas con el cliente. <br><br>
 Aceptada la presente Propuesta económica/Cotización se deberá anexar copia simple de los siguientes documentos: acta constitutiva, identificación del representante legal (en caso de que al representante legal no le sean conferidos poderes para firmar contratos en el acta constitutiva, se requiere copia del testimonio notarial correspondiente), inscripción en el R.F.C. y comprobante de domicilio.<br><br>
 Nota1: El envío de los documentos anteriormente citados y el pago anticipado NO aplica para sector público.';
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->AddPage();
-$html = '<h3>11. Usos y políticas de logotipos.</h3>';
-$html .= ' El cliente se deberá apegar al Reglamento para el uso de marcas del IMNC vigente, el cual será proporcionado a la entrega del certificado y que se encuentra publicado en la página web del IMNC www.imnc.org.mx.';
+$html = '<b>11. Usos y políticas de logotipos.</b><br>';
+$html .= ' El cliente se deberá apegar al Reglamento para el uso de marcas del IMNC vigente, el cual será proporcionado a la entrega del certificado y que se encuentra publicado en la página web del IMNC www.imnc.org.mx.<br>';
 
-$html .= '<h3>12. Precios.</h3>';
+$html .= '<br><b>12. Precios.</b><br>';
 $html .= ' Esta Propuesta económica/Cotización está acorde a la política de precios vigentes en el IMNC.<br>
-Esta Propuesta económica/Cotización se expresa en moneda nacional MXN (Pesos mexicanos).';
-$html .= '<h3>13. Confidencialidad.</h3>';
-$html .= ' Toda la información obtenida durante la ejecución de las actividades de la evaluación de la conformidad y certificación del cliente, será manejada estrictamente de manera reservada y confidencial por parte del IMNC y no podrá ser revelada a un tercero o persona particular, sin el previo consentimiento por escrito del cliente. <br>
+Esta Propuesta económica/Cotización se expresa en moneda nacional MXN (Pesos mexicanos).<br>';
+$html .= '<br><b>13. Confidencialidad.</b><br>';
+$html .= ' Toda la información obtenida durante la ejecución de las actividades de la evaluación de la conformidad y certificación del cliente, será manejada estrictamente de manera reservada y confidencial por parte del IMNC y no podrá ser revelada a un tercero o persona particular, sin el previo consentimiento por escrito del cliente. <br><br>
 
-Cuando el IMNC sea requerido por la Ley a divulgar información confidencial, el cliente deberá ser notificado antes de proporcionar dicha información, salvo que esté prohibido por la Ley.<br>
+Cuando el IMNC sea requerido por la Ley a divulgar información confidencial, el cliente deberá ser notificado antes de proporcionar dicha información, salvo que esté prohibido por la Ley.<br><br>
 
-La información relativa al cliente, obtenida de fuentes distintas al cliente (por ejemplo: de una queja o de una autoridad reglamentaria), será tratada como información confidencial. <br> 
+La información relativa al cliente, obtenida de fuentes distintas al cliente (por ejemplo: de una queja o de una autoridad reglamentaria), será tratada como información confidencial. <br> <br>
 
-El IMNC, informará con antelación al cliente, cual es la información que tendría intención de hacer pública.';
-$html .= '<h3>14. Incidentes.</h3>';
+El IMNC, informará con antelación al cliente, cual es la información que tendría intención de hacer pública.<br>';
+$html .= '<br><b>14. Incidentes.</b><br><br>';
 $html .= 'El cliente certificado se obliga a informar al IMNC, sin demora, de la ocurrencia de un incidente grave o el incumplimiento de una regulación que requiera la participación de la autoridad competente<br>
 En tales casos el IMNC tiene la facultad de determinar si es necesario conducir una auditoría especial, y en su caso emitirá una nueva Propuesta económica/Cotización del servicio para el visto bueno del cliente. <br><br>';
 $html .= 'En espera de vernos favorecidos con su preferencia, quedamos a sus órdenes.<br><br><br>';
@@ -881,10 +880,9 @@ $html = <<<EOT
 EOT;
 $pdf1->writeHTML($html, true, false, true, false, '');
 $pdf1->SetFont('Calibri','',9);
-$html = "Debemos y pagaremos incondicionalmente por este Pagaré a la orden del Instituto Mexicano de Normalización y Certificación, A.C. en Ciudad de México en la fecha comprometida y por el monto que ha sido pactado en el contrato / pedido / contrato celebrado entre ambas partes. Valor recibido a entera satisfacción del Instituto Mexicano de Normalización y Certificación, A.C.<br><br>
+$html = "Debemos y pagaremos incondicionalmente por este Pagaré a la orden del Instituto Mexicano de Normalización y Certificación, A.C. en Ciudad de México en la fecha comprometida y por el monto que ha sido pactado en el contrato celebrado entre ambas partes. Valor recibido a entera satisfacción del Instituto Mexicano de Normalización y Certificación, A.C.<br><br>
 
-Este pagaré está sujeto a la condición de que, al no pagarse a su vencimiento será exigible hasta la fecha de su liquidación y causará intereses moratorios al tipo de 15% mensual, pagadero en la Ciudad de México junto con el principal. 
-";
+Este pagaré está sujeto a la condición de que, al no pagarse a su vencimiento será exigible hasta la fecha de su liquidación y causará intereses moratorios al tipo de 15% mensual, pagadero en la Ciudad de México junto con el principal.";
 $pdf1->writeHTML($html, true, false, true, false, '');
 // ANHADO la pagina del Anexo de ser necesaria
 if($NoSitios > 1){
