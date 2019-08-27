@@ -317,18 +317,81 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 		Función para actualizar la tabla con los registros en la BD.
 	*/
 	$scope.actualizaTablaContacto = function(){
-		$.ajax({
-			type:'GET',
-			url:global_apiserver + "/prospecto_contacto/getAll/?id="+$scope.id_prospecto,
-			success: function(data){
-				$scope.$apply(function(){
-					$scope.contactoprospecto = angular.fromJson(data);
-					globla_contactoprospecto = $scope.contactoprospecto;
-				});
-				
+		//hacer lo mismo que en actualizaTablaDomicilio para obtener $scope.id_cliente
+		$http.get( global_apiserver + "/prospecto/getById/?id="+$scope.id_prospecto).then(function( response ) {
+			response=response.data;
+			$scope.nombre_prospecto=response.NOMBRE;
+	        $scope.rfc = response.RFC;
+	        $scope.giro=response.GIRO;
+	        $scope.comentario=response.COMENTARIO;
+	        $scope.origen = response.ORIGEN;
+	        $scope.id_cliente=response.ID_CLIENTE;
+	        $scope.tipoPersona = response.TIPO_PERSONA
+	        if(response.ACTIVO == 1){
+			  $scope.cbhabilitado = true;
+		      }else{
+			  $scope.cbhabilitado = false;
+		      }
+			//$scope.$apply();
+			
+			if ($scope.id_cliente==0)
+			{
+			$.ajax({
+				type:'GET',
+				url:global_apiserver + "/prospecto_contacto/getAll/?id="+$scope.id_prospecto,
+				success: function(data){
+					$scope.$apply(function(){
+						$scope.contactoprospecto = angular.fromJson(data);
+						globla_contactoprospecto = $scope.contactoprospecto;
+					});
+					
+				}
+			});}
+			else //es cliente, obtener datos de CLIENTES_CONTACTOS y NO de PROSPECTO_CONTACTO
+			{ //A partir del id_cliente obtener id de clientes_domicilios y con él obtener contactos desde cientes_contactos
+				// mediante id_cliente_domicilio=id    getByClient 
+				$.ajax({
+					type:'GET',
+					url:global_apiserver + "/clientes_domicilios/getByClient/?id="+$scope.id_cliente,
+					success: function(data){
+						$scope.$apply(function(){							
+							infoclientes=angular.fromJson(data);
+							listaIdDom=infoclientes.map(function(item)
+							{
+								return item.ID
+							});
+							idsDom=listaIdDom.toString();
+							idsDom="("+idsDom+")";//crear un conjunto para consulta sql (in)
+
+							$http.get( global_apiserver + "/clientes_contactos/getFromDomicilios/?idsDom="+idsDom).then(function( response ) {
+								infoContactos=response.data;
+								$scope.contactoprospecto=infoContactos.map(function(item)
+								{
+									return {
+											ID: item.ID,
+											NOMBRE: item.NOMBRE_CONTACTO,
+											CORREO: item.EMAIL,
+											PUESTO: "",
+											TELEFONO: item.TELEFONO_FIJO,
+											CELULAR: item.TELEFONO_MOVIL,
+											NOMBRE_DOMICILIO: item. NOMBRE_DOMICILIO,
+											ACTIVO: 1
+									}
+								}
+							)});														
+						});
+					}
+				})
 			}
-		});
+
+       });
+
+
+		/////////////////////
+		
 	};
+
+	
 	$scope.actualizaPerfil= function(){
 		$.ajax({
 			type:'GET',
@@ -342,7 +405,26 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 			}
 		});
 	};
-	$scope.actualizaTablaDomicilio = function(){
+	$scope.actualizaTablaDomicilio =  function(){
+		
+		$http.get( global_apiserver + "/prospecto/getById/?id="+$scope.id_prospecto).then(function( response ) {
+			response=response.data;
+			$scope.nombre_prospecto=response.NOMBRE;
+	        $scope.rfc = response.RFC;
+	        $scope.giro=response.GIRO;
+	        $scope.comentario=response.COMENTARIO;
+	        $scope.origen = response.ORIGEN;
+	        $scope.id_cliente=response.ID_CLIENTE;
+	        $scope.tipoPersona = response.TIPO_PERSONA
+	        if(response.ACTIVO == 1){
+			  $scope.cbhabilitado = true;
+		      }else{
+			  $scope.cbhabilitado = false;
+		      }
+			//$scope.$apply();
+
+			if ($scope.id_cliente==0)
+		{
 		$.ajax({
 			type:'GET',
 			url:global_apiserver + "/prospecto_domicilio/getAll/?id="+$scope.id_prospecto,
@@ -352,7 +434,43 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 					globla_domicilioprospecto = $scope.domicilioprospecto;
 				});
 			}
-		});
+		})}
+		else //es cliente, obtener datos de CLIENTES_DOMICILIOS y NO de PROSPECTO_DOMICILIO
+		 {
+			$.ajax({
+				type:'GET',
+				url:global_apiserver + "/clientes_domicilios/getAllById/?id="+$scope.id_cliente,
+				success: function(data){
+					$scope.$apply(function(){
+						infoclientes=angular.fromJson(data);
+						//HACER UN MAP
+						$scope.domicilioprospecto=infoclientes.map(function(item)
+						{
+							return {
+									ID: item.ID,
+									NOMBRE: item.NOMBRE_DOMICILIO,
+									PAIS: item.PAIS,
+						 			ESTADO: item.ENTIDAD_FEDERATIVA,
+						 			CODIGO_POSTAL: item.CP,
+						 			CALLE: item.CALLE,
+						 			COLONIA: item.COLONIA_BARRIO,
+						 			NUMERO_EXTERIOR: item.NUMERO_EXTERIOR,
+						 			NUMERO_INTERIOR: item.NUMERO_INTERIOR,
+									MUNICIPIO: item.DELEGACION_MUNICIPIO,
+									NUMERO_INTERIOR: item.NUMERO_INTERIOR,
+									FISCAL: item.ES_FISCAL=="no"?0:1,
+									CENTRAL: 1//este no tiene equivalente en prospecto, lo fijé en 1															 			
+					    }});
+						globla_domicilioprospecto = $scope.domicilioprospecto;
+					});
+				}
+			})
+		 }
+
+       });
+
+
+		
 	};
 	/*
 	$scope.actualizarCotizacion = function(){
@@ -1108,69 +1226,165 @@ $scope.eliminar = function(id){
 		$("#modalInsertarActualizarDomicilio").modal("show");
 	};
 	
-	$scope.detallesContacto=function(id_contacto){
+	$scope.detallesContacto=function(id_contacto){		
+		if ($scope.id_cliente==0) //No es cliente, sólo es prospecto: obtener info de PROSPECTO_CONTACTO
+		{
+				$("#modalTitulo").html("Detalles de Prospecto")
+				$.getJSON(global_apiserver+"/prospecto_contacto/getById/?id="+id_contacto,function(response){
+				
+					$scope.id_contacto=response.ID;
+					$scope.nombre_contacto=response.NOMBRE;
+					$scope.nombre_domicilioContacto = response.NOMBRE_DOMICILIO;
+					$scope.domicilioContacto = response.ID_PROSPECTO_DOMICILIO;
+					$scope.correo=response.CORREO;
+					$scope.telefono=response.TELEFONO;
+					$scope.celular=response.CELULAR;
+					$scope.puesto=response.PUESTO;
+					$scope.fecha_creacion_contacto=response.FECHA_CREACION;
+					$scope.fecha_modificacion_contacto=response.FECHA_MODIFICACION;
+					$scope.id_usuario_creacion_contacto=response.NOMBRE_USUARIO_CREAR;
+					$scope.id_usuario_modificacion_contacto=response.NOMBRE_USUARIO_MOD;
+					$scope.activo_contacto=response.ACTIVO;
+					$scope.datos_adicionales = response.DATOS_ADICIONALES;
+					if($scope.activo_contacto==1){
+					$scope.contactohabilitado=true;
+					}else{
+					$scope.contactohabilitado=false;
+					}
 
-		$("#modalTitulo").html("Detalles de Prospecto")
-	    $.getJSON(global_apiserver+"/prospecto_contacto/getById/?id="+id_contacto,function(response){
-		
-			$scope.id_contacto=response.ID;
-	        $scope.nombre_contacto=response.NOMBRE;
-	        $scope.nombre_domicilioContacto = response.NOMBRE_DOMICILIO;
-	        $scope.domicilioContacto = response.ID_PROSPECTO_DOMICILIO;
-	        $scope.correo=response.CORREO;
-	        $scope.telefono=response.TELEFONO;
-	        $scope.celular=response.CELULAR;
-            $scope.puesto=response.PUESTO;
-	        $scope.fecha_creacion_contacto=response.FECHA_CREACION;
-	        $scope.fecha_modificacion_contacto=response.FECHA_MODIFICACION;
-	        $scope.id_usuario_creacion_contacto=response.NOMBRE_USUARIO_CREAR;
-	        $scope.id_usuario_modificacion_contacto=response.NOMBRE_USUARIO_MOD;
-	        $scope.activo_contacto=response.ACTIVO;
-	        $scope.datos_adicionales = response.DATOS_ADICIONALES;
-	        if($scope.activo_contacto==1){
-               $scope.contactohabilitado=true;
-	        }else{
-               $scope.contactohabilitado=false;
-	        }
+					$scope.$apply();
+			});
+		}
+		 else
+		 {
+			$("#modalTitulo").html("Detalles de Prospecto")
+			$.getJSON(global_apiserver+"/clientes_contactos/getByIdDetalles/?id="+id_contacto,function(response){
+			
+				$scope.id_contacto=response.ID;
+				$scope.nombre_contacto=response.NOMBRE;
+				$scope.nombre_domicilioContacto = response.NOMBRE_DOMICILIO;
+				$scope.domicilioContacto = response.ID_PROSPECTO_DOMICILIO;
+				$scope.correo=response.CORREO;
+				$scope.telefono=response.TELEFONO;
+				$scope.celular=response.CELULAR;
+				$scope.puesto=response.PUESTO;
+				fech=response.FECHA_CREACION;
+				if (fech)
+				{
+					fech=fech.substr(6,2)+'-'+fech.substr(4,2)+'-'+fech.substr(0,4);
+				}
+				 else 
+				   fech="Sin especificar";
+				$scope.fecha_creacion_contacto=fech;
+				fech=response.FECHA_MODIFICACION;
+				if (fech)
+				{
+					fech=fech.substr(6,2)+'-'+fech.substr(4,2)+'-'+fech.substr(0,4);
+				}
+				 else 
+				   fech="Sin especificar";
+				$scope.fecha_modificacion_contacto=fech;
+				$scope.id_usuario_creacion_contacto=response.NOMBRE_USUARIO_CREAR;
+				$scope.id_usuario_modificacion_contacto=response.NOMBRE_USUARIO_MOD;
+				$scope.activo_contacto=response.ACTIVO;
+				$scope.datos_adicionales = response.DATOS_ADICIONALES;
+				if($scope.activo_contacto==1){
+				$scope.contactohabilitado=true;
+				}else{
+				$scope.contactohabilitado=false;
+				}
 
-			$scope.$apply();
-	});
+				$scope.$apply();
+		});
+	}
+
 	    $("#modalDetallesContacto").modal("show");
 	};
 	$scope.detallesDomicilio=function(id_domicilio){
-
-		$("#modalTitulo2").html("Detalles de Domicilio");
-	    $.getJSON(global_apiserver+"/prospecto_domicilio/getById/?id="+id_domicilio,function(response){
-		
-			$scope.id_domicilio=response.ID;
-	        $scope.id_prospecto=response.ID_PROSPECTO;
-            $scope.nombre_domicilio=response.NOMBRE;
-            $scope.pais=response.PAIS;
-	        $scope.estado=response.ESTADO;
-	        $scope.municipio=response.MUNICIPIO;
-            $scope.colonia=response.COLONIA;
-            $scope.codigo_postal=response.CODIGO_POSTAL;
-            $scope.calle=response.CALLE;
-            $scope.numero_interior=response.NUMERO_INTERIOR;
-            $scope.numero_exterior=response.NUMERO_EXTERIOR;
-            $scope.fiscal=response.FISCAL;
-            $scope.activo_domicilio=response.CENTRAL;
-	        $scope.fecha_creacion_domicilio=response.FECHA_CREACION;
-	        $scope.fecha_modificacion_domicilio=response.FECHA_MODIFICACION;
-	        $scope.id_usuario_creacion_domicilio=response.NOMBRE_USUARIO_CREAR;
-	        $scope.id_usuario_modificacion_domicilio=response.NOMBRE_USUARIO_MOD;
-	        if($scope.fiscal==1){
-               $scope.fiscalhabilitado=true;
-	        }else{
-               $scope.fiscalhabilitado=false;
-	        }
-	        if($scope.activo_domicilio==1){
-               $scope.domiciliohabilitado=true;
-	        }else{
-               $scope.domiciliohabilitado=false;
-	        }
-			$scope.$apply()
-	});
+		if ($scope.id_cliente==0) //No es cliente, sólo es prospecto: obtener info de PROSPECTO_DOMICILIO
+		{
+			$("#modalTitulo2").html("Detalles de Domicilio");
+			$.getJSON(global_apiserver+"/prospecto_domicilio/getById/?id="+id_domicilio,function(response){
+			
+				$scope.id_domicilio=response.ID;
+				$scope.id_prospecto=response.ID_PROSPECTO;
+				$scope.nombre_domicilio=response.NOMBRE;
+				$scope.pais=response.PAIS;
+				$scope.estado=response.ESTADO;
+				$scope.municipio=response.MUNICIPIO;
+				$scope.colonia=response.COLONIA;
+				$scope.codigo_postal=response.CODIGO_POSTAL;
+				$scope.calle=response.CALLE;
+				$scope.numero_interior=response.NUMERO_INTERIOR;
+				$scope.numero_exterior=response.NUMERO_EXTERIOR;
+				$scope.fiscal=response.FISCAL;
+				$scope.activo_domicilio=response.CENTRAL;
+				$scope.fecha_creacion_domicilio=response.FECHA_CREACION;
+				$scope.fecha_modificacion_domicilio=response.FECHA_MODIFICACION;
+				$scope.id_usuario_creacion_domicilio=response.NOMBRE_USUARIO_CREAR;
+				$scope.id_usuario_modificacion_domicilio=response.NOMBRE_USUARIO_MOD;
+				if($scope.fiscal==1){
+				$scope.fiscalhabilitado=true;
+				}else{
+				$scope.fiscalhabilitado=false;
+				}
+				if($scope.activo_domicilio==1){
+				$scope.domiciliohabilitado=true;
+				}else{
+				$scope.domiciliohabilitado=false;
+				}
+				$scope.$apply()
+			});
+		}
+		else
+		 {
+			$("#modalTitulo2").html("Detalles de Domicilio");
+			$.getJSON(global_apiserver+"/clientes_domicilios/getByIdDetalles/?id="+id_domicilio,function(response){
+			
+				$scope.id_domicilio=response.ID;
+				// $scope.id_prospecto=response.ID_PROSPECTO;
+				$scope.nombre_domicilio=response.NOMBRE;
+				$scope.pais=response.PAIS;
+				$scope.estado=response.ESTADO;
+				$scope.municipio=response.MUNICIPIO;
+				$scope.colonia=response.COLONIA;
+				$scope.codigo_postal=response.CODIGO_POSTAL;
+				$scope.calle=response.CALLE;
+				$scope.numero_interior=response.NUMERO_INTERIOR;
+				$scope.numero_exterior=response.NUMERO_EXTERIOR;
+				$scope.fiscal=response.FISCAL=="no"?0:1;
+				$scope.activo_domicilio=1;// por response.CENTRAL que clientes_domicilio no tiene campo equivalente;
+				fech=response.FECHA_CREACION;
+				if (fech)
+				{
+					fech=fech.substr(6,2)+'-'+fech.substr(4,2)+'-'+fech.substr(0,4);
+				}
+				 else 
+				   fech="Sin especificar";
+				$scope.fecha_creacion_domicilio=fech;
+				fech=response.FECHA_MODIFICACION;
+				if (fech)
+				{
+					fech=fech.substr(6,2)+'-'+fech.substr(4,2)+'-'+fech.substr(0,4);
+				}
+				 else 
+				   fech="Sin especificar";				
+				$scope.fecha_modificacion_domicilio=fech;
+				$scope.id_usuario_creacion_domicilio=response.NOMBRE_USUARIO_CREAR;
+				$scope.id_usuario_modificacion_domicilio=response.NOMBRE_USUARIO_MOD;
+				if($scope.fiscal==1){
+				$scope.fiscalhabilitado=true;
+				}else{
+				$scope.fiscalhabilitado=false;
+				}
+				if($scope.activo_domicilio==1){
+				$scope.domiciliohabilitado=true;
+				}else{
+				$scope.domiciliohabilitado=false;
+				}
+				$scope.$apply()
+			}); 
+		 }
 	    $("#modalDetallesDomicilio").modal("show");
 	};
 	$scope.editarContacto =  function(id_contacto) {
@@ -1198,8 +1412,7 @@ $scope.eliminar = function(id){
 	$scope.editarDomicilio =  function(id_domicilio) {
 		$(".text-danger").empty();		
 		$("#btnGuardarDomicilio").attr("accion","editarDomicilio");
-		$("#modalTitulo2").html("Editar Domicilio ");
-	  
+		$("#modalTitulo2").html("Editar Domicilio ");	  
 		$.getJSON( global_apiserver + "/prospecto_domicilio/getById/?id="+id_domicilio, function( response ) {
 			$scope.id_domicilio=response.ID;
             $scope.nombre_domicilio=response.NOMBRE;
@@ -1506,7 +1719,6 @@ $scope.eliminar = function(id){
 	 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	$scope.obtenerProspecto =  function() {
-	  
 		$.getJSON( global_apiserver + "/prospecto/getById/?id="+$scope.id_prospecto, function( response ) {
 			$scope.nombre_prospecto=response.NOMBRE;
 	        $scope.rfc = response.RFC;
@@ -2117,12 +2329,13 @@ $scope.cotizacion_guardar = function(){
 	*/
 	CargarestatusSeguimiento();
 	CargarTarifas();
-
-	/* Cargar información inicial */
-	$scope.actualizaTablaContacto();
-	$scope.actualizaTablaDomicilio();
-	// $scope.actualizarCotizacion();
 	$scope.obtenerProspecto();
+	$scope.actualizaTablaDomicilio();
+	/* Cargar información inicial */	
+	$scope.actualizaTablaContacto();
+//	$scope.actualizaTablaDomicilio();
+	// $scope.actualizarCotizacion();
+	
 	$scope.listaDomiciliosForContacto();
 	$scope.autocompleteListPais("");
 	$scope.autocompleteListCP("");

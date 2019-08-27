@@ -79,7 +79,7 @@
 									<div role="tabpanel" class="tab-pane fade active in" id="tab_domicilio" aria-labelledby="profile-tab">
 										<p>
 											<button type="button" ng-click="agregarDomicilio()" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc"
-											ng-if='modulo_permisos["registrar"] == 1' style="float: right;"> 
+											ng-if='modulo_permisos["registrar"] == 1 && id_cliente==0' style="float: right;"> 
 											<i class="fa fa-plus"> </i> Agregar 
 											</button>
 											<!--
@@ -122,13 +122,13 @@
 														<p ng-if="y.FISCAL == 0"><strong>Fiscal:</strong>No</p>
 														<p ng-if="y.FISCAL == 1"><strong>Fiscal:</strong>S&iacute;</p>
 													</div>
-													<div class="col-lg-6">
+													<div class="col-lg-6" ng-if="id_cliente==0">
 														<p ng-if="y.CENTRAL == 0"><strong>Central:</strong>No</p>
 														<p ng-if="y.CENTRAL == 1"><strong>Central:</strong>S&iacute;</p>	
 													</div>
 													<div class="col-lg-12">
 														<button type="button" ng-click="editarDomicilio(y.ID)" class="btn btn-primary btn-xs btn-imnc btnEditar"
-														ng-if='modulo_permisos["editar"] == 1' style="float: right;">
+														ng-if='modulo_permisos["editar"] == 1 && id_cliente==0' style="float: right;">
 															<i class="fa fa-edit"> </i> Editar
 														</button>
 														<!--
@@ -149,7 +149,7 @@
 									<div role="tabpanel" class="tab-pane fade" id="tab_contacto" aria-labelledby="home-tab">
 										<p>
 											<button type="button" ng-click="agregarContacto()" class="btn btn-primary btn-xs btn-imnc"
-												ng-if='modulo_permisos["registrar"] == 1' style="float: right;"> 
+												ng-if='modulo_permisos["registrar"] == 1 && id_cliente==0' style="float: right;"> 
 												<i class="fa fa-plus"> </i> Agregar 
 											</button>
 										</p>
@@ -179,7 +179,7 @@
 
 													<div class="col-lg-12">
 														<button type="button" ng-click="editarContacto(x.ID)" class="btn btn-primary btn-xs btn-imnc btnEditar"
-														ng-if='modulo_permisos["editar"] == 1' style="float: right;"><i class="fa fa-edit"> </i> Editar
+														ng-if='modulo_permisos["editar"] == 1 && id_cliente==0' style="float: right;"><i class="fa fa-edit"> </i> Editar
 															</button>
 														<button type="button" ng-click="detallesContacto(x.ID)" class="btn btn-primary btn-xs btn-info">Detalles </button>
 													</div>
