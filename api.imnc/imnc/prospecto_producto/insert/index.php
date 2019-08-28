@@ -32,13 +32,14 @@ function valida_error_medoo_and_die(){
 	$respuesta=array(); 
 	$json = file_get_contents("php://input"); 
 	$objeto = json_decode($json);
-	
+	$ESTADO = $objeto->nuevoEstado;
 	$ID_PROSPECTO = $objeto->id_prospecto;
 	valida_parametro_and_die($ID_PROSPECTO,"Es necesario seleccionar un prospecto");
 	$ID_SERVICIO=$objeto->area;
 	valida_parametro_and_die($ID_SERVICIO,"Es necesario seleccionar un servicio");
 	$ID_TIPO_SERVICIO = $objeto->departamento; 
 	valida_parametro_and_die($ID_TIPO_SERVICIO,"Es necesario seleccionar un tipo de servicio");
+	valida_parametro_and_die($ESTADO,"No ha especificado un estado para el producto o servicio");
     $NORMAS= "";
     $MODALIDAD = "";
     $CURSO = "";
@@ -107,7 +108,8 @@ function valida_error_medoo_and_die(){
 		"ID_USUARIO_CREACION"=>$ID_USUARIO,
 		"FECHA_CREACION"=>$FECHA,
 		"ID_USUARIO_MODIFICACION"=>$ID_USUARIO,
-		"FECHA_MODIFICACION"=>$FECHA
+		"FECHA_MODIFICACION"=>$FECHA,
+		"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO
 	]); 
 	valida_error_medoo_and_die();
 	//iNSERTAR LAS NORMAS

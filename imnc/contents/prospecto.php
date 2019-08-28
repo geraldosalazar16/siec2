@@ -35,7 +35,7 @@
               <a href="./?pagina=registro_expediente&id={{prospecto_seleccionado}}&id_entidad=3" class="btn btn-primary btn-xs btn-imnc" ng-if='modulo_permisos["documentos"] == 1&&mostrar_expedientes_seleccionado' style="margin-top:10px;"><i class="fa fa-home"> </i> Expedientes </a>
             </div>
           </div>
-          <div class="row">
+        <!--  <div class="row">
             <div class="col-sm-12">	
               <label class="control-label col-md-12 col-sm-12 col-xs-12">Filtrar por estatus</label>
               <select id="cmbEstatus" 
@@ -46,7 +46,8 @@
                 <option value="elige" ng-selected="true" disabled>Seleccione un estaus</option>
               </select>	
             </div>
-          </div>
+          </div> 27-8-19 a partir de ahora ocultado pues el estado será de
+				      servicio o producto y NO del prospecto-->
 		  <div class="row">
             <div class="col-sm-12">	
               <label class="control-label col-md-12 col-sm-12 col-xs-12">Filtrar por Servicios</label>
@@ -86,7 +87,8 @@
                     <th class="column-title">Nombre</th>
                     <th class="column-title">RFC</th>
                     <th class="column-title">Porcentaje</th>
-                    <th class="column-title">Estatus</th>
+                   <!-- <th class="column-title">Estatus</th> 27-8-19 a partir de ahora ocultado pues el estado será de
+				      servicio o producto y NO del prospecto-->
                     <th class="column-title">Tipo Contrato</th>
                       
                     <th class="column-title">&nbsp;</th>
@@ -101,7 +103,8 @@
                     <td>{{x.NOMBRE}}</td>
                     <td>{{x.RFC}}</td>
                     <td>{{x.PORCENTAJE}}</td>
-                    <td>{{x.NOMBRE_ESTATUS_SEGUIMIENTO}}</td>
+                 <!--   <td>{{x.NOMBRE_ESTATUS_SEGUIMIENTO}}</td> 27-8-19 a partir de ahora ocultado pues el estado será de
+				      servicio o producto y NO del prospecto-->
                     <td>{{x.NOMBRE_TIPO_CONTRATO}}</td>
                     <td>
                       <button type="button" ng-if='modulo_permisos["editar"] == 1' ng-click="editar(x.ID)" class="btn btn-primary btn-xs btn-imnc btnEditar" style="float: right;">
@@ -197,7 +200,7 @@
                 <span id="origenerror" class="text-danger"></span>
               </div>
             </div>
-			<div class="form-group">
+		<!--	<div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12">Estatus seguimiento
               <span class="required">*</span></label>
               <div class="col-md-6 col-sm-6 col-xs-12">
@@ -206,7 +209,8 @@
                 </select>
                 <span id="origenerror" class="text-danger"></span>
               </div>
-            </div>
+            </div> 27-8-19 a partir de ahora ocultado pues el estado será de
+				      servicio o producto y NO del prospecto-->
 			<div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12">Tipo de contrato
               <span class="required">*</span></label>
@@ -522,13 +526,14 @@
                 <input type="text" id="competencia-det" required="required" class="form-control col-md-7 col-xs-12" ng-model="nombre_competencia" data-parsley-id="2324" readonly="false" ><ul class="parsley-errors-list" id="parsley-id-2324"></ul>
               </div>
             </div>
-			<div class="form-group">
+			<!-- <div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12">Estatus seguimiento
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
                 <input type="text" id="estatus_seguimiento-det" required="required" class="form-control col-md-7 col-xs-12" ng-model="nombre_estatus_seguimiento" data-parsley-id="2324" readonly="false" ><ul class="parsley-errors-list" id="parsley-id-2324"></ul>
               </div>
-            </div>
+            </div> 27-8-19 a partir de ahora ocultado pues el estado será de
+				      servicio o producto y NO del prospecto-->
 			
 			<div class="form-group">
               <label class="control-label col-md-4 col-sm-4 col-xs-12">Tipo contrato

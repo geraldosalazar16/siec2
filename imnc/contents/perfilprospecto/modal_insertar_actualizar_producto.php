@@ -22,7 +22,16 @@
 						ng-options="departamento.id as departamento.nombre for departamento in Departamentos"> 
 							<option value="" ng-selected="true" disabled>Seleccione una opción</option>
 						</select>
-		            </div>
+		            </div>									
+					<div class="form-group">
+					  <label class="control-label">Estatus seguimiento
+					  <span class="required">*</span></label>					  
+						<select ng-model="EstadoProducto" id="estProdServ" required="required" class="form-control col-md-7 col-xs-12" style="margin-top:10px" ng-options="estseg.ID as estseg.DESCRIPCION for estseg in EstatusSeguimiento">
+						  <option value="">---Seleccione un estatus---</option>
+						</select>
+						<span id="origenerror" class="text-danger"></span>					  
+					</div>          				
+					
 					<!-- No mostrar para CIFA-->
 					<div class="form-group" ng-show="areas != 3">
 						<label class="control-label">Normas</label>
