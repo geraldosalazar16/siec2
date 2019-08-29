@@ -31,14 +31,22 @@
 				<div class="x_content">
 					<div class = "row">
 						<div class="col-md-6 col-sm-12 col-xs-12 profile_left">
+						<form name="form4" id="form4" data-parsley-validate="" class="form-horizontal form-label-left">
 							<div class="form-group" style="text-align: left;">
 								<label>Prospecto<span class="required">*</span></label>
-							  <select ng-model="form.cmbProspecto" class="select2_single form-control" id="cmbProspecto" 
+							  <select ng-model="cmbProspecto" class="select2_single form-control" id="cmbProspecto" 
 							  ng-options="prospecto.id as prospecto.nombre for prospecto in Prospectos">
 								<option value="" disabled=true>---Seleccione un prospecto---</option>
 							  </select>
 							</div>
-
+							<div class="form-group" style="text-align: left;">
+								<label>Producto<span class="required">*</span></label>
+							  <select ng-model="cmbProducto" class=" form-control" id="cmbProducto" ng-change="cambioProspecto()" 
+							  ng-options="producto.id as producto.nombre for producto in ProductosL">
+								<option value="">---Todos---</option>
+							  </select>
+							</div>
+							</form>
 							<div class="col-12">
 								<h2>Contactos</h2>
 
@@ -46,9 +54,9 @@
 								<thead>
 									<tr class="headings">
 										<th class="column-title"><i class="fa fa-map-marker user-profile-icon"></i> Nombre</th>
-										<th class="column-title"><i class="fa fa-map-marker user-profile-icon"></i> Ubicaci&oacuten</th>							  
+										<th class="column-title"><i class="fa fa-map-marker user-profile-icon"></i> Ubicaci&oacuten </th>							  
 										<th class="column-title"><i class="fa fa-user user-profile-icon"></i> Correo</th>
-										<th class="column-title"><i class="fa fa-phone user-profile-icon"></i> Tel&eacutefono</th>  
+										<th class="column-title"><i class="fa fa-phone user-profile-icon"></i> Tel&eacutefono </th>  
 										<th class="column-title"><i class="fa fa-tablet user-profile-icon"></i> Celular</th>  								
 									</tr>
 								</thead>
@@ -202,7 +210,7 @@
 									<td>{{ x.descripcion }}</td>
 									<td>{{ x.estado }}</td>
 									<td>
-										<button type="button" class="btn btn-primary" ng-click='editarTarea(x.fecha,x.hora_inicio,x.fecha_fin,x.hora_fin,x.tipo_asunto,x.descripcion,x.id )' ng-if="x.estado=='PENDIENTE'" id="btnEditarTarea" ><i class="fa fa-edit"> </i>
+										<button type="button" class="btn btn-primary" ng-click='editarTarea(x.fecha,x.hora_inicio,x.fecha_fin,x.hora_fin,x.tipo_asunto,x.id_producto,x.descripcion,x.id )' ng-if="x.estado=='PENDIENTE'" id="btnEditarTarea" ><i class="fa fa-edit"> </i>
 										Editar
 										</button>
 									</td>
@@ -269,6 +277,17 @@
 																	<select ng-model="cmbTipoAsunto" required="required" id="cmbTipoAsunto"
 																	class="form-control col-md-6 col-xs-12" data-parsley-id="2324" ng-options="tipoasunto.id as tipoasunto.nombre for tipoasunto in TiposAsunto">
 																		<option value="">---Seleccione un tipo de asunto---</option>
+																	</select>
+																</div>
+																<br />
+															</div>
+															<div class="form-group">
+																<label class="control-label col-md-4 col-sm-4 col-xs-12">Producto
+																</label>
+																<div class="col-md-6 col-sm-6 col-xs-12">
+																	<select ng-model="cmbProducto" required="required" id="cmbProducto"
+																	class="form-control col-md-6 col-xs-12" data-parsley-id="2324" ng-options="producto.id as producto.nombre for producto in ProductosL">
+																		<option value="">---Seleccione un producto---</option>
 																	</select>
 																</div>
 																<br />

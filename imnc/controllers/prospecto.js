@@ -1043,8 +1043,122 @@ $scope.limpiaCamposDomicilio = function(){
 			$scope.prospectos_total = $scope.prospecto;
 			$scope.prospecto = [];
 		}
-		//$scope.prospectos_total = $scope.prospecto;
+		if(estatus||servicio||tipo_servicio){
+			$scope.prospectos_total.forEach(prospecto => {
+				if(estatus){
+					if(servicio){
+						if(tipo_servicio){
+							if(prospecto.PRODUCTOS !="No tiene Productos"){
+								prospecto.PRODUCTOS.every(function(producto,index){
+								if((producto.ID_SERVICIO == servicio)&&(producto.ID_TIPO_SERVICIO == tipo_servicio)&&(prospecto.ID_ESTATUS_SEGUIMIENTO == estatus)){
+									$scope.prospecto.push(prospecto);
+									return false;
+								}
+								else{
+									return true;
+								}
+								});
+							}
+						}
+						else{
+							if(prospecto.PRODUCTOS !="No tiene Productos"){
+								prospecto.PRODUCTOS.every(function(producto,index){
+								if((producto.ID_SERVICIO == servicio)&&(prospecto.ID_ESTATUS_SEGUIMIENTO == estatus)){
+									$scope.prospecto.push(prospecto);
+									return false;
+								}
+								else{
+									return true;
+								}
+								});
+							}
+						}
+						
+				
+						
+					}
+					else{
+						if(tipo_servicio){
+							if(prospecto.PRODUCTOS !="No tiene Productos"){
+								prospecto.PRODUCTOS.every(function(producto,index){
+								if((producto.ID_TIPO_SERVICIO == tipo_servicio)&&(prospecto.ID_ESTATUS_SEGUIMIENTO == estatus)){
+									$scope.prospecto.push(prospecto);
+									return false;
+								}
+								else{
+									return true;
+								}
+								});
+							}
+						}
+						else{
+							if(prospecto.ID_ESTATUS_SEGUIMIENTO == estatus){				
+								$scope.prospecto.push(prospecto);
+							}
+						}
+					}
+				}
+				else{
+			if(servicio){
+				if(tipo_servicio){
+					if(prospecto.PRODUCTOS !="No tiene Productos"){
+						prospecto.PRODUCTOS.every(function(producto,index){
+						if((producto.ID_SERVICIO == servicio)&&(producto.ID_TIPO_SERVICIO == tipo_servicio)){
+							$scope.prospecto.push(prospecto);
+							return false;
+						}
+						else{
+							return true;
+						}
+						});
+					}
+				}
+				else{
+					if(prospecto.PRODUCTOS !="No tiene Productos"){
+						prospecto.PRODUCTOS.every(function(producto,index){
+						if(producto.ID_SERVICIO == servicio){
+							$scope.prospecto.push(prospecto);
+							return false;
+						}
+						else{
+							return true;
+						}
+						});
+					}
+				}
+						
+				
+						
+			}
+			else{
+				if(tipo_servicio){
+					if(prospecto.PRODUCTOS !="No tiene Productos"){
+						prospecto.PRODUCTOS.every(function(producto,index){
+						if(producto.ID_TIPO_SERVICIO == tipo_servicio){
+							$scope.prospecto.push(prospecto);
+							return false;
+						}
+						else{
+							return true;
+						}
+						});
+					}
+				}
+				else{
+					$scope.prospecto = $prospectos_total;
+				}
+				
+			}
+		}
+				
+			});
+		}
+		else{
+			$scope.prospecto = $prospectos_total;
+		}
 		
+		//$scope.prospectos_total = $scope.prospecto;
+		/*
 		if(estatus){
 			
 			$scope.prospectos_total.forEach(prospecto => {
@@ -1122,7 +1236,7 @@ $scope.limpiaCamposDomicilio = function(){
 		
 			
 			});
-		}
+		}*/
 		$scope.cantidad_prospectos = $scope.prospecto.length;
 	}
 	cargarServicios();
@@ -1134,7 +1248,7 @@ $scope.limpiaCamposDomicilio = function(){
 	$scope.UsuariosLista();
 	$scope.UsuariosPrincipalLista();
 	$scope.TipoContratoLista();
-	$scope.DepartamentosLista();
+	//$scope.DepartamentosLista();
 	$scope.actualizaTabla();
 	
 }]);

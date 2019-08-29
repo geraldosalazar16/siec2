@@ -31,12 +31,23 @@ function valida_error_medoo_and_die(){
 $respuesta=array();
 
 $ID_PROSPECTO = $_REQUEST["id_prospecto"];
-$consulta = "SELECT PT.ID as id_tarea,P.NOMBRE as nombre_prospecto,PT.FECHA_INICIO as fecha_inicio,PT.HORA_INICIO as hora_inicio,PT.FECHA_FIN as fecha_fin, PT.HORA_FIN as hora_fin,
+$ID_PRODUCTO = $_REQUEST["id_producto"];
+if($ID_PRODUCTO != ''){
+	$consulta = "SELECT PT.ID as id_tarea,P.NOMBRE as nombre_prospecto,PT.FECHA_INICIO as fecha_inicio,PT.HORA_INICIO as hora_inicio,PT.FECHA_FIN as fecha_fin, PT.HORA_FIN as hora_fin,PT.ID_PRODUCTO as id_producto,
 TA.ID as tipo_asunto,TA.DESCRIPCION AS desc_asunto,P.ID_USUARIO_PRINCIPAL as usuario,PT.DESCRIPCION as desc_tarea, PT.ESTADO as estado_tarea
 FROM PROSPECTO_TAREAS PT
 INNER JOIN PROSPECTO P ON PT.ID_PROSPECTO = P.ID
-INNER JOIN TIPO_ASUNTO TA 
-ON TA.ID = PT.ID_TIPO_ASUNTO WHERE P.ID = ".$ID_PROSPECTO." ORDER BY PT.FECHA_INICIO ASC";
+INNER JOIN TIPO_ASUNTO TA ON TA.ID = PT.ID_TIPO_ASUNTO 
+WHERE P.ID = ".$ID_PROSPECTO." AND PT.ID_PRODUCTO = ".$ID_PRODUCTO." ORDER BY PT.FECHA_INICIO ASC";
+}
+else{
+	$consulta = "SELECT PT.ID as id_tarea,P.NOMBRE as nombre_prospecto,PT.FECHA_INICIO as fecha_inicio,PT.HORA_INICIO as hora_inicio,PT.FECHA_FIN as fecha_fin, PT.HORA_FIN as hora_fin,PT.ID_PRODUCTO as id_producto,
+TA.ID as tipo_asunto,TA.DESCRIPCION AS desc_asunto,P.ID_USUARIO_PRINCIPAL as usuario,PT.DESCRIPCION as desc_tarea, PT.ESTADO as estado_tarea
+FROM PROSPECTO_TAREAS PT
+INNER JOIN PROSPECTO P ON PT.ID_PROSPECTO = P.ID
+INNER JOIN TIPO_ASUNTO TA ON TA.ID = PT.ID_TIPO_ASUNTO 
+WHERE P.ID = ".$ID_PROSPECTO." ORDER BY PT.FECHA_INICIO ASC";
+}
 $tareas = $database->query($consulta)->fetchAll();
 valida_error_medoo_and_die();
 

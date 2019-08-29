@@ -37,6 +37,9 @@ valida_parametro_and_die($ID_TAREA, "Es necesario seleccionar una tarea");
 $ID_PROSPECTO = $objeto->id_prospecto; 
 valida_parametro_and_die($ID_PROSPECTO, "Es necesario seleccionar un prospecto");
 
+$ID_PRODUCTO = $objeto->id_producto; 
+valida_parametro_and_die($ID_PRODUCTO, "Es necesario seleccionar un producto");
+
 $FECHA_INICIO = $objeto->fecha_inicio; 
 valida_parametro_and_die($FECHA_INICIO, "Es necesario seleccionar una fecha de inicio");
 
@@ -56,6 +59,7 @@ $ESTADO = $objeto->estado;
 
 $id = $database->update("PROSPECTO_TAREAS", [ 
 	"ID_PROSPECTO" => $ID_PROSPECTO, 
+	"ID_PRODUCTO" => $ID_PRODUCTO,
 	"FECHA_INICIO" => $FECHA_INICIO, 
 	"HORA_INICIO" => $HORA_INICIO, 
 	"FECHA_FIN" => $FECHA_FIN, 

@@ -7,6 +7,8 @@ var allEvents = true;
 var id_user = sessionStorage.getItem("id_usuario");
 $scope.mostrar_guardar = true;
 $scope.mostrar_cerrar = true;
+$scope.cmbProducto = '';
+$scope.cmbProspecto = '';
 $scope.prospectoActual;
 $scope.calendar;
 		
@@ -38,8 +40,8 @@ $scope.calendar;
 					var hora_inicio = ("0"+fecha_inicio_total.getHours()).substr(-2)+":"+("0"+fecha_inicio_total.getMinutes()).substr(-2);
 					var hora_fin = ("0"+fecha_fin_total.getHours()).substr(-2)+":"+("0"+fecha_fin_total.getMinutes()).substr(-2);
 					
-					// $("#cmbProspecto").val("string:"+calEvent.id_prospecto).trigger('change.select2');
-					cambioProspecto();
+					 $("#cmbProspecto").val("string:"+calEvent.id_prospecto).trigger('change.select2');
+					$scope.cambioProspecto();
 					$("#fecha_inicio").val(fecha_inicio);
 					$("#hora_inicio").val(hora_inicio);
 					$("#fecha_fin").val(fecha_fin);
@@ -48,7 +50,7 @@ $scope.calendar;
 					$("#descripcion").val(calEvent.desc_tarea);
 					
 					//Llena la tabla historial de tareas del prospecto
-					cargarHistorial(calEvent.id_prospecto);
+					cargarHistorial(calEvent.id_prospecto,calEvent.id_producto);
 					cargarContactos(calEvent.id_prospecto);
 					//Configurar el boton guardar y cerrar
 					if(calEvent.estado_tarea == "PENDIENTE")
@@ -128,10 +130,11 @@ $scope.calendar;
             });
 			$('#calendario').fullCalendar( 'today' );
         }
-		function cargarHistorial(id_prospecto){
+		function cargarHistorial(id_prospecto,id_producto){
 			//Limpiar el historial
+			
 			$scope.Historial = "";
-			$http.get(  global_apiserver + "/prospecto_tareas/getByProspecto/?id_prospecto="+id_prospecto)
+			$http.get(  global_apiserver + "/prospecto_tareas/getByProspecto/?id_prospecto="+id_prospecto+"&id_producto="+id_producto)
 					.then(function( response ) {//se ejecuta cuando la petición fue correcta
 						$scope.Historial = response.data.map(function(item){
 							return{
@@ -145,6 +148,7 @@ $scope.calendar;
 								asunto : item.desc_asunto,
 								descripcion: item.desc_tarea,
 								estado: item.estado_tarea,
+								id_producto: item.id_producto,
 								id: item.id_tarea
 							}
 						});
@@ -307,13 +311,15 @@ $scope.calendar;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//	FUNCION PARA EDITAR TAREA
-	$scope.editarTarea = function(fecha_inicio,hora_inicio,fecha_fin,hora_fin,asunto,descripcion,id)
+	$scope.editarTarea = function(fecha_inicio,hora_inicio,fecha_fin,hora_fin,asunto,id_producto,descripcion,id)
 	{
 		$("#fecha_inicio").val(fecha_inicio);
 		$("#hora_inicio").val(hora_inicio);
 		$("#fecha_fin").val(fecha_fin);
 		$("#hora_fin").val(hora_fin);
 		$("#cmbTipoAsunto").val("string:"+asunto);
+		$("#cmbProducto").val("string:"+id_producto);
+		$scope.cmbProducto = id_producto;
 		$("#descripcion").val(descripcion);
 		$("#btnGuardarTarea").attr("accion","editar");
 		//Guardo el id de la tarea
@@ -328,6 +334,8 @@ $scope.calendar;
 		$("#fecha_fin").val('');
 		$("#hora_fin").val('');
 		$("#cmbTipoAsunto").val('');
+		$scope.cmbProducto = '';
+		$("#cmbProducto").val('');
 		$("#descripcion").val('');
 		$("#btnGuardarTarea").attr("accion","guardar");
 		$("#modalEvento").modal("show");
@@ -362,6 +370,7 @@ $scope.calendar;
 					fecha_fin: $("#fecha_fin").val(),
 					hora_fin: $("#hora_fin").val(),
 					tipo_asunto: $("#cmbTipoAsunto").val().substring(7),
+					id_producto: $scope.cmbProducto,
 					descripcion: $("#descripcion").val(),
 					estado: "CERRADO"
 				};
@@ -370,7 +379,7 @@ $scope.calendar;
 						if (respuesta.resultado == "ok") {
 							//uploadFile(respuesta.id);
 							notify_success("Éxito", "Se ha insertado la tarea");
-							cambioProspecto();
+							$scope.cambioProspecto();
 						}
 						else{
 							notify("Error", respuesta.mensaje, "error");
@@ -388,6 +397,7 @@ $scope.calendar;
 					fecha_fin: $("#fecha_fin").val(),
 					hora_fin: $("#hora_fin").val(),
 					tipo_asunto: $("#cmbTipoAsunto").val().substring(7),
+					id_producto: $scope.cmbProducto,
 					descripcion: $("#descripcion").val(),
 					estado: "CERRADO"
 				};
@@ -396,7 +406,7 @@ $scope.calendar;
 						if (respuesta.resultado == "ok") {
 							//uploadFile(respuesta.id);
 							notify_success("Éxito", "Se ha actualizado la tarea");
-							cambioProspecto();
+							$scope.cambioProspecto();
 						}
 						else{
 							notify("Error", respuesta.mensaje, "error");							
@@ -436,6 +446,7 @@ $scope.calendar;
 					fecha_fin: $("#fecha_fin").val(),
 					hora_fin: $("#hora_fin").val(),
 					tipo_asunto: $("#cmbTipoAsunto").val().substring(7),
+					id_producto: $scope.cmbProducto,
 					descripcion: $("#descripcion").val(),
 					estado: "PENDIENTE"
 				};
@@ -444,7 +455,7 @@ $scope.calendar;
 						if (respuesta.resultado == "ok") {
 							//uploadFile(respuesta.id);
 							notify_success("Éxito", "Se ha insertado la tarea");
-							cambioProspecto();
+							$scope.cambioProspecto();
 						}
 						else{
 							notify("Error", respuesta.mensaje, "error");
@@ -463,6 +474,7 @@ $scope.calendar;
 					fecha_fin: $("#fecha_fin").val(),
 					hora_fin: $("#hora_fin").val(),
 					tipo_asunto: $("#cmbTipoAsunto").val().substring(7),
+					id_producto: $scope.cmbProducto,
 					descripcion: $("#descripcion").val(),
 					estado: "PENDIENTE"
 				};
@@ -583,20 +595,39 @@ $scope.calendar;
 			$scope.EstatusLista();
 			$scope.PorcentajeLista();
 			$scope.UsuariosLista();
+			
         });
 		$('.select2_single').on('select2:select', function (evt) {
-			cambioProspecto();
+			$scope.cambioProspecto();
 		});
-	function cambioProspecto() {
+	$scope.cambioProspecto = function(){
 		var id = $("#cmbProspecto").val().substring(7);
+		
+			
+		if($scope.prospectoActual != id){
+			$scope.cmbProducto = '';
+			$("#cmbProducto").val('');
+			id1= '';
+		}
+		else{
+			if($("#cmbProducto").val() == undefined){
+				var id1 = '';
+			}
+			else{
+				var id1 = $("#cmbProducto").val().substring(7);
+			}
+			$scope.cmbProducto = id1;
+		
+		}
+		
 		$scope.prospectoActual = id;
-			cargarHistorial(id);
+			cargarHistorial(id,id1);
 			cargarContactos(id);
 			setCalendar();
 			
 			$scope.mostrar_guardar = true;
 			$scope.mostrar_cerrar = true;
-					
+				$scope.ProductoLista();	
 			//Configuro guardar y cerrar en modo pendiente
 			$("#btnCerrarTarea").attr("estado_tarea","PENDIENTE");
 			$("#btnCerrarTarea").html("Guardar y Cerrar");
@@ -611,6 +642,22 @@ $scope.calendar;
 						$scope.usuariosS = response.data.ID_USUARIO_SECUNDARIO;
 					},
 					function (response){});
+	}
+	$scope.ProductoLista = function(){
+		var id = $("#cmbProspecto").val().substring(7);
+		
+		//recibe la url del php que se ejecutará
+		$http.get(  global_apiserver + "/prospecto_producto/getByIdProspecto/?id="+id)
+	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
+	  			$scope.ProductosL = response.data.map(function(item){
+	  				return{
+	  					id : item.ID,
+	  					nombre : item.ACRONIMO_SERVICIO +'-'+ item.ACRONIMO_TIPO_SERVICIO
+	  				}
+	  			});
+	  			
+			},
+			function (response){});
 	}
 }]);
 function notify(titulo, texto, tipo) {
