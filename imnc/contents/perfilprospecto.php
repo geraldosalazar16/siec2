@@ -240,7 +240,8 @@
 																			</div>
 
 																		</td>
-																		<td>{{producto.estado}}</td>
+																		<td ng-if="producto.estado">{{producto.estado}}</td>
+																		<td ng-if="!producto.estado">Por cotizar</td> <!-- Si no tiene un estado definido -->
 																		<td>
 																			<button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" 
 																			ng-click="mostrar_modal_insertar_editar_producto('editar',producto)" style=	"float: right;">
