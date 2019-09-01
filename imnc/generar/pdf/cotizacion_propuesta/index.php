@@ -393,8 +393,8 @@ $html = <<<EOD
 		
 		<td style="font-size: small; text-align:left;" width="115"> 
 			Clave: FPEC23 <br>
-			Fecha de aplicación: 2018-08-02 <br>
-			Versión: 04 <br>
+			Fecha de aplicación: 2019-07-06 <br>
+			Versión: 07 <br>
 			Página $NumPage de $TotPage
 		</td>
 	</tr>
