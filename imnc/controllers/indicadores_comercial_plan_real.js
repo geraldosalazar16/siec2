@@ -11,6 +11,8 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
     $scope.mes = '';
     $scope.mes_acumulado = '';
     $scope.flag = '';
+	$scope.mesActual= moment().format('M'); 
+
 // =======================================================================================
 // ***** 			FUNCION PARA ABRIR MODAL MOSTRAR		                         *****
 // =======================================================================================
@@ -241,7 +243,9 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
         return s.join(dec);
     }
     $(document).ready(function () {
-
+		$scope.formData.periodicidad = 2;
+		$scope.formData.valor_periodicidad = $scope.meses[$scope.mesActual-1]["nombre"];
+		$scope.submitBuscarFiltrados();
     });
 }])
 function notify(titulo, texto, tipo) {
