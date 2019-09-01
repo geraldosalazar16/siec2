@@ -660,7 +660,7 @@ app.controller('prospecto_controller', ['$scope', '$http', function($scope,$http
 		
 	};
 	/*
-		Valida si la información que tiene el módelo es suficiente apra agregar
+		Valida si la información que tiene el módelo es suficiente para agregar
 		el nuevo creacion. Aquí se modifica el valor de "$scope.respuesta" para checar
 		la validez del módelo.
 		Primero se verifica que los campos no sean nulos y en el caso del nombre

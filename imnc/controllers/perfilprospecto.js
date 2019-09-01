@@ -50,6 +50,9 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 	$scope.id_usuario_modificacion_domicilio;
 	$scope.activo_domicilio=0;
 	$scope.chkColonia = false;
+	//27-8-19 EstadoProducto llevará a partir de ahora el estado de producto/servicio que ya NO es por prospecto
+	//Poner el valor por defecto en mostrar_modal_insertar_editar_producto() al insertar
+	$scope.EstadoProducto = "1";
 
 	/*
 	Manejo de cliente
@@ -782,6 +785,7 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 				cantidad:cantidad,
 				solo_cliente: solo_cliente,
 				id_usuario: sessionStorage.getItem("id_usuario"),
+				nuevoEstado: $scope.EstadoProducto
 			};
 			$.post(global_apiserver + "/prospecto_producto/insert/", JSON.stringify(info), function(respuesta){
 				respuesta = JSON.parse(respuesta);
@@ -811,6 +815,7 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
 				cantidad:cantidad,
 				solo_cliente: solo_cliente,
 				id_usuario: sessionStorage.getItem("id_usuario"),
+				nuevoEstado: $scope.EstadoProducto
 			};
 			$.post(global_apiserver + "/prospecto_producto/update/", JSON.stringify(info), function(respuesta){
 				respuesta = JSON.parse(respuesta);
@@ -829,13 +834,14 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
         $scope.tipo_persona = $scope.tipoPersona;
         clear_modal_insertar_actualizar_productos();
 		if(accion == 'insertar'){
+			$scope.EstadoProducto = "1";//valor de estado por defecto 1="Por cotizar"									
 			$("#modalTituloProductoProspecto").html('INSERTAR PRODUCTO');
 			$("#btnGuardarProductoProspecto").attr("accion","insertar");
 			$("#modalInsertarActualizarProductoProspecto").modal('show');
 		}
 		if(accion == 'editar'){
 			$scope.producto_actual = producto;
-
+			$scope.EstadoProducto = producto.idEstado;
             $http.get(  global_apiserver + "/tipos_servicio/getByService/?id="+producto.id_servicio)
                 .then(function( response ) {//se ejecuta cuando la petición fue correcta
                         $scope.Departamentos = response.data.map(function(item){
@@ -843,8 +849,7 @@ app.controller('perfilprospecto_controller', ['$scope', '$http', '$window', func
                                 id : item.ID,
                                 nombre : item.NOMBRE
                             }
-                        });
-
+                        });						
                         $scope.departamentos = producto.id_tipo_servicio;
 
                         $http.get(  global_apiserver + "/normas/getByIdTipoServicio/?id="+producto.id_tipo_servicio)
@@ -1000,8 +1005,9 @@ $scope.eliminar = function(id){
 						  solo_cliente: item.CURSO.SOLO_PARA_CLIENTE,
 						  sectores: [],
 						  integracion: [],
-						  nivel_integracion: 0
-
+						  nivel_integracion: 0,
+						  estado: item.ESTATUS_SEGUIMIENTO,
+						  idEstado: item.ID_ESTATUS_SEGUIMIENTO
 	  				}
 	  			});
 
@@ -2316,6 +2322,21 @@ $scope.cotizacion_guardar = function(){
     	}
 		}).css("display", "inline-block");;
 	}
+	
+	$scope.EstatusSeguimientoLista = function(){
+		//recibe la url del php que se ejecutará
+		$http.get(  global_apiserver + "/prospecto_estatus_seguimiento/getAll/")
+	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
+	  			$scope.Estatus_seguimiento = response.data.map(function(item){
+	  				return{
+	  					id_estatus_seguimiento : item.ID,
+	  					estatus_seguimiento : item.DESCRIPCION
+	  				}
+	  			});
+	  			
+			},
+			function (response){});
+	}
 
 	$scope.OrigenLista();
 	$scope.AreasLista();
@@ -2328,6 +2349,7 @@ $scope.cotizacion_guardar = function(){
 	Cargar información necesara para insertar una cotización
 	*/
 	CargarestatusSeguimiento();
+	$scope.EstatusSeguimientoLista();
 	CargarTarifas();
 	$scope.obtenerProspecto();
 	$scope.actualizaTablaDomicilio();
@@ -2464,7 +2486,7 @@ function insertar_domicilio_cliente(id_cliente){
 	}
 	$.post(global_apiserver + "/clientes_domicilios/insertFromProspecto/", JSON.stringify(dom_cliente), function(respuesta){
 		if (respuesta.resultado == "ok") {
-			notify("Éxito", "Se han insertado domicilios con éxio", "success");
+			notify("Éxito", "Se han insertado domicilios con éxito", "success");
 		}
 	});
 }
@@ -2536,8 +2558,6 @@ function convertir_fecha(fecha){
 	var transformacion = (fecha_aux.getMonth()+1)+"/"+fecha_aux.getDate()+"/"+fecha_aux.getFullYear();
 	return transformacion;
 }
-
-
 
 $( window ).load(function() {     
       //listener_btn_nuevo();

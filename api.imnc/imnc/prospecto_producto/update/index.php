@@ -16,7 +16,7 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 	$respuesta=array(); 
 	$json = file_get_contents("php://input"); 
 	$objeto = json_decode($json);
-	
+	$ESTADO = $objeto->nuevoEstado;
 	$ID_PRODUCTO = $objeto->id;
 	valida_parametro_and_die1($ID_PRODUCTO,"Es necesario seleccionar un producto");
 	$ID_PROSPECTO = $objeto->id_prospecto;
@@ -27,6 +27,7 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 	valida_parametro_and_die1($ID_TIPO_SERVICIO,"Es necesario seleccionar un tipo de servicio");
 	$ID_USUARIO = $objeto->id_usuario;
 	valida_parametro_and_die1($ID_USUARIO,"Es necesario el id del usuario");
+	valida_parametro_and_die1($ESTADO,"No ha especificado un nuevo estado para el producto o servicio");
 	$FECHA = date("Y-m-d H:i:s");
 
     $NORMAS= "";
@@ -66,7 +67,8 @@ function valida_parametro_and_die1($parametro, $mensaje_error){
 		"ID_TIPO_SERVICIO" => $ID_TIPO_SERVICIO,
 		"ALCANCE" => $ALCANCE,
 		"ID_USUARIO_MODIFICACION"=>$ID_USUARIO,
-		"FECHA_MODIFICACION"=>$FECHA
+		"FECHA_MODIFICACION"=>$FECHA,
+		"ID_ESTATUS_SEGUIMIENTO"=>$ESTADO
 	], ["ID" => $ID_PRODUCTO]); 	
 	valida_error_medoo_and_die($nombre_tabla,$correo);
     if($ID_SERVICIO!=3) {
