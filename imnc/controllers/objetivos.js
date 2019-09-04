@@ -5,7 +5,8 @@ app.controller('objetivos_controller',['$scope',function($scope){
     $scope.accion = 'insertar';
     $scope.periodicidad = [];
     $scope.objetivos = [];
-    $scope.meses = [{"nombre" : "Enero"},{"nombre" : "Febrero"},{"nombre" : "Marzo"},{"nombre" : "Abril"},{"nombre" : "Mayo"},{"nombre" : "Junio"},{"nombre" : "Julio"},{"nombre" : "Agosto"},{"nombre" : "Septiembre"},{"nombre" : "Octubre"},{"nombre" : "Noviembre"},{"nombre" : "Diciembre"}];
+    $scope.meses = [{"id":1,"nombre" : "Enero"},{"id":2,"nombre" : "Febrero"},{"id":3,"nombre" : "Marzo"},{"id":4,"nombre" : "Abril"},{"id":5,"nombre" : "Mayo"},{"id":6,"nombre" : "Junio"},{"id":7,"nombre" : "Julio"},{"id":8,"nombre" : "Agosto"},{"id":9,"nombre" : "Septiembre"},{"id":10,"nombre" : "Octubre"},{"id":11,"nombre" : "Noviembre"},{"id":12,"nombre" : "Diciembre"}];
+	$scope.Propuestas = [{"NOMBRE":"Propuestas Emitidas"},{"NOMBRE":"Propuestas Ganadas"}];
 
 // ===========================================================================
 // ***** 	    FUNCION PARA CARGAR LOS DATEPICKER DEL MODAL			 *****
@@ -26,7 +27,7 @@ app.controller('objetivos_controller',['$scope',function($scope){
 // ***** 	             FUNCION PARA CAMBIA PERIODICIDAD			 *****
 // ===========================================================================
     $scope.loadPeriodicidad = function() {
-        $.post(  global_apiserver + "/objetivos/getAllPeriodicidad/", function( response ) {
+        $.post(  global_apiserver + "/i_objetivos/getAllPeriodicidad/", function( response ) {
             $scope.periodicidad = JSON.parse(response);
             $scope.$apply();
 
@@ -36,7 +37,7 @@ app.controller('objetivos_controller',['$scope',function($scope){
 // ***** 	             FUNCION PARA CAMBIA PERIODICIDAD			 *****
 // ===========================================================================
     $scope.loadOjetivos = function() {
-        $.post(  global_apiserver + "/objetivos/getAll/", function( response ) {
+        $.post(  global_apiserver + "/i_objetivos/getAll/", function( response ) {
             $scope.objetivos = JSON.parse(response);
             $scope.$apply();
 
@@ -69,12 +70,37 @@ app.controller('objetivos_controller',['$scope',function($scope){
     /* Accion para mostrar el modal  */
 
     $scope.openModalInsertar = function(){
-
-      $("#btnGuardar").attr("accion","insertar");
-      $("#modalTitulo").html("Insertar Objetivo");
+		$scope.accion = 'insertar';
+		$("#btnGuardar").attr("accion","insertar");
+		$("#modalTitulo").html("Insertar Objetivo");
         $scope.limpiaCampos();
         $scope.loadPeriodicidad();
-      $("#modalInsertarActualizar").modal("show");
+		$scope.formData.anhio = parseInt(moment().format('YYYY'));
+		$scope.formData.montoEmitidasEnero = 0;
+		$scope.formData.montoEmitidasFebrero = 0;
+		$scope.formData.montoEmitidasMarzo = 0;
+		$scope.formData.montoEmitidasAbril = 0;
+		$scope.formData.montoEmitidasMayo = 0;
+		$scope.formData.montoEmitidasJunio = 0;
+		$scope.formData.montoEmitidasJulio = 0;
+		$scope.formData.montoEmitidasAgosto = 0;
+		$scope.formData.montoEmitidasSeptiembre = 0;
+		$scope.formData.montoEmitidasOctubre = 0;
+		$scope.formData.montoEmitidasNoviembre = 0;
+		$scope.formData.montoEmitidasDiciembre = 0;
+		$scope.formData.montoGanadasEnero = 0;
+		$scope.formData.montoGanadasFebrero = 0;
+		$scope.formData.montoGanadasMarzo = 0;
+		$scope.formData.montoGanadasAbril = 0;
+		$scope.formData.montoGanadasMayo = 0;
+		$scope.formData.montoGanadasJunio = 0;
+		$scope.formData.montoGanadasJulio = 0;
+		$scope.formData.montoGanadasAgosto = 0;
+		$scope.formData.montoGanadasSeptiembre = 0;
+		$scope.formData.montoGanadasOctubre = 0;
+		$scope.formData.montoGanadasNoviembre = 0;
+		$scope.formData.montoGanadasDiciembre = 0;
+      $("#modalInsertar").modal("show");
     
     }
 
@@ -82,24 +108,20 @@ app.controller('objetivos_controller',['$scope',function($scope){
     /* Accion para mostrar el modal  */
 
     $scope.openModalEditar = function(objetivo){
-
+		$scope.accion = 'editar';
         $("#btnGuardar").attr("accion","editar");
         $("#modalTitulo").html("Editar Objetivo");
         $scope.limpiaCampos();
         $scope.loadPeriodicidad();
+		$scope.formData.propuestas = objetivo.NOMBRE;
         $scope.formData.id = objetivo.ID;
-        $scope.formData.nombre_objetivo = objetivo.NOMBRE;
+        $scope.formData.anhio = parseInt(objetivo.ANHIO);
+		$scope.formData.mes = parseInt(objetivo.MES);
         $scope.formData.periodicidad = objetivo.ID_PERIODICIDAD;
-        if(objetivo.ID_PERIODICIDAD==1)
-        {
-            $scope.formData.valor_periodicidad =  parseInt(objetivo.VALOR_PERIODICIDAD);
-        }else {
-            $scope.formData.valor_periodicidad =  objetivo.VALOR_PERIODICIDAD;
-        }
+       
+        $scope.formData.monto = parseFloat(objetivo.VALOR_OBJETIVO);
 
-        $scope.formData.monto = parseInt(objetivo.VALOR_OBJETIVO);
-
-        $("#modalInsertarActualizar").modal("show");
+        $("#modalActualizar").modal("show");
 
     }
 
@@ -126,24 +148,60 @@ $scope.guardarObjetivo = function(){
 //=======================================================  
 /*	Funcion para insertar los datos	*/
 $scope.insertar	=	function(){
-  
-	var objetivo = {
+	
+	if($scope.formData.propuestas == 'Propuestas Emitidas'){
+		var objetivo = {
+						PROPUESTAS:$scope.formData.propuestas,
+						ANHIO:$scope.formData.anhio,
+						MONTO_ENERO:$scope.formData.montoEmitidasEnero,
+						MONTO_FEBRERO:$scope.formData.montoEmitidasFebrero,
+						MONTO_MARZO:$scope.formData.montoEmitidasMarzo,
+						MONTO_ABRIL:$scope.formData.montoEmitidasAbril,
+						MONTO_MAYO:$scope.formData.montoEmitidasMayo,
+						MONTO_JUNIO:$scope.formData.montoEmitidasJunio,
+						MONTO_JULIO:$scope.formData.montoEmitidasJulio,
+						MONTO_AGOSTO:$scope.formData.montoEmitidasAgosto,
+						MONTO_SEPTIEMBRE:$scope.formData.montoEmitidasSeptiembre,
+						MONTO_OCTUBRE:$scope.formData.montoEmitidasOctubre,
+						MONTO_NOVIEMBRE:$scope.formData.montoEmitidasNoviembre,
+						MONTO_DICIEMBRE:$scope.formData.montoEmitidasDiciembre
+					};
+	}
+	if($scope.formData.propuestas == 'Propuestas Ganadas'){
+		var objetivo = {
+						PROPUESTAS:$scope.formData.propuestas,
+						ANHIO:$scope.formData.anhio,
+						MONTO_ENERO:$scope.formData.montoGanadasEnero,
+						MONTO_FEBRERO:$scope.formData.montoGanadasFebrero,
+						MONTO_MARZO:$scope.formData.montoGanadasMarzo,
+						MONTO_ABRIL:$scope.formData.montoGanadasAbril,
+						MONTO_MAYO:$scope.formData.montoGanadasMayo,
+						MONTO_JUNIO:$scope.formData.montoGanadasJunio,
+						MONTO_JULIO:$scope.formData.montoGanadasJulio,
+						MONTO_AGOSTO:$scope.formData.montoGanadasAgosto,
+						MONTO_SEPTIEMBRE:$scope.formData.montoGanadasSeptiembre,
+						MONTO_OCTUBRE:$scope.formData.montoGanadasOctubre,
+						MONTO_NOVIEMBRE:$scope.formData.montoGanadasNoviembre,
+						MONTO_DICIEMBRE:$scope.formData.montoGanadasDiciembre
+					};
+	}
+	/*var objetivo = {
       NOMBRE_OBJETIVO:$scope.formData.nombre_objetivo,
 	  PRIORICIDAD:$scope.formData.periodicidad,
-	  VALOR_PERIODICIDAD:$scope.formData.valor_periodicidad,
-	  MONTO:$scope.formData.monto,
-  };
+	  
+  };*/
 
-  $.post( global_apiserver + "/objetivos/insert/", JSON.stringify(objetivo), function(respuesta){
+  $.post( global_apiserver + "/i_objetivos/insert/", JSON.stringify(objetivo), function(respuesta){
       respuesta = JSON.parse(respuesta);
       if (respuesta.resultado == "ok") {
           $scope.loadOjetivos();
-        $("#modalInsertarActualizar").modal("hide");
-        notify("Éxito", "Se ha insertado un nuevo objetivo: "+objetivo.NOMBRE_OBJETIVO+" de "+objetivo.VALOR_PERIODICIDAD+": "+objetivo.MONTO, "success");
+        $("#modalInsertar").modal("hide");
+        notify("Éxito", "Se ha insertado un nuevo objetivo", "success");
 
       }
       else{
           notify("Error", respuesta.mensaje, "error");
+		  
         }
       
   });
@@ -156,18 +214,16 @@ $scope.editar	=	function(){
 
     var objetivo = {
         ID:$scope.formData.id,
-        NOMBRE_OBJETIVO:$scope.formData.nombre_objetivo,
-        PRIORICIDAD:$scope.formData.periodicidad,
-        VALOR_PERIODICIDAD:$scope.formData.valor_periodicidad,
+        ANHIO:$scope.formData.anhio,
         MONTO:$scope.formData.monto
     };
   console.log(JSON.stringify(objetivo));
-  $.post( global_apiserver + "/objetivos/update/", JSON.stringify(objetivo), function(respuesta){
+  $.post( global_apiserver + "/i_objetivos/update/", JSON.stringify(objetivo), function(respuesta){
       respuesta = JSON.parse(respuesta);
       if (respuesta.resultado == "ok") {
           $scope.loadOjetivos();
-          $("#modalInsertarActualizar").modal("hide");
-          notify("Éxito", "Se ha editado un nuevo objetivo: "+objetivo.NOMBRE_OBJETIVO+" de "+objetivo.VALOR_PERIODICIDAD+": "+objetivo.MONTO, "success");
+          $("#modalActualizar").modal("hide");
+          notify("Éxito", "Se ha editado un objetivo", "success");
 
       }
       else{
