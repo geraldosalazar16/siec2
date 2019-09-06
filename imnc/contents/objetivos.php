@@ -32,7 +32,7 @@
 
             <tbody>
 				<tr ng-repeat="x in objetivos" class="ng-scope even pointer">
-					<td>{{x.NOMBRE}} {{x.ID_PERIODICIDAD==1 ? " del ": " de " }} {{x.ID_PERIODICIDAD==1 ? x.ANHIO : meses[x.MES -1]['nombre']}} {{x.ID_PERIODICIDAD==1 ?  : " del "meses[x.MES -1]['nombre']}}</td>
+					<td>{{x.NOMBRE}} {{x.ID_PERIODICIDAD==1 ? " del ": " de " }} {{x.ID_PERIODICIDAD==1 ? x.ANHIO : meses[x.MES -1]['nombre']}} {{x.ID_PERIODICIDAD==1 ? " " : " del "+x.ANHIO}}</td>
 					<td>{{x.VALOR_OBJETIVO}}</td>
                     <td>{{x.NOMBRE_PERIODICIDAD}}</td>
 					<td >

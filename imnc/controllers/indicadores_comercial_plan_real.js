@@ -7,7 +7,7 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
     $scope.periodicidad = [];
     $scope.objetivos = [];
     $scope.currentYear = null;
-    $scope.meses = [{"nombre" : "Enero"},{"nombre" : "Febrero"},{"nombre" : "Marzo"},{"nombre" : "Abril"},{"nombre" : "Mayo"},{"nombre" : "Junio"},{"nombre" : "Julio"},{"nombre" : "Agosto"},{"nombre" : "Septiembre"},{"nombre" : "Octubre"},{"nombre" : "Noviembre"},{"nombre" : "Diciembre"}];
+    $scope.meses = [{"id":1,"nombre" : "Enero"},{"id":2,"nombre" : "Febrero"},{"id":3,"nombre" : "Marzo"},{"id":4,"nombre" : "Abril"},{"id":5,"nombre" : "Mayo"},{"id":6,"nombre" : "Junio"},{"id":7,"nombre" : "Julio"},{"id":8,"nombre" : "Agosto"},{"id":9,"nombre" : "Septiembre"},{"id":10,"nombre" : "Octubre"},{"id":11,"nombre" : "Noviembre"},{"id":12,"nombre" : "Diciembre"}];
     $scope.mes = '';
     $scope.mes_acumulado = '';
     $scope.flag = '';
@@ -34,7 +34,7 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
 // ***** 	             FUNCION PARA CAMBIA PERIODICIDAD			 *****
 // ===========================================================================
     $scope.loadPeriodicidad = function() {
-        $.post(  global_apiserver + "/objetivos/getAllPeriodicidad/", function( response ) {
+        $.post(  global_apiserver + "/i_objetivos/getAllPeriodicidad/", function( response ) {
             $scope.periodicidad = JSON.parse(response);
             $scope.$apply();
 
@@ -44,7 +44,7 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
 // ***** 	             FUNCION PARA OBTENER OBJETIVOS			 *****
 // ===========================================================================
     $scope.loadObjetivos = function(periodicidad,valor) {
-        $.post( global_apiserver + "/objetivos/getByVentaPlanReal/?periodicidad="+periodicidad+"&valor="+valor, function( response ) {
+        $.post( global_apiserver + "/i_objetivos/getByVentaPlanReal/?periodicidad="+periodicidad+"&valor="+valor, function( response ) {
             $scope.objetivos = JSON.parse(response);
             $scope.$apply();
 
@@ -127,15 +127,19 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
 // =======================================================================================
     function loadResult(flag)
     {
-        var mes = $scope.formData.valor_periodicidad;
+        
         var acumulado = '';
+		var anhio = '';
         if(flag==1)
         {
             acumulado = 'DICIEMBRE';
+			anhio = $scope.formData.valor_periodicidad;
         }
         if(flag==2){
+			var mes = $scope.meses[$scope.formData.valor_periodicidad-1]['nombre'];
             mes = mes.toUpperCase();
             acumulado = mes;
+			anhio = moment().format('YYYY');
         }
         $scope.mes = mes;
         $scope.flag = flag;
@@ -152,11 +156,11 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
         var totalAC = 0;
         html += '<table class="table table-border text-dark">';
         if(flag==1) {
-            html += '<thead style="font-weight: 700"><td bgcolor="silver" width="20%"></td><td bgcolor="#f0e68c" width="80%" style="text-align: center;" colspan="5"> ENERO - ' + acumulado + '</td></thead>';
+            html += '<thead style="font-weight: 700"><td bgcolor="silver" width="20%"></td><td bgcolor="#f0e68c" width="80%" style="text-align: center;" colspan="5"> ENERO - ' + acumulado + ' '+anhio+'</td></thead>';
             html += ' <thead style="font-weight: 700"><td bgcolor="silver" ></td><td bgcolor="#f0e68c">PROPUESTAS EMITIDAS</td><td bgcolor="#f0e68c">OBJETIVO EMITIDAS</td><td bgcolor="#f0e68c">PROPUESTAS GANADAS</td><td bgcolor="#f0e68c">OBJETIVO GANADAS</td><td bgcolor="#f0e68c">PROPUESTAS ACTIVAS</td></thead>';
         }
         if(flag==2) {
-            html += '<thead style="font-weight: 700"><td bgcolor="silver" width="20%"></td><td bgcolor="#e6e6fa" width="40%" style="text-align: center;" colspan="4">'+mes+'</td></thead>';
+            html += '<thead style="font-weight: 700"><td bgcolor="silver" width="20%"></td><td bgcolor="#e6e6fa" width="40%" style="text-align: center;" colspan="4">'+mes+' '+anhio+'</td></thead>';
             html += ' <thead style="font-weight: 700"><td bgcolor="silver" ></td><td bgcolor="#e6e6fa">PROPUESTAS EMITIDAS</td><td bgcolor="#e6e6fa">OBJETIVO EMITIDAS</td><td bgcolor="#e6e6fa">PROPUESTAS GANADAS</td><td bgcolor="#e6e6fa">OBJETIVO GANADAS</td></thead>';
         }
         $.each($scope.prospectos,function(index,item) {
@@ -192,9 +196,9 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
         if (flag == 1) {
             html += '  <tr style="font-weight: 700"><td bgcolor="silver" >TOTAL</td>\n' +
                 '                   <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(totalE, 2, '.', ',') + '</td>\n' +
-                '                   <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat($scope.objetivos.OBJETIVOS.E), 2, '.', ',') + '</td>\n' +
+                '                   <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat($scope.objetivos.OBJETIVOS_ACUM.E), 2, '.', ',') + '</td>\n' +
                 '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(totalG, 2, '.', ',') + '</td>\n' +
-                '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat($scope.objetivos.OBJETIVOS.G), 2, '.', ',') + '</td>\n' +
+                '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(parseFloat($scope.objetivos.OBJETIVOS_ACUM.G), 2, '.', ',') + '</td>\n' +
                 '                    <td bgcolor="#f0e68c" style="text-align: right;">' + number_format(totalAC, 2, '.', ',') + '</td>\n' +
                 '                </tr>';
         }
@@ -244,7 +248,7 @@ app.controller('indicadores_comercial_plan_real_controller', ['$scope', '$http',
     }
     $(document).ready(function () {
 		$scope.formData.periodicidad = 2;
-		$scope.formData.valor_periodicidad = $scope.meses[$scope.mesActual-1]["nombre"];
+		$scope.formData.valor_periodicidad = $scope.meses[$scope.mesActual-1]["id"];
 		$scope.submitBuscarFiltrados();
     });
 }])

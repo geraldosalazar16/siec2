@@ -72,7 +72,7 @@
             <label class="control-label col-md-4 col-sm-4 col-xs-12" for="valor_periodicidad">Mes<span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                  <select ng-model="formData.valor_periodicidad" ng-options="m.nombre as m.nombre  for m in meses"
+                  <select ng-model="formData.valor_periodicidad" ng-options="m.id as m.nombre  for m in meses"
                           class="form-control" id="valor_periodicidad" name="valor_periodicidad" required>
                       <option value="">---Seleccione un mes---</option>
                   </select>
