@@ -74,7 +74,7 @@ $scope.calendar;
 					//Estado del prospecto
 					$http.get(  global_apiserver + "/prospecto/getById/?id="+calEvent.id_prospecto)
 					.then(function( response ) {//se ejecuta cuando la petición fue correcta
-						$("#cmbEstatus").val("string:"+response.data.ID_ESTATUS_SEGUIMIENTO);
+						//$("#cmbEstatus").val("string:"+response.data.ID_ESTATUS_SEGUIMIENTO);
 						$("#cmbPorcentaje").val("string:"+response.data.ID_PORCENTAJE);
 						$scope.usuariosP = response.data.ID_USUARIO_PRINCIPAL;
 						$scope.usuariosS = response.data.ID_USUARIO_SECUNDARIO;
@@ -497,6 +497,7 @@ $scope.calendar;
 	$scope.cambioPorcentaje = function(){
 		var prospecto = {
 		ID_PROSPECTO: $("#cmbProspecto").val().substring(7),
+		ID_PRODUCTO: $("#cmbProducto").val().substring(7),
 		PORCENTAJE: $("#cmbPorcentaje").val().substring(7),
 		ESTATUS: $("#cmbEstatus").val().substring(7)
 		};
@@ -633,10 +634,22 @@ $scope.calendar;
 			$("#btnCerrarTarea").html("Guardar y Cerrar");
 			//Configuro el boton guardar en modo guardar
 			$("#btnGuardarTarea").attr("accion","guardar");
+			//Estado del producto
+			$http.get(  global_apiserver + "/prospecto_producto/getStatusSeguimientoById/?id="+$scope.cmbProducto)
+					.then(function( response ) {//se ejecuta cuando la petición fue correcta
+						if(response.data.ID_ESTATUS_SEGUIMIENTO){
+							$("#cmbEstatus").val("string:"+response.data.ID_ESTATUS_SEGUIMIENTO);
+						}
+						else{
+							$("#cmbEstatus").val("");
+						}
+						
+					},
+					function (response){});
 			//Estado del prospecto		
 				$http.get(  global_apiserver + "/prospecto/getById/?id="+id)
 					.then(function( response ) {//se ejecuta cuando la petición fue correcta
-						$("#cmbEstatus").val("string:"+response.data.ID_ESTATUS_SEGUIMIENTO);
+						//$("#cmbEstatus").val("string:"+response.data.ID_ESTATUS_SEGUIMIENTO);
 						$("#cmbPorcentaje").val("string:"+response.data.ID_PORCENTAJE);
 						$scope.usuariosP = response.data.ID_USUARIO_PRINCIPAL;
 						$scope.usuariosS = response.data.ID_USUARIO_SECUNDARIO;
@@ -650,9 +663,10 @@ $scope.calendar;
 		$http.get(  global_apiserver + "/prospecto_producto/getByIdProspecto/?id="+id)
 	  		.then(function( response ) {//se ejecuta cuando la petición fue correcta
 	  			$scope.ProductosL = response.data.map(function(item){
-	  				return{
+					return{
 	  					id : item.ID,
 	  					nombre : item.ACRONIMO_SERVICIO +'-'+ item.ACRONIMO_TIPO_SERVICIO
+						
 	  				}
 	  			});
 	  			
