@@ -26,7 +26,7 @@ $json = file_get_contents("php://input");
 $objeto = json_decode($json); 
 
 $id_solicitud_facturacion = $objeto->id;
-valida_parametro_and_die($id,"Falta ID de Solicitud");
+valida_parametro_and_die($id_solicitud_facturacion,"Falta ID de Solicitud");
 $id_sce = $objeto->id_sce;
 valida_parametro_and_die($id_sce,"Falta ID de Servicio");
 $auditoria = $objeto->auditoria;
