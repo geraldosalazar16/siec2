@@ -386,15 +386,15 @@ $html = <<<EOD
 	<tr>
 		<hr>
 		<td style="font-size: small; text-align:center;" width="400">
-			Manuel Ma. Contreras 133 6º piso Col. Cuauhtémoc, Del. Cuauhtémoc C. P. 06500 CDMX<br>
-			Lada sin costo: 01 800 201 0145 Teléfono: 5546 4546<br>
+			Manuel Ma. Contreras 133  6º piso col. Cuauhtémoc. Alcaldía Cuauhtémoc C. P. 06500 CDMX<br>
+			Teléfono:  5546 4546<br>
 			Web <a>www.imnc.org.mx</a>
 		</td>
 		
 		<td style="font-size: small; text-align:left;" width="115"> 
 			Clave: FPEC23 <br>
-			Fecha de aplicación: 2018-08-02 <br>
-			Versión: 04 <br>
+			Fecha de aplicación: 2019-07-06 <br>
+			Versión: 07 <br>
 			Página $NumPage de $TotPage
 		</td>
 	</tr>

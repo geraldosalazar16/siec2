@@ -32,7 +32,7 @@ $columnas = array(
    "8"=>"FECHA_ENVIO_CUESTIONARIO",
    "9"=>"FECHA_RECEPCION_CUESTIONARIO",
 );
-$meses = array("Enero" => "01","Febrero" => "02","Marzo" => "03","Abril" => "04","Mayo" => "05","Junio" => "06","Julio" => "07","Agosto" => "08","Septiembre" => "09","Octubre" => "10","Noviembre" => "11","Diciembre" => "12");
+$meses = array("1" => "01","2" => "02","3" => "03","4" => "04","5" => "05","6" => "06","7" => "07","8" => "08","9" => "09","10" => "10","11" => "11","12" => "12");
 
 
 $periodicidad = $_REQUEST["periodicidad"];
@@ -47,15 +47,15 @@ $str_fechas2 = '';
 $mes1 = '';
 $mes2 = '';
 $year = date("Y");
-$mes_acumulado1 = $meses["Enero"];
+$mes_acumulado1 = $meses["1"];
 $mes_acumulado2 = '';
 
 if($periodicidad==1)
 {
-	$mes1 = $meses["Enero"];
-	$mes2 = $meses["Diciembre"];
+	$mes1 = $meses["1"];
+	$mes2 = $meses["12"];
 	$year = $valor;
-	$mes_acumulado2 = $meses["Diciembre"];
+	$mes_acumulado2 = $meses["12"];
 
 }
 if($periodicidad==2)
