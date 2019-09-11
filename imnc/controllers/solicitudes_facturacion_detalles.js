@@ -13,18 +13,15 @@ app.controller('solicitudes_facturacion_detalles_controller', ['$scope', '$http'
             if (response.data.resultado === 'error') {
             notify('Error', response.data.mensaje, 'error')
         } else {
-            $scope.solicitud = response.data;
-            console.log($scope.solicitud);
+            $scope.solicitud = response.data;          
             $scope.solicitud.DOCUMENTO.RUTA = global_apiserver+'/'+$scope.solicitud.DOCUMENTO.RUTA;
-
-
         }
     })
     .catch(error => notify('Error', error.message, 'error'))
     }
 
     // cargar documentos de la solicitud
-    $scope.loadDocumentos = function (id_solicitud) {
+    $scope.loadDocumentos = function (id_solicitud) {             
         $http.get(`${global_apiserver}/facturacion_solicitudes/getDocumentos?id=${id_solicitud}`)
             .then(response => {
             if (response.data.resultado === 'error') {
@@ -32,16 +29,20 @@ app.controller('solicitudes_facturacion_detalles_controller', ['$scope', '$http'
         } else {
 
             $scope.documentos = response.data;
-            draw_row_documentos();
-
-
+            if ($scope.documentos.length)
+               {draw_row_documentos();}
+               else {
+                $("#expander").empty();
+                var html = "<div class='alert alert-warning' role='alert'>No existen documentos registrados a esa solicitud</div>";  
+                $("#expander").append(html);
+               }
         }
     })
     .catch(error => notify('Error', error.message, 'error'))
     }
 
     function draw_row_documentos()
-    {
+    {       
         $("#expander").empty();
         var html = '';
         var tipo = null;
@@ -80,8 +81,6 @@ app.controller('solicitudes_facturacion_detalles_controller', ['$scope', '$http'
                     html += '<li class="ver_documento" nombre_documento = "'+item.NOMBRE_ALMACENAMIENTO+'"><a> <span class="labelAcordeon"><i class="fa fa-eye"></i> Ver Documento</span></a> </li>';
                      html += '<li class="download_documento" nombre_documento = "'+item.NOMBRE_DOCUMENTO+'" nombre_almacen = "'+item.NOMBRE_ALMACENAMIENTO+'"><a> <span class="labelAcordeon"><i class="fa fa-download"></i> Descargar Documento</span></a> </li>';
                 }
-
-
                 html += '</ul></span></td></tr>';
                 if($scope.documentos.length == index+1)
                 {
@@ -134,7 +133,7 @@ app.controller('solicitudes_facturacion_detalles_controller', ['$scope', '$http'
 
     $(document).ready(function () {
         loadSolicitud($scope.id_solicitud);
-
+        $scope.loadDocumentos($scope.id_solicitud);
 
     });
 }])
