@@ -117,7 +117,12 @@ $scope.formData = {};
   $scope.fill_select_domicilios = function (){ 
     var url="";
     if($scope.obj_cotizacion.BANDERA == 0){
-      url = "/prospecto_domicilio/getAll/?id="+ $scope.obj_cotizacion.ID_PROSPECTO;
+		if($scope.obj_cotizacion.PROSPECTO['ID_CLIENTE'] == 0){
+			url = "/prospecto_domicilio/getAll/?id="+ $scope.obj_cotizacion.ID_PROSPECTO;
+		}
+		else{
+			url = "/clientes_domicilios/getByClient/?id="+ $scope.obj_cotizacion.PROSPECTO['ID_CLIENTE'];
+		}
     }
     else if($scope.obj_cotizacion.BANDERA == 1){
       url = "/clientes_domicilios/getByClient/?id="+ $scope.obj_cotizacion.ID_PROSPECTO;
@@ -428,10 +433,26 @@ $scope.formData = {};
 		
 		$("#id_prospecto").val($scope.obj_cotizacion.ID_PROSPECTO);
 		$("#id_producto").val('');
-		Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
-		Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+		//Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+		//Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+		//Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
+		//Contactos_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
+		
+	if($scope.obj_cotizacion.BANDERA == 0){
+		if($scope.obj_cotizacion.PROSPECTO['ID_CLIENTE'] == 0){
+			Contactos_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+			Domicilios_Prospecto($scope.obj_cotizacion.ID_PROSPECTO);
+		}
+		else{
+			Domicilios_Cliente($scope.obj_cotizacion.PROSPECTO['ID_CLIENTE']);
+			Contactos_Cliente($scope.obj_cotizacion.PROSPECTO['ID_CLIENTE']);
+			
+		}
+    }
+    else if($scope.obj_cotizacion.BANDERA == 1){
 		Domicilios_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
 		Contactos_Cliente($scope.obj_cotizacion.ID_PROSPECTO);
+    }
 		
 		$scope.formDataGenCotizacion.tramites=$scope.arr_tramites_cotizacion;
 		$scope.formDataGenCotizacion.descripcion=[];

@@ -524,18 +524,30 @@
 
 				</div> -->
 
-				<div class="form-group" ng-if="obj_cotizacion.BANDERA == 0">
+				<div class="form-group" ng-if="obj_cotizacion.BANDERA == 0 && obj_cotizacion.PROSPECTO['ID_CLIENTE'] ==0">
 						<label class="control-label">Contactos</label>
 						<select class="form-control" id="formDataGenCotizacion.contactoprospecto1" ng-model="formDataGenCotizacion.contactoprospecto1"  ng-options="ContactoProspecto1.ID as ContactoProspecto1.NOMBRE for ContactoProspecto1 in ContactoProspectos1"  class="form-control" required ng-class="{ error: exampleFormGenCotizacion.contactoprospecto1.$error.required && !exampleForm.$pristine}" >
 
 						</select>
 					</div>
-					<div class="form-group" ng-if="obj_cotizacion.BANDERA == 0">
+					<div class="form-group" ng-if="obj_cotizacion.BANDERA == 0 && obj_cotizacion.PROSPECTO['ID_CLIENTE'] ==0">
 						<label class="control-label">Domicilio</label>
 						<select class="form-control" id="formDataGenCotizacion.domicilioprospecto1" ng-model="formDataGenCotizacion.domicilioprospecto1"  ng-options="DomicilioProspecto1.ID as DomicilioProspecto1.NOMBRE for DomicilioProspecto1 in DomicilioProspectos1"  class="form-control" required ng-class="{ error: exampleFormGenCotizacion.domicilioprospecto1.$error.required && !exampleForm.$pristine}" >
 
 						</select>
 					</div>
+				<div class="form-group" ng-if="obj_cotizacion.BANDERA == 0 && obj_cotizacion.PROSPECTO['ID_CLIENTE'] !=0">
+					<label class="control-label">Contactos</label>
+					<select class="form-control" id="formDataGenCotizacion.contactoprospecto1" ng-model="formDataGenCotizacion.contactoprospecto1"  ng-options="ContactoCliente1.ID as ContactoCliente1.NOMBRE_CONTACTO for ContactoCliente1 in ContactoClientes1"  class="form-control" required ng-class="{ error: exampleFormGenCotizacion.contactoprospecto1.$error.required && !exampleForm.$pristine}" >
+
+					</select>
+				</div>
+				<div class="form-group" ng-if="obj_cotizacion.BANDERA == 0 && obj_cotizacion.PROSPECTO['ID_CLIENTE'] !=0">
+					<label class="control-label">Domicilio</label>
+					<select class="form-control" id="formDataGenCotizacion.domicilioprospecto1" ng-model="formDataGenCotizacion.domicilioprospecto1"  ng-options="DomicilioCliente1.ID as DomicilioCliente1.NOMBRE for DomicilioCliente1 in DomicilioClientes1"  class="form-control" required ng-class="{ error: exampleFormGenCotizacion.domicilioprospecto1.$error.required && !exampleForm.$pristine}" >
+
+					</select>
+				</div>	
 				<div class="form-group" ng-if="obj_cotizacion.BANDERA == 1">
 					<label class="control-label">Contactos</label>
 					<select class="form-control" id="formDataGenCotizacion.contactoprospecto1" ng-model="formDataGenCotizacion.contactoprospecto1"  ng-options="ContactoCliente1.ID as ContactoCliente1.NOMBRE_CONTACTO for ContactoCliente1 in ContactoClientes1"  class="form-control" required ng-class="{ error: exampleFormGenCotizacion.contactoprospecto1.$error.required && !exampleForm.$pristine}" >

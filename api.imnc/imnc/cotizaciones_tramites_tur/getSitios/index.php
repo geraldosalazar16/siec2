@@ -66,10 +66,19 @@ $campos = [
 ];
 
 if($cotizacion[0]["BANDERA"] == 0){
-	$total_domicilios = $database->count("PROSPECTO_DOMICILIO", ["ID_PROSPECTO"=>$cotizacion[0]["ID_PROSPECTO"]]); 
-	array_push($campos, "PROSPECTO_DOMICILIO.NOMBRE");
-	$tabla_entidad = "PROSPECTO_DOMICILIO";
-}
+		$id_cliente = $database->get("PROSPECTO",["ID_CLIENTE"], ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
+		if($id_cliente == 0){
+			$total_domicilios = $database->count("PROSPECTO_DOMICILIO", ["ID_PROSPECTO"=>$cotizacion[0]["ID_PROSPECTO"]]); 
+			array_push($campos, "PROSPECTO_DOMICILIO.NOMBRE");
+			$tabla_entidad = "PROSPECTO_DOMICILIO";
+		}
+		else{
+			$total_domicilios = $database->count("CLIENTES_DOMICILIOS", ["ID_CLIENTE"=>$id_cliente]);
+			array_push($campos, "CLIENTES_DOMICILIOS.NOMBRE_DOMICILIO(NOMBRE)");
+			$tabla_entidad = "CLIENTES_DOMICILIOS";
+		}
+		
+	}
 else if($cotizacion[0]["BANDERA"] != 0){
 	$total_domicilios = $database->count("CLIENTES_DOMICILIOS", ["ID_CLIENTE"=>$cotizacion[0]["ID_PROSPECTO"]]);
 	array_push($campos, "CLIENTES_DOMICILIOS.NOMBRE_DOMICILIO(NOMBRE)");
