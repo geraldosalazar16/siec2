@@ -170,7 +170,7 @@ $cotizacion[0]["FOLIO"] = $FOLIO;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //CONTACTO
 /////////////////////////////////////////////////////////////////////////////////////////////////
-if($cotizacion[0]["BANDERA"] == 0){
+if($cotizacion[0]["BANDERA"] == 0 && $id_cliente == 0){
 	//NOMBRE PROSPECTO
 
 	$prospectoall = $database->select("PROSPECTO","*",["ID"=>$id_prospecto]);
@@ -230,6 +230,14 @@ $domicilio_cotizacion =  $database->get("PROSPECTO_DOMICILIO" ,
 	]	
 		, ["PROSPECTO_DOMICILIO.ID"=>$id_domicilio]);
 }
+if($cotizacion[0]["BANDERA"] == 0 && $id_cliente != 0){
+	//NOMBRE ClIENTES
+
+	$prospectoall = $database->select("CLIENTES","*",["ID"=>$id_cliente]);
+	$dom_cliente = $database->get("CLIENTES_DOMICILIOS", "*", ["ID"=>$id_domicilio]);
+	$cont_cliente = $database->get("CLIENTES_CONTACTOS","*",["ID"=>$id_contacto]);
+	valida_error_medoo_and_die();
+}
 if($cotizacion[0]["BANDERA"] == 1){
 	//NOMBRE ClIENTES
 
@@ -246,13 +254,21 @@ $name_prospecto = $prospectoall[0]["NOMBRE"];//$name_prospecto = $datos->name_pr
 $area = $cotizacion[0]['SERVICIO']["NOMBRE"];//$nombrearea[0]["NOMBRE"];//$area = $datos->servicio;//
 $fecha = mes_esp(date('d/n/Y'));
 $referencia_comercial = $cotizacion[0]["FOLIO"];//$cotizacion[0]["REFERENCIA"];//"001082017-01";$referencia_comercial = $datos->folio;//
-if($cotizacion[0]["BANDERA"] == 0){
+if($cotizacion[0]["BANDERA"] == 0 && $id_cliente == 0){
 	$direccion_contacto = "Calle ".$domicilio_cotizacion["CALLE"]." Exterior ".$domicilio_cotizacion["NUMERO_EXTERIOR"]." Interior ".$domicilio_cotizacion["NUMERO_INTERIOR"]." Colonia ".$domicilio_cotizacion["COLONIA"]." Delegacion ".$domicilio_cotizacion["MUNICIPIO"].",CP ".$domicilio_cotizacion["CODIGO_POSTAL"].", ".$domicilio_cotizacion["ESTADO"].", ".$domicilio_cotizacion["PAIS"];//$direccion_contacto="";//
 	
 	$name_contacto = $contacto_cotizacion["NOMBRE"];//$name_contacto="";//
 	$cargo_contacto = $contacto_cotizacion["PUESTO"];//$cargo_contacto="";//
 	$telefono_contacto = $contacto_cotizacion["TELEFONO"];//$telefono_contacto="";//
 	$email = $contacto_cotizacion["CORREO"];//$email="";//
+}
+if($cotizacion[0]["BANDERA"] == 0 && $id_cliente != 0){
+	$direccion_contacto = "Calle ".$dom_cliente["CALLE"]." Exterior ".$dom_cliente["NUMERO_EXTERIOR"]." Interior ".$dom_cliente["NUMERO_INTERIOR"]." Colonia ".$dom_cliente["COLONIA_BARRIO"]." Delegacion ".$dom_cliente["DELEGACION_MUNICIPIO"].",CP ".$dom_cliente["CP"].", ".$dom_cliente["ENTIDAD_FEDERATIVA"].", ".$dom_cliente["PAIS"];//$direccion_contacto="";//
+	
+	$name_contacto = $cont_cliente["NOMBRE_CONTACTO"];//$name_contacto="";//
+	$cargo_contacto = $cont_cliente["CARGO"];//$cargo_contacto="";//
+	$telefono_contacto = $cont_cliente["TELEFONO_FIJO"];//$telefono_contacto="";//
+	$email = $cont_cliente["EMAIL"];//$email="";//
 }
 if($cotizacion[0]["BANDERA"] == 1){
 	$direccion_contacto = "Calle ".$dom_cliente["CALLE"]." Exterior ".$dom_cliente["NUMERO_EXTERIOR"]." Interior ".$dom_cliente["NUMERO_INTERIOR"]." Colonia ".$dom_cliente["COLONIA_BARRIO"]." Delegacion ".$dom_cliente["DELEGACION_MUNICIPIO"].",CP ".$dom_cliente["CP"].", ".$dom_cliente["ENTIDAD_FEDERATIVA"].", ".$dom_cliente["PAIS"];//$direccion_contacto="";//
@@ -284,7 +300,7 @@ $suma_emple=0;
 for($i=0;$i<count($respuesta);$i++){
 	$suma_emple += $respuesta[$i]['TOTAL_EMPLEADOS'];
 	// AQUI CARGO LOS DATOS DE LOS DOMICILIOS ADICIONALES (NOMBRE Y DIRECCION)
-	if($cotizacion[0]["BANDERA"] == 0){
+	if($cotizacion[0]["BANDERA"] == 0 && $id_cliente == 0){
 		$domicilio_cotizacion1 =  $database->get("PROSPECTO_DOMICILIO" , 
 				["[>]USUARIOS(USUARIO_CREAR)" => ["PROSPECTO_DOMICILIO.USUARIO_CREACION" => "ID"],
 				"[>]USUARIOS(USUARIO_MOD)" => ["PROSPECTO_DOMICILIO.USUARIO_MODIFICACION" => "ID"]
@@ -313,6 +329,11 @@ for($i=0;$i<count($respuesta);$i++){
 			
 			$anexo1[$i]['DOMICILIO'] = "Calle ".$domicilio_cotizacion1["CALLE"]." Exterior ".$domicilio_cotizacion1["NUMERO_EXTERIOR"]." Interior ".$domicilio_cotizacion1["NUMERO_INTERIOR"]." Colonia ".$domicilio_cotizacion1["COLONIA"]." Delegacion ".$domicilio_cotizacion1["MUNICIPIO"].",CP ".$domicilio_cotizacion1["CODIGO_POSTAL"].", ".$domicilio_cotizacion1["ESTADO"].", ".$domicilio_cotizacion1["PAIS"];
 			$anexo1[$i]['NOMBRE'] = $domicilio_cotizacion1["NOMBRE"];	
+	}
+	if($cotizacion[0]["BANDERA"] == 0 && $id_cliente != 0){
+		$dom_cliente1 = $database->get("CLIENTES_DOMICILIOS", "*", ["ID"=>$respuesta[$i]['ID_DOMICILIO_SITIO']]);
+		$anexo1[$i]['DOMICILIO'] = "Calle ".$dom_cliente1["CALLE"]." Exterior ".$dom_cliente1["NUMERO_EXTERIOR"]." Interior ".$dom_cliente1["NUMERO_INTERIOR"]." Colonia ".$dom_cliente1["COLONIA_BARRIO"]." Delegacion ".$dom_cliente1["DELEGACION_MUNICIPIO"].",CP ".$dom_cliente1["CP"].", ".$dom_cliente1["ENTIDAD_FEDERATIVA"].", ".$dom_cliente1["PAIS"];
+		$anexo1[$i]['NOMBRE'] = $dom_cliente1["NOMBRE_DOMICILIO"];	
 	}
 	if($cotizacion[0]["BANDERA"] == 1){
 		$dom_cliente1 = $database->get("CLIENTES_DOMICILIOS", "*", ["ID"=>$respuesta[$i]['ID_DOMICILIO_SITIO']]);

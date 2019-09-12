@@ -78,15 +78,6 @@
 						<div class="col-md-6 col-sm-12 col-xs-12">
 						<form name="form3" id="form3" data-parsley-validate="" class="form-horizontal form-label-left">
 							<div class="form-group">
-								<label>Estatus del prospecto<span class="required">*</span></label>
-							  <select ng-model="cmbEstatus" id="cmbEstatus" required="required" 
-								class="form-control col-md-7 col-xs-12" data-parsley-id="2324" ng-model="cmbEstatus" 
-								ng-change = "cambioPorcentaje()" ng-options="estatus.id as estatus.nombre for estatus in Estatus">
-									<option value="">---Seleccione una estatus---</option>
-								</select>
-							</div>
-
-							<div class="form-group">
 								<label>Porcentaje<span class="required">*</span></label>
 							  <select ng-model="cmbPorcentaje" id="cmbPorcentaje" required="required" 
 								class="form-control col-md-7 col-xs-12" data-parsley-id="2324" ng-model="cmbPorcentaje" 
@@ -94,6 +85,16 @@
 									<option value="">---Seleccione una porcentaje---</option>
 								</select>
 							</div>
+							<div class="form-group">
+								<label>Estatus del producto<span class="required">*</span></label>
+							  <select ng-model="cmbEstatus" id="cmbEstatus" required="required" 
+								class="form-control col-md-7 col-xs-12" data-parsley-id="2324" ng-model="cmbEstatus" 
+								ng-change = "cambioPorcentaje()" ng-options="estatus.id as estatus.nombre for estatus in Estatus">
+									<option value="">---Seleccione una estatus---</option>
+								</select>
+							</div>
+
+							
 							<!--
 							<div class="form-group">
 								<label>Usuario Principal<span class="required">*</span></label>

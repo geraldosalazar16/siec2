@@ -1068,6 +1068,17 @@ if($cotizacion[0]["ID_SERVICIO"] == 2 || $cotizacion[0]["ID_SERVICIO"] == 4){
 }
 //Codigo si el tipo de servicio pertenece a CIFA
 if($cotizacion[0]["ID_SERVICIO"] == 3){
+	
+	if($cotizacion[0]["BANDERA"] != "0"){
+		//$id_cliente = $database->get("PROSPECTO", "ID_CLIENTE", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
+		$cliente = $database->get("CLIENTES", "*", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
+		valida_error_medoo_and_die();
+		$cotizacion[0]["CLIENTE"] = $cliente;
+	} else {
+		$prospecto = $database->get("PROSPECTO", "*", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
+		valida_error_medoo_and_die();
+		$cotizacion[0]["PROSPECTO"] = $prospecto;
+	}
 	//Necesito de COTIZACION_DETALLE
 	//MODALIDAD, ID_CURSO
 	$modalidad = "";
