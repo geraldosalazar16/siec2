@@ -548,11 +548,10 @@ function ActualizarSolicitVenc() {
 	$http.post(`${global_apiserver}/facturacion_solicitudes/ActualizarEstatusTodo/`, data)
 	.then(response=>{
 	if (response.data.resultado != 'ok') {
-		notify('Error', response.data.message, 'error');
+		//hubo error
 	}
-	 else
-		notify('Éxito', 'Se actualizaron estados de solicitudes', 'success');})
-	.catch(error => notify('Error', error.message, 'error'))
+	 })
+	.catch(error => console.log('Error act estados a venc'))
 
 }
 
