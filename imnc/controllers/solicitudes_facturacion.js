@@ -52,7 +52,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
         { name: 'cancelarParcial', label: 'Cancelar', form: 'cancelarForm'}
     ];
 
-    // Abrir modal insertar/actualizar
+        // Abrir modal insertar/actualizar
     $scope.abrirModalCrearSolicitud = function() {
         $scope.modal_titulo = "Insertar solicitud";
         $scope.accion = "insertar";
@@ -653,7 +653,7 @@ app.controller('solicitudes_facturacion_controller', ['$scope', '$http', functio
         $scope.stepper = new Stepper($('.bs-stepper')[0]);
     });
 
-    // Entry point
+    // Entry point   
     inicializacion();
     listarServicios();
     listarEstatus();

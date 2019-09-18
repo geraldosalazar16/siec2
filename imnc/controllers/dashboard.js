@@ -1,4 +1,4 @@
-app.controller('dashboard_controller', ['$scope', function($scope,$http) { 
+app.controller('dashboard_controller', ['$scope', '$http',function($scope,$http) { 
 /***********************************************************************/
 	var repCertVig = document.getElementById("RepCertVigChart");
 	var repCertVigHist = document.getElementById("RepCertVigHistChart");
@@ -540,7 +540,23 @@ $scope.graficarepDiasAudSGHist = function(){
 	});
 };
 
+//Actualizar los estados de solicitudes q estén vencidas
+function ActualizarSolicitVenc() {
+	data = {            
+		id_usuario: sessionStorage.getItem("id_usuario")
+	}
+	$http.post(`${global_apiserver}/facturacion_solicitudes/ActualizarEstatusTodo/`, data)
+	.then(response=>{
+	if (response.data.resultado != 'ok') {
+		notify('Error', response.data.message, 'error');
+	}
+	 else
+		notify('Éxito', 'Se actualizaron estados de solicitudes', 'success');})
+	.catch(error => notify('Error', error.message, 'error'))
 
+}
+
+ActualizarSolicitVenc();
 $scope.graficaRepCertVig();
 $scope.graficaRepCertVigHist();
 $scope.graficaRepCompContr();
