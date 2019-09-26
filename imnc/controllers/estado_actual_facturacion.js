@@ -76,7 +76,7 @@ $scope.graficaRepCarteraVencida = function(){
 			var estado=[];
 			var fondo=[];
 			//4 tonalidades de azul mate ordenados del más claro al más oscuro en correspondecia
-			//a lo significativo en tiempo de vejes de las facturas. El backend los devuelve ordenados
+			//a lo significativo en tiempo de vejes de las facturas. El backend los devuelve ordenados			
 			colores=["#c1e1f7","#6cafdb","#2067a2","#16365d"];
 			for(var i = 0 ; i < data.length ; i++){				
 				datos[i] = data[i].total;

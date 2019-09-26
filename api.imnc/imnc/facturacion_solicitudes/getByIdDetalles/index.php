@@ -79,17 +79,20 @@
 		$cadena = explode("-",$sce["REFERENCIA"]);
 		$ruta = "arch_expediente/".$cadena[1].$cadena[2]."/1/Asignación /".trim($documento["NOMBRE_SECCION"])."/".$documento["ID"].".".$documento["EXTENSION_DOCUMENTO"];
 		$documento["EXIST"] = false;
+		$documento["RUTA"] = "";//Asegurar q siempre exista RUTA
 		$ruta_full = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR."arch_expediente".DIRECTORY_SEPARATOR.$cadena[1].$cadena[2].DIRECTORY_SEPARATOR."1".DIRECTORY_SEPARATOR."Asignación ".DIRECTORY_SEPARATOR.trim($documento["NOMBRE_SECCION"]).DIRECTORY_SEPARATOR.$documento["ID"].".".$documento["EXTENSION_DOCUMENTO"];
 		if(file_exists($ruta_full))
 		{
 			$documento["EXIST"] = true;
 			$documento["RUTA"] = $ruta;
-		}
-
-		$solicitud["DOCUMENTO"] = $documento;
+		}		
+	}
+	else{
+		$documento["EXIST"] = false;
+		$documento["RUTA"] = "";//Asegurar q siempre exista RUTA
 	}
     valida_error_medoo_and_die();
-
+	$solicitud["DOCUMENTO"] = $documento;
 
 
 print_r(json_encode($solicitud));
