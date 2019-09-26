@@ -118,7 +118,7 @@ app.controller('reportes_controller',['$scope','$http',function($scope,$http){
                 },
                 {
                     "nombre" : "Sector",
-                    "value": "SECTORES.NOMBRE as SECTOR|string"
+                    "value": "SECTORES.NOMBRE AS SECTOR|string"
                 },
                 {
                     "nombre" : "Días auditor cotizados",

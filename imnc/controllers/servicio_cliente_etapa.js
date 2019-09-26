@@ -135,7 +135,7 @@ app.controller('servicio_cliente_etapa_controller', ['$scope', '$http', function
     // =======================================================================================
     $scope.nuevoServicio = function() {
 
-            $scope.modal_titulo = "Insertar documento";
+            $scope.modal_titulo = "Insertar servicio";
             $scope.accion = "insertar";
             clear_modal_insertar_actualizar();
             $("#modalInsertarActualizar").modal("show");
