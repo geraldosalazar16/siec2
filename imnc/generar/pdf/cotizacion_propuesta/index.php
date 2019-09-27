@@ -414,7 +414,7 @@ $html = <<<EOD
 		
 		<td style="font-size: small; text-align:left;" width="115"> 
 			Clave: FPEC23 <br>
-			Fecha de aplicación: 2019-07-06 <br>
+			Fecha de aplicación: 2019-07-16 <br>
 			Versión: 07 <br>
 			Página $NumPage de $TotPage
 		</td>
@@ -659,6 +659,7 @@ EOT;
 			}}
 			}		
 			$subtotal=$costo_E1+$costo_E2+$suma_tarifa+$viaticos_E1+$viaticos_E2;
+			$viaticos = $viaticos_E1+$viaticos_E2;
 			$IVA16=0.16*$subtotal;
 			$total=$subtotal+$IVA16;
 			$monto = $database->update("COTIZACIONES_TRAMITES", [
@@ -669,6 +670,11 @@ EOT;
 			$total_f=number_format($total,2);
 			$html .= <<<EOT
 						
+			<tr>
+				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>Viaticos</strong></td>
+				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
+				<td style="font-size: medium;" width="100">$viaticos</td>
+			</tr>
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>Subtotal</strong></td>
 				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
@@ -752,6 +758,11 @@ EOT;
 			$IVA16_f=number_format($IVA16,2);
 			$total_f=number_format($total,2);
         $html .= <<<EOT
+			<tr>
+				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>Viaticos</strong></td>
+				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
+				<td style="font-size: medium;" width="100">$viaticos</td>
+			</tr>
 			<tr>
 				<td style="font-size: medium; text-align:right; color:#5779A3" width="325"><strong>Subtotal</strong></td>
 				<td style="font-size: medium; background-color: #D8E4F0; color:#5779A3" width="25">$</td>
