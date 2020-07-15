@@ -56,6 +56,9 @@ foreach ($DOMICILIOS as $key => $domicilio) {
 	$id = $database->update("PROSPECTO_DOMICILIO", [ 
 		"ID_CLIENTE_DOMICILIO" => $client_dom
 	], ["ID"=>$ID]); 
+	$id = $database->update("COTIZACION_SITIOS", [ 
+		"ID_DOMICILIO_SITIO" => $client_dom
+	], ["ID_DOMICILIO_SITIO"=>$ID]);
 
 	foreach ($CONCTACTO_DOMICILIO[$ID] as $key => $contacto) {
 	    $NOMBRE_CONTACTO = $contacto->NOMBRE;

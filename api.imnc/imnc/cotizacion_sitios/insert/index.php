@@ -29,28 +29,45 @@ $json = file_get_contents("php://input");
 $objeto = json_decode($json); 
 
 $ID_COTIZACION = $objeto->ID_COTIZACION; 
+$ID_TIPO_SERVICIO = $objeto->ID_TIPO_SERVICIO;
 $TOTAL_EMPLEADOS = $objeto->TOTAL_EMPLEADOS; 
 valida_parametro_and_die($TOTAL_EMPLEADOS,"Falta total de empleados");
 $ID_DOMICILIO_SITIO = $objeto->ID_DOMICILIO_SITIO;
 valida_parametro_and_die($ID_DOMICILIO_SITIO,"Falta domicilio");
-$NUMERO_EMPLEADOS_CERTIFICACION = $objeto->NUMERO_EMPLEADOS_CERTIFICACION;
-valida_parametro_and_die($NUMERO_EMPLEADOS_CERTIFICACION,"Falta número de empleados para certificación");
-$CANTIDAD_TURNOS = $objeto->CANTIDAD_TURNOS;
-valida_parametro_and_die($CANTIDAD_TURNOS,"Falta cantidad de turnos");
-$CANTIDAD_DE_PROCESOS = $objeto->CANTIDAD_DE_PROCESOS;
-valida_parametro_and_die($CANTIDAD_DE_PROCESOS,"Falta cantidad de procesos");
+if($ID_TIPO_SERVICIO != 54){
+	$NUMERO_EMPLEADOS_CERTIFICACION = $objeto->NUMERO_EMPLEADOS_CERTIFICACION;
+	valida_parametro_and_die($NUMERO_EMPLEADOS_CERTIFICACION,"Falta número de empleados para certificación");
+	$CANTIDAD_TURNOS = $objeto->CANTIDAD_TURNOS;
+	valida_parametro_and_die($CANTIDAD_TURNOS,"Falta cantidad de turnos");
+	$CANTIDAD_DE_PROCESOS = $objeto->CANTIDAD_DE_PROCESOS;
+	valida_parametro_and_die($CANTIDAD_DE_PROCESOS,"Falta cantidad de procesos");
+	$FACTOR_REDUCCION = $objeto->FACTOR_REDUCCION;
+	valida_parametro_and_die($FACTOR_REDUCCION,"Falta el factor de reducción");
+	$FACTOR_AMPLIACION = $objeto->FACTOR_AMPLIACION;
+	valida_parametro_and_die($FACTOR_AMPLIACION,"Falta el factor de ampliación");
+	$JUSTIFICACION = $objeto->JUSTIFICACION;
+	valida_parametro_and_die($JUSTIFICACION,"Falta justificación del factor de reducción y ampliación");
+	$ID_ACTIVIDAD = $objeto->ID_ACTIVIDAD;
+	valida_parametro_and_die($ID_ACTIVIDAD,"Falta actividad");
+}
+else{
+	$NUMERO_EMPLEADOS_CERTIFICACION = null;
+	$CANTIDAD_TURNOS =null;
+	$CANTIDAD_DE_PROCESOS = null;
+	$FACTOR_REDUCCION = 0;
+	$FACTOR_AMPLIACION = 0;
+	$JUSTIFICACION = 'N/A';
+	$ID_ACTIVIDAD = null;
+	
+	
+}
+
+
 $TEMPORAL_O_FIJO = $objeto->TEMPORAL_O_FIJO;
 valida_parametro_and_die($TEMPORAL_O_FIJO,"Falta seleccionar si es temporal o fijo");
 $MATRIZ_PRINCIPAL = $objeto->MATRIZ_PRINCIPAL;
 valida_parametro_and_die($MATRIZ_PRINCIPAL,"Falta seleccionar si es matriz principal");
-$FACTOR_REDUCCION = $objeto->FACTOR_REDUCCION;
-valida_parametro_and_die($FACTOR_REDUCCION,"Falta el factor de reducción");
-$FACTOR_AMPLIACION = $objeto->FACTOR_AMPLIACION;
-valida_parametro_and_die($FACTOR_AMPLIACION,"Falta el factor de ampliación");
-$JUSTIFICACION = $objeto->JUSTIFICACION;
-valida_parametro_and_die($JUSTIFICACION,"Falta justificación del factor de reducción y ampliación");
-$ID_ACTIVIDAD = $objeto->ID_ACTIVIDAD;
-valida_parametro_and_die($ID_ACTIVIDAD,"Falta actividad");
+
 
 if(!is_numeric($FACTOR_REDUCCION)){
 	$respuesta["resultado"] = "error"; 
@@ -83,6 +100,13 @@ valida_parametro_and_die($ID_USUARIO_CREACION,"Falta ID de USUARIO");
 
 $FECHA_CREACION = date("Ymd");
 $HORA_CREACION = date("His");
+
+if(($database->count("COTIZACION_SITIOS",['AND'=>["ID_COTIZACION"=>$ID_COTIZACION,"MATRIZ_PRINCIPAL" => 'si']])!=0) && $MATRIZ_PRINCIPAL == 'si'){
+	$respuesta["resultado"] = "error"; 
+	$respuesta["mensaje"] = "Ya existe un sitio matriz para esta cotizacion"; 
+	print_r(json_encode($respuesta)); 
+	die(); 
+}
 
 if($database->count("COTIZACION_SITIOS",['AND'=>["ID_COTIZACION"=>$ID_COTIZACION,"ID_DOMICILIO_SITIO" => $ID_DOMICILIO_SITIO]])==0){
 	$id = $database->insert("COTIZACION_SITIOS", [ 

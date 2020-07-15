@@ -58,9 +58,12 @@ if($cotizacion[0]["ID_SERVICIO"] == 1){
 		valida_error_medoo_and_die();
 		$cotizacion[0]["CLIENTE"] = $cliente;
 	} else {
+		
 		$prospecto = $database->get("PROSPECTO", "*", ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
 		valida_error_medoo_and_die();
 		$cotizacion[0]["PROSPECTO"] = $prospecto;
+		
+		
 	
 		//Buscar el nivel de integración para Integrales
 		$cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"] = 0;
@@ -247,7 +250,31 @@ if($cotizacion[0]["ID_SERVICIO"] == 1){
 				}
 			} else {
 				//Para el caso de auditorías simples
-				if($cotizacion[0]["ID_TIPO_SERVICIO"] == 21){
+				switch($cotizacion[0]["ID_TIPO_SERVICIO"]){
+					case 21:
+						$dias = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad,
+							[
+								"AND"=>[
+											"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
+											"ETAPA"=>$etapa_para_sgen,
+											"TOTAL_EMPLEADOS_MINIMO[<=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+											"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+										]
+							]);
+						break;
+					
+					default:
+						$dias = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad,
+							[
+								"AND"=>[
+											"ID_TIPO_SERVICIO"=>$cotizacion[0]["ID_TIPO_SERVICIO"],
+											"TOTAL_EMPLEADOS_MINIMO[<=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+											"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
+										]
+							]);
+						break;
+				}
+				/*if($cotizacion[0]["ID_TIPO_SERVICIO"] == 21){
 					$dias = $database->get("COTIZACION_EMPLEADOS_DIAS", "DIAS_AUDITORIA".$complejidad,
 					[
 						"AND"=>[
@@ -266,7 +293,7 @@ if($cotizacion[0]["ID_SERVICIO"] == 1){
 									"TOTAL_EMPLEADOS_MAXIMO[>=]"=>$cotizacion_sitios[$i]["TOTAL_EMPLEADOS"],
 								]
 					]);
-				}
+				}*/
 			}
 				$dias_reduccion = round($dias * (1 - ($cotizacion_sitios[$i]["FACTOR_REDUCCION"]/100) + ($cotizacion_sitios[$i]["FACTOR_AMPLIACION"]/100) ));
 				$dias_subtotal = round($dias_reduccion * $const_dias);	
@@ -299,7 +326,7 @@ if($cotizacion[0]["ID_SERVICIO"] == 1){
 		if($a !== false || $b !== false ){
 			$es_etapa_2 = true;
 		}
-		//Cuando es diferente de vigilancia y renovación es 1 día
+		//Cuando es diferente de vigilancia y renovación es 1 día y de etapa 2
 		if($es_vigilancia === false && $es_renovacion === false && $es_etapa_2 === false){
 			$total_dias_auditoria = 1;
 		}

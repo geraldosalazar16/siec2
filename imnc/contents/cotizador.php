@@ -163,7 +163,7 @@
                       <i class="fa fa-bullseye"></i> Ver servicio
                     </a>
                   </div>
-                  <div ng-show = "cotizacion.ID_TIPO_SERVICIO == 1 || cotizacion.ID_TIPO_SERVICIO == 2 || cotizacion.ID_TIPO_SERVICIO == 12 || cotizacion.ID_TIPO_SERVICIO == 20">
+                  <div ng-show = "cotizacion.ID_TIPO_SERVICIO == 1 || cotizacion.ID_TIPO_SERVICIO == 2 || cotizacion.ID_TIPO_SERVICIO == 12 || cotizacion.ID_TIPO_SERVICIO == 20 || cotizacion.ID_TIPO_SERVICIO == 54">
                     <a type="button" class="btn btn-primary btn-xs btn-success btnVerCotizacion" href="./?pagina=ver_cotizacion&id_cotizacion={{cotizacion.ID}}" style="float: right;">
                       <i class="fa fa-bullseye"></i> Ver cotización
                     </a>	

@@ -1,3 +1,8 @@
+<script type="text/javascript">
+  <?php
+    echo "var global_id_cotizacion = " .$_REQUEST["id_cotizacion"] . ";";
+  ?>
+</script>
 <div class="right_col" role="main"  ng-controller="ver_cotizacion_controller as $ctrl" ng-init='despliega_cotizacion()' ng-cloak>
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -144,17 +149,20 @@
                               <td>{{$index + 1}}</td>
                               <td>
                                {{sitios_cotizacion.NOMBRE }}<br>
-                               Actividad : {{sitios_cotizacion.ACTIVIDAD }}
+                               <p ng-if = "obj_cotizacion.ID_TIPO_SERVICIO != 54">Actividad : {{sitios_cotizacion.ACTIVIDAD }}</p>
                               </td>
                               <td>
-                                 # de empleados para certificación: {{sitios_cotizacion.NUMERO_EMPLEADOS_CERTIFICACION}} <br>
+                                 <p ng-if = "obj_cotizacion.ID_TIPO_SERVICIO != 54"># de empleados para certificación: {{sitios_cotizacion.NUMERO_EMPLEADOS_CERTIFICACION}} <br>
                                  Cantidad de turnos: {{sitios_cotizacion.CANTIDAD_TURNOS}} <br>
                                  Cantidad de procesos: {{sitios_cotizacion.CANTIDAD_DE_PROCESOS}} <br>
+								 </p>
                                  ¿Temporal o fijo? {{sitios_cotizacion.TEMPORAL_O_FIJO}} <br>
                                  ¿Matriz o principal? {{sitios_cotizacion.MATRIZ_PRINCIPAL}}<br>
-                                 Factor de Reducción :  {{sitios_cotizacion.FACTOR_REDUCCION}}%<br>
+                                  <p ng-if = "obj_cotizacion.ID_TIPO_SERVICIO != 54">
+								  Factor de Reducción :  {{sitios_cotizacion.FACTOR_REDUCCION}}%<br>
                                  Factor de Ampliación :  {{sitios_cotizacion.FACTOR_AMPLIACION}}%<br>
                                   Justificación :  {{sitios_cotizacion.JUSTIFICACION}}
+								  </p>
                               </td>
                               <td>{{sitios_cotizacion.TOTAL_EMPLEADOS}}</td>
                               
@@ -770,7 +778,7 @@
                 </div>
               </div>
 
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-if="obj_cotizacion.ID_TIPO_SERVICIO != 54">
                 <label class="control-label col-xs-12">Actividad<span class="required">*</span>
                 <div style="float: right;"><input type="checkbox" ng-model="chkActv"> <span style="font-size: 11px;">No encuentra actividad</span></div>
                 </label>
@@ -795,37 +803,37 @@
                   <input type="numeric" id="txtTotalEmpleados" ng-model="obj_sitio.TOTAL_EMPLEADOS" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-if="obj_cotizacion.ID_TIPO_SERVICIO != 54">
                 <label class="control-label col-md-12"># de empleados para certificación <span class="required">*</span></label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="obj_sitio.NUMERO_EMPLEADOS_CERTIFICACION" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-if="obj_cotizacion.ID_TIPO_SERVICIO != 54">
                 <label class="control-label col-md-12">Cantidad de turnos <span class="required">*</span></label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="obj_sitio.CANTIDAD_TURNOS" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-if="obj_cotizacion.ID_TIPO_SERVICIO != 54">
                 <label class="control-label col-md-12">Cantidad de procesos <span class="required">*</span></label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="obj_sitio.CANTIDAD_DE_PROCESOS" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-if="obj_cotizacion.ID_TIPO_SERVICIO != 54">
                 <label class="control-label col-md-12">Factor de Reducción (%)<span class="required">*</span></label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="obj_sitio.FACTOR_REDUCCION" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-               <div class="form-group form-vertical">
+               <div class="form-group form-vertical" ng-if="obj_cotizacion.ID_TIPO_SERVICIO != 54">
                 <label class="control-label col-md-12">Factor de Ampliación (%)<span class="required">*</span></label>
                 <div class="col-md-12">
                   <input type="numeric" ng-model="obj_sitio.FACTOR_AMPLIACION" required="required" class="form-control col-md-7 col-xs-12">
                 </div>
               </div>
-              <div class="form-group form-vertical">
+              <div class="form-group form-vertical" ng-if="obj_cotizacion.ID_TIPO_SERVICIO != 54">
                 <label class="control-label col-md-12">Justificación <span class="required">*</span></label>
                 <div class="col-md-12">
                   <textarea rows="4" cols="50" ng-model="obj_sitio.JUSTIFICACION" required="required" class="form-control col-md-7 col-xs-12">
@@ -1253,8 +1261,4 @@ data-backdrop="static" data-keyboard="true">
   </div>
 </div>
 
-<script type="text/javascript">
-  <?php
-    echo "var global_id_cotizacion = " .$_REQUEST["id_cotizacion"] . ";";
-  ?>
-</script>
+

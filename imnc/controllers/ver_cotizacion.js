@@ -887,7 +887,8 @@ $scope.formData = {};
 		});
 	}
   $scope.cotizacion_sitio_guardar = function(){
-    $scope.obj_sitio.ID_COTIZACION = global_id_cotizacion;
+    $scope.obj_sitio.ID_COTIZACION = global_id_cotizacion;	
+	$scope.obj_sitio.ID_TIPO_SERVICIO = $scope.obj_cotizacion.ID_TIPO_SERVICIO;
     $scope.obj_sitio.ID_USUARIO= sessionStorage.getItem("id_usuario");
 
     if (accion_sitio == 'insertar') {
