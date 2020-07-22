@@ -54,7 +54,7 @@
 
 	if($cotizacion[0]["BANDERA"] == 0){
 		$id_cliente = $database->get("PROSPECTO",["ID_CLIENTE"], ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
-		if($id_cliente == 0){
+		if($id_cliente["ID_CLIENTE"] == 0){
 			$total_domicilios = $database->count("PROSPECTO_DOMICILIO", ["ID_PROSPECTO"=>$cotizacion[0]["ID_PROSPECTO"]]); 
 			array_push($campos, "PROSPECTO_DOMICILIO.NOMBRE");
 			$tabla_entidad = "PROSPECTO_DOMICILIO";

@@ -308,17 +308,21 @@
                               <td>{{$index + 1}}</td>
                               <td>
                                {{sitios_cotizacion.NOMBRE }}<br>
-                               Actividad : {{sitios_cotizacion.ACTIVIDAD }}
+                               <p ng-if = "obj_cotizacion.ID_TIPO_SERVICIO != 54">Actividad : {{sitios_cotizacion.ACTIVIDAD }}</p>
                               </td>
                               <td>
-                                 # de empleados para certificación: {{sitios_cotizacion.NUMERO_EMPLEADOS_CERTIFICACION}} <br>
-                                 Cantidad de turnos: {{sitios_cotizacion.CANTIDAD_TURNOS}} <br>
-                                 Cantidad de procesos: {{sitios_cotizacion.CANTIDAD_DE_PROCESOS}} <br>
+                                 <p ng-if = "obj_cotizacion.ID_TIPO_SERVICIO != 54">
+									# de empleados para certificación: {{sitios_cotizacion.NUMERO_EMPLEADOS_CERTIFICACION}} <br>
+									Cantidad de turnos: {{sitios_cotizacion.CANTIDAD_TURNOS}} <br>
+									Cantidad de procesos: {{sitios_cotizacion.CANTIDAD_DE_PROCESOS}} <br>
+								 </p>
                                  ¿Temporal o fijo? {{sitios_cotizacion.TEMPORAL_O_FIJO}} <br>
                                  ¿Matriz o principal? {{sitios_cotizacion.MATRIZ_PRINCIPAL}}<br>
-                                 Factor de Reducción :  {{sitios_cotizacion.FACTOR_REDUCCION}}%<br>
-                                 Factor de Ampliación :  {{sitios_cotizacion.FACTOR_AMPLIACION}}%<br>
-                                  Justificación :  {{sitios_cotizacion.JUSTIFICACION}}
+                                 <p ng-if = "obj_cotizacion.ID_TIPO_SERVICIO != 54">
+									Factor de Reducción :  {{sitios_cotizacion.FACTOR_REDUCCION}}%<br>
+									Factor de Ampliación :  {{sitios_cotizacion.FACTOR_AMPLIACION}}%<br>
+									Justificación :  {{sitios_cotizacion.JUSTIFICACION}}
+								  </p>
                               </td>
                               <td>{{sitios_cotizacion.TOTAL_EMPLEADOS}}</td>
                               <td ng-if="!tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID != 20">
