@@ -376,7 +376,7 @@ class MYPDF extends TCPDF {
 		// disable auto-page-break
 		$this->SetAutoPageBreak(false, 0);
 		// set bacground image
-		$img_file = $this->selector.'/fondo.jpg';
+		$img_file = '../img/fondo.jpg';
 		$this->Image($img_file, 0, 0, 210, 297, '', '', '', false, 300, '', false, false, 0);
 		// restore auto-page-break status
 		$this->SetAutoPageBreak($auto_page_break, $bMargin);
@@ -509,8 +509,8 @@ $pdf1->SetTextColor(54,95,145);
 $pdf1->SetPrintHeader(true);
 $pdf1->AddPage();
 $pdf1->SetPrintFooter(false);
-$pdf1->Image($global_direccion_pdf.'logob.jpg', 160, 10, 45, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-$pdf1->Image($global_direccion_pdf.'logoc.jpg', 20, 10, 40, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+$pdf1->Image('../img/logob.jpg', 160, 10, 45, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+$pdf1->Image('../img/logoc.jpg', 20, 10, 40, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
 $pdf1->SetXY(0,0);
 // Titulo de documento (centrado)
