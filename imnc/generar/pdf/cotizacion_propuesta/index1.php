@@ -509,8 +509,8 @@ $pdf1->SetTextColor(54,95,145);
 $pdf1->SetPrintHeader(true);
 $pdf1->AddPage();
 $pdf1->SetPrintFooter(false);
-$pdf1->Image('../img/logob.jpg', 160, 10, 45, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-$pdf1->Image('../img/logoc.jpg', 20, 10, 40, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+$pdf1->Image('../img/logob.png', 160, 10, 45, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+$pdf1->Image('../img/logoc.png', 20, 10, 40, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
 $pdf1->SetXY(0,0);
 // Titulo de documento (centrado)
