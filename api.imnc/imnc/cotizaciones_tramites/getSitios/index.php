@@ -85,7 +85,7 @@ $campos = [
 
 if($cotizacion[0]["BANDERA"] == 0){
 	$id_cliente = $database->get("PROSPECTO",["ID_CLIENTE"], ["ID"=>$cotizacion[0]["ID_PROSPECTO"]]);
-	if($id_cliente == 0){
+	if($id_cliente["ID_CLIENTE"] == 0){
 		$total_domicilios = $database->count("PROSPECTO_DOMICILIO", ["ID_PROSPECTO"=>$cotizacion[0]["ID_PROSPECTO"]]); 
 		array_push($campos, "PROSPECTO_DOMICILIO.NOMBRE");
 		$tabla_entidad = "PROSPECTO_DOMICILIO";
@@ -308,10 +308,10 @@ if($cotizacion[0]["ID_TIPO_SERVICIO"] == 20){
 	if($a !== false || $b !== false ){
 		$es_etapa_2 = true;
 	}
-	//Cuando es diferente de vigilancia y renovación es 1 día
-	if($es_vigilancia === false && $es_renovacion === false && $es_renovacion1 === false && $es_etapa_2 === false){ 
-		$total_dias_auditoria = 1;
-	}
+	//Cuando es diferente de vigilancia y renovación es 1 día y de etapa 2
+		if($es_vigilancia === false && $es_renovacion === false && $es_etapa_2 === false){
+			$total_dias_auditoria = 1;
+		}
 	//Estapa 2 es la cantidad de días de etapa 1 menos 1
 	if($es_etapa_2 !== false){ 
 		if ($total_dias_auditoria > 0) {

@@ -24,5 +24,9 @@ $campos_t = [
 $tarifas_adicionales  = $database->select("COTIZACION_TARIFA_ADICIONAL", ["[>]TARIFA_COTIZACION_ADICIONAL" => ["ID_TARIFA_ADICIONAL" => "ID"]],
 	$campos_t, ["AND"=>["ID_TRAMITE"=>$id,"ID_COTIZACION"=>$id_cot]]);
 	valida_error_medoo_and_die($nombre_tabla ,$correo ); 
+	for($i =0 ; $i<count($tarifas_adicionales);$i++){
+		$tarifas_adicionales[$i]["COSTO_TOTAL"] = $tarifas_adicionales[$i]["TARIFA"]*$tarifas_adicionales[$i]["CANTIDAD"];
+	}
+	
 	print_r(json_encode($tarifas_adicionales)); 
 ?> 

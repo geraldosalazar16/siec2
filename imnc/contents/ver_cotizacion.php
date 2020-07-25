@@ -330,7 +330,7 @@
                                 Factor de reducción y ampliación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_RED}}</b><br>
                                 Factor de ajuste por vigilancia o renovación:<b>{{sitios_cotizacion.DIAS_AUDITORIA_SUBTOTAL}}</b>
                               </td>
-				                      <td ng-if="tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID != 20">
+				              <td ng-if="tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID != 20">
                                  Días auditor: <b>{{obj_cotizacion_tramite.TOTAL_DIAS_AUDITORIA}}</b><br>
                               </td>
                               <td ng-if="!tipo_auditoria_e1 && obj_cotizacion_tramite.TIPOS_SERVICIO.ID == 20">
@@ -1149,7 +1149,7 @@
 						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TIPO" required ng-class="{ error: exampleFormGenCotizacion.tramite.x.$error.required && !exampleForm.$pristine}"  >
 					</div>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
-						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TRAMITE_COSTO" required ng-class="{ error: exampleFormGenCotizacion.monto.x.$error.required && !exampleForm.$pristine}"  >
+						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].TRAMITE_COSTO_DES" required ng-class="{ error: exampleFormGenCotizacion.monto.x.$error.required && !exampleForm.$pristine}"  >
 					</div>
 					<div class='form-group  col-md-4 col-xs-4 col-sm-4'>
 						<input type="text" class="form-control"  ng-model="formDataGenCotizacion.tramites[$index].VIATICOS" required ng-class="{ error: exampleFormGenCotizacion.viaticos.x.$error.required && !exampleForm.$pristine}"  >
@@ -1159,7 +1159,7 @@
 							<input type="text" class="form-control"  ng-model="formDataGenCotizacion.descripcion[tram_index][$index].DESCRIPCION" required ng-class="{ error: exampleFormGenCotizacion.descipcion.$error.required && !exampleForm.$pristine}" ng-if="formDataGenCotizacion.descripcion[tram_index][$index].DESCRIPCION!=''" >
 						</div>
 						<div class='form-group  col-md-3 col-xs-3 col-sm-3'>
-							<input type="text" class="form-control"  ng-model="formDataGenCotizacion.descripcion[tram_index][$index].TARIFA" required ng-class="{ error: exampleFormGenCotizacion.tarifa.$error.required && !exampleForm.$pristine}"  >
+							<input type="text" class="form-control"  ng-model="formDataGenCotizacion.descripcion[tram_index][$index].COSTO_TOTAL" required ng-class="{ error: exampleFormGenCotizacion.tarifa.$error.required && !exampleForm.$pristine}"  >
 						</div>
 
 					</div>

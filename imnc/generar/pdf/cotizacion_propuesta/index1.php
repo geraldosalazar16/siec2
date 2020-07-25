@@ -596,10 +596,10 @@ for($i=0;$i<count($datos);$i++){
 		$tarifa_E1 =0;
 		$tarifa_E2 =0;
 		$dias_auditor_E1 = $datos[$i]->DIAS_AUDITORIA;
-		$costo_E1	=	$datos[$i]->TRAMITE_COSTO;
+		$costo_E1	=	$datos[$i]->TRAMITE_COSTO_DES;
 		$viaticos_E1 = $datos[$i]->VIATICOS;
 		$dias_auditor_E2 = $datos[$i+1]->DIAS_AUDITORIA;
-		$costo_E2	=	$datos[$i+1]->TRAMITE_COSTO;
+		$costo_E2	=	$datos[$i+1]->TRAMITE_COSTO_DES;
 		$viaticos_E2 = $datos[$i+1]->VIATICOS;
 		$subtotal= $costo_E1+$costo_E2+$viaticos_E1+$viaticos_E2;
 		$IVA16=0.16*$subtotal;
@@ -637,7 +637,7 @@ EOT;
 			if(count($datos1[$i])>0||count($datos1[$i+1])>0){
 				for($j=0;$j<count($datos1[$i]);$j++){
 				$descripcion = $datos1[$i][$j]->DESCRIPCION;
-				$tarifa	=	$datos1[$i][$j]->TARIFA;
+				$tarifa	=	$datos1[$i][$j]->COSTO_TOTAL;
 				$suma_tarifa += $tarifa;
 				//Dando formato a los datos
 				$tarifa_f=number_format($tarifa,2);
@@ -654,7 +654,7 @@ EOT;
 			if(count($datos1[$i+1])>0){
 				for($j=0;$j<count($datos1[$i+1]);$j++){
 				$descripcion = $datos1[$i+1][$j]->DESCRIPCION;
-				$tarifa	=	$datos1[$i+1][$j]->TARIFA;
+				$tarifa	=	$datos1[$i+1][$j]->COSTO_TOTAL;
 				$suma_tarifa += $tarifa;
 				//Dando formato a los datos
 				$tarifa_f=number_format($tarifa,2);
@@ -719,7 +719,7 @@ $i=$i+1;
 		$Titulo_Tabla="SERVICIO DE ".strtoupper($datos[$i]->TIPO);
 		$Descripcion_servicio=$datos[$i]->TIPO;
 		$dias_auditor = $datos[$i]->DIAS_AUDITORIA;
-		$costo	=	$datos[$i]->TRAMITE_COSTO;
+		$costo	=	$datos[$i]->TRAMITE_COSTO_DES;
 		$viaticos = $datos[$i]->VIATICOS;
 		//Dando formato a los datos
 		$costo_f=number_format($costo,2);
@@ -746,7 +746,7 @@ EOT;
 			if(count($datos1[$i])>0){
 				for($j=0;$j<count($datos1[$i]);$j++){
 				$descripcion = $datos1[$i][$j]->DESCRIPCION;
-				$tarifa	=	$datos1[$i][$j]->TARIFA;
+				$tarifa	=	$datos1[$i][$j]->COSTO_TOTAL;
 				$suma_tarifa += $tarifa;
 				//Dando formato a los datos
 				$tarifa_f=number_format($tarifa,2);

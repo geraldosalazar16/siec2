@@ -144,7 +144,7 @@ $modulo_permisos = $_SESSION["permisos"];
             echo '   <ul class="nav child_menu" style="display: none">';
             echo '      <li><a href="./?pagina=agenda_servicios">Agenda</a></li>';
             echo '      <li><a href="./?pagina=servicio_cliente_etapa">Clientes</a></li>';
-            echo '      <li><a href="./?pagina=sg_tipos_auditoria">Tipos de ' . strtolower($str_auditoria) . '</a></li>';
+            echo '      <li><a href="./?pagina=tramites_tipos_auditoria">Tipos de auditor&iacutea</a></li>';
             echo '      <li><a href="./?pagina=sg_status_auditoria">Status de ' .  strtolower($str_auditoria) . '</a></li>';
             echo '      <li><a href="./?pagina=cursos_programados">Cursos Programados</a></li>';
             echo '      <li><a href="./?pagina=certi_auditores">Eventos por Fecha</a>';

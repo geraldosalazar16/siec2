@@ -35,6 +35,8 @@ $ACRONIMO = $objeto->ACRONIMO;
 valida_parametro_and_die($ACRONIMO,"Falta ACRONIMO");
 $TIPO = $objeto->TIPO; 
 valida_parametro_and_die($TIPO,"Falta TIPO"); 
+$ETAPA = $objeto->ETAPA; 
+valida_parametro_and_die($ETAPA,"Falta ETAPA");
 
 $ID_USUARIO_MODIFICACION = $objeto->ID_USUARIO;
 valida_parametro_and_die($ID_USUARIO_MODIFICACION,"Falta ID de USUARIO");
@@ -45,7 +47,8 @@ $HORA_MODIFICACION = date("His");
 $id = $database->update("I_SG_AUDITORIAS_TIPOS", [ 
 	"ID_SERVICIO" => $ID_SERVICIO, 
 	"ACRONIMO" => $ACRONIMO,
-	"TIPO" => $TIPO 
+	"TIPO" => $TIPO ,
+	"ID_ETAPA" => $ETAPA
 ], ["ID"=>$ID]); 
 
 valida_error_medoo_and_die(); 

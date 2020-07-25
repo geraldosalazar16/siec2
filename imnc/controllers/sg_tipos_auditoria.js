@@ -61,7 +61,7 @@ app.controller("tipos_auditoria_controller", ['$scope','$window', '$http','$docu
 
     $http(http_request).success(function(data) {
       if(data) { 
-        $scope.tipo_auditoria_insertar_editar = data;
+        $scope.tipo_auditoria_insertar_editar = data[0];
       } 
       else  {
         console.log("No hay datos");

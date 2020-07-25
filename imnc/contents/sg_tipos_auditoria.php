@@ -4,12 +4,12 @@
     <div class="col-md-8 col-sm-12 col-xs-12">
       <div class="x_panel">
         <div class="x_title">
-        <p><h2>Tipos de <?php echo strtolower($str_auditoria);?> </h2></p>
+        <p><h2>Tipos de audito&iacuteas </h2></p>
         <?php
           if ($modulo_permisos["SERVICIOS"]["registrar"] == 1) {
               echo '<p>';
               echo '  <button type="button" id="btnNuevo" class="btn btn-primary btn-xs btn-imnc" style="float: right;" ng-click="modal_tipo_auditoria_insertar()"> ';
-              echo '    <i class="fa fa-plus"> </i> Agregar ' . strtolower($str_auditoria);
+              echo '    <i class="fa fa-plus"> </i> Agregar auditor&iacutea';
               echo '  </button>';
               echo '</p>';
           } 
@@ -26,6 +26,7 @@
                 <th class="column-title">Tipo de servicio</th>
                 <th class="column-title">Clave</th>
                 <th class="column-title">Tipo</th>
+				<th class="column-title">Nombre Etapa</th>
                 <th class="column-title"></th>
               </tr>
             </thead>
@@ -35,11 +36,12 @@
                 <td>{{tipo_auditoria.NOMBRE_SERVICIO}}</td>
                 <td>{{tipo_auditoria.ACRONIMO_AUDITORIA}}</td>
                 <td>{{tipo_auditoria.TIPO_AUDITORIA}}</td>
+				<td>{{tipo_auditoria.NOMBRE_ETAPA}}</td>
                 <td>
                 <?php
                   if ($modulo_permisos["SERVICIOS"]["editar"] == 1) {
                       echo '<button type="button" class="btn btn-primary btn-xs btn-imnc btnEditar" ng-click="modal_tipo_auditoria_editar(tipo_auditoria.ID)" style="float: right;">       ';
-                      echo '  <i class="fa fa-edit"></i> Editar ' . strtolower($str_auditoria);
+                      echo '  <i class="fa fa-edit"></i> Editar auditor&iacutea';
                       echo '</button>';
                   } 
                 ?>
