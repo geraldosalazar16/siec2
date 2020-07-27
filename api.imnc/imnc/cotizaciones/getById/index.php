@@ -160,15 +160,18 @@ if($cotizacion[0]["ID_SERVICIO"] == 1){
 		$etapa = $database->get("I_SG_AUDITORIAS_TIPOS", "*", ["ID"=>$tramite_item["ID_ETAPA_PROCESO"]]);
 		//Sustituyo $etapa["ETAPA"] por nombre_auditoria
 		$nombre_auditoria = $etapa["TIPO"];
+		$id_auditoria = $etapa["ID"];
 		valida_error_medoo_and_die();
 		$etapa_para_sgen = "VIGILANCIA";
 		//Multiplicador para el calculo de sitios
 		$const_dias = 1; //Default - Etapa certificacion
-		if(strpos($nombre_auditoria, 'Vigilancia') !== false || strpos($nombre_auditoria, 'VIGILANCIA')){ // Vigilancia
+		//if(strpos($nombre_auditoria, 'Vigilancia') !== false || strpos($nombre_auditoria, 'VIGILANCIA')){ // Vigilancia
+		if($id_auditoria >= 6 && $id_auditoria <= 12 ){ // Vigilancia
 			$const_dias = 0.33;
 			$etapa_para_sgen = "VIGILANCIA";
 		}
-		else if(strpos($nombre_auditoria, 'Renovación') !== false || strpos($nombre_auditoria, 'Renovacion') !== false || strpos($nombre_auditoria, 'RENOVACIÓN')){ // Renovacion
+		//else if(strpos($nombre_auditoria, 'Renovación') !== false || strpos($nombre_auditoria, 'Renovacion') !== false || strpos($nombre_auditoria, 'RENOVACIÓN')){ // Renovacion
+		else if($id_auditoria == 4){ // Renovacion
 			$const_dias = 0.66;
 			$etapa_para_sgen = "RENOVACION";
 		}
@@ -306,25 +309,44 @@ if($cotizacion[0]["ID_SERVICIO"] == 1){
 			//Leer el nivel de integración de prospectos
 			$total_dias_auditoria = round( $total_dias_auditoria * (1 - ($cotizacion[0]["FACTOR_REDUCCION_INTEGRAL"]/100)) );
 		}
-		$a = strpos($nombre_auditoria, 'Vigilancia');
+		/*$a = strpos($nombre_auditoria, 'Vigilancia');
 		$b = strpos($nombre_auditoria, 'VIGILANCIA');
 		$es_vigilancia = false;
 		if($a !== false || $b !== false){
 			$es_vigilancia = true;
+		}*/
+		if($id_auditoria >= 6 && $id_auditoria <= 12 ){ // Vigilancia
+			$es_vigilancia = true;
 		}
-		$a = strpos($nombre_auditoria, 'Renovacion');
+		else{
+			$es_vigilancia = false;
+		}
+		/*$a = strpos($nombre_auditoria, 'Renovacion');
 		$b = strpos($nombre_auditoria, 'RENOVACIÓN');
 		$c = strpos($nombre_auditoria, 'RENOVACION');
 		$d = strpos($nombre_auditoria, 'Renovación');
 		$es_renovacion = false;
 		if($a !== false || $b !== false || $c !== false || $d !== false){
 			$es_renovacion = true;
+		}*/
+		if($id_auditoria == 4){ // Renovacion
+			$es_renovacion = true;
 		}
+		else{
+			$es_renovacion = false;
+		}
+		/*
 		$es_etapa_2 = false;
 		$a = strpos($nombre_auditoria, 'Etapa 2');
 		$b = strpos($nombre_auditoria, 'ETAPA 2');
 		if($a !== false || $b !== false ){
 			$es_etapa_2 = true;
+		}*/
+		if($id_auditoria == 3){ // Etapa2
+			$es_etapa_2 = true;
+		}
+		else{
+			$es_etapa_2 = false;
 		}
 		//Cuando es diferente de vigilancia y renovación es 1 día y de etapa 2
 		if($es_vigilancia === false && $es_renovacion === false && $es_etapa_2 === false){
