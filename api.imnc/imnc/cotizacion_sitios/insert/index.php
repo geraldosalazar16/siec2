@@ -57,7 +57,7 @@ else{
 	$FACTOR_REDUCCION = 0;
 	$FACTOR_AMPLIACION = 0;
 	$JUSTIFICACION = 'N/A';
-	$ID_ACTIVIDAD = null;
+	$ID_ACTIVIDAD = 2;
 	
 	
 }
